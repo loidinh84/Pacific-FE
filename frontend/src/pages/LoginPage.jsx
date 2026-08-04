@@ -8,7 +8,6 @@ import {
   Compass,
   ShieldCheck,
   Waves,
-  Sparkles,
 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
@@ -226,47 +225,55 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               {/* Field Email */}
               <div className="relative">
-                <label className="absolute -top-2.5 left-4 px-2.5 bg-[#202c59] text-[11px] font-semibold text-pacific-blue-pale rounded-full z-10 border border-white/15">
-                  Email
-                </label>
                 <div className="relative flex items-center">
                   <Mail
                     size={16}
-                    className="absolute left-4 text-pacific-blue-light"
+                    className="absolute left-4 text-pacific-blue-light z-10 pointer-events-none"
                   />
                   <input
+                    id="login-email"
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="example@email.com"
-                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/15 rounded-xl text-white text-sm placeholder-white/30 focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 focus:ring-2 focus:ring-pacific-blue-bright/20 transition-all font-medium"
+                    placeholder=" "
+                    className="peer w-full pl-11 pr-4 py-3 bg-white/5 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 focus:ring-2 focus:ring-pacific-blue-bright/20 transition-all font-medium"
                   />
+                  <label
+                    htmlFor="login-email"
+                    className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
+                  >
+                    Email
+                  </label>
                 </div>
               </div>
 
               {/* Field Password */}
               <div className="relative">
-                <label className="absolute -top-2.5 left-4 px-2.5 bg-[#202c59] text-[11px] font-semibold text-pacific-blue-pale rounded-full z-10 border border-white/15">
-                  Mật khẩu
-                </label>
                 <div className="relative flex items-center">
                   <Lock
                     size={16}
-                    className="absolute left-4 text-pacific-blue-light"
+                    className="absolute left-4 text-pacific-blue-light z-10 pointer-events-none"
                   />
                   <input
+                    id="login-password"
                     type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-11 pr-11 py-3 bg-white/5 border border-white/15 rounded-xl text-white text-sm placeholder-white/30 focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 focus:ring-2 focus:ring-pacific-blue-bright/20 transition-all font-medium"
+                    placeholder=" "
+                    className="peer w-full pl-11 pr-11 py-3 bg-white/5 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 focus:ring-2 focus:ring-pacific-blue-bright/20 transition-all font-medium"
                   />
+                  <label
+                    htmlFor="login-password"
+                    className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
+                  >
+                    Mật khẩu
+                  </label>
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 text-white/50 hover:text-white transition-colors cursor-pointer"
+                    className="absolute right-4 text-white/50 hover:text-white transition-colors cursor-pointer z-10"
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>

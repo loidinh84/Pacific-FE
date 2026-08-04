@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Lock, User, Eye, EyeOff, Compass, Waves } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import * as Images from "../assets/Images";
@@ -36,9 +38,11 @@ const RANDOM_CREATURES = [
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [creatureIndex, setCreatureIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
@@ -50,7 +54,7 @@ export default function RegisterPage() {
         setCreatureIndex((prev) => (prev + 1) % RANDOM_CREATURES.length);
         setIsFading(false);
       }, 300);
-    }, 3500);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -59,7 +63,11 @@ export default function RegisterPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Register submit:", { fullName, email, password });
+    if (password !== confirmPassword) {
+      alert("Mật khẩu xác nhận không trùng khớp!");
+      return;
+    }
+    console.log("Register submit:", { fullName, email, password, confirmPassword });
   };
 
   return (
@@ -90,7 +98,7 @@ export default function RegisterPage() {
 
       <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-28 relative z-10">
         <div 
-          className="w-full max-w-4xl bg-pacific-figma-card/50 backdrop-blur-2xl border border-white/15 rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.6),0_0_50px_rgba(14,165,233,0.2)] overflow-hidden grid grid-cols-1 md:grid-cols-12"
+          className="w-full max-w-4xl bg-pacific-figma-card/50 backdrop-blur-2xl border border-white/15 rounded-3xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-12"
           data-aos="zoom-in"
           data-aos-duration="800"
         >
@@ -100,8 +108,8 @@ export default function RegisterPage() {
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-pacific-teal/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pacific-blue-bright/15 border border-pacific-blue-bright/30 text-pacific-blue-light text-xs font-semibold uppercase tracking-wider mb-6">
-                🌊 &nbsp; Gia nhập Pacific
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pacific-blue-bright/15 border border-pacific-blue-bright/30 text-pacific-blue-light text-sm font-semibold mb-6">
+                Gia nhập Pacific
               </div>
               <h2 className="text-2xl lg:text-3xl font-black text-white font-heading leading-tight mb-3">
                 Bắt đầu hành trình đại dương ngay hôm nay
@@ -162,85 +170,153 @@ export default function RegisterPage() {
           <div className="md:col-span-7 p-8 md:p-10 flex flex-col justify-center relative">
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-black text-white font-heading tracking-tight mb-2">
-                Tạo tài khoản
+                Đăng ký
               </h1>
               <p className="text-xs md:text-sm text-pacific-blue-pale font-medium">
-                Nhập thông tin cá nhân của bạn để đăng ký.
+                Hãy tạo tài khoản cho bản thân nào!
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {/* Full Name */}
               <div className="relative">
-                <label className="absolute -top-2.5 left-4 px-2.5 bg-[#202c59] text-[11px] font-semibold text-pacific-blue-pale rounded-full z-10 border border-white/15">
-                  Họ và tên
-                </label>
                 <div className="relative flex items-center">
-                  <User size={16} className="absolute left-4 text-pacific-blue-light" />
+                  <User size={16} className="absolute left-4 text-pacific-blue-light z-10 pointer-events-none" />
                   <input
+                    id="register-fullname"
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Nguyễn Văn A"
-                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/15 rounded-xl text-white text-sm placeholder-white/30 focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 transition-all font-medium"
+                    placeholder=" "
+                    className="peer w-full pl-11 pr-4 py-2.5 bg-white/5 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 transition-all font-medium"
                   />
+                  <label
+                    htmlFor="register-fullname"
+                    className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
+                  >
+                    Họ và tên
+                  </label>
                 </div>
               </div>
 
               {/* Email */}
               <div className="relative">
-                <label className="absolute -top-2.5 left-4 px-2.5 bg-[#202c59] text-[11px] font-semibold text-pacific-blue-pale rounded-full z-10 border border-white/15">
-                  Email
-                </label>
                 <div className="relative flex items-center">
-                  <Mail size={16} className="absolute left-4 text-pacific-blue-light" />
+                  <Mail size={16} className="absolute left-4 text-pacific-blue-light z-10 pointer-events-none" />
                   <input
+                    id="register-email"
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="example@email.com"
-                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/15 rounded-xl text-white text-sm placeholder-white/30 focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 transition-all font-medium"
+                    placeholder=" "
+                    className="peer w-full pl-11 pr-4 py-2.5 bg-white/5 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 transition-all font-medium"
                   />
+                  <label
+                    htmlFor="register-email"
+                    className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
+                  >
+                    Email
+                  </label>
                 </div>
               </div>
 
               {/* Password */}
               <div className="relative">
-                <label className="absolute -top-2.5 left-4 px-2.5 bg-[#202c59] text-[11px] font-semibold text-pacific-blue-pale rounded-full z-10 border border-white/15">
-                  Mật khẩu
-                </label>
                 <div className="relative flex items-center">
-                  <Lock size={16} className="absolute left-4 text-pacific-blue-light" />
+                  <Lock size={16} className="absolute left-4 text-pacific-blue-light z-10 pointer-events-none" />
                   <input
+                    id="register-password"
                     type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-11 pr-11 py-3 bg-white/5 border border-white/15 rounded-xl text-white text-sm placeholder-white/30 focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 transition-all font-medium"
+                    placeholder=" "
+                    className="peer w-full pl-11 pr-11 py-2.5 bg-white/5 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 transition-all font-medium"
                   />
+                  <label
+                    htmlFor="register-password"
+                    className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
+                  >
+                    Mật khẩu
+                  </label>
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 text-white/50 hover:text-white transition-colors cursor-pointer"
+                    className="absolute right-4 text-white/50 hover:text-white transition-colors cursor-pointer z-10"
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
 
+              {/* Confirm Password */}
+              <div className="relative">
+                <div className="relative flex items-center">
+                  <Lock size={16} className="absolute left-4 text-pacific-blue-light z-10 pointer-events-none" />
+                  <input
+                    id="register-confirmpassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder=" "
+                    className="peer w-full pl-11 pr-11 py-2.5 bg-white/5 border border-white/15 rounded-xl text-white text-sm focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 transition-all font-medium"
+                  />
+                  <label
+                    htmlFor="register-confirmpassword"
+                    className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
+                  >
+                    Xác nhận mật khẩu
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 text-white/50 hover:text-white transition-colors cursor-pointer z-10"
+                  >
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan hover:from-sky-600 hover:via-teal-600 hover:to-cyan-600 hover:brightness-110 shadow-[0_4px_20px_rgba(14,165,233,0.35)] hover:shadow-[0_6px_25px_rgba(14,165,233,0.55)] active:translate-y-0.5 transition-all duration-300 cursor-pointer text-base mt-1"
+                className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan hover:from-sky-600 hover:via-indigo-400 hover:to-cyan-600 hover:brightness-110 active:translate-y-0.5 transition-all duration-300 cursor-pointer text-base mt-1"
               >
-                Tạo tài khoản
+                Đăng ký
               </button>
+
+              {/* Divider */}
+              <div className="relative flex items-center justify-center my-0.5">
+                <div className="w-full border-t border-white/10" />
+                <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-white/40 uppercase tracking-wider">
+                  hoặc
+                </span>
+              </div>
+
+              {/* Social Logins */}
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white text-xs font-semibold transition-all cursor-pointer active:translate-y-0.5"
+                >
+                  <FcGoogle size={16} />
+                  <span>Google</span>
+                </button>
+                <button
+                  type="button"
+                  className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white text-xs font-semibold transition-all cursor-pointer active:translate-y-0.5"
+                >
+                  <FaGithub size={16} />
+                  <span>GitHub</span>
+                </button>
+              </div>
             </form>
 
             <div className="text-center mt-6 pt-4 border-t border-white/10 text-xs text-white/70">
-              Đã có tài khoản?{" "}
+              Bạn đã có tài khoản?{" "}
               <Link
                 to="/login"
                 className="text-pacific-blue-light font-bold hover:underline transition-colors ml-1"
