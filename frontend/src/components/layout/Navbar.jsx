@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Menu, X, Globe, ChevronDown } from "lucide-react";
 import * as Images from "../../assets/Images";
 
 const navLinks = [
-  { label: "Khám phá", href: "#hero", hasDropdown: true },
-  { label: "Sinh vật biển", href: "#species", hasDropdown: true },
-  { label: "Về chúng tôi", href: "#about", hasDropdown: true },
-  { label: "Trò chơi", href: "#quiz", hasDropdown: true },
+  { label: "Khám phá", href: "/#hero", hasDropdown: true },
+  { label: "Sinh vật biển", href: "/#species", hasDropdown: true },
+  { label: "Về chúng tôi", href: "/#about", hasDropdown: true },
+  { label: "Trò chơi", href: "/#quiz", hasDropdown: true },
 ];
 
 export default function Navbar() {
@@ -29,7 +30,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-3">
           <img
             src={Images.Logo}
             alt="Pacific Logo"
@@ -38,7 +39,7 @@ export default function Navbar() {
           <span className="font-heading text-2xl font-black text-white tracking-tight">
             Pacific
           </span>
-        </a>
+        </Link>
 
         {/* Desktop links */}
         <ul className="hidden lg:flex items-center gap-1">
@@ -62,12 +63,18 @@ export default function Navbar() {
             <span>Ngôn ngữ</span>
             <ChevronDown size={12} />
           </button>
-          <button className="px-5 py-2.5 rounded-full text-sm font-semibold border border-white/40 text-white hover:bg-white/10 transition-all cursor-pointer">
+          <Link 
+            to="/register"
+            className="px-5 py-2.5 rounded-full text-sm font-semibold border border-white/40 text-white hover:bg-white/10 transition-all cursor-pointer inline-block"
+          >
             Đăng ký
-          </button>
-          <button className="px-5 py-2.5 rounded-full text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white shadow-[0_4px_20px_rgba(14,165,233,0.4)] hover:shadow-[0_8px_30px_rgba(14,165,233,0.6)]  active:translate-y-0.5 transition-all cursor-pointer">
+          </Link>
+          <Link
+            to="/login"
+            className="px-5 py-2.5 rounded-full text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white shadow-[0_4px_20px_rgba(14,165,233,0.4)] hover:shadow-[0_8px_30px_rgba(14,165,233,0.6)] active:translate-y-0.5 transition-all cursor-pointer inline-block"
+          >
             Đăng nhập
-          </button>
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -94,12 +101,20 @@ export default function Navbar() {
             </a>
           ))}
           <div className="flex gap-3 mt-4 pt-4 border-t border-white/10">
-            <button className="flex-1 py-3 rounded-xl text-sm font-semibold border border-white/30 text-white hover:bg-white/10 transition-all">
+            <Link 
+              to="/register"
+              onClick={() => setIsMobileOpen(false)}
+              className="flex-1 py-3 rounded-xl text-sm font-semibold border border-white/30 text-white hover:bg-white/10 transition-all text-center"
+            >
               Đăng ký
-            </button>
-            <button className="flex-1 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white transition-all">
+            </Link>
+            <Link 
+              to="/login"
+              onClick={() => setIsMobileOpen(false)}
+              className="flex-1 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white transition-all text-center"
+            >
               Đăng nhập
-            </button>
+            </Link>
           </div>
         </div>
       )}

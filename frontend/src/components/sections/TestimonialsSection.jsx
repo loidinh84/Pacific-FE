@@ -50,7 +50,7 @@ export default function TestimonialsSection() {
           {REVIEWS.map((r) => (
             <div
               key={r.id}
-              className="bg-pacific-figma-card rounded-2xl p-7 shadow-lg flex flex-col justify-between hover:border hover:border-pacific-blue-bright hover:shadow-2xl transition-all duration-300"
+              className="bg-pacific-figma-card rounded-2xl p-7 shadow-lg flex flex-col justify-between hover:border hover:border-pacific-blue-bright hover:shadow-xl transition-all duration-300"
               data-aos="fade-up"
               data-aos-delay={r.delay}
             >
