@@ -1,23 +1,25 @@
 import { useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 import * as Images from "../../assets/Images";
 
 const CATEGORIES = [
-  { value: "", label: "Nhóm sinh vật" },
-  { value: "fish", label: "Cá biển" },
-  { value: "mollusk", label: "Thân mềm" },
-  { value: "crustacean", label: "Giáp xác" },
+  { value: "", labelVi: "Nhóm sinh vật", labelEn: "Species Group" },
+  { value: "fish", labelVi: "Cá biển", labelEn: "Marine Fish" },
+  { value: "mollusk", labelVi: "Thân mềm", labelEn: "Mollusks" },
+  { value: "crustacean", labelVi: "Giáp xác", labelEn: "Crustaceans" },
 ];
 
 const HABITATS = [
-  { value: "", label: "Môi trường sống" },
-  { value: "deep", label: "Đại dương sâu thẳm" },
-  { value: "shallow", label: "Vùng nước nông ven biển" },
-  { value: "reef", label: "Rạn san hô" },
-  { value: "polar", label: "Vùng cực lạnh giá" },
+  { value: "", labelVi: "Môi trường sống", labelEn: "Habitat Environment" },
+  { value: "deep", labelVi: "Đại dương sâu thẳm", labelEn: "Deep Ocean Abyss" },
+  { value: "shallow", labelVi: "Vùng nước nông ven biển", labelEn: "Coastal Shallow Waters" },
+  { value: "reef", labelVi: "Rạn san hô", labelEn: "Coral Reefs" },
+  { value: "polar", labelVi: "Vùng cực lạnh giá", labelEn: "Polar Ice Waters" },
 ];
 
 export default function SearchSection() {
+  const { language, t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
   const [habitat, setHabitat] = useState("");
@@ -44,7 +46,7 @@ export default function SearchSection() {
             {/* Content / Form */}
             <div>
               <h2 className="text-xl md:text-2xl font-black text-white leading-tight mb-6 font-heading">
-                Bạn muốn biết về sinh vật nào?
+                {t("search.title")}
               </h2>
 
               <form className="flex flex-col gap-4" onSubmit={handleSearch}>
@@ -52,7 +54,7 @@ export default function SearchSection() {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Nhập tên sinh vật..."
+                    placeholder={t("search.placeholder")}
                     className="w-full py-3 px-4 bg-white text-slate-800 border border-transparent rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pacific-blue-bright transition-all font-medium"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -68,7 +70,7 @@ export default function SearchSection() {
                   >
                     {CATEGORIES.map((c) => (
                       <option key={c.value} value={c.value}>
-                        {c.label}
+                        {language === "en" ? c.labelEn : c.labelVi}
                       </option>
                     ))}
                   </select>
@@ -87,7 +89,7 @@ export default function SearchSection() {
                   >
                     {HABITATS.map((h) => (
                       <option key={h.value} value={h.value}>
-                        {h.label}
+                        {language === "en" ? h.labelEn : h.labelVi}
                       </option>
                     ))}
                   </select>
@@ -103,7 +105,7 @@ export default function SearchSection() {
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white shadow-md hover:shadow-lg transition-all cursor-pointer active:translate-y-0.5"
                 >
                   <Search size={14} />
-                  Tìm kiếm
+                  {t("search.btnSearch")}
                 </button>
               </form>
             </div>

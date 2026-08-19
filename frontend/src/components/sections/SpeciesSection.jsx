@@ -1,48 +1,48 @@
+import { useLanguage } from "../../context/LanguageContext";
 import * as Images from "../../assets/Images";
-import * as Icons from "../../assets/Icons/index";
 
 const SPECIES = [
   {
     id: "whale-shark",
-    tag: "Cá biển",
-    name: "Cá mập voi",
+    tagVi: "Cá biển",
+    tagEn: "Marine Fish",
+    nameVi: "Cá mập voi",
+    nameEn: "Whale Shark",
     sciName: "Rhincodon typus",
     image: Images.CaMapVoi,
     stats: [
-      { val: "18m", label: "Chiều dài" },
-      { val: "20T", label: "Cân nặng" },
-      { val: "70+", label: "Tuổi thọ" },
+      { val: "18m", labelVi: "Chiều dài", labelEn: "Length" },
+      { val: "20T", labelVi: "Cân nặng", labelEn: "Weight" },
+      { val: "70+", labelVi: "Tuổi thọ", labelEn: "Lifespan" },
     ],
-    desc: `Cá mập voi (tên khoa học: Rhincodon typus) là loài cá lớn nhất thế giới và cũng là động vật có xương sống không phải thú lớn nhất còn tồn tại.
-Chúng sống chủ yếu ở các vùng biển nhiệt đới ấm và có thể sống tới hơn 70 năm.
-Mặc dù có kích thước khổng lồ, cá mập voi lại rất hiền lành và kiếm ăn bằng cách lọc sinh vật phù du, cá nhỏ qua nước biển.
-Cơ thể chúng có màu xám xanh với các đốm trắng đặc trưng như "dấu vân tay" giúp nhận diện từng cá thể.
-Hiện nay, cá mập voi được xếp vào nhóm loài nguy cấp do bị săn bắt và tác động từ môi trường sống.`,
+    descVi: `Cá mập voi (tên khoa học: Rhincodon typus) là loài cá lớn nhất thế giới và cũng là động vật có xương sống không phải thú lớn nhất còn tồn tại. Chúng sống chủ yếu ở các vùng biển nhiệt đới ấm và có thể sống tới hơn 70 năm. Mặc dù có kích thước khổng lồ, cá mập voi lại rất hiền lành và kiếm ăn bằng cách lọc sinh vật phù du, cá nhỏ qua nước biển.`,
+    descEn: `The whale shark (Rhincodon typus) is the largest known extant fish species and the largest non-mammalian vertebrate. They inhabit warm tropical seas and can live over 70 years. Despite their massive size, whale sharks are gentle filter-feeders that consume plankton and small fish.`,
     reverse: false,
     aos: "fade-right",
   },
   {
     id: "octopus",
-    tag: "Đầu túc",
-    name: "Bạch tuộc khổng lồ",
+    tagVi: "Đầu túc",
+    tagEn: "Cephalopod",
+    nameVi: "Bạch tuộc khổng lồ",
+    nameEn: "Giant Pacific Octopus",
     sciName: "Enteroctopus dofleini",
     image: Images.BachTuotKhongLo,
     stats: [
-      { val: "6m", label: "Sải tay" },
-      { val: "15kg", label: "Cân nặng" },
-      { val: "3–5", label: "Tuổi thọ" },
+      { val: "6m", labelVi: "Sải tay", labelEn: "Arm Span" },
+      { val: "15kg", labelVi: "Cân nặng", labelEn: "Weight" },
+      { val: "3–5", labelVi: "Tuổi thọ", labelEn: "Lifespan" },
     ],
-    desc: `Bạch tuộc khổng lồ (thường là loài Enteroctopus dofleini, hay bạch tuộc khổng lồ Thái Bình Dương) là một trong những loài bạch tuộc lớn nhất thế giới.
-Chúng sống chủ yếu ở vùng biển lạnh của Thái Bình Dương, đặc biệt là ven bờ Bắc Mỹ và Nhật Bản.
-Loài này có thể sải tay dài tới hơn 4–5 mét và nặng hàng chục kilôgam.
-Bạch tuộc khổng lồ nổi tiếng với trí thông minh cao, khả năng giải quyết vấn đề và ngụy trang bằng cách thay đổi màu sắc, kết cấu da.
-Tuổi thọ của chúng khá ngắn, thường chỉ khoảng 3–5 năm, và chúng chết sau khi sinh sản.`,
+    descVi: `Bạch tuộc khổng lồ (loài Enteroctopus dofleini, hay bạch tuộc khổng lồ Thái Bình Dương) là một trong những loài bạch tuộc lớn nhất thế giới. Chúng sống chủ yếu ở vùng biển lạnh của Thái Bình Dương, nổi tiếng với trí thông minh cao, khả năng giải quyết vấn đề và ngụy trang vi diệu.`,
+    descEn: `The giant Pacific octopus (Enteroctopus dofleini) is one of the largest octopus species in the world. Inhabiting the cold waters of the Pacific, they are renowned for high intelligence, problem-solving skills, and remarkable camouflage abilities.`,
     reverse: true,
     aos: "fade-left",
   },
 ];
 
 export default function SpeciesSection() {
+  const { language, t } = useLanguage();
+
   return (
     <section
       id="species"
@@ -54,67 +54,85 @@ export default function SpeciesSection() {
         {/* Header */}
         <div className="text-center mb-16" data-aos="fade-up">
           <h2 className="text-3xl md:text-4xl font-black text-white font-heading">
-            Sinh vật nổi tiếng
+            {t("species.title")}
           </h2>
+          <p className="text-sm md:text-base text-pacific-blue-pale mt-3 max-w-xl mx-auto font-medium">
+            {t("species.subtitle")}
+          </p>
         </div>
 
-        {/* Cards */}
-        <div className="flex flex-col gap-14">
-          {SPECIES.map((sp) => (
-            <article
-              key={sp.id}
-              className={`bg-pacific-figma-card rounded-2xl overflow-hidden shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 grid grid-cols-1 lg:grid-cols-12`}
-              data-aos={sp.aos}
-            >
-              {/* Image */}
+        {/* Species List */}
+        <div className="flex flex-col gap-20">
+          {SPECIES.map((s) => {
+            const tag = language === "en" ? s.tagEn : s.tagVi;
+            const name = language === "en" ? s.nameEn : s.nameVi;
+            const desc = language === "en" ? s.descEn : s.descVi;
+
+            return (
               <div
-                className={`relative h-72 lg:h-auto min-h-[320px] lg:col-span-5 ${
-                  sp.reverse ? "lg:order-last" : ""
-                }`}
+                key={s.id}
+                className="bg-pacific-figma-card rounded-3xl p-8 md:p-12 shadow-2xl border border-white/10 relative overflow-hidden"
+                data-aos={s.aos}
+                data-aos-duration="900"
               >
-                <img
-                  src={sp.image}
-                  alt={sp.name}
-                  className="absolute inset-0 w-full h-full object-contain p-6 hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-
-              {/* Content */}
-              <div className="p-8 lg:p-12 flex flex-col justify-center lg:col-span-7 text-white">
-                <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
-                  {sp.name}
-                </h3>
-                <p className="text-lg text-pacific-blue-light italic mb-4">
-                  {sp.sciName}
-                </p>
-                <div className="w-10 h-1 bg-gradient-to-r from-pacific-blue-bright to-pacific-teal rounded-full mb-6" />
-
-                <p className="text-white/80 leading-relaxed mb-6 text-lg whitespace-pre-line font-light">
-                  {sp.desc}
-                </p>
-
-                {/* Stats */}
-                <div className="flex gap-8 mb-6">
-                  {sp.stats.map(({ val, label }) => (
-                    <div key={label} className="flex flex-col">
-                      <span className="text-xl md:text-2xl font-black text-pacific-blue-light font-heading">
-                        {val}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                  {/* Left Column: Details */}
+                  <div className="lg:col-span-7 flex flex-col justify-between">
+                    <div>
+                      {/* Tag */}
+                      <span className="inline-block px-3 py-1 bg-pacific-blue-bright/20 border border-pacific-blue-bright/40 text-pacific-blue-light text-xs font-semibold rounded-full uppercase tracking-wider mb-4">
+                        {tag}
                       </span>
-                      <span className="text-[10px] text-white/50 uppercase tracking-wider font-semibold">
-                        {label}
-                      </span>
+
+                      {/* Name & SciName */}
+                      <h3 className="text-2xl md:text-3xl font-black text-white font-heading mb-1">
+                        {name}
+                      </h3>
+                      <p className="text-xs text-pacific-blue-pale italic mb-6">
+                        {s.sciName}
+                      </p>
+
+                      {/* Description */}
+                      <p className="text-sm md:text-base text-white/80 leading-relaxed mb-8">
+                        {desc}
+                      </p>
                     </div>
-                  ))}
+
+                    {/* Key Stats Grid */}
+                    <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10">
+                      {s.stats.map((st, idx) => (
+                        <div key={idx} className="text-center">
+                          <p className="text-xl md:text-2xl font-black text-pacific-cyan font-heading">
+                            {st.val}
+                          </p>
+                          <p className="text-xs text-pacific-text-muted mt-1">
+                            {language === "en" ? st.labelEn : st.labelVi}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right Column: Image */}
+                  <div className="lg:col-span-5 flex justify-center items-center">
+                    <div className="relative w-full max-w-sm aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/10 flex justify-center items-center p-6 shadow-inner">
+                      <img
+                        src={s.image}
+                        alt={name}
+                        className="w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </article>
-          ))}
+            );
+          })}
         </div>
 
-        {/* CTA */}
-        <div className="text-center mt-6" data-aos="fade-up">
-          <button className="mx-auto flex items-center justify-center gap-2 text-xs text-white/60 hover:text-white transition-all cursor-pointer underline">
-            Xem tất cả <Icons.ArrowBackLong className="rotate-180" />
+        {/* View All Button */}
+        <div className="text-center mt-14" data-aos="fade-up">
+          <button className="px-8 py-3.5 rounded-full font-bold text-white bg-gradient-to-r from-pacific-blue-bright to-pacific-teal shadow-[0_4px_20px_rgba(14,165,233,0.4)] hover:shadow-[0_6px_25px_rgba(14,165,233,0.6)] active:translate-y-0.5 transition-all cursor-pointer text-sm">
+            {t("species.btnViewAll")}
           </button>
         </div>
       </div>

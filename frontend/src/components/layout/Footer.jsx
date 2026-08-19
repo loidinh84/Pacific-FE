@@ -1,21 +1,24 @@
 import { Mail, Phone, MapPin } from "lucide-react";
 import { FaFacebookF, FaYoutube, FaInstagram } from "react-icons/fa";
+import { useLanguage } from "../../context/LanguageContext";
 import * as Images from "../../assets/Images/index.js";
 
-const navLinks = [
-  { label: "Khám phá", href: "#hero" },
-  { label: "Sinh vật", href: "#species" },
-  { label: "Về chúng tôi", href: "#about" },
-  { label: "Trò chơi", href: "#quiz" },
-];
-
-const policyLinks = [
-  { label: "Bảo mật thông tin", href: "#" },
-  { label: "Chính sách nội dung", href: "#" },
-  { label: "Điều khoản sử dụng", href: "#" },
-];
-
 export default function Footer() {
+  const { t } = useLanguage();
+
+  const navLinks = [
+    { label: t("nav.explore"), href: "#hero" },
+    { label: t("nav.species"), href: "#species" },
+    { label: t("nav.about"), href: "#about" },
+    { label: t("nav.quiz"), href: "#quiz" },
+  ];
+
+  const policyLinks = [
+    { label: t("footer.privacy"), href: "#" },
+    { label: t("footer.policy"), href: "#" },
+    { label: t("footer.terms"), href: "#" },
+  ];
+
   return (
     <footer className="bg-[#121933] pt-16 pb-8 text-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -33,8 +36,7 @@ export default function Footer() {
               </span>
             </a>
             <p className="text-sm text-white/60 leading-relaxed mb-6">
-              Khám phá thế giới đại dương kỳ diệu, nơi lưu giữ vô số bí ẩn và
-              sinh vật tuyệt vời của Thái Bình Dương.
+              {t("footer.aboutDesc")}
             </p>
             <div className="flex flex-col gap-2 mb-6">
               <div className="flex items-center gap-2 text-sm text-white/60 hover:text-pacific-blue-light transition-all">
@@ -80,7 +82,7 @@ export default function Footer() {
           {/* Nav */}
           <div className="lg:col-span-3 lg:col-start-5">
             <p className="text-lg font-bold text-white/90 tracking-wider mb-6 whitespace-nowrap">
-              Hệ sinh thái & dữ liệu
+              {t("footer.colEcosystem")}
             </p>
             <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
@@ -98,7 +100,7 @@ export default function Footer() {
           {/* Policy */}
           <div className="lg:col-span-2 lg:col-start-8">
             <p className="text-lg font-bold text-white/90 tracking-wider mb-6">
-              Thống kê
+              {t("footer.colStats")}
             </p>
             <div className="flex flex-col gap-3">
               {policyLinks.map((link) => (
@@ -116,19 +118,19 @@ export default function Footer() {
           {/* Newsletter */}
           <div className="lg:col-span-3">
             <p className="text-lg font-bold text-white/90 tracking-wider mb-6">
-              Đóng góp ý kiến
+              {t("footer.colFeedback")}
             </p>
             <p className="text-sm text-white/60 leading-relaxed mb-4">
-              Gửi cho chúng tôi ý kiến của bạn để cải thiện nội dung và dịch vụ.
+              {t("footer.feedbackPlaceholder")}
             </p>
             <div className="flex flex-col gap-3">
               <textarea
-                placeholder="Hỏi nói theo cách bạn nghĩ"
+                placeholder={t("footer.feedbackPlaceholder")}
                 className="w-full h-25 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder-white/35 focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 transition-all resize-none"
                 rows={3}
               />
               <button className="w-full flex items-center justify-center py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white shadow-md hover:shadow-lg transition-all cursor-pointer active:translate-y-0.5">
-                Gửi ý kiến
+                {t("footer.btnSubmit")}
               </button>
             </div>
           </div>
@@ -137,7 +139,7 @@ export default function Footer() {
         {/* Bottom bar with centered copyright */}
         <div className="border-t border-white/5 pt-8 text-center">
           <p className="text-xs text-white/50">
-            © {new Date().getFullYear()} Pacific. All rights reserved.
+            {t("footer.copyright")}
           </p>
         </div>
       </div>

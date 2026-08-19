@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Mail, Lock, User, Eye, EyeOff, Compass, Waves } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { useLanguage } from "../context/LanguageContext";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import * as Images from "../assets/Images";
@@ -17,26 +18,33 @@ const BUBBLES = [
 
 const RANDOM_CREATURES = [
   {
-    name: "Cá mập voi",
+    nameVi: "Cá mập voi",
+    nameEn: "Whale Shark",
     sciName: "Rhincodon typus",
     image: Images.CaMapVoi,
-    tag: "Khổng lồ hiền lành",
+    tagVi: "Khổng lồ hiền lành",
+    tagEn: "Gentle Giant",
   },
   {
-    name: "Bạch tuộc khổng lồ",
+    nameVi: "Bạch tuộc khổng lồ",
+    nameEn: "Giant Octopus",
     sciName: "Enteroctopus dofleini",
     image: Images.BachTuotKhongLo,
-    tag: "Thông minh kiệt xuất",
+    tagVi: "Thông minh kiệt xuất",
+    tagEn: "Highly Intelligent",
   },
   {
-    name: "Cá heo Thái Bình Dương",
+    nameVi: "Cá heo Thái Bình Dương",
+    nameEn: "Pacific Dolphin",
     sciName: "Delphinidae",
     image: Images.FishHidden,
-    tag: "Thân thiện & Nhanh nhẹn",
+    tagVi: "Thân thiện & Nhanh nhẹn",
+    tagEn: "Friendly & Agile",
   },
 ];
 
 export default function RegisterPage() {
+  const { language, t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fullName, setFullName] = useState("");
@@ -60,6 +68,8 @@ export default function RegisterPage() {
   }, []);
 
   const currentCreature = RANDOM_CREATURES[creatureIndex];
+  const creatureName = language === "en" ? currentCreature.nameEn : currentCreature.nameVi;
+  const creatureTag = language === "en" ? currentCreature.tagEn : currentCreature.tagVi;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -98,9 +108,7 @@ export default function RegisterPage() {
 
       <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-28 relative z-10">
         <div 
-          className="w-full max-w-4xl bg-pacific-figma-card/50 backdrop-blur-2xl border border-white/15 rounded-3xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-12"
-          data-aos="zoom-in"
-          data-aos-duration="800"
+          className="w-full max-w-4xl bg-pacific-figma-card/50 backdrop-blur-2xl border border-white/15 rounded-3xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-12 animate-in fade-in zoom-in-95 duration-300"
         >
           {/* Left Column: Ocean Branding / Art Visual Panel */}
           <div className="md:col-span-5 bg-gradient-to-br from-pacific-navy-mid/80 via-pacific-navy/90 to-pacific-darkest/90 p-8 md:p-10 flex flex-col justify-between relative overflow-hidden border-b md:border-b-0 md:border-r border-white/10">
@@ -108,14 +116,14 @@ export default function RegisterPage() {
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-pacific-teal/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pacific-blue-bright/15 border border-pacific-blue-bright/30 text-pacific-blue-light text-sm font-semibold mb-6">
-                Gia nhập Pacific
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pacific-blue-bright/15 border border-pacific-blue-bright/30 text-pacific-blue-light text-xs font-semibold uppercase tracking-wider mb-6">
+                &nbsp; {t("auth.registerBadge")}
               </div>
               <h2 className="text-2xl lg:text-3xl font-black text-white font-heading leading-tight mb-3">
-                Bắt đầu hành trình đại dương ngay hôm nay
+                {t("auth.registerBrandTitle")}
               </h2>
               <p className="text-xs lg:text-sm text-pacific-blue-pale leading-relaxed">
-                Tạo tài khoản miễn phí để lưu giữ lịch sử trắc nghiệm và theo dõi tiến trình khám phá sinh vật biển.
+                {t("auth.registerBrandDesc")}
               </p>
             </div>
 
@@ -125,8 +133,8 @@ export default function RegisterPage() {
                   <Compass size={18} />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white">Trải nghiệm cá nhân hóa</p>
-                  <p className="text-[11px] text-pacific-text-muted">Lưu lại thông tin bài làm trắc nghiệm</p>
+                  <p className="text-xs font-bold text-white">{t("auth.featurePersonalized")}</p>
+                  <p className="text-[11px] text-pacific-text-muted">{t("auth.featurePersonalizedSub")}</p>
                 </div>
               </div>
 
@@ -135,8 +143,8 @@ export default function RegisterPage() {
                   <Waves size={18} />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white">Kết nối cộng đồng</p>
-                  <p className="text-[11px] text-pacific-text-muted">Đóng góp và thảo luận kiến thức</p>
+                  <p className="text-xs font-bold text-white">{t("auth.featureCommunity")}</p>
+                  <p className="text-[11px] text-pacific-text-muted">{t("auth.featureCommunitySub")}</p>
                 </div>
               </div>
             </div>
@@ -147,7 +155,7 @@ export default function RegisterPage() {
                 <div className="w-10 h-10 rounded-xl bg-pacific-blue-bright/20 border border-pacific-blue-bright/30 overflow-hidden flex items-center justify-center flex-shrink-0 p-1">
                   <img
                     src={currentCreature.image}
-                    alt={currentCreature.name}
+                    alt={creatureName}
                     className={`w-full h-full object-contain transition-all duration-300 ${
                       isFading ? "opacity-0 scale-90" : "opacity-100 scale-100"
                     }`}
@@ -155,9 +163,9 @@ export default function RegisterPage() {
                 </div>
                 <div className={`transition-all duration-300 min-w-0 ${isFading ? "opacity-0" : "opacity-100"}`}>
                   <div className="flex items-center gap-2">
-                    <p className="text-xs font-bold text-white truncate">{currentCreature.name}</p>
+                    <p className="text-xs font-bold text-white truncate">{creatureName}</p>
                     <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-pacific-blue-bright/20 text-pacific-blue-light font-semibold border border-pacific-blue-bright/30 whitespace-nowrap">
-                      {currentCreature.tag}
+                      {creatureTag}
                     </span>
                   </div>
                   <p className="text-[11px] text-pacific-blue-pale italic truncate font-light">{currentCreature.sciName}</p>
@@ -168,12 +176,13 @@ export default function RegisterPage() {
 
           {/* Right Column: Glassmorphism Register Form */}
           <div className="md:col-span-7 p-8 md:p-10 flex flex-col justify-center relative">
+            {/* Form Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-black text-white font-heading tracking-tight mb-2">
-                Đăng ký
+                {t("auth.registerTitle")}
               </h1>
               <p className="text-xs md:text-sm text-pacific-blue-pale font-medium">
-                Hãy tạo tài khoản cho bản thân nào!
+                {t("auth.registerSubtitle")}
               </p>
             </div>
 
@@ -195,7 +204,7 @@ export default function RegisterPage() {
                     htmlFor="register-fullname"
                     className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
                   >
-                    Họ và tên
+                    {t("auth.fullName")}
                   </label>
                 </div>
               </div>
@@ -217,7 +226,7 @@ export default function RegisterPage() {
                     htmlFor="register-email"
                     className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
                   >
-                    Email
+                    {t("auth.email")}
                   </label>
                 </div>
               </div>
@@ -239,7 +248,7 @@ export default function RegisterPage() {
                     htmlFor="register-password"
                     className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
                   >
-                    Mật khẩu
+                    {t("auth.password")}
                   </label>
                   <button
                     type="button"
@@ -268,7 +277,7 @@ export default function RegisterPage() {
                     htmlFor="register-confirmpassword"
                     className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
                   >
-                    Xác nhận mật khẩu
+                    {t("auth.confirmPassword")}
                   </label>
                   <button
                     type="button"
@@ -285,14 +294,14 @@ export default function RegisterPage() {
                 type="submit"
                 className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan hover:from-sky-600 hover:via-indigo-400 hover:to-cyan-600 hover:brightness-110 active:translate-y-0.5 transition-all duration-300 cursor-pointer text-base mt-1"
               >
-                Đăng ký
+                {t("auth.btnRegister")}
               </button>
 
               {/* Divider */}
               <div className="relative flex items-center justify-center my-0.5">
                 <div className="w-full border-t border-white/10" />
                 <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-white/40 uppercase tracking-wider">
-                  hoặc
+                  {t("auth.orWith")}
                 </span>
               </div>
 
@@ -316,12 +325,12 @@ export default function RegisterPage() {
             </form>
 
             <div className="text-center mt-6 pt-4 border-t border-white/10 text-xs text-white/70">
-              Bạn đã có tài khoản?{" "}
+              {t("auth.hasAccount")}{" "}
               <Link
                 to="/login"
                 className="text-pacific-blue-light font-bold hover:underline transition-colors ml-1"
               >
-                Đăng nhập ngay
+                {t("auth.loginNow")}
               </Link>
             </div>
           </div>

@@ -1,0 +1,98 @@
+const vi = {
+  // Navbar
+  nav: {
+    explore: "Khám phá",
+    species: "Sinh vật biển",
+    about: "Về chúng tôi",
+    quiz: "Trò chơi",
+    register: "Đăng ký",
+    login: "Đăng nhập",
+    language: "Ngôn ngữ",
+  },
+  // Hero Section
+  hero: {
+    badge: "Hệ sinh thái đại dương",
+    titleLine1: "Khám Phá Thế Giới",
+    titleLine2: "Thái Bình Dương",
+    subtitle: "Hành trình trải nghiệm vẻ đẹp bí ẩn và hệ sinh thái đa dạng của đại dương lớn nhất thế giới.",
+    btnExplore: "Khám phá ngay",
+    btnQuiz: "Thử thách trắc nghiệm",
+  },
+  // Search Section
+  search: {
+    title: "Bạn muốn tìm hiểu về sinh vật nào?",
+    subtitle: "Tìm kiếm nhanh các thông tin về sinh vật Thái Bình Dương",
+    placeholder: "Nhập tên sinh vật (Cá mập, Bạch tuộc, San hô...)",
+    btnSearch: "Tìm kiếm",
+  },
+  // Species Section
+  species: {
+    title: "Hệ Sinh Vật Nổi Bật",
+    subtitle: "Những đại diện tiêu biểu của đại dương Thái Bình Dương",
+    btnViewAll: "Xem tất cả sinh vật",
+  },
+  // About Section
+  about: {
+    badge: "Về Thái Bình Dương",
+    title: "Đại Dương Rộng Lớn Nhất Trái Đất",
+    desc1: "Thái Bình Dương chiếm hơn 30% diện tích bề mặt Trái Đất, chứa đựng hàng vạn loài sinh vật kỳ diệu từ các rạn san hô nông đến vực sâu Mariana bí ẩn.",
+    desc2: "Sứ mệnh của Pacific là kết nối cộng đồng yêu thiên nhiên, lan tỏa kiến thức bảo tồn biển và xây dựng ý thức bảo vệ môi trường đại dương.",
+    stat1Title: "Diệc tích",
+    stat1Value: "165.2 triệu km²",
+    stat2Title: "Sinh vật",
+    stat2Value: "50,000+ Loài",
+    stat3Title: "Độ sâu tối đa",
+    stat3Value: "11,034 m",
+  },
+  // Footer
+  footer: {
+    aboutDesc: "Khám phá thế giới đại dương kỳ diệu, nơi lưu giữ vô số bí ẩn và sinh vật tuyệt vời của Thái Bình Dương.",
+    colEcosystem: "Hệ sinh thái & dữ liệu",
+    colStats: "Thống kê",
+    colFeedback: "Đóng góp ý kiến",
+    feedbackPlaceholder: "Hỏi nói theo cách bạn nghĩ...",
+    btnSubmit: "Gửi ý kiến",
+    privacy: "Bảo mật thông tin",
+    policy: "Chính sách nội dung",
+    terms: "Điều khoản sử dụng",
+    copyright: "© 2026 Pacific. Tất cả quyền được bảo lưu.",
+  },
+  // Auth Pages
+  auth: {
+    loginTitle: "Đăng nhập",
+    loginSubtitle: "Chào mừng bạn trở lại! Vui lòng nhập thông tin.",
+    registerTitle: "Đăng ký",
+    registerSubtitle: "Hãy tạo tài khoản cho bản thân nào!",
+    fullName: "Họ và tên",
+    email: "Email",
+    password: "Mật khẩu",
+    confirmPassword: "Xác nhận mật khẩu",
+    rememberMe: "Ghi nhớ đăng nhập",
+    forgotPassword: "Quên mật khẩu?",
+    btnLogin: "Đăng nhập",
+    btnRegister: "Đăng ký",
+    orWith: "hoặc",
+    orLoginWith: "hoặc đăng nhập bằng",
+    noAccount: "Chưa có tài khoản?",
+    hasAccount: "Bạn đã có tài khoản?",
+    registerNow: "Đăng ký ngay",
+    loginNow: "Đăng nhập ngay",
+    brandTitle: "Khám phá thế giới đại dương kỳ diệu",
+    brandDesc: "Trải nghiệm trọn vẹn hành trình tìm hiểu hàng trăm sinh vật biển phong phú.",
+    registerBadge: "Gia nhập Pacific",
+    registerBrandTitle: "Bắt đầu hành trình đại dương ngay hôm nay",
+    registerBrandDesc: "Tạo tài khoản miễn phí để lưu giữ lịch sử trắc nghiệm và theo dõi tiến trình khám phá sinh vật biển.",
+    feature1: "Tra cứu đa dạng",
+    feature1Sub: "Dữ liệu hàng trăm loài sinh vật",
+    feature2: "Trắc nghiệm sinh động",
+    feature2Sub: "Khám phá tính cách đại dương",
+    feature3: "Bảo mật thông tin",
+    feature3Sub: "An toàn tuyệt đối cho tài khoản",
+    featurePersonalized: "Trải nghiệm cá nhân hóa",
+    featurePersonalizedSub: "Lưu lại thông tin bài làm trắc nghiệm",
+    featureCommunity: "Kết nối cộng đồng",
+    featureCommunitySub: "Đóng góp và thảo luận kiến thức",
+  },
+};
+
+export default vi;

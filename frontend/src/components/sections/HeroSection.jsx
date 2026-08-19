@@ -1,4 +1,5 @@
 import { Search, Play } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 import * as Images from "../../assets/Images";
 import * as Icons from "../../assets/Icons";
 
@@ -20,6 +21,8 @@ const BUBBLES = [
 ];
 
 export default function HeroSection() {
+  const { t } = useLanguage();
+
   return (
     <section
       id="hero"
@@ -47,16 +50,14 @@ export default function HeroSection() {
           {/* Left: Content */}
           <div className="animate-fade-in-left text-center md:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight mb-6">
-              Trái Đất có đại dương mang tên{" "}
+              {t("hero.titleLine1")}{" "}
               <span className="bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan bg-clip-text text-transparent">
-                Thái Bình Dương
-              </span>{" "}
-              rộng lớn
+                {t("hero.titleLine2")}
+              </span>
             </h1>
 
             <p className="text-base md:text-lg text-pacific-blue-pale leading-relaxed mb-10 max-w-xl mx-auto md:mx-0">
-              Nơi chứa đựng vô số bí ẩn và sinh vật kỳ thú. Hãy khám phá thế
-              giới đại dương và hiểu rõ hơn về hành tinh xanh của chúng ta.
+              {t("hero.subtitle")}
             </p>
 
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { useLanguage } from "../context/LanguageContext";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import * as Images from "../assets/Images";
@@ -28,26 +29,33 @@ const BUBBLES = [
 /* Random Sea Creatures List for Bottom Accent Carousel */
 const RANDOM_CREATURES = [
   {
-    name: "Cá mập voi",
+    nameVi: "Cá mập voi",
+    nameEn: "Whale Shark",
     sciName: "Rhincodon typus",
     image: Images.CaMapVoi,
-    tag: "Khổng lồ hiền lành",
+    tagVi: "Khổng lồ hiền lành",
+    tagEn: "Gentle Giant",
   },
   {
-    name: "Bạch tuộc khổng lồ",
+    nameVi: "Bạch tuộc khổng lồ",
+    nameEn: "Giant Octopus",
     sciName: "Enteroctopus dofleini",
     image: Images.BachTuotKhongLo,
-    tag: "Thông minh kiệt xuất",
+    tagVi: "Thông minh kiệt xuất",
+    tagEn: "Highly Intelligent",
   },
   {
-    name: "Cá heo Thái Bình Dương",
+    nameVi: "Cá heo Thái Bình Dương",
+    nameEn: "Pacific Dolphin",
     sciName: "Delphinidae",
     image: Images.FishHidden,
-    tag: "Thân thiện & Nhanh nhẹn",
+    tagVi: "Thân thiện & Nhanh nhẹn",
+    tagEn: "Friendly & Agile",
   },
 ];
 
 export default function LoginPage() {
+  const { language, t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,6 +78,8 @@ export default function LoginPage() {
   }, []);
 
   const currentCreature = RANDOM_CREATURES[creatureIndex];
+  const creatureName = language === "en" ? currentCreature.nameEn : currentCreature.nameVi;
+  const creatureTag = language === "en" ? currentCreature.tagEn : currentCreature.tagVi;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -109,9 +119,7 @@ export default function LoginPage() {
       {/* Main Container - Split Layout Glassmorphism Canvas */}
       <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-28 relative z-10">
         <div
-          className="w-full max-w-4xl bg-pacific-figma-card/50 backdrop-blur-2xl border border-white/15 rounded-3xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-12"
-          data-aos="zoom-in"
-          data-aos-duration="800"
+          className="w-full max-w-4xl bg-pacific-figma-card/50 backdrop-blur-2xl border border-white/15 rounded-3xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-12 animate-in fade-in zoom-in-95 duration-300"
         >
           {/* Left Column: Ocean Branding / Art Visual Panel */}
           <div className="md:col-span-5 bg-gradient-to-br from-pacific-navy-mid/80 via-pacific-navy/90 to-pacific-darkest/90 p-8 md:p-10 flex flex-col justify-between relative overflow-hidden border-b md:border-b-0 md:border-r border-white/10">
@@ -122,14 +130,13 @@ export default function LoginPage() {
             {/* Top Branding */}
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pacific-blue-bright/15 border border-pacific-blue-bright/30 text-pacific-blue-light text-xs font-semibold uppercase tracking-wider mb-6">
-                &nbsp; Thái Bình Dương
+                &nbsp; Pacific
               </div>
               <h2 className="text-2xl lg:text-3xl font-black text-white font-heading leading-tight mb-3">
-                Khám phá thế giới đại dương kỳ diệu
+                {t("auth.brandTitle")}
               </h2>
               <p className="text-xs lg:text-sm text-pacific-blue-pale leading-relaxed">
-                Đăng nhập để trải nghiệm trọn vẹn hành trình tìm hiểu hàng trăm
-                sinh vật biển phong phú.
+                {t("auth.brandDesc")}
               </p>
             </div>
 
@@ -141,10 +148,10 @@ export default function LoginPage() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-white">
-                    Tra cứu đa dạng
+                    {t("auth.feature1")}
                   </p>
                   <p className="text-[11px] text-pacific-text-muted">
-                    Dữ liệu hàng trăm loài sinh vật
+                    {t("auth.feature1Sub")}
                   </p>
                 </div>
               </div>
@@ -155,10 +162,10 @@ export default function LoginPage() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-white">
-                    Trắc nghiệm sinh động
+                    {t("auth.feature2")}
                   </p>
                   <p className="text-[11px] text-pacific-text-muted">
-                    Khám phá tính cách đại dương
+                    {t("auth.feature2Sub")}
                   </p>
                 </div>
               </div>
@@ -169,10 +176,10 @@ export default function LoginPage() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-white">
-                    Bảo mật thông tin
+                    {t("auth.feature3")}
                   </p>
                   <p className="text-[11px] text-pacific-text-muted">
-                    An toàn tuyệt đối cho tài khoản
+                    {t("auth.feature3Sub")}
                   </p>
                 </div>
               </div>
@@ -184,7 +191,7 @@ export default function LoginPage() {
                 <div className="w-10 h-10 rounded-xl bg-pacific-blue-bright/20 border border-pacific-blue-bright/30 overflow-hidden flex items-center justify-center flex-shrink-0 p-1">
                   <img
                     src={currentCreature.image}
-                    alt={currentCreature.name}
+                    alt={creatureName}
                     className={`w-full h-full object-contain transition-all duration-300 ${
                       isFading ? "opacity-0 scale-90" : "opacity-100 scale-100"
                     }`}
@@ -195,10 +202,10 @@ export default function LoginPage() {
                 >
                   <div className="flex items-center gap-2">
                     <p className="text-xs font-bold text-white truncate">
-                      {currentCreature.name}
+                      {creatureName}
                     </p>
                     <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-pacific-blue-bright/20 text-pacific-blue-light font-semibold border border-pacific-blue-bright/30 whitespace-nowrap">
-                      {currentCreature.tag}
+                      {creatureTag}
                     </span>
                   </div>
                   <p className="text-[11px] text-pacific-blue-pale italic truncate font-light">
@@ -214,10 +221,10 @@ export default function LoginPage() {
             {/* Form Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-black text-white font-heading tracking-tight mb-2">
-                Đăng nhập
+                {t("auth.loginTitle")}
               </h1>
               <p className="text-xs md:text-sm text-pacific-blue-pale font-medium">
-                Chào mừng bạn trở lại! Vui lòng nhập thông tin.
+                {t("auth.loginSubtitle")}
               </p>
             </div>
 
@@ -243,7 +250,7 @@ export default function LoginPage() {
                     htmlFor="login-email"
                     className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
                   >
-                    Email
+                    {t("auth.email")}
                   </label>
                 </div>
               </div>
@@ -268,7 +275,7 @@ export default function LoginPage() {
                     htmlFor="login-password"
                     className="absolute left-11 top-1/2 -translate-y-1/2 text-sm text-white/40 pointer-events-none transition-all duration-200 peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:left-4 peer-focus:text-[11px] peer-focus:font-semibold peer-focus:text-pacific-blue-pale peer-focus:bg-[#202c59] peer-focus:rounded-full peer-focus:border peer-focus:border-white/15 peer-focus:px-2.5 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:left-4 peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-pacific-blue-pale peer-[:not(:placeholder-shown)]:bg-[#202c59] peer-[:not(:placeholder-shown)]:rounded-full peer-[:not(:placeholder-shown)]:border peer-[:not(:placeholder-shown)]:border-white/15 peer-[:not(:placeholder-shown)]:px-2.5"
                   >
-                    Mật khẩu
+                    {t("auth.password")}
                   </label>
                   <button
                     type="button"
@@ -289,13 +296,13 @@ export default function LoginPage() {
                     onChange={(e) => setRememberMe(e.target.checked)}
                     className="w-4 h-4 rounded border-white/20 bg-white/10 text-pacific-blue-bright focus:ring-0 focus:ring-offset-0 cursor-pointer accent-pacific-blue-bright"
                   />
-                  <span>Ghi nhớ đăng nhập</span>
+                  <span>{t("auth.rememberMe")}</span>
                 </label>
                 <a
                   href="#"
                   className="text-pacific-blue-light hover:underline font-medium transition-colors"
                 >
-                  Quên mật khẩu?
+                  {t("auth.forgotPassword")}
                 </a>
               </div>
 
@@ -304,14 +311,14 @@ export default function LoginPage() {
                 type="submit"
                 className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan hover:from-sky-600 hover:via-indigo-400 hover:to-cyan-600 hover:brightness-110 active:translate-y-0.5 transition-all duration-300 cursor-pointer text-base mt-1"
               >
-                Đăng nhập
+                {t("auth.btnLogin")}
               </button>
 
               {/* Divider */}
               <div className="relative flex items-center justify-center my-0.5">
                 <div className="w-full border-t border-white/10" />
                 <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-white/40 uppercase tracking-wider">
-                  hoặc đăng nhập bằng
+                  {t("auth.orLoginWith")}
                 </span>
               </div>
 
@@ -336,12 +343,12 @@ export default function LoginPage() {
 
             {/* Footer Link to Register */}
             <div className="text-center mt-6 pt-4 border-t border-white/10 text-xs text-white/70">
-              Chưa có tài khoản?{" "}
+              {t("auth.noAccount")}{" "}
               <Link
                 to="/register"
                 className="text-pacific-blue-light font-bold hover:underline transition-colors ml-1"
               >
-                Đăng ký ngay
+                {t("auth.registerNow")}
               </Link>
             </div>
           </div>
