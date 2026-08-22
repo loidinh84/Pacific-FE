@@ -1,21 +1,24 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown, Check } from "lucide-react";
-import { useLanguage } from "../../context/LanguageContext";
+import { ChevronDown, Check } from "lucide-react";
+import { useLanguage } from "../../hooks/useLanguage";
+import { useScroll } from "../../hooks/useScroll";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import * as Images from "../../assets/Images";
 
 export default function Navbar() {
   const { language, changeLanguage, t } = useLanguage();
-  const [isScrolled, setIsScrolled] = useState(false);
+  const isScrolled = useScroll(60);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const langDropdownRef = useRef(null);
+
+  useClickOutside(langDropdownRef, () => setIsLangOpen(false));
 
   const navLinks = [
     { label: t("nav.explore"), href: "/#hero", hasDropdown: true },
     { label: t("nav.species"), href: "/#species", hasDropdown: true },
     { label: t("nav.about"), href: "/#about", hasDropdown: true },
-    { label: t("nav.quiz"), href: "/#quiz", hasDropdown: true },
   ];
 
   const languages = [
@@ -23,24 +26,8 @@ export default function Navbar() {
     { code: "en", label: "English", flag: "EN" },
   ];
 
-  const currentLangObj = languages.find((l) => l.code === language) || languages[0];
-
-  useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Close language dropdown on outside click
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (langDropdownRef.current && !langDropdownRef.current.contains(event.target)) {
-        setIsLangOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const currentLangObj =
+    languages.find((l) => l.code === language) || languages[0];
 
   return (
     <nav
@@ -58,7 +45,7 @@ export default function Navbar() {
             alt="Pacific Logo"
             className="w-8 h-8 object-contain"
           />
-          <span className="font-heading text-2xl font-black text-white tracking-tight">
+          <span className="font-heading text-2xl font-bold text-white tracking-tight">
             Pacific
           </span>
         </Link>
@@ -91,7 +78,9 @@ export default function Navbar() {
               <ChevronDown
                 size={13}
                 className={`transition-transform duration-200 ${
-                  isLangOpen ? "rotate-180 text-pacific-blue-bright" : "text-white/60"
+                  isLangOpen
+                    ? "rotate-180 text-pacific-blue-bright"
+                    : "text-white/60"
                 }`}
               />
             </button>
@@ -118,10 +107,14 @@ export default function Navbar() {
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="text-base leading-none">{lang.flag}</span>
+                        <span className="text-base leading-none">
+                          {lang.flag}
+                        </span>
                         <span>{lang.label}</span>
                       </div>
-                      {isSelected && <Check size={14} className="text-pacific-cyan" />}
+                      {isSelected && (
+                        <Check size={14} className="text-pacific-cyan" />
+                      )}
                     </button>
                   );
                 })}
@@ -140,25 +133,16 @@ export default function Navbar() {
           {/* Login Button */}
           <Link
             to="/login"
-            className="px-5 py-2.5 rounded-full text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white shadow-[0_4px_20px_rgba(14,165,233,0.4)] hover:shadow-[0_6px_25px_rgba(14,165,233,0.6)] active:translate-y-0.5 transition-all cursor-pointer inline-block"
+            className="px-5 py-2.5 rounded-full text-sm font-semibold bg-blue-500 text-white hover:bg-blue-400 transition-all cursor-pointer inline-block active:translate-y-0.5"
           >
             {t("nav.login")}
           </Link>
         </div>
-
-        {/* Mobile hamburger */}
-        <button
-          className="lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-all"
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {isMobileOpen && (
-        <div className="lg:hidden flex flex-col px-6 pb-6 pt-2 gap-2 border-t border-white/10 bg-pacific-dark/95 backdrop-blur-xl">
+        <div className="lg:hidden mt-3 px-6 py-4 bg-pacific-navy/95 backdrop-blur-xl border-b border-white/10 flex flex-col gap-2">
           {navLinks.map((link, index) => (
             <a
               key={index}
@@ -172,7 +156,9 @@ export default function Navbar() {
 
           {/* Mobile Language Switcher */}
           <div className="flex items-center justify-between px-4 py-2.5 mt-2 bg-white/5 rounded-xl border border-white/10">
-            <span className="text-xs font-semibold text-white/70">{t("nav.language")}</span>
+            <span className="text-xs font-semibold text-white/70">
+              {t("nav.language")}
+            </span>
             <div className="flex gap-1.5">
               {languages.map((lang) => (
                 <button

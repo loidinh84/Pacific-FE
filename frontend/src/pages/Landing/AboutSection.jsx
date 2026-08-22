@@ -1,4 +1,4 @@
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "../../hooks/useLanguage";
 
 export default function AboutSection() {
   const { t } = useLanguage();
@@ -38,22 +38,6 @@ export default function AboutSection() {
           <br />
           {t("about.desc2")}
         </p>
-
-        {/* Stats Summary Card */}
-        <div className="grid grid-cols-3 gap-6 mt-14 p-6 rounded-2xl bg-pacific-figma-card border border-white/10" data-aos="fade-up" data-aos-delay="500">
-          <div>
-            <p className="text-xl md:text-3xl font-black text-pacific-cyan font-heading">{t("about.stat1Value")}</p>
-            <p className="text-xs md:text-sm text-pacific-blue-pale font-medium mt-1">{t("about.stat1Title")}</p>
-          </div>
-          <div>
-            <p className="text-xl md:text-3xl font-black text-pacific-cyan font-heading">{t("about.stat2Value")}</p>
-            <p className="text-xs md:text-sm text-pacific-blue-pale font-medium mt-1">{t("about.stat2Title")}</p>
-          </div>
-          <div>
-            <p className="text-xl md:text-3xl font-black text-pacific-cyan font-heading">{t("about.stat3Value")}</p>
-            <p className="text-xs md:text-sm text-pacific-blue-pale font-medium mt-1">{t("about.stat3Title")}</p>
-          </div>
-        </div>
       </div>
     </section>
   );

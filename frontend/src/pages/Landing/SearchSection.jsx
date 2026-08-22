@@ -1,22 +1,8 @@
 import { useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "../../hooks/useLanguage";
+import { CATEGORIES_DATA, HABITATS_DATA } from "../../mocks/speciesMock";
 import * as Images from "../../assets/Images";
-
-const CATEGORIES = [
-  { value: "", labelVi: "Nhóm sinh vật", labelEn: "Species Group" },
-  { value: "fish", labelVi: "Cá biển", labelEn: "Marine Fish" },
-  { value: "mollusk", labelVi: "Thân mềm", labelEn: "Mollusks" },
-  { value: "crustacean", labelVi: "Giáp xác", labelEn: "Crustaceans" },
-];
-
-const HABITATS = [
-  { value: "", labelVi: "Môi trường sống", labelEn: "Habitat Environment" },
-  { value: "deep", labelVi: "Đại dương sâu thẳm", labelEn: "Deep Ocean Abyss" },
-  { value: "shallow", labelVi: "Vùng nước nông ven biển", labelEn: "Coastal Shallow Waters" },
-  { value: "reef", labelVi: "Rạn san hô", labelEn: "Coral Reefs" },
-  { value: "polar", labelVi: "Vùng cực lạnh giá", labelEn: "Polar Ice Waters" },
-];
 
 export default function SearchSection() {
   const { language, t } = useLanguage();
@@ -32,7 +18,7 @@ export default function SearchSection() {
   return (
     <section
       id="search-section"
-      className="bg-pacific-figma-dark py-12 relative overflow-hidden"
+      className="bg-pacific-figma-dark pt-4 pb-16 relative overflow-hidden"
     >
       <div className="max-w-5xl mx-auto px-6">
         <div
@@ -68,7 +54,7 @@ export default function SearchSection() {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
-                    {CATEGORIES.map((c) => (
+                    {CATEGORIES_DATA.map((c) => (
                       <option key={c.value} value={c.value}>
                         {language === "en" ? c.labelEn : c.labelVi}
                       </option>
@@ -87,7 +73,7 @@ export default function SearchSection() {
                     value={habitat}
                     onChange={(e) => setHabitat(e.target.value)}
                   >
-                    {HABITATS.map((h) => (
+                    {HABITATS_DATA.map((h) => (
                       <option key={h.value} value={h.value}>
                         {language === "en" ? h.labelEn : h.labelVi}
                       </option>
@@ -110,14 +96,14 @@ export default function SearchSection() {
               </form>
             </div>
 
-            {/* Visual (Dolphin Icon inside circular gradient from Figma) */}
+            {/* Visual (5 Oceans Map Canvas) */}
             <div className="flex justify-center items-center">
               <div className="relative w-64 h-60">
                 <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.06)_0%,transparent_70%)] animate-pulse-glow" />
                 <img
-                  src={Images.FishHidden}
-                  alt="Dolphin Search Icon"
-                  className="w-full h-full object-contain animate-float-slow filter drop-shadow-[0_10px_30px_rgba(255,255,255,0.08)]"
+                  src={Images.BanDo5DaiDuong}
+                  alt="Pacific Ocean Map"
+                  className="w-full h-full object-contain animate-float-slow filter drop-shadow-[0_10px_30px_rgba(255,255,255,0.15)]"
                 />
               </div>
             </div>

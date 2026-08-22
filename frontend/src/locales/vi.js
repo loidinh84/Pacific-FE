@@ -11,12 +11,17 @@ const vi = {
   },
   // Hero Section
   hero: {
-    badge: "Hệ sinh thái đại dương",
-    titleLine1: "Khám Phá Thế Giới",
+    titleLine1: "Khám Phá Đại Dương",
     titleLine2: "Thái Bình Dương",
-    subtitle: "Hành trình trải nghiệm vẻ đẹp bí ẩn và hệ sinh thái đa dạng của đại dương lớn nhất thế giới.",
+    description: "Hành trình trải nghiệm vẻ đẹp bí ẩn và hệ sinh thái đa dạng của đại dương lớn nhất thế giới.",
     btnExplore: "Khám phá ngay",
-    btnQuiz: "Thử thách trắc nghiệm",
+    btnSearch: "Tìm kiếm sinh vật",
+    stat1Title: "Diện tích",
+    stat1Value: "165.2M km²",
+    stat2Title: "Sinh vật",
+    stat2Value: "50,000+ Loài",
+    stat3Title: "Độ sâu tối đa",
+    stat3Value: "11,034 m",
   },
   // Search Section
   search: {
@@ -46,15 +51,16 @@ const vi = {
   },
   // Footer
   footer: {
-    aboutDesc: "Khám phá thế giới đại dương kỳ diệu, nơi lưu giữ vô số bí ẩn và sinh vật tuyệt vời của Thái Bình Dương.",
-    colEcosystem: "Hệ sinh thái & dữ liệu",
-    colStats: "Thống kê",
-    colFeedback: "Đóng góp ý kiến",
+    brandDesc: "Khám phá thế giới đại dương kỳ diệu, nơi lưu giữ vô số bí ẩn và sinh vật tuyệt vời của Thái Bình Dương.",
+    exploreTitle: "Khám phá",
+    legalTitle: "Chính sách & Điều khoản",
+    privacyPolicy: "Bảo mật thông tin",
+    termsOfUse: "Điều khoản sử dụng",
+    contentPolicy: "Chính sách nội dung",
+    contactTitle: "Đóng góp ý kiến",
+    contactDesc: "Hãy chia sẻ cảm nghĩ của bạn!",
     feedbackPlaceholder: "Hỏi nói theo cách bạn nghĩ...",
-    btnSubmit: "Gửi ý kiến",
-    privacy: "Bảo mật thông tin",
-    policy: "Chính sách nội dung",
-    terms: "Điều khoản sử dụng",
+    btnSendFeedback: "Gửi ý kiến",
     copyright: "© 2026 Pacific. Tất cả quyền được bảo lưu.",
   },
   // Auth Pages

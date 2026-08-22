@@ -10,12 +10,17 @@ const en = {
     "language": "Language"
   },
   "hero": {
-    "badge": "Ocean ecosystem",
     "titleLine1": "Explore the World",
     "titleLine2": "Pacific",
-    "subtitle": "Journey to experience the mysterious beauty and diverse ecosystem of the world's largest ocean.",
+    "description": "Journey to experience the mysterious beauty and diverse ecosystem of the world's largest ocean.",
     "btnExplore": "Explore now",
-    "btnQuiz": "Multiple choice challenge"
+    "btnAbout": "About the Pacific Ocean",
+    "stat1Title": "Acreage",
+    "stat1Value": "165.2M km²",
+    "stat2Title": "Creature",
+    "stat2Value": "50,000+ Species",
+    "stat3Title": "Maximum depth",
+    "stat3Value": "11,034 m"
   },
   "search": {
     "title": "What creature do you want to learn about?",
@@ -41,15 +46,16 @@ const en = {
     "stat3Value": "11,034 m"
   },
   "footer": {
-    "aboutDesc": "Explore the magical ocean world, home to countless mysteries and amazing creatures of the Pacific.",
-    "colEcosystem": "Ecosystem & data",
-    "colStats": "Statistical",
-    "colFeedback": "Contribute comments",
+    "brandDesc": "Explore the magical ocean world, home to countless mysteries and amazing creatures of the Pacific.",
+    "exploreTitle": "Discover",
+    "legalTitle": "Policy & Terms",
+    "privacyPolicy": "Information security",
+    "termsOfUse": "Terms of use",
+    "contentPolicy": "Content policy",
+    "contactTitle": "Contribute comments",
+    "contactDesc": "Please share your thoughts!",
     "feedbackPlaceholder": "Ask and say the way you think...",
-    "btnSubmit": "Send comments",
-    "privacy": "Information security",
-    "policy": "Content policy",
-    "terms": "Terms of use",
+    "btnSendFeedback": "Send comments",
     "copyright": "© 2026 Pacific. All rights reserved."
   },
   "auth": {
