@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronDown, Search } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { CATEGORIES_DATA, HABITATS_DATA } from "../../mocks/speciesMock";
 import * as Images from "../../assets/Images";
 
 export default function SearchSection() {
+  const navigate = useNavigate();
   const { language, t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
@@ -12,7 +14,7 @@ export default function SearchSection() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("Searching for:", { searchTerm, category, habitat });
+    navigate("/search");
   };
 
   return (

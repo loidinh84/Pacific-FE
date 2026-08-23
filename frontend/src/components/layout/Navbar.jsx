@@ -16,8 +16,8 @@ export default function Navbar() {
   useClickOutside(langDropdownRef, () => setIsLangOpen(false));
 
   const navLinks = [
-    { label: t("nav.explore"), href: "/#hero", hasDropdown: true },
-    { label: t("nav.species"), href: "/#species", hasDropdown: true },
+    { label: t("nav.explore"), href: "/", hasDropdown: true },
+    { label: t("nav.species"), href: "/search", hasDropdown: true },
     { label: t("nav.about"), href: "/#about", hasDropdown: true },
   ];
 

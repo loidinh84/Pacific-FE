@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import * as Images from "../../assets/Images";
@@ -56,12 +57,12 @@ export default function HeroSection() {
             >
               {t("hero.btnExplore")}
             </a>
-            <a
-              href="#search"
-              className="px-8 py-3.5 rounded-full text-base font-bold text-white bg-white/10 hover:bg-white/15 border border-white/20 backdrop-blur-md transition-all cursor-pointer"
+            <Link
+              to="/search"
+              className="px-8 py-3.5 rounded-full text-base font-bold text-white bg-white/10 hover:bg-white/15 border border-white/20 backdrop-blur-md transition-all cursor-pointer inline-block"
             >
               {t("hero.btnSearch")}
-            </a>
+            </Link>
           </div>
 
           {/* Stats Bar */}
