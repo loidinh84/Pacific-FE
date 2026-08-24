@@ -38,22 +38,20 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Left: Logo */}
-        <div className="flex-1 flex items-center justify-start">
-          <Link to="/" className="flex items-center gap-3">
-            <img
-              src={Images.Logo}
-              alt="Pacific Logo"
-              className="w-8 h-8 object-contain"
-            />
-            <span className="font-heading text-2xl font-bold text-white tracking-tight">
-              Pacific
-            </span>
-          </Link>
-        </div>
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3">
+          <img
+            src={Images.Logo}
+            alt="Pacific Logo"
+            className="w-8 h-8 object-contain"
+          />
+          <span className="font-heading text-2xl font-bold text-white tracking-tight">
+            Pacific
+          </span>
+        </Link>
 
-        {/* Center: Desktop navigation links (Strictly Centered) */}
-        <ul className="hidden lg:flex flex-none items-center justify-center gap-1">
+        {/* Desktop links */}
+        <ul className="hidden lg:flex items-center gap-1">
           {navLinks.map((link, index) => (
             <li key={index}>
               <a
@@ -67,8 +65,8 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Right: Desktop actions */}
-        <div className="hidden lg:flex flex-1 items-center justify-end gap-3">
+        {/* Desktop actions */}
+        <div className="hidden lg:flex items-center gap-3">
           {/* Language Selector Dropdown */}
           <div className="relative" ref={langDropdownRef}>
             <button
