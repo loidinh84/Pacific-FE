@@ -1,15 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
+import { useLanguage } from "../../hooks/useLanguage";
 
-
-export function RelatedSpecies({ currentSpeciesId, language }) {
+export function RelatedSpecies({ currentSpeciesId }) {
   const navigate = useNavigate();
+  const { language, t } = useLanguage();
   const related = SEARCH_SPECIES_CATALOG.filter((s) => s.id !== currentSpeciesId).slice(0, 4);
 
   return (
     <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10">
       <h2 className="text-xl md:text-2xl font-bold text-white font-heading mb-8">
-        Sinh vật tương tự
+        {t("speciesDetail.relatedTitle")}
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">

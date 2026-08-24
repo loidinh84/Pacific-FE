@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
+import { useLanguage } from "../../hooks/useLanguage";
 
 export function SpeciesComments() {
+  const { t } = useLanguage();
   const [commentText, setCommentText] = useState("");
   const [commentsList, setCommentsList] = useState([]);
 
@@ -13,8 +15,8 @@ export function SpeciesComments() {
       {
         id: Date.now(),
         text: commentText.trim(),
-        user: "Bạn",
-        time: "Vừa xong",
+        user: t("speciesDetail.you"),
+        time: t("speciesDetail.justNow"),
       },
     ]);
     setCommentText("");
@@ -24,7 +26,7 @@ export function SpeciesComments() {
     <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 mb-12">
       <div className="bg-[#0e1f38] border border-white/10 rounded-2xl p-6 md:p-8 space-y-6">
         <h2 className="text-lg md:text-xl font-bold text-white font-heading">
-          Họ nói gì về sinh vật này?
+          {t("speciesDetail.commentsTitle")}
         </h2>
 
         {/* Input Form */}
@@ -33,14 +35,14 @@ export function SpeciesComments() {
             type="text"
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
-            placeholder="Nhập ý kiến của bạn..."
+            placeholder={t("speciesDetail.commentPlaceholder")}
             className="flex-1 bg-[#15294a] border border-white/15 text-white placeholder:text-white/40 text-xs md:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400 transition-colors"
           />
           <button
             type="submit"
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs md:text-sm font-semibold transition-all shadow-md shadow-blue-600/30 cursor-pointer shrink-0"
+            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs md:text-sm font-semibold transition-all cursor-pointer shrink-0"
           >
-            <span>Gửi đánh giá</span>
+            <span>{t("speciesDetail.btnSendComment")}</span>
             <Send size={14} />
           </button>
         </form>
@@ -49,7 +51,7 @@ export function SpeciesComments() {
         <div className="pt-4 border-t border-white/10">
           {commentsList.length === 0 ? (
             <p className="text-center text-white/50 text-xs md:text-sm py-4 italic">
-              Chưa có nhận xét gì về sinh vật này!
+              {t("speciesDetail.noComments")}
             </p>
           ) : (
             <div className="space-y-3">

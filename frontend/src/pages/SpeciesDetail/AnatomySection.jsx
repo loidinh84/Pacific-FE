@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { X, Sparkles } from "lucide-react";
 import { SharkAnatomy } from "../../assets/Images";
+import { useLanguage } from "../../hooks/useLanguage";
 
-export function AnatomySection({ species, language }) {
+export function AnatomySection({ species }) {
+  const { language, t } = useLanguage();
   const [activeHotspot, setActiveHotspot] = useState(null);
 
   const anatomyImg = species.anatomyImage || SharkAnatomy;
@@ -12,7 +14,7 @@ export function AnatomySection({ species, language }) {
     <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10">
       {/* Title */}
       <h2 className="text-xl md:text-2xl font-bold text-white font-heading mb-6">
-        Phân tích và giải phẫu
+        {t("speciesDetail.anatomyTitle")}
       </h2>
 
       {/* Anatomy poster illustration */}
@@ -26,7 +28,7 @@ export function AnatomySection({ species, language }) {
 
         {/* Hotspots */}
         {hotspots.map((spot) => {
-          const label = language === "en" ? spot.labelEn : spot.labelVi;
+          const label = language === "en" ? (spot.labelEn || spot.labelVi) : spot.labelVi;
           const isActive = activeHotspot?.id === spot.id;
 
           return (
@@ -81,11 +83,11 @@ export function AnatomySection({ species, language }) {
             <div className="flex items-center gap-2">
               <Sparkles size={14} className="text-amber-400" />
               <h3 className="text-white font-bold text-sm">
-                {language === "en" ? activeHotspot.labelEn : activeHotspot.labelVi}
+                {language === "en" ? (activeHotspot.labelEn || activeHotspot.labelVi) : activeHotspot.labelVi}
               </h3>
             </div>
             <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
-              {language === "en" ? activeHotspot.descEn : activeHotspot.descVi}
+              {language === "en" ? (activeHotspot.descEn || activeHotspot.descVi) : activeHotspot.descVi}
             </p>
           </div>
           <button
