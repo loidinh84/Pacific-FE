@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
-import { ChevronDown, Check } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { ChevronDown, Check, User, LogOut } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useScroll } from "../../hooks/useScroll";
 import { useClickOutside } from "../../hooks/useClickOutside";
@@ -9,11 +9,50 @@ import * as Images from "../../assets/Images";
 export default function Navbar() {
   const { language, changeLanguage, t } = useLanguage();
   const isScrolled = useScroll(60);
+  const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const langDropdownRef = useRef(null);
 
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("pacific_user");
+    try {
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const checkUser = () => {
+      const saved = localStorage.getItem("pacific_user");
+      try {
+        setUser(saved ? JSON.parse(saved) : null);
+      } catch {
+        setUser(null);
+      }
+    };
+
+    checkUser();
+
+    window.addEventListener("storage", checkUser);
+    window.addEventListener("pacific_auth_change", checkUser);
+    return () => {
+      window.removeEventListener("storage", checkUser);
+      window.removeEventListener("pacific_auth_change", checkUser);
+    };
+  }, [location]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("pacific_token");
+    localStorage.removeItem("pacific_user");
+    setUser(null);
+    window.dispatchEvent(new Event("pacific_auth_change"));
+    window.location.href = "/";
+  };
+
   useClickOutside(langDropdownRef, () => setIsLangOpen(false));
+
 
   const navLinks = [
     { label: t("nav.explore"), href: "/", hasDropdown: true },
@@ -122,21 +161,51 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Register Button */}
-          <Link
-            to="/register"
-            className="px-5 py-2.5 rounded-full text-sm font-semibold border border-white/40 text-white hover:bg-white/10 transition-all cursor-pointer inline-block"
-          >
-            {t("nav.register")}
-          </Link>
+          {/* User Auth Buttons or Logged-in User Profile */}
+          {user ? (
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-white text-xs font-semibold">
+                <div className="w-6 h-6 rounded-full bg-pacific-blue-bright flex items-center justify-center text-white text-[11px] font-bold">
+                  {user.username?.charAt(0).toUpperCase() ||
+                    user.email?.charAt(0).toUpperCase() ||
+                    "U"}
+                </div>
+                <span className="max-w-[120px] truncate">
+                  {user.username || user.email}
+                </span>
+                {(user.role === "admin" || user.role === "super_admin") && (
+                  <span className="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-sm">
+                    ADMIN
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={handleLogout}
+                className="px-3.5 py-2 rounded-full text-xs font-bold border border-rose-400/40 text-rose-300 hover:bg-rose-500/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <LogOut size={14} />
+                <span>Đăng xuất</span>
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Register Button */}
+              <Link
+                to="/register"
+                className="px-5 py-2.5 rounded-full text-sm font-semibold border border-white/40 text-white hover:bg-white/10 transition-all cursor-pointer inline-block"
+              >
+                {t("nav.register")}
+              </Link>
 
-          {/* Login Button */}
-          <Link
-            to="/login"
-            className="px-5 py-2.5 rounded-full text-sm font-semibold bg-blue-500 text-white hover:bg-blue-400 transition-all cursor-pointer inline-block active:translate-y-0.5"
-          >
-            {t("nav.login")}
-          </Link>
+              {/* Login Button */}
+              <Link
+                to="/login"
+                className="px-5 py-2.5 rounded-full text-sm font-semibold bg-blue-500 text-white hover:bg-blue-400 transition-all cursor-pointer inline-block active:translate-y-0.5"
+              >
+                {t("nav.login")}
+              </Link>
+            </>
+          )}
         </div>
       </div>
 

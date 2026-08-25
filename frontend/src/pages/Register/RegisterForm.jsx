@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, Lock, User, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import axios from "axios";
 import { useLanguage } from "../../hooks/useLanguage";
 import { FloatingInput } from "../../components/ui/FloatingInput";
 import { SocialLoginButtons } from "../../components/ui/SocialLoginButtons";
 
 export function RegisterForm() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fullName, setFullName] = useState("");
@@ -14,13 +17,53 @@ export function RegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
+    setSuccessMessage("");
+
     if (password !== confirmPassword) {
-      alert("Mật khẩu xác nhận không trùng khớp!");
+      setErrorMessage("Mật khẩu xác nhận không trùng khớp!");
       return;
     }
-    console.log("Register submit:", { fullName, email, password, confirmPassword });
+
+    if (password.length < 6) {
+      setErrorMessage("Mật khẩu phải có ít nhất 6 ký tự!");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const res = await axios.post("/api/auth/register", {
+        fullName,
+        email,
+        password,
+      });
+
+      if (res.data?.token) {
+        localStorage.setItem("pacific_token", res.data.token);
+        localStorage.setItem("pacific_user", JSON.stringify(res.data.user));
+      }
+
+      setSuccessMessage("Đăng ký tài khoản thành công! Đang chuyển sang trang Đăng nhập...");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 800);
+    } catch (err) {
+      console.error("Register error:", err);
+      const msg =
+        err.response?.data?.message ||
+        "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin!";
+      setErrorMessage(msg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -33,6 +76,20 @@ export function RegisterForm() {
           {t("auth.registerSubtitle")}
         </p>
       </div>
+
+      {errorMessage && (
+        <div className="p-3.5 mb-5 rounded-xl text-xs sm:text-sm bg-rose-500/20 border border-rose-500/40 text-rose-200 flex items-center gap-2.5">
+          <AlertCircle size={18} className="shrink-0 text-rose-400" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="p-3.5 mb-5 rounded-xl text-xs sm:text-sm bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 flex items-center gap-2.5">
+          <CheckCircle2 size={18} className="shrink-0 text-emerald-400" />
+          <span>{successMessage}</span>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <FloatingInput
@@ -95,9 +152,17 @@ export function RegisterForm() {
 
         <button
           type="submit"
-          className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan hover:from-sky-600 hover:via-indigo-400 hover:to-cyan-600 hover:brightness-110 active:translate-y-0.5 transition-all duration-300 cursor-pointer text-base mt-1"
+          disabled={isLoading}
+          className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan hover:from-sky-600 hover:via-indigo-400 hover:to-cyan-600 hover:brightness-110 active:translate-y-0.5 transition-all duration-300 cursor-pointer text-base mt-1 flex items-center justify-center gap-2 disabled:opacity-60"
         >
-          {t("auth.btnRegister")}
+          {isLoading ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              <span>Đang đăng ký...</span>
+            </>
+          ) : (
+            t("auth.btnRegister")
+          )}
         </button>
 
         <div className="relative flex items-center justify-center my-0.5">
@@ -122,3 +187,4 @@ export function RegisterForm() {
     </div>
   );
 }
+
