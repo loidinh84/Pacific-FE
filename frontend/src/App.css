@@ -1,1 +1,11 @@
-/* App.css - Cleared Vite defaults */
+/* App.css */
+
+/* 3D View: floating species image animation */
+@keyframes float-3d {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-18px) scale(1.02); }
+}
+
+.animate-float-3d {
+  animation: float-3d 5s ease-in-out infinite;
+}
