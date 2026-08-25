@@ -14,6 +14,25 @@ export default function AdminLayout() {
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
 
+  const storedUser = localStorage.getItem("user") || sessionStorage.getItem("user");
+  let currentUser = { username: "Admin 1", email: "admin@pacific.org" };
+  if (storedUser) {
+    try {
+      currentUser = JSON.parse(storedUser);
+    } catch (error) {
+      console.warn("Lỗi parse thông tin user từ storage:", error);
+    }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    setIsUserMenuOpen(false);
+    navigate("/login");
+  };
+
   const adminTabs = [
     { label: "Thống kê", path: "/admin/stats" },
     { label: "Sinh vật", path: "/admin/species" },
@@ -86,7 +105,7 @@ export default function AdminLayout() {
               <span>Thiết lập hệ thống</span>
             </NavLink>
 
-            {/* User Greeting: Xin chào, [Admin1] */}
+            {/* User Greeting: Xin chào, [Username] */}
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -99,7 +118,7 @@ export default function AdminLayout() {
                 <span>
                   Xin chào,{" "}
                   <strong className="font-semibold not-italic font-sans text-cyan-400">
-                    [Admin1]
+                    [{currentUser.username || "Admin"}]
                   </strong>
                 </span>
               </button>
@@ -115,10 +134,10 @@ export default function AdminLayout() {
                 >
                   <div className="px-3 py-2 border-b border-white/10 mb-1">
                     <p className="text-xs font-bold leading-tight font-sans not-italic">
-                      Admin 1
+                      {currentUser.username || "Admin 1"}
                     </p>
                     <p className="text-[11px] text-slate-400 font-sans not-italic">
-                      admin@pacific.org
+                      {currentUser.email || "admin@pacific.org"}
                     </p>
                   </div>
                   <Link
@@ -131,10 +150,7 @@ export default function AdminLayout() {
                     <span>Trang chủ Pacific</span>
                   </Link>
                   <button
-                    onClick={() => {
-                      navigate("/login");
-                      setIsUserMenuOpen(false);
-                    }}
+                    onClick={handleLogout}
                     className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl text-rose-400 transition-colors cursor-pointer ${
                       isDark ? "hover:bg-rose-500/10" : "hover:bg-rose-50"
                     }`}

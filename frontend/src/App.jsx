@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Search from "./pages/Search";
 import SpeciesDetail from "./pages/SpeciesDetail";
 import SpeciesView3D from "./pages/SpeciesView3D";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Admin Pages
 import AdminLayout from "./pages/Admin/AdminLayout";
@@ -30,8 +31,15 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Admin Portal Nested Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
+        {/* Admin Portal Nested Routes (Protected) */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requireAdmin>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Navigate to="/admin/species" replace />} />
           <Route path="stats" element={<AdminDashboard />} />
           <Route path="species" element={<SpeciesManagement />} />
@@ -47,3 +55,4 @@ function App() {
 }
 
 export default App;
+
