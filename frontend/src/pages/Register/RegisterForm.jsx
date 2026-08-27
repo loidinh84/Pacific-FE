@@ -45,15 +45,12 @@ export function RegisterForm() {
         password,
       });
 
-      if (res.data?.token) {
-        localStorage.setItem("pacific_token", res.data.token);
-        localStorage.setItem("pacific_user", JSON.stringify(res.data.user));
-      }
-
-      setSuccessMessage("Đăng ký tài khoản thành công! Đang chuyển sang trang Đăng nhập...");
+      setSuccessMessage(
+        res.data?.message || "Đăng ký tài khoản thành công! Đang chuyển sang trang Đăng nhập..."
+      );
 
       setTimeout(() => {
-        navigate("/login");
+        navigate("/login", { state: { email } });
       }, 800);
     } catch (err) {
       console.error("Register error:", err);

@@ -9,8 +9,17 @@ import { Navigate, useLocation } from "react-router-dom";
 export default function ProtectedRoute({ requireAdmin = false, children }) {
   const location = useLocation();
 
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-  const storedUser = localStorage.getItem("user") || sessionStorage.getItem("user");
+  const token =
+    localStorage.getItem("pacific_token") ||
+    localStorage.getItem("token") ||
+    sessionStorage.getItem("pacific_token") ||
+    sessionStorage.getItem("token");
+
+  const storedUser =
+    localStorage.getItem("pacific_user") ||
+    localStorage.getItem("user") ||
+    sessionStorage.getItem("pacific_user") ||
+    sessionStorage.getItem("user");
 
   let user = null;
   if (storedUser) {
@@ -22,7 +31,7 @@ export default function ProtectedRoute({ requireAdmin = false, children }) {
     }
   }
 
-  // 1. Chưa đăng nhập -> Chuyển hướng về /login kèm vị trí trang cũ
+  // 1. Chưa đăng nhập -> Chuyển hướng về /login
   if (!token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
@@ -30,7 +39,7 @@ export default function ProtectedRoute({ requireAdmin = false, children }) {
   // 2. Yêu cầu quyền Admin nhưng role không hợp lệ -> Chuyển hướng về trang chủ
   if (requireAdmin) {
     const role = user?.role;
-    if (role && role !== "admin" && role !== "super_admin") {
+    if (role !== "admin" && role !== "super_admin") {
       return <Navigate to="/" replace />;
     }
   }

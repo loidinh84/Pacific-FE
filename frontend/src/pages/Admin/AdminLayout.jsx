@@ -14,7 +14,12 @@ export default function AdminLayout() {
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
 
-  const storedUser = localStorage.getItem("user") || sessionStorage.getItem("user");
+  const storedUser =
+    localStorage.getItem("pacific_user") ||
+    localStorage.getItem("user") ||
+    sessionStorage.getItem("pacific_user") ||
+    sessionStorage.getItem("user");
+
   let currentUser = { username: "Admin 1", email: "admin@pacific.org" };
   if (storedUser) {
     try {
@@ -25,10 +30,15 @@ export default function AdminLayout() {
   }
 
   const handleLogout = () => {
+    localStorage.removeItem("pacific_token");
+    localStorage.removeItem("pacific_user");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    sessionStorage.removeItem("pacific_token");
+    sessionStorage.removeItem("pacific_user");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
+    window.dispatchEvent(new Event("pacific_auth_change"));
     setIsUserMenuOpen(false);
     navigate("/login");
   };

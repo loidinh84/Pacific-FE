@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronDown, Check, User, LogOut } from "lucide-react";
+import { ChevronDown, Check, LogOut, User, Shield, HelpCircle } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useScroll } from "../../hooks/useScroll";
 import { useClickOutside } from "../../hooks/useClickOutside";
@@ -12,7 +12,10 @@ export default function Navbar() {
   const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isUserOpen, setIsUserOpen] = useState(false);
+
   const langDropdownRef = useRef(null);
+  const userDropdownRef = useRef(null);
 
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem("pacific_user");
@@ -46,13 +49,19 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem("pacific_token");
     localStorage.removeItem("pacific_user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("pacific_token");
+    sessionStorage.removeItem("pacific_user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
     setUser(null);
     window.dispatchEvent(new Event("pacific_auth_change"));
     window.location.href = "/";
   };
 
   useClickOutside(langDropdownRef, () => setIsLangOpen(false));
-
+  useClickOutside(userDropdownRef, () => setIsUserOpen(false));
 
   const navLinks = [
     { label: t("nav.explore"), href: "/", hasDropdown: true },
@@ -161,31 +170,84 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* User Auth Buttons or Logged-in User Profile */}
+          {/* User Auth Buttons or Logged-in User Profile Dropdown */}
           {user ? (
-            <div className="flex items-center gap-2.5">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-white text-xs font-semibold">
-                <div className="w-6 h-6 rounded-full bg-pacific-blue-bright flex items-center justify-center text-white text-[11px] font-bold">
+            <div className="relative" ref={userDropdownRef}>
+              <button
+                onClick={() => setIsUserOpen(!isUserOpen)}
+                className="flex items-center gap-2.5 px-3.5 py-1.5 bg-white/10 hover:bg-white/15 border border-white/20 hover:border-white/30 rounded-full text-white text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow-sm"
+              >
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan flex items-center justify-center text-white text-[11px] font-bold shadow-sm">
                   {user.username?.charAt(0).toUpperCase() ||
                     user.email?.charAt(0).toUpperCase() ||
                     "U"}
                 </div>
-                <span className="max-w-[120px] truncate">
-                  {user.username || user.email}
+                <span className="max-w-[130px] truncate">
+                  {user.full_name || user.username || user.email}
                 </span>
-                {(user.role === "admin" || user.role === "super_admin") && (
-                  <span className="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-sm">
-                    ADMIN
-                  </span>
-                )}
-              </div>
-              <button
-                onClick={handleLogout}
-                className="px-3.5 py-2 rounded-full text-xs font-bold border border-rose-400/40 text-rose-300 hover:bg-rose-500/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
-              >
-                <LogOut size={14} />
-                <span>Đăng xuất</span>
+                <ChevronDown
+                  size={13}
+                  className={`transition-transform duration-200 ${
+                    isUserOpen ? "rotate-180 text-pacific-blue-bright" : "text-white/60"
+                  }`}
+                />
               </button>
+
+              {/* User Glassmorphism Dropdown Menu */}
+              {isUserOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-[#1b254b]/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.5),0_0_20px_rgba(14,165,233,0.2)] p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="px-3 py-2 border-b border-white/10 mb-1">
+                    <p className="text-xs font-bold text-white truncate">
+                      {user.full_name || user.username}
+                    </p>
+                    <p className="text-[11px] text-white/50 truncate">
+                      {user.email}
+                    </p>
+                  </div>
+
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsUserOpen(false)}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                  >
+                    <User size={15} className="text-pacific-cyan" />
+                    <span>Hồ sơ của tôi</span>
+                  </Link>
+
+                  <button
+                    onClick={() => {
+                      setIsUserOpen(false);
+                      // Có thể mở Modal Báo cáo sự cố
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                  >
+                    <HelpCircle size={15} className="text-pacific-cyan" />
+                    <span>Báo cáo sự cố</span>
+                  </button>
+
+                  {(user.role === "admin" || user.role === "super_admin") && (
+                    <Link
+                      to="/admin/species"
+                      onClick={() => setIsUserOpen(false)}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 transition-all cursor-pointer"
+                    >
+                      <Shield size={15} className="text-amber-400" />
+                      <span>Trang quản trị Admin</span>
+                    </Link>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      setIsUserOpen(false);
+                      handleLogout();
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-300 hover:text-rose-200 hover:bg-rose-500/15 transition-all cursor-pointer mt-0.5"
+                  >
+                    <LogOut size={15} className="text-rose-400" />
+                    <span>Đăng xuất</span>
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <>
@@ -246,20 +308,45 @@ export default function Navbar() {
           </div>
 
           <div className="flex gap-3 mt-3 pt-3 border-t border-white/10">
-            <Link
-              to="/register"
-              onClick={() => setIsMobileOpen(false)}
-              className="flex-1 py-3 rounded-xl text-sm font-semibold border border-white/30 text-white hover:bg-white/10 transition-all text-center"
-            >
-              {t("nav.register")}
-            </Link>
-            <Link
-              to="/login"
-              onClick={() => setIsMobileOpen(false)}
-              className="flex-1 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white transition-all text-center"
-            >
-              {t("nav.login")}
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  to="/profile"
+                  onClick={() => setIsMobileOpen(false)}
+                  className="flex-1 py-3 rounded-xl text-sm font-semibold border border-white/30 text-white hover:bg-white/10 transition-all text-center flex items-center justify-center gap-1.5"
+                >
+                  <User size={15} />
+                  <span>Hồ sơ cá nhân</span>
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsMobileOpen(false);
+                    handleLogout();
+                  }}
+                  className="flex-1 py-3 rounded-xl text-sm font-semibold border border-rose-500/40 text-rose-300 hover:bg-rose-500/20 transition-all text-center flex items-center justify-center gap-1.5"
+                >
+                  <LogOut size={15} />
+                  <span>Đăng xuất</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/register"
+                  onClick={() => setIsMobileOpen(false)}
+                  className="flex-1 py-3 rounded-xl text-sm font-semibold border border-white/30 text-white hover:bg-white/10 transition-all text-center"
+                >
+                  {t("nav.register")}
+                </Link>
+                <Link
+                  to="/login"
+                  onClick={() => setIsMobileOpen(false)}
+                  className="flex-1 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white transition-all text-center"
+                >
+                  {t("nav.login")}
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

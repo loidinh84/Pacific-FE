@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import axios from "axios";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -11,10 +11,11 @@ import { ForgotPasswordModal } from "../../components/auth/ForgotPasswordModal";
 export function LoginForm() {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => location.state?.email || "");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -45,10 +46,16 @@ export function LoginForm() {
           if (res.data?.token) {
             localStorage.setItem("pacific_token", res.data.token);
             localStorage.setItem("pacific_user", JSON.stringify(res.data.user));
+            window.dispatchEvent(new Event("pacific_auth_change"));
           }
           setSuccessMessage(res.data?.message || "Đăng nhập GitHub thành công!");
           setTimeout(() => {
-            window.location.href = "/";
+            const userRole = res.data?.user?.role;
+            if (userRole === "admin" || userRole === "super_admin") {
+              navigate("/admin/species", { replace: true });
+            } else {
+              navigate("/", { replace: true });
+            }
           }, 800);
         })
         .catch((err) => {
@@ -59,7 +66,7 @@ export function LoginForm() {
         })
         .finally(() => setIsLoading(false));
     }
-  }, [searchParams]);
+  }, [searchParams, navigate]);
 
 
 
@@ -82,7 +89,12 @@ export function LoginForm() {
       setSuccessMessage(res.data?.message || "Đăng nhập thành công!");
 
       setTimeout(() => {
-        window.location.href = "/";
+        const userRole = res.data?.user?.role;
+        if (userRole === "admin" || userRole === "super_admin") {
+          navigate("/admin/species", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
       }, 600);
 
     } catch (err) {
@@ -122,8 +134,8 @@ export function LoginForm() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <FloatingInput
           id="login-email"
-          type="email"
-          label={t("auth.email")}
+          type="text"
+          label="Email hoặc Tên đăng nhập"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
