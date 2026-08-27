@@ -2,6 +2,15 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:3000/api";
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("pacific_token") || localStorage.getItem("token");
+  return {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+};
+
 /**
  * Fetch species anatomy data from Backend PostgreSQL database
  * @param {string|number} speciesIdOrSlug - Species ID, Code or Slug
@@ -14,7 +23,6 @@ export const fetchSpeciesAnatomy = async (speciesIdOrSlug) => {
     );
     if (response.data && response.data.success) {
       const rawAnatomy = response.data.data.anatomy || [];
-      // Map BE fields to FE expected shape
       return rawAnatomy.map((item) => ({
         id: `a${item.sortOrder || item.id}`,
         labelVi: item.partName,
@@ -35,5 +43,103 @@ export const fetchSpeciesAnatomy = async (speciesIdOrSlug) => {
   } catch (error) {
     console.warn("Backend Anatomy API offline/fallback:", error.message);
     return null;
+  }
+};
+
+/**
+ * Admin: Get species list with filters and pagination
+ */
+export const fetchAdminSpeciesList = async (params = {}) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/admin/species`, {
+      params,
+      ...getAuthHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi gọi API danh sách sinh vật admin:", error);
+    throw error;
+  }
+};
+
+/**
+ * Admin: Get species detail by ID
+ */
+export const fetchAdminSpeciesById = async (id) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/admin/species/${id}`, getAuthHeaders());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy chi tiết sinh vật admin:", error);
+    throw error;
+  }
+};
+
+/**
+ * Admin: Create new species
+ */
+export const createAdminSpecies = async (speciesData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/admin/species`, speciesData, getAuthHeaders());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi tạo sinh vật mới:", error);
+    throw error;
+  }
+};
+
+/**
+ * Admin: Update existing species
+ */
+export const updateAdminSpecies = async (id, speciesData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/admin/species/${id}`, speciesData, getAuthHeaders());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật sinh vật:", error);
+    throw error;
+  }
+};
+
+/**
+ * Admin: Toggle species visibility (Hidden / Displayed)
+ */
+export const toggleSpeciesVisibility = async (id, isVisible) => {
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}/admin/species/${id}/visibility`,
+      { is_visible: isVisible },
+      getAuthHeaders()
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi đổi trạng thái ẩn/hiển thị:", error);
+    throw error;
+  }
+};
+
+/**
+ * Admin: Soft delete species
+ */
+export const deleteAdminSpecies = async (id) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/admin/species/${id}`, getAuthHeaders());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi xóa sinh vật:", error);
+    throw error;
+  }
+};
+
+/**
+ * Admin: Sync species from external API (GBIF/iNaturalist/OBIS)
+ */
+export const syncSpeciesFromApi = async (syncData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/admin/species/sync`, syncData, getAuthHeaders());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi đồng bộ API bên ngoài:", error);
+    throw error;
   }
 };
