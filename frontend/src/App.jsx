@@ -7,6 +7,7 @@ import ResetPassword from "./pages/ResetPassword";
 import SpeciesDetail from "./pages/SpeciesDetail";
 import SpeciesView3D from "./pages/SpeciesView3D";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProfileLayout from "./pages/Profile";
 
 // Admin Pages
 import AdminLayout from "./pages/Admin/AdminLayout";
@@ -32,6 +33,17 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+
+        {/* User Profile Routes */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfileLayout />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/profile/me" element={<Navigate to="/profile" replace />} />
 
         {/* Admin Portal Nested Routes (Protected) */}
         <Route
