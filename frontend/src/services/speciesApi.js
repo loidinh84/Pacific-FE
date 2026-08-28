@@ -143,3 +143,42 @@ export const syncSpeciesFromApi = async (syncData) => {
     throw error;
   }
 };
+
+/**
+ * Admin: Fetch live health status of GBIF, iNaturalist, OBIS APIs and incomplete species from DB
+ */
+export const fetchApiSyncStatus = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/admin/species/sync-status`, getAuthHeaders());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy trạng thái đồng bộ API:", error);
+    throw error;
+  }
+};
+
+/**
+ * Admin: Retry sync for single species by ID
+ */
+export const retrySyncSpeciesItem = async (id) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/admin/species/sync-item/${id}`, {}, getAuthHeaders());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi thử lại đồng bộ loài:", error);
+    throw error;
+  }
+};
+
+/**
+ * Admin: Sync all incomplete species in bulk
+ */
+export const syncAllIncompleteSpecies = async () => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/admin/species/sync-all`, {}, getAuthHeaders());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi đồng bộ hàng loạt:", error);
+    throw error;
+  }
+};
