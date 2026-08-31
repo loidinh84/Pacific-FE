@@ -182,3 +182,130 @@ export const syncAllIncompleteSpecies = async () => {
     throw error;
   }
 };
+
+/**
+ * Tra cứu phân loại học đại dương qua Backend Proxy Gateway (Hỗ trợ Provider: auto, gbif, inaturalist, worms)
+ */
+export const searchSpeciesTaxonomy = async (query, provider = "auto") => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species/taxonomy-search`, {
+      params: { q: query, provider },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi gọi Backend Taxonomy API:", error);
+    throw error;
+  }
+};
+
+/**
+ * Upload file từ máy tính (ảnh, video, 3d model .glb, audio .mp3) lên Backend Storage
+ * @param {File} file Tệp từ máy tính
+ * @returns {Promise<{url: string, filename: string}>}
+ */
+export const uploadMediaFile = async (file) => {
+  try {
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+
+    const response = await axios.post(`${API_BASE_URL}/upload`, {
+      filename: file.name,
+      fileData: base64,
+      mimeType: file.type,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi upload tệp từ máy tính:", error);
+    throw error;
+  }
+};
+
+/**
+ * Tra cứu Kho âm thanh Đại dương từ Backend API (default catalog — Wikimedia parallel queries)
+ * @param {string} category Phân loại tab
+ */
+export const getOceanAudioLibrary = async (category = "Tất cả") => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species/audio-library`, {
+      params: { category },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi tải Kho âm thanh đại dương:", error);
+    throw error;
+  }
+};
+
+/**
+ * Tìm kiếm nâng cao âm thanh đại dương trực tiếp từ Freesound.org API
+ * @param {string} query Từ khóa cụ thể (tiếng Việt hoặc tiếng Anh)
+ */
+export const searchOceanAudioAdvanced = async (query = "") => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species/audio-search`, {
+      params: { q: query },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi tìm kiếm nâng cao âm thanh đại dương:", error);
+    throw error;
+  }
+};
+
+/**
+ * Lấy danh sách nhóm sinh vật biển (Cá, Động vật có vú, Thân mềm...)
+ */
+export const fetchSpeciesGroups = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species/groups`);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách nhóm loài:", error);
+    throw error;
+  }
+};
+
+/**
+ * Lấy danh sách 5 tầng nước đại dương (Sunlight, Twilight, Midnight, Abyssal, Hadal)
+ */
+export const fetchOceanZones = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species/zones`);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách tầng biển:", error);
+    throw error;
+  }
+};
+
+/**
+ * Lấy danh sách trạng thái bảo tồn IUCN
+ */
+export const fetchConservationStatuses = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species/statuses`);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách trạng thái bảo tồn:", error);
+    throw error;
+  }
+};
+
+/**
+ * Lấy danh sách địa điểm thám hiểm đại dương
+ */
+export const fetchOceanLocations = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species/locations`);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách địa điểm đại dương:", error);
+    throw error;
+  }
+};
+

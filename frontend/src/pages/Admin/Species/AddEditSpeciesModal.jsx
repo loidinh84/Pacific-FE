@@ -19,6 +19,8 @@ import {
   Layers,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import { searchSpeciesTaxonomy, uploadMediaFile } from "../../../services/speciesApi";
+import OceanSoundPickerModal from "./OceanSoundPickerModal";
 
 const OCEAN_ZONE_OPTIONS = [
   { value: "Sunlight", label: "Tầng nắng (Sunlight / Epipelagic)" },
@@ -42,6 +44,13 @@ const GROUP_OPTIONS = [
   { value: "2", label: "Động vật có vú biển" },
   { value: "3", label: "Động vật thân mềm (Bạch tuộc/Mực)" },
   { value: "4", label: "Cá sặc sỡ rạn san hô" },
+];
+
+const API_PROVIDER_OPTIONS = [
+  { value: "auto", label: "AI Auto Gateway" },
+  { value: "gbif", label: "GBIF API" },
+  { value: "inaturalist", label: "iNaturalist API" },
+  { value: "worms", label: "WoRMS API" },
 ];
 
 const DIET_OPTIONS = [
@@ -168,9 +177,7 @@ const getInitialFormData = (editingSpecies) => {
       soundUrl: editingSpecies.soundUrl || "",
       gbifQuery: editingSpecies.scientificName || "",
       description: editingSpecies.description || "",
-      mediaItems: (editingSpecies.images || [
-        "https://images.unsplash.com/photo-1560275619-4662804300e8?auto=format&fit=crop&w=600&q=80",
-      ]).map((item) =>
+      mediaItems: (editingSpecies.images || []).map((item) =>
         typeof item === "string"
           ? { url: item, type: item.includes(".mp4") || item.includes("youtube") ? "video" : "image" }
           : item
@@ -197,23 +204,26 @@ const getInitialFormData = (editingSpecies) => {
     soundUrl: "",
     gbifQuery: "",
     description: "",
-    mediaItems: [
-      {
-        url: "https://images.unsplash.com/photo-1560275619-4662804300e8?auto=format&fit=crop&w=600&q=80",
-        type: "image",
-      },
-    ],
+    mediaItems: [],
   };
 };
 
 export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSpecies = null }) {
   const { isDark } = useTheme();
+  const fileInputRef = useRef(null);
+  const model3DInputRef = useRef(null);
+  const soundInputRef = useRef(null);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [activeTab, setActiveTab] = useState("basic"); // "basic" | "bio" | "media"
   const [formData, setFormData] = useState(() => getInitialFormData(editingSpecies));
   const [isSearchingGbif, setIsSearchingGbif] = useState(false);
+  const [selectedApiProvider, setSelectedApiProvider] = useState("auto"); // "auto" | "gbif" | "inaturalist" | "worms"
   const [gbifFound, setGbifFound] = useState(false);
+  const [gbifMessage, setGbifMessage] = useState("");
+  const [gbifStatusType, setGbifStatusType] = useState("success"); // "success" | "warning" | "error"
   const [inputMediaUrl, setInputMediaUrl] = useState("");
   const [inputMediaType, setInputMediaType] = useState("image");
+  const [isSoundPickerOpen, setIsSoundPickerOpen] = useState(false);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -229,29 +239,144 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
 
   if (!isOpen) return null;
 
-  const handleGbifSearch = () => {
-    if (!formData.gbifQuery && !formData.scientificName) return;
+  const handleGbifSearch = async () => {
+    const rawQuery = (formData.gbifQuery || formData.scientificName || "").trim();
+    if (!rawQuery) return;
+
     setIsSearchingGbif(true);
-    setTimeout(() => {
-      setIsSearchingGbif(false);
+    setGbifFound(false);
+    setGbifMessage("");
+
+    try {
+      // Gọi qua Backend Proxy Gateway API với Nguồn API được chọn (auto, gbif, inaturalist, worms)
+      const res = await searchSpeciesTaxonomy(rawQuery, selectedApiProvider);
+
+      if (res && res.success && res.data) {
+        const d = res.data;
+
+        setFormData((prev) => ({
+          ...prev,
+          name: prev.name || d.name || rawQuery,
+          scientificName: d.scientificName || rawQuery,
+          description: d.description || prev.description || `Sinh vật biển loài ${d.scientificName}.`,
+          mediaItems: d.mediaItems && d.mediaItems.length > 0 ? d.mediaItems : prev.mediaItems,
+          groupId: d.groupId || prev.groupId || "1",
+          oceanZone: d.oceanZone || prev.oceanZone || "Sunlight",
+          diet: d.diet || prev.diet || "Kẻ săn mồi (Carnivore)",
+          depthMin: d.depthMin || prev.depthMin || "0",
+          depthMax: d.depthMax || prev.depthMax || "100",
+          sizeMinCm: d.sizeMinCm || prev.sizeMinCm || "50",
+          sizeMaxCm: d.sizeMaxCm || prev.sizeMaxCm || "200",
+          weightMinKg: d.weightMinKg || prev.weightMinKg || "5",
+          weightMaxKg: d.weightMaxKg || prev.weightMaxKg || "50",
+          lifespanYears: d.lifespanYears || prev.lifespanYears || "10",
+          tempMinC: d.tempMinC || prev.tempMinC || "10",
+          tempMaxC: d.tempMaxC || prev.tempMaxC || "25",
+        }));
+
+        setGbifFound(true);
+
+        if (res.warningMessage) {
+          setGbifStatusType("warning");
+          setGbifMessage(res.warningMessage);
+        } else {
+          setGbifStatusType("success");
+          const providerLabel = selectedApiProvider === "auto"
+            ? "AI Gateway"
+            : selectedApiProvider.toUpperCase();
+          setGbifMessage(`✓ Tra cứu thành công từ [${providerLabel}] - Thông tin sinh học tự động điền!`);
+        }
+      } else {
+        setGbifFound(true);
+        setGbifStatusType("error");
+        setGbifMessage(res?.message || `Không tìm thấy sinh vật hợp lệ cho từ khóa "${rawQuery}".`);
+      }
+    } catch (err) {
+      console.warn("Lỗi tra cứu Taxonomy qua Backend Proxy:", err);
       setGbifFound(true);
-      setFormData((prev) => ({
-        ...prev,
-        scientificName: prev.gbifQuery || prev.scientificName || "Carcharodon carcharias",
-        description:
-          prev.description ||
-          "Dữ liệu tự động đồng bộ từ GBIF taxonomy backend. Cá mập trắng là một loài cá mập săn mồi lớn sống ở vùng biển ôn hòa.",
-      }));
-    }, 700);
+      setGbifStatusType("error");
+      setGbifMessage("Không tìm thấy dữ liệu sinh học đại dương hợp lệ.");
+    } finally {
+      setIsSearchingGbif(false);
+    }
   };
 
   const handleAddMedia = () => {
     if (!inputMediaUrl || !inputMediaUrl.trim()) return;
     setFormData((prev) => ({
       ...prev,
-      mediaItems: [...prev.mediaItems, { url: inputMediaUrl.trim(), type: inputMediaType }],
+      mediaItems: [...(prev.mediaItems || []), { url: inputMediaUrl.trim(), type: inputMediaType }],
     }));
     setInputMediaUrl("");
+  };
+
+  const handleFileUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploadingFile(true);
+    try {
+      const uploadPromises = Array.from(files).map((file) => uploadMediaFile(file));
+      const results = await Promise.all(uploadPromises);
+
+      const newItems = results.map((res, i) => {
+        const file = files[i];
+        const isVideo = file.type.startsWith("video/");
+        return { url: res.url, type: isVideo ? "video" : "image", name: file.name };
+      });
+
+      setFormData((prev) => ({
+        ...prev,
+        mediaItems: [...(prev.mediaItems || []), ...newItems],
+      }));
+    } catch (err) {
+      console.error("Lỗi upload media files:", err);
+      const fallbackItems = Array.from(files).map((file) => ({
+        url: URL.createObjectURL(file),
+        type: file.type.startsWith("video/") ? "video" : "image",
+        name: file.name,
+      }));
+      setFormData((prev) => ({
+        ...prev,
+        mediaItems: [...(prev.mediaItems || []), ...fallbackItems],
+      }));
+    } finally {
+      setIsUploadingFile(false);
+    }
+  };
+
+  const handleModel3DUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingFile(true);
+    try {
+      const res = await uploadMediaFile(file);
+      if (res && res.url) {
+        setFormData((prev) => ({ ...prev, model3dUrl: res.url }));
+      }
+    } catch (err) {
+      console.error("Lỗi upload 3D file:", err);
+    } finally {
+      setIsUploadingFile(false);
+    }
+  };
+
+  const handleSoundUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingFile(true);
+    try {
+      const res = await uploadMediaFile(file);
+      if (res && res.url) {
+        setFormData((prev) => ({ ...prev, soundUrl: res.url }));
+      }
+    } catch (err) {
+      console.error("Lỗi upload Audio file:", err);
+    } finally {
+      setIsUploadingFile(false);
+    }
   };
 
   const handleMediaRemove = (index) => {
@@ -657,19 +782,42 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
           {activeTab === "media" && (
             /* TAB 3: TRUYỀN THÔNG & ĐA PHƯƠNG TIỆN */
             <div className="space-y-5">
-              {/* GBIF API Search Fetcher Card */}
+              {/* Tra cứu & Tự động điền dữ liệu Sinh học Card */}
               <div
-                className={`p-4 rounded-2xl border space-y-3 shadow-md ${
+                className={`p-3.5 rounded-2xl border space-y-2.5 shadow-sm ${
                   isDark ? "bg-white/5 border-white/15" : "bg-slate-50 border-slate-200"
                 }`}
               >
-                <label className={`block text-sm font-bold ${isDark ? "text-cyan-300" : "text-cyan-700"}`}>
-                  Lấy dữ liệu tự động từ GBIF API
-                </label>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <label className={`block text-xs sm:text-sm font-bold ${isDark ? "text-cyan-300" : "text-cyan-700"}`}>
+                    Tra cứu & Tự động điền dữ liệu
+                  </label>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`text-xs font-semibold ${isDark ? "text-white/60" : "text-slate-500"}`}>Nguồn API:</span>
+                    <div className="w-60 sm:w-64">
+                      <CustomSelect
+                        options={API_PROVIDER_OPTIONS}
+                        value={selectedApiProvider}
+                        onChange={(val) => setSelectedApiProvider(val)}
+                        isDark={isDark}
+                        direction="down"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Nhập tên khoa học để tra cứu GBIF (VD: Carcharodon carcharias)"
+                    placeholder={
+                      selectedApiProvider === "auto"
+                        ? "Nhập từ khóa tiếng Việt hoặc Tên khoa học (VD: Cá lồng đèn, Cá mập trắng...)"
+                        : selectedApiProvider === "gbif"
+                        ? "Nhập tên loài tra cứu trên GBIF Registry..."
+                        : selectedApiProvider === "inaturalist"
+                        ? "Nhập tên loài tra cứu trên iNaturalist..."
+                        : "Nhập tên loài tra cứu trên WoRMS Marine Registry..."
+                    }
                     value={formData.gbifQuery}
                     onChange={(e) => setFormData({ ...formData, gbifQuery: e.target.value })}
                     className={`flex-1 px-3.5 py-2 rounded-xl text-sm focus:outline-none transition-all ${
@@ -689,184 +837,301 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
                     ) : (
                       <Search size={14} />
                     )}
-                    <span>Tìm trên GBIF</span>
+                    <span>
+                      {selectedApiProvider === "auto"
+                        ? "Tra cứu AI Auto"
+                        : selectedApiProvider === "gbif"
+                        ? "Tìm trên GBIF"
+                        : selectedApiProvider === "inaturalist"
+                        ? "Tìm trên iNaturalist"
+                        : "Tìm trên WoRMS"}
+                    </span>
                   </button>
                 </div>
 
-                {gbifFound && (
+                {gbifFound && gbifMessage && (
                   <div
-                    className={`p-2.5 rounded-xl border text-sm flex items-center gap-2 animate-in fade-in ${
-                      isDark
-                        ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-200"
-                        : "bg-emerald-50 border-emerald-200 text-emerald-700"
+                    className={`p-3 rounded-xl border text-sm flex items-start gap-2 animate-in fade-in transition-all ${
+                      gbifStatusType === "success"
+                        ? isDark
+                          ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                          : "bg-emerald-50 border-emerald-300 text-emerald-800"
+                        : gbifStatusType === "warning"
+                        ? isDark
+                          ? "bg-amber-500/15 border-amber-500/30 text-amber-300"
+                          : "bg-amber-50 border-amber-300 text-amber-800"
+                        : isDark
+                        ? "bg-rose-500/15 border-rose-500/30 text-rose-300"
+                        : "bg-rose-50 border-rose-300 text-rose-800"
                     }`}
                   >
-                    <CheckCircle2 size={16} className={isDark ? "text-emerald-400" : "text-emerald-600"} />
-                    <span>✓ Tìm thấy tên GBIF - thông tin sinh học tự động điền!</span>
+                    <Sparkles size={16} className="shrink-0 mt-0.5" />
+                    <span className="font-medium leading-relaxed">{gbifMessage}</span>
                   </div>
                 )}
               </div>
 
-              {/* Add Custom Media URL Section */}
+              {/* Add Custom Media Section (Compact Unified Bar) */}
               <div
-                className={`p-4 rounded-2xl border space-y-3 shadow-md ${
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  if (e.dataTransfer.files) {
+                    handleFileUpload({ target: { files: e.dataTransfer.files } });
+                  }
+                }}
+                className={`p-3.5 rounded-2xl border space-y-2.5 shadow-sm ${
                   isDark ? "bg-white/5 border-white/15" : "bg-slate-50 border-slate-200"
                 }`}
               >
-                <label className={`block text-sm font-bold ${isDark ? "text-cyan-300" : "text-cyan-700"}`}>
-                  Thêm Ảnh hoặc Video (Không giới hạn)
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className={`block text-xs sm:text-sm font-bold ${isDark ? "text-cyan-300" : "text-cyan-700"}`}>
+                    Thêm Phương tiện
+                  </label>
+                </div>
+
+                {/* Hidden File Input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*,video/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+
                 <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="flex items-center gap-1.5 bg-black/20 p-1 rounded-xl border border-white/10 shrink-0">
+                  <div className="flex items-center gap-1 bg-black/20 p-1 rounded-xl border border-white/10 shrink-0">
                     <button
                       type="button"
                       onClick={() => setInputMediaType("image")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
                         inputMediaType === "image"
                           ? "bg-cyan-500 text-white shadow-sm"
                           : "text-white/60 hover:text-white"
                       }`}
                     >
-                      <ImageIcon size={13} />
-                      <span>Hình ảnh</span>
+                      <ImageIcon size={12} />
+                      <span>Ảnh</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setInputMediaType("video")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
                         inputMediaType === "video"
                           ? "bg-cyan-500 text-white shadow-sm"
                           : "text-white/60 hover:text-white"
                       }`}
                     >
-                      <Film size={13} />
+                      <Film size={12} />
                       <span>Video</span>
                     </button>
                   </div>
+                  
                   <input
                     type="text"
                     placeholder={
                       inputMediaType === "image"
                         ? "Dán URL hình ảnh (https://...)"
-                        : "Dán URL Video MP4 hoặc Youtube (https://...)"
+                        : "Dán URL Video MP4/Youtube (https://...)"
                     }
                     value={inputMediaUrl}
                     onChange={(e) => setInputMediaUrl(e.target.value)}
-                    className={`flex-1 px-3.5 py-2 rounded-xl text-sm focus:outline-none transition-all ${
+                    className={`flex-1 px-3 py-1.5 rounded-xl text-xs sm:text-sm focus:outline-none transition-all ${
                       isDark
                         ? "bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:border-cyan-400"
                         : "bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
                     }`}
                   />
-                  <button
-                    type="button"
-                    onClick={handleAddMedia}
-                    className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white text-sm font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0 shadow-md active:scale-95"
-                  >
-                    <Plus size={15} />
-                    <span>Thêm</span>
-                  </button>
+
+                  <div className="flex gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploadingFile}
+                      className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/30 text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shadow-sm active:scale-95"
+                    >
+                      <Upload size={13} />
+                      <span>Tải tệp</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleAddMedia}
+                      className="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shadow-md active:scale-95"
+                    >
+                      <Plus size={13} />
+                      <span>Thêm URL</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
               {/* Image & Video Dropzone & Preview Gallery */}
               <div>
                 <label className={`block text-sm font-semibold mb-2 ${isDark ? "text-white/80" : "text-slate-700"}`}>
-                  Danh sách phương tiện ({formData.mediaItems.length} tập tin)
+                  Danh sách phương tiện ({(formData.mediaItems || []).length} tập tin)
                 </label>
 
                 <div
-                  className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar"
+                  className="flex gap-3 overflow-x-auto pb-1.5 custom-scrollbar-thin"
                 >
-                  {formData.mediaItems.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className={`relative w-28 h-24 rounded-2xl overflow-hidden border shrink-0 group shadow-md ${
-                        isDark ? "border-white/20 bg-black/40" : "border-slate-200 bg-slate-100"
-                      }`}
-                    >
-                      {item.type === "video" ? (
-                        <div className="w-full h-full bg-slate-950 flex flex-col items-center justify-center text-cyan-400 relative">
-                          <video src={item.url} className="w-full h-full object-cover" muted />
-                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                            <Film size={24} className="text-cyan-400" />
-                          </div>
-                          <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/80 text-[10px] text-cyan-300 font-bold">
-                            VIDEO
-                          </span>
-                        </div>
-                      ) : (
-                        <img src={item.url} alt="Thumbnail" className="w-full h-full object-cover" />
-                      )}
+                  {(formData.mediaItems || []).map((item, idx) => {
+                    const mediaUrl = typeof item === "string" ? item : item?.url || "";
+                    const mediaType = typeof item === "string" ? "image" : item?.type || "image";
 
-                      <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
-                        <button
-                          type="button"
-                          onClick={() => handleMediaMove(idx, -1)}
-                          disabled={idx === 0}
-                          className="p-1.5 rounded-lg bg-white/20 hover:bg-white/40 text-white disabled:opacity-30 cursor-pointer"
-                        >
-                          <ArrowLeft size={12} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleMediaRemove(idx)}
-                          className="p-1.5 rounded-lg bg-rose-500/80 hover:bg-rose-600 text-white cursor-pointer"
-                        >
-                          <Trash2 size={12} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleMediaMove(idx, 1)}
-                          disabled={idx === formData.mediaItems.length - 1}
-                          className="p-1.5 rounded-lg bg-white/20 hover:bg-white/40 text-white disabled:opacity-30 cursor-pointer"
-                        >
-                          <ArrowRight size={12} />
-                        </button>
+                    return (
+                      <div
+                        key={idx}
+                        className={`relative w-28 h-24 rounded-2xl overflow-hidden border shrink-0 group shadow-md ${
+                          isDark ? "border-white/20 bg-black/40" : "border-slate-200 bg-slate-100"
+                        }`}
+                      >
+                        {mediaType === "video" ? (
+                          <div className="w-full h-full bg-slate-950 flex flex-col items-center justify-center text-cyan-400 relative">
+                            <video src={mediaUrl} className="w-full h-full object-cover" muted />
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                              <Film size={24} className="text-cyan-400" />
+                            </div>
+                            <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/80 text-[10px] text-cyan-300 font-bold">
+                              VIDEO
+                            </span>
+                          </div>
+                        ) : (
+                          <img
+                            src={mediaUrl}
+                            alt={`Media ${idx + 1}`}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&auto=format&fit=crop";
+                            }}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+
+                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleMediaMove(idx, -1)}
+                            disabled={idx === 0}
+                            className="p-1.5 rounded-lg bg-white/20 hover:bg-white/40 text-white disabled:opacity-30 cursor-pointer"
+                          >
+                            <ArrowLeft size={12} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleMediaRemove(idx)}
+                            className="p-1.5 rounded-lg bg-rose-500/80 hover:bg-rose-600 text-white cursor-pointer"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleMediaMove(idx, 1)}
+                            disabled={idx === (formData.mediaItems || []).length - 1}
+                            className="p-1.5 rounded-lg bg-white/20 hover:bg-white/40 text-white disabled:opacity-30 cursor-pointer"
+                          >
+                            <ArrowRight size={12} />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
+              {/* Hidden 3D and Audio File Inputs */}
+              <input
+                ref={model3DInputRef}
+                type="file"
+                accept=".glb,.gltf"
+                onChange={handleModel3DUpload}
+                className="hidden"
+              />
+              <input
+                ref={soundInputRef}
+                type="file"
+                accept="audio/*,.mp3,.wav,.ogg"
+                onChange={handleSoundUpload}
+                className="hidden"
+              />
+
               {/* 3D Model & Audio Link Section */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className={`block text-sm font-semibold mb-1.5 flex items-center gap-1.5 ${
-                    isDark ? "text-white/80" : "text-slate-700"
-                  }`}>
-                    <Box size={14} className="text-cyan-400" />
-                    <span>Mô hình 3D tương tác (.glb/.gltf)</span>
-                  </label>
+                {/* 3D Model */}
+                <div className={`p-3.5 rounded-2xl border flex flex-col justify-between ${
+                  isDark ? "bg-white/[0.03] border-white/10" : "bg-slate-50/80 border-slate-200/80"
+                }`}>
+                  <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                    <label className={`text-xs sm:text-sm font-semibold flex items-center gap-1.5 ${
+                      isDark ? "text-white/90" : "text-slate-800"
+                    }`}>
+                      <Box size={15} className="text-cyan-400 shrink-0" />
+                      <span>Mô hình 3D (.glb / .gltf)</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => model3DInputRef.current?.click()}
+                      disabled={isUploadingFile}
+                      className="px-2.5 py-1 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-400/30 text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0 active:scale-95 shadow-sm"
+                    >
+                      <Upload size={13} />
+                      <span>Tải từ máy</span>
+                    </button>
+                  </div>
                   <input
                     type="text"
-                    placeholder="URL file 3D (https://...)"
+                    placeholder="URL file mô hình 3D (https://...)"
                     value={formData.model3dUrl}
                     onChange={(e) => setFormData({ ...formData, model3dUrl: e.target.value })}
-                    className={`w-full px-3.5 py-2.5 rounded-xl text-sm focus:outline-none transition-all ${
+                    className={`w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm focus:outline-none transition-all ${
                       isDark
-                        ? "bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:border-cyan-400"
-                        : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
+                        ? "bg-slate-900/80 border border-white/15 text-white placeholder:text-white/30 focus:border-cyan-400"
+                        : "bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
                     }`}
                   />
                 </div>
 
-                <div>
-                  <label className={`block text-sm font-semibold mb-1.5 flex items-center gap-1.5 ${
-                    isDark ? "text-white/80" : "text-slate-700"
-                  }`}>
-                    <Music size={14} className="text-cyan-400" />
-                    <span>Âm thanh đại dương (.mp3/.wav)</span>
-                  </label>
+                {/* Ocean Audio */}
+                <div className={`p-3.5 rounded-2xl border flex flex-col justify-between ${
+                  isDark ? "bg-white/[0.03] border-white/10" : "bg-slate-50/80 border-slate-200/80"
+                }`}>
+                  <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                    <label className={`text-xs sm:text-sm font-semibold flex items-center gap-1.5 ${
+                      isDark ? "text-white/90" : "text-slate-800"
+                    }`}>
+                      <Music size={15} className="text-cyan-400 shrink-0" />
+                      <span>Âm thanh sinh vật (.mp3 / .wav)</span>
+                    </label>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => soundInputRef.current?.click()}
+                        disabled={isUploadingFile}
+                        className="px-2.5 py-1 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-400/30 text-xs font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95 shadow-sm"
+                      >
+                        <Upload size={13} />
+                        <span>Tải từ máy</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsSoundPickerOpen(true)}
+                        className="px-2.5 py-1 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/35 text-indigo-300 border border-indigo-400/40 text-xs font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95 shadow-sm"
+                      >
+                        <Search size={13} />
+                        <span>Kho âm thanh</span>
+                      </button>
+                    </div>
+                  </div>
                   <input
                     type="text"
-                    placeholder="URL tiếng kêu sinh vật (https://...)"
+                    placeholder="URL âm thanh sinh vật (https://...)"
                     value={formData.soundUrl}
                     onChange={(e) => setFormData({ ...formData, soundUrl: e.target.value })}
-                    className={`w-full px-3.5 py-2.5 rounded-xl text-sm focus:outline-none transition-all ${
+                    className={`w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm focus:outline-none transition-all ${
                       isDark
-                        ? "bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:border-cyan-400"
-                        : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
+                        ? "bg-slate-900/80 border border-white/15 text-white placeholder:text-white/30 focus:border-cyan-400"
+                        : "bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
                     }`}
                   />
                 </div>
@@ -882,7 +1147,7 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
                   placeholder="Nhập mô tả về tập tính, môi trường sống và đặc điểm nhận dạng..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className={`w-full p-3.5 rounded-2xl text-sm focus:outline-none transition-all resize-none ${
+                  className={`w-full p-3.5 rounded-2xl text-sm focus:outline-none transition-all resize-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
                     isDark
                       ? "bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:border-cyan-400"
                       : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
@@ -919,6 +1184,14 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
           </button>
         </div>
       </div>
+
+      {/* Ocean Sound Library Slide-over Modal */}
+      <OceanSoundPickerModal
+        isOpen={isSoundPickerOpen}
+        onClose={() => setIsSoundPickerOpen(false)}
+        onSelectSound={(soundUrl) => setFormData((prev) => ({ ...prev, soundUrl }))}
+        currentSoundUrl={formData.soundUrl}
+      />
     </div>
   );
 }

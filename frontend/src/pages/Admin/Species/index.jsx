@@ -255,10 +255,14 @@ export default function SpeciesManagement() {
 
   const handleSaveSpeciesModal = async (form) => {
     if (editingSpecies) {
+      let updatedData = null;
       try {
-        await updateAdminSpecies(editingSpecies.id, form);
-      } catch {
-        // Local fallback
+        const res = await updateAdminSpecies(editingSpecies.id, form);
+        if (res?.success && res?.data) {
+          updatedData = res.data;
+        }
+      } catch (err) {
+        console.warn("Backend update API fallback:", err.message);
       }
 
       setSpeciesList((prev) =>
@@ -266,29 +270,46 @@ export default function SpeciesManagement() {
           sp.id === editingSpecies.id
             ? {
                 ...sp,
-                name: form.name,
-                scientificName: form.scientificName,
-                location: form.oceanZone,
-                conservationCode: form.conservationStatus,
-                description: form.description,
-                images: form.images,
+                name: form.name || sp.name,
+                scientificName: form.scientificName || sp.scientificName,
+                location: form.oceanZone || sp.location,
+                conservationCode: form.conservationStatus || sp.conservationCode,
+                description: form.description || sp.description,
+                images: form.images || sp.images,
+                depth: `${form.depthMin || 0}-${form.depthMax || 100}m`,
+                size: `${form.sizeMinCm || 100} - ${form.sizeMaxCm || 400} cm`,
+                diet: form.diet || sp.diet,
+                lifespan: `${form.lifespanYears || 20} năm`,
+                model3dUrl: form.model3dUrl,
+                soundUrl: form.soundUrl,
+                ...(updatedData
+                  ? {
+                      code: updatedData.code || sp.code,
+                      name: updatedData.common_name || form.name,
+                      scientificName: updatedData.scientificName || form.scientificName,
+                    }
+                  : {}),
               }
             : sp
         )
       );
     } else {
+      let createdData = null;
       try {
-        await createAdminSpecies(form);
-      } catch {
-        // Local fallback
+        const res = await createAdminSpecies(form);
+        if (res?.success && res?.data) {
+          createdData = res.data;
+        }
+      } catch (err) {
+        console.warn("Backend create API fallback:", err.message);
       }
 
-      const newId = String(Date.now());
+      const newId = createdData?.id ? String(createdData.id) : String(Date.now());
       const newSp = {
         id: newId,
-        code: `SV${String(speciesList.length + 1).padStart(6, "0")}`,
-        name: form.name || "Sinh vật mới",
-        gbifId: "2431178",
+        code: createdData?.code || `SV${String(speciesList.length + 1).padStart(6, "0")}`,
+        name: createdData?.common_name || form.name || "Sinh vật mới",
+        gbifId: createdData?.slug || "2431178",
         source: "GBIF",
         location: form.oceanZone || "Sunlight",
         conservation: "Sắp nguy cấp",
@@ -296,18 +317,20 @@ export default function SpeciesManagement() {
         views: 0,
         status: "Hiển thị",
         is_visible: true,
-        scientificName: form.scientificName || "Species sci",
+        scientificName: createdData?.scientificName || form.scientificName || "Species sci",
         classification: "Động vật",
-        size: "2 - 4 m",
+        size: `${form.sizeMinCm || 100} - ${form.sizeMaxCm || 400} cm`,
         depth: `${form.depthMin || 0}-${form.depthMax || 100}m`,
-        waterTemp: "22°C",
+        waterTemp: `${form.tempMinC || 10}-${form.tempMaxC || 25}°C`,
         geoZone: "Thái Bình Dương",
-        diet: "Ăn cá nhỏ",
-        lifespan: "15 năm",
+        diet: form.diet || "Kẻ săn mồi",
+        lifespan: `${form.lifespanYears || 20} năm`,
         groupName: "Kẻ săn mồi",
         dateAdded: new Date().toLocaleDateString("vi-VN"),
         description: form.description || "Mô tả sinh vật...",
-        images: form.images,
+        images: form.images || [],
+        model3dUrl: form.model3dUrl,
+        soundUrl: form.soundUrl,
       };
       setSpeciesList([newSp, ...speciesList]);
       setSelectedRowId(newId);
