@@ -58,6 +58,7 @@ function App() {
           <Route path="stats" element={<AdminDashboard />} />
           <Route path="species" element={<SpeciesManagement />} />
           <Route path="groups" element={<SpeciesGroupsManagement />} />
+          <Route path="species-groups" element={<Navigate to="/admin/groups" replace />} />
           <Route path="locations" element={<LocationsManagement />} />
           <Route path="users" element={<UsersManagement />} />
           <Route path="comments" element={<CommentsManagement />} />
