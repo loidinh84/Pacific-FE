@@ -93,10 +93,3 @@ export const fetchMyExplored = async (params = { page: 1, limit: 12 }) => {
   return res.data;
 };
 
-/**
- * Lấy hồ sơ công khai của một người dùng bất kỳ theo username (Public)
- */
-export const fetchPublicProfile = async (username) => {
-  const res = await axios.get(`${API_BASE_URL}/${username}`);
-  return res.data;
-};

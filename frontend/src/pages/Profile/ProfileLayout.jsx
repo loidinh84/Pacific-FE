@@ -86,7 +86,7 @@ export default function ProfileLayout() {
               </Link>
 
               {/* Sidebar Menu Container */}
-              <div className="bg-[#1b254b]/90 backdrop-blur-xl border border-white/15 rounded-3xl p-5 shadow-2xl space-y-5">
+              <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-5">
                 <div>
                   <h3 className="text-[11px] font-bold text-white/40 uppercase tracking-wider mb-3 px-3">
                     Cài đặt
@@ -99,10 +99,10 @@ export default function ProfileLayout() {
                         <button
                           key={item.id}
                           onClick={() => setActiveTab(item.id)}
-                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                             isActive
-                              ? "bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-white shadow-[0_8px_20px_rgba(14,165,233,0.3)] translate-x-1"
-                              : "text-white/70 hover:text-white hover:bg-white/10"
+                              ? "bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-white"
+                              : "text-white/70 hover:text-white hover:bg-white/5"
                           }`}
                         >
                           <Icon size={16} className={isActive ? "text-white" : "text-pacific-cyan"} />

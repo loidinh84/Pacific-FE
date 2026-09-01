@@ -49,8 +49,8 @@ export default function FavoritesTab() {
           {error}
         </div>
       ) : favorites.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 px-6 bg-[#1b254b]/60 border border-white/10 rounded-3xl text-center">
-          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-4 shadow-lg">
+        <div className="flex flex-col items-center justify-center py-20 px-6 bg-[#1b254b]/60 border border-white/10 rounded-2xl text-center">
+          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-4">
             <Heart size={28} />
           </div>
           <h3 className="text-base font-bold text-white mb-1">Chưa có sinh vật yêu thích</h3>
@@ -59,7 +59,7 @@ export default function FavoritesTab() {
           </p>
           <Link
             to="/search"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all shadow-md"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all"
           >
             <Compass size={16} />
             <span>Khám phá sinh vật ngay</span>
@@ -72,7 +72,7 @@ export default function FavoritesTab() {
               <Link
                 key={item.creatureId}
                 to={`/species/${item.slug || item.creatureId}`}
-                className="group bg-[#1b254b]/80 hover:bg-[#202c59] border border-white/10 hover:border-pacific-cyan/40 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_10px_25px_rgba(14,165,233,0.2)] hover:-translate-y-1 flex flex-col"
+                className="group bg-[#182245]/80 hover:bg-[#1f2b56] border border-white/10 hover:border-pacific-cyan/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col"
               >
                 <div className="relative aspect-4/3 w-full bg-[#121933] overflow-hidden">
                   <img

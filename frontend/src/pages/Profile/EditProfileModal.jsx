@@ -115,8 +115,8 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-[#192348] border border-white/15 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.6),0_0_30px_rgba(14,165,233,0.2)] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg bg-[#192348] border border-white/15 rounded-2xl shadow-xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5">
           <h2 className="text-lg font-bold text-white font-heading">Chỉnh sửa hồ sơ cá nhân</h2>
@@ -147,7 +147,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
           {/* Avatar Edit Section */}
           <div className="flex items-center gap-4 py-2">
             <div className="relative group">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold overflow-hidden shadow-lg border border-white/20">
+              <div className="w-20 h-20 rounded-2xl bg-[#161f3e] border border-white/20 flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
                 {avatarPreview ? (
                   <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
@@ -244,7 +244,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
             <button
               type="submit"
               disabled={isLoading}
-              className="px-6 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-60"
+              className="px-6 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
             >
               {isLoading ? (
                 <>

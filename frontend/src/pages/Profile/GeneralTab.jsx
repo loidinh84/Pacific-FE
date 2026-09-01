@@ -102,7 +102,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
   return (
     <div className="space-y-6">
       {/* 1. THẺ THÔNG TIN HỒ SƠ */}
-      <div className="bg-[#1b254b]/80 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-8 shadow-xl">
+      <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8">
         <div className="flex items-center justify-between pb-5 border-b border-white/10 mb-6">
           <h2 className="text-lg font-bold text-white font-heading flex items-center gap-2.5">
             <User size={20} className="text-pacific-cyan" />
@@ -110,7 +110,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
           </h2>
           <button
             onClick={onOpenEditModal}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-semibold text-white transition-all active:scale-95 cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-semibold text-white transition-all active:scale-95 cursor-pointer"
           >
             <Edit3 size={14} className="text-pacific-cyan" />
             <span>Chỉnh sửa</span>
@@ -121,16 +121,14 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
           {/* Avatar Area */}
           <div className="md:col-span-3 flex flex-col items-center justify-center">
             <div className="relative group">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-cyan-400 p-0.5 shadow-[0_10px_30px_rgba(14,165,233,0.3)]">
-                <div className="w-full h-full bg-[#161f3e] rounded-[22px] flex items-center justify-center overflow-hidden">
-                  {user?.avatar ? (
-                    <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-3xl font-black text-white">
-                      {user?.username?.charAt(0).toUpperCase() || "U"}
-                    </span>
-                  )}
-                </div>
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#161f3e] border border-white/20 flex items-center justify-center overflow-hidden">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-3xl font-black text-white">
+                    {user?.username?.charAt(0).toUpperCase() || "U"}
+                  </span>
+                )}
               </div>
             </div>
             <span className="mt-3 text-xs font-semibold text-white/50">
@@ -181,7 +179,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
       </div>
 
       {/* 2. THẺ THAY ĐỔI EMAIL */}
-      <div className="bg-[#1b254b]/80 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-8 shadow-xl">
+      <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8">
         <h2 className="text-lg font-bold text-white font-heading mb-6 flex items-center gap-2.5">
           <Mail size={20} className="text-pacific-cyan" />
           <span>Thay đổi email</span>
@@ -237,7 +235,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
             <button
               type="submit"
               disabled={isEmailLoading}
-              className="px-6 py-2.5 bg-gradient-to-r from-pacific-blue-bright to-pacific-teal hover:brightness-110 active:scale-95 rounded-xl text-xs font-bold text-white transition-all flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-60"
+              className="px-6 py-2.5 bg-gradient-to-r from-pacific-blue-bright to-pacific-teal hover:brightness-110 active:scale-95 rounded-xl text-xs font-bold text-white transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
             >
               {isEmailLoading ? (
                 <>
@@ -253,7 +251,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
       </div>
 
       {/* 3. THẺ THAY ĐỔI MẬT KHẨU */}
-      <div className="bg-[#1b254b]/80 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-8 shadow-xl">
+      <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8">
         <h2 className="text-lg font-bold text-white font-heading mb-6 flex items-center gap-2.5">
           <Lock size={20} className="text-pacific-cyan" />
           <span>Thay đổi mật khẩu</span>
@@ -314,7 +312,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
             <button
               type="submit"
               disabled={isPasswordLoading}
-              className="px-6 py-2.5 bg-gradient-to-r from-pacific-blue-bright to-pacific-teal hover:brightness-110 active:scale-95 rounded-xl text-xs font-bold text-white transition-all flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-60"
+              className="px-6 py-2.5 bg-gradient-to-r from-pacific-blue-bright to-pacific-teal hover:brightness-110 active:scale-95 rounded-xl text-xs font-bold text-white transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
             >
               {isPasswordLoading ? (
                 <>

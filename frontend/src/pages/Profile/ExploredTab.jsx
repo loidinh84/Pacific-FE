@@ -49,8 +49,8 @@ export default function ExploredTab() {
           {error}
         </div>
       ) : explored.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 px-6 bg-[#1b254b]/60 border border-white/10 rounded-3xl text-center">
-          <div className="w-16 h-16 rounded-2xl bg-pacific-blue-bright/10 border border-pacific-blue-bright/20 flex items-center justify-center text-pacific-cyan mb-4 shadow-lg">
+        <div className="flex flex-col items-center justify-center py-20 px-6 bg-[#1b254b]/60 border border-white/10 rounded-2xl text-center">
+          <div className="w-16 h-16 rounded-2xl bg-pacific-blue-bright/10 border border-pacific-blue-bright/20 flex items-center justify-center text-pacific-cyan mb-4">
             <Compass size={28} />
           </div>
           <h3 className="text-base font-bold text-white mb-1">Chưa có dấu chân thám hiểm</h3>
@@ -59,7 +59,7 @@ export default function ExploredTab() {
           </p>
           <Link
             to="/"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all shadow-md"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all"
           >
             <Compass size={16} />
             <span>Thám hiểm bản đồ biển</span>
@@ -71,7 +71,7 @@ export default function ExploredTab() {
             {explored.map((item) => (
               <div
                 key={item.locationId}
-                className="group bg-[#1b254b]/80 hover:bg-[#202c59] border border-white/10 hover:border-pacific-cyan/40 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_10px_25px_rgba(14,165,233,0.2)] hover:-translate-y-1 flex flex-col"
+                className="group bg-[#182245]/80 hover:bg-[#1f2b56] border border-white/10 hover:border-pacific-cyan/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col"
               >
                 <div className="relative aspect-16/9 w-full bg-[#121933] overflow-hidden">
                   <img
