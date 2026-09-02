@@ -77,26 +77,34 @@ export default function AddEditGroupModal({
   const isEdit = !!editingGroup;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150 ${
+        isDark ? "bg-black/30 text-white" : "bg-slate-900/30 text-slate-800"
+      }`}
+    >
       <div
         className={`relative w-full max-w-lg sm:max-w-xl rounded-3xl border p-6 sm:p-8 shadow-2xl transition-all ${
           isDark
-            ? "bg-[#18254b]/95 border-white/15 text-white shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
-            : "bg-white border-slate-200 text-slate-900 shadow-xl"
+            ? "bg-[#142247]/95 border-cyan-400/40 text-white shadow-[0_25px_60px_rgba(0,0,0,0.7),0_0_35px_rgba(6,182,212,0.18)]"
+            : "bg-white border-slate-300 text-slate-900 shadow-2xl"
         }`}
       >
         {/* Header */}
-        <div className="flex items-start justify-between pb-3 mb-2">
+        <div className="flex items-start justify-between pb-3 mb-2 border-b border-white/10">
           <div>
-            <h2 className="text-base sm:text-lg font-bold font-heading">
+            <h2 className="text-base sm:text-lg font-bold font-heading tracking-tight text-white">
               {isEdit ? "Chỉnh sửa nhóm" : "Thêm nhóm mới"}
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">Thông tin nhóm</p>
+            <p className="text-xs text-cyan-200/70 mt-0.5 font-medium">Thông tin nhóm sinh vật</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+            className={`p-1.5 rounded-full border transition-colors cursor-pointer ${
+              isDark
+                ? "bg-white/10 hover:bg-white/20 border-white/20 text-white"
+                : "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700"
+            }`}
           >
             <X size={18} />
           </button>
@@ -104,7 +112,7 @@ export default function AddEditGroupModal({
 
         {/* Error message */}
         {error && (
-          <div className="mb-4 p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-medium text-center">
+          <div className="mb-4 p-2.5 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-200 text-xs font-semibold text-center">
             {error}
           </div>
         )}
@@ -113,7 +121,7 @@ export default function AddEditGroupModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* 1. Tên nhóm */}
           <div>
-            <label className="block text-xs sm:text-sm font-semibold mb-1.5">
+            <label className="block text-xs sm:text-sm font-semibold mb-1.5 text-slate-200">
               Tên nhóm <span className="text-rose-400">*</span>
             </label>
             <input
@@ -124,15 +132,15 @@ export default function AddEditGroupModal({
               onChange={(e) => setName(e.target.value)}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-none transition-all ${
                 isDark
-                  ? "bg-[#121c38] border border-white/15 text-white placeholder:text-white/30 focus:border-cyan-400"
-                  : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
+                  ? "bg-[#0e1732] border border-white/20 text-white placeholder:text-white/40 focus:border-cyan-400 focus:bg-[#121c3d]"
+                  : "bg-white border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
               }`}
             />
           </div>
 
           {/* 2. Mô tả ngắn */}
           <div>
-            <label className="block text-xs sm:text-sm font-semibold mb-1.5">
+            <label className="block text-xs sm:text-sm font-semibold mb-1.5 text-slate-200">
               Mô tả ngắn
             </label>
             <textarea
@@ -143,8 +151,8 @@ export default function AddEditGroupModal({
               onChange={(e) => setDescription(e.target.value)}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-none transition-all resize-none ${
                 isDark
-                  ? "bg-[#121c38] border border-white/15 text-white placeholder:text-white/30 focus:border-cyan-400"
-                  : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
+                  ? "bg-[#0e1732] border border-white/20 text-white placeholder:text-white/40 focus:border-cyan-400 focus:bg-[#121c3d]"
+                  : "bg-white border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
               }`}
             />
           </div>
