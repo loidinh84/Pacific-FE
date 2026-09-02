@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Search from "./pages/Search";
 import ResetPassword from "./pages/ResetPassword";
 import SpeciesDetail from "./pages/SpeciesDetail";
+import OceanDepth from "./pages/OceanDepth";
 import SpeciesView3D from "./pages/SpeciesView3D";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProfileLayout from "./pages/Profile";
@@ -29,6 +30,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/search" element={<Search />} />
         <Route path="/species/:id" element={<SpeciesDetail />} />
+        <Route path="/ocean-depth" element={<OceanDepth />} />
         <Route path="/species/:id/3d" element={<SpeciesView3D />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

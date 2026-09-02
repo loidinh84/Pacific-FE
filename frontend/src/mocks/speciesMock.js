@@ -250,6 +250,85 @@ export const SEARCH_SPECIES_CATALOG = [
           "Symmetrical tail fin delivering explosive propulsion for surface breaches.",
       },
     ],
+    anatomyLayers: [
+      {
+        percent: 100,
+        labelVi: "Ngoại hình",
+        labelEn: "Exterior",
+        descVi: "Hình dạng bên ngoài — da, vây và đường nét cơ thể.",
+        descEn: "External appearance — skin, fins and body contour.",
+        filter: "none",
+        accent: "cyan",
+        hotspots: [
+          { id: "e1", x: 12, y: 50, labelVi: "Mõm nhọn", labelEn: "Pointed Snout", descVi: "Mõm hình nón nhọn tối ưu hóa khí động học, giảm lực cản nước khi lao vào con mồi.", descEn: "Cone-shaped snout minimizes hydrodynamic drag for high-speed strikes." },
+          { id: "e2", x: 32, y: 25, labelVi: "Vây lưng", labelEn: "Dorsal Fin", descVi: "Vây lưng lớn giúp ổn định hướng bơi và là dấu hiệu nhận dạng cá nhân.", descEn: "Large dorsal fin stabilizes swimming trajectory and enables individual ID." },
+          { id: "e3", x: 50, y: 65, labelVi: "Vây ngực", labelEn: "Pectoral Fins", descVi: "Cặp vây ngực dài tạo lực nâng như cánh máy bay, kiểm soát độ sâu lặn.", descEn: "Long pectoral fins generate lift like aircraft wings to control diving depth." },
+          { id: "e4", x: 88, y: 48, labelVi: "Vây đuôi", labelEn: "Caudal Fin", descVi: "Vây đuôi đối xứng hình lưỡi liềm tạo lực đẩy bùng nổ tới 56 km/h.", descEn: "Symmetrical crescent tail delivers explosive thrust up to 56 km/h." },
+          { id: "e5", x: 65, y: 55, labelVi: "Da vảy răng cưa", labelEn: "Dermal Denticles", descVi: "Bề mặt da phủ hàng triệu vảy nhỏ hình răng cưa giảm lực cản và tiếng ồn khi bơi.", descEn: "Millions of tooth-like denticles reduce drag and turbulence noise." }
+        ]
+      },
+      {
+        percent: 75,
+        labelVi: "Da & Giác quan",
+        labelEn: "Skin & Senses",
+        descVi: "Lớp da và hệ thống giác quan siêu nhạy bên dưới.",
+        descEn: "Skin layer and hyper-sensitive sensory systems beneath.",
+        filter: "sepia(0.55) saturate(1.4) brightness(1.05)",
+        accent: "amber",
+        hotspots: [
+          { id: "s1", x: 18, y: 44, labelVi: "Lỗ điện thụ cảm", labelEn: "Ampullae of Lorenzini", descVi: "Hàng trăm lỗ thụ cảm quanh mõm phát hiện điện sinh học cực nhỏ từ tim con mồi.", descEn: "Hundreds of jelly pores detect micro-volt bioelectric fields from prey heartbeats." },
+          { id: "s2", x: 50, y: 50, labelVi: "Đường bên", labelEn: "Lateral Line", descVi: "Hệ thống cơ quan nhận rung động áp suất nước kéo dài từ đầu đến đuôi.", descEn: "Pressure-wave receptor system running head to tail detects movement in water." },
+          { id: "s3", x: 30, y: 58, labelVi: "Khe mang", labelEn: "Gill Slits", descVi: "5 khe mang lớn trích xuất oxy từ nước biển liên tục trong khi bơi.", descEn: "5 large gill slits extract dissolved oxygen continuously while swimming." },
+          { id: "s4", x: 22, y: 38, labelVi: "Mắt & Màng mờ", labelEn: "Eye & Nictitating Membrane", descVi: "Mắt lớn thích nghi nhìn dưới nước, có màng mờ bảo vệ khi tấn công.", descEn: "Large eyes adapted for low-light vision, protected by nictitating membrane during attack." }
+        ]
+      },
+      {
+        percent: 50,
+        labelVi: "Cơ bắp",
+        labelEn: "Muscle Layer",
+        descVi: "Hệ cơ bắp mạnh mẽ tạo ra lực bơi và tốc độ tấn công.",
+        descEn: "Powerful muscle systems generating propulsion and attack velocity.",
+        filter: "hue-rotate(320deg) saturate(2.2) brightness(0.88) contrast(1.1)",
+        accent: "rose",
+        hotspots: [
+          { id: "m1", x: 20, y: 50, labelVi: "Cơ hàm", labelEn: "Jaw Muscles", descVi: "Cơ hàm cực mạnh tạo lực cắn ước tính 18,000 Newton — đủ xuyên qua thép mỏng.", descEn: "Massive jaw muscles deliver an estimated 18,000 N bite force — enough to pierce thin steel." },
+          { id: "m2", x: 45, y: 45, labelVi: "Cơ hông bơi", labelEn: "Epaxial Muscles", descVi: "Khối cơ epaxial dọc lưng cung cấp lực đẩy chính khi vẫy đuôi.", descEn: "Dorsal epaxial muscle blocks provide primary propulsive power during tail oscillation." },
+          { id: "m3", x: 72, y: 52, labelVi: "Cơ đuôi", labelEn: "Caudal Peduncle Muscles", descVi: "Cơ cuống đuôi đặc biệt cứng chắc, chuyển đổi năng lượng thành lực đẩy tối đa.", descEn: "Rigid caudal peduncle muscles convert stored energy into maximum thrust." },
+          { id: "m4", x: 50, y: 60, labelVi: "Cơ vây ngực", labelEn: "Pectoral Muscles", descVi: "Cơ vây ngực điều chỉnh góc vây để kiểm soát hướng lặn và độ sâu.", descEn: "Pectoral fin muscles adjust fin angle for precise depth and direction control." }
+        ]
+      },
+      {
+        percent: 25,
+        labelVi: "Nội tạng",
+        labelEn: "Internal Organs",
+        descVi: "Hệ thống nội tạng phức tạp duy trì sự sống và săn mồi.",
+        descEn: "Complex organ systems sustaining life and predatory function.",
+        filter: "hue-rotate(185deg) saturate(1.9) brightness(0.82) contrast(1.15)",
+        accent: "blue",
+        hotspots: [
+          { id: "o1", x: 18, y: 52, labelVi: "Hàm & Răng", labelEn: "Jaws & Teeth", descVi: "Hàm không gắn vào hộp sọ, đẩy ra ngoài khi đớp mồi. Trong vòng đời thay tới 50,000 răng.", descEn: "Jaws protrude during biting. Up to 50,000 teeth replaced over a lifetime." },
+          { id: "o2", x: 28, y: 42, labelVi: "Não & Khứu giác", labelEn: "Brain & Olfactory Lobe", descVi: "Thùy khứu giác chiếm 2/3 não bộ, phát hiện 1 giọt máu trong 100 lít nước biển.", descEn: "Olfactory lobe makes up 2/3 of brain; detects 1 blood drop in 100L seawater." },
+          { id: "o3", x: 42, y: 56, labelVi: "Gan tích dầu", labelEn: "Oil-Rich Liver", descVi: "Gan khổng lồ chiếm 28% khối lượng cơ thể, chứa dầu squalene giúp nổi tự nhiên.", descEn: "Massive liver (28% body mass) filled with squalene oil for natural buoyancy." },
+          { id: "o4", x: 55, y: 58, labelVi: "Dạ dày & Van xoắn", labelEn: "Stomach & Spiral Valve", descVi: "Van xoắn ruột tăng diện tích hấp thụ gấp 5 lần, tiêu hóa con mồi lớn trong vài ngày.", descEn: "Spiral intestinal valve quintuples absorption area; digests large prey over days." },
+          { id: "o5", x: 38, y: 48, labelVi: "Tim 2 ngăn", labelEn: "Two-Chamber Heart", descVi: "Tim 2 ngăn bơm máu giàu oxy qua mạng Rete Mirabile duy trì nhiệt độ cơ thể.", descEn: "Two-chamber heart pumps oxygenated blood through Rete Mirabile heat-exchange network." }
+        ]
+      },
+      {
+        percent: 0,
+        labelVi: "Xương sụn",
+        labelEn: "Cartilage Skeleton",
+        descVi: "Bộ khung xương sụn dẻo dai thay thế hoàn toàn xương cứng.",
+        descEn: "Flexible cartilaginous skeleton fully replacing rigid bone.",
+        filter: "grayscale(1) contrast(1.7) brightness(1.25) invert(0.08)",
+        accent: "slate",
+        hotspots: [
+          { id: "b1", x: 16, y: 48, labelVi: "Hộp sọ sụn", labelEn: "Chondrocranium", descVi: "Hộp sọ sụn bảo vệ não nhẹ hơn xương cứng 30%, giúp tăng tốc linh hoạt hơn.", descEn: "Cartilaginous braincase is 30% lighter than bone, enabling sharper acceleration." },
+          { id: "b2", x: 18, y: 56, labelVi: "Xương hàm sụn", labelEn: "Cartilage Jaw", descVi: "Hàm trên (palatoquadrate) và hàm dưới (Meckel's) làm từ sụn cứng hóa khoáng.", descEn: "Upper (palatoquadrate) and lower (Meckel's) jaws of mineralized cartilage." },
+          { id: "b3", x: 50, y: 42, labelVi: "Cột sống sụn", labelEn: "Vertebral Column", descVi: "Cột sống gồm hàng trăm đốt sụn xếp chồng, đàn hồi dẻo dai hơn xương cứng.", descEn: "Hundreds of stacked cartilage vertebrae — more elastic and flexible than bone." },
+          { id: "b4", x: 30, y: 28, labelVi: "Vòm mang sụn", labelEn: "Gill Arches", descVi: "5 cung mang sụn nâng đỡ khe mang và kiểm soát luồng nước qua hệ hô hấp.", descEn: "5 cartilage gill arches support gill slits and regulate respiratory water flow." }
+        ]
+      }
+    ],
     hasAudio: true,
     audioLabelVi: "Tiếng rền săn mồi thủy âm",
     audioLabelEn: "Hydroacoustic predatory rumble",
@@ -509,6 +588,79 @@ export const SEARCH_SPECIES_CATALOG = [
         descEn:
           "Unique white spot patterns like fingerprints enable individual identification.",
       },
+    ],
+    anatomyLayers: [
+      {
+        percent: 100,
+        labelVi: "Ngoại hình",
+        labelEn: "Exterior",
+        descVi: "Hình dạng bên ngoài — da, vây và đường nét cơ thể.",
+        descEn: "External appearance — skin, fins and body contour.",
+        filter: "none",
+        accent: "cyan",
+        hotspots: [
+          { id: "e1", x: 78, y: 42, labelVi: "Miệng lọc khổng lồ", labelEn: "Giant Filter Mouth", descVi: "Miệng rộng 1.5m, lọc hàng ngàn lít nước mỗi giờ để lấy sinh vật phù du.", descEn: "1.5m-wide mouth filters thousands of liters per hour for plankton." },
+          { id: "e2", x: 35, y: 30, labelVi: "Vây lưng", labelEn: "Dorsal Fin", descVi: "Vây lưng cao đặc trưng giúp ổn định khi bơi và nhận dạng cá thể.", descEn: "Distinctive tall dorsal fin aids stability and individual identification." },
+          { id: "e3", x: 18, y: 38, labelVi: "Vây đuôi lưỡi liềm", labelEn: "Crescent Caudal Fin", descVi: "Vây đuôi hình lưỡi liềm tạo lực đẩy ổn định dù bơi tốc độ chậm.", descEn: "Crescent-shaped caudal fin generates steady thrust at low speeds." },
+          { id: "e4", x: 65, y: 62, labelVi: "Hoa văn đốm trắng", labelEn: "White Spot Pattern", descVi: "Mỗi cá thể có hoa văn đốm độc nhất như dấu vân tay con người.", descEn: "Each individual has unique white spot patterns like human fingerprints." }
+        ]
+      },
+      {
+        percent: 75,
+        labelVi: "Da & Giác quan",
+        labelEn: "Skin & Senses",
+        descVi: "Lớp da đặc biệt và hệ giác quan dưới da.",
+        descEn: "Specialized skin and sub-dermal sensory systems.",
+        filter: "sepia(0.5) saturate(1.3) brightness(1.05)",
+        accent: "amber",
+        hotspots: [
+          { id: "s1", x: 70, y: 44, labelVi: "Tấm lược mang", labelEn: "Gill Rakers", descVi: "Tấm lược dạng lưới tại mang giữ lại sinh vật phù du khi lọc nước.", descEn: "Mesh-like gill rakers trap plankton and small fish from filtered water." },
+          { id: "s2", x: 55, y: 30, labelVi: "Khe mang", labelEn: "Gill Slits", descVi: "5 cặp mang khổng lồ xử lý lượng nước khổng lồ liên tục khi bơi.", descEn: "5 massive gill pairs process enormous water volumes while swimming." },
+          { id: "s3", x: 40, y: 55, labelVi: "Da nhám vi tảo", labelEn: "Rough Denticled Skin", descVi: "Da phủ vảy răng cưa nhỏ (dermal denticles) giảm lực cản khi bơi.", descEn: "Skin covered in tiny dermal denticles that reduce hydrodynamic drag." }
+        ]
+      },
+      {
+        percent: 50,
+        labelVi: "Cơ bắp",
+        labelEn: "Muscle Layer",
+        descVi: "Hệ cơ bắp vận động mạnh mẽ bên dưới lớp da.",
+        descEn: "Powerful locomotion muscle system beneath the skin.",
+        filter: "hue-rotate(320deg) saturate(2) brightness(0.88) contrast(1.1)",
+        accent: "rose",
+        hotspots: [
+          { id: "m1", x: 50, y: 45, labelVi: "Cơ bơi lưng", labelEn: "Epaxial Swimming Muscles", descVi: "Khối cơ epaxial dọc sống lưng tạo chuyển động vẫy đuôi nhịp nhàng.", descEn: "Dorsal epaxial muscle blocks drive rhythmic tail oscillation for propulsion." },
+          { id: "m2", x: 25, y: 50, labelVi: "Cơ ngực", labelEn: "Pectoral Muscles", descVi: "Cơ vây ngực điều chỉnh góc vây để kiểm soát độ sâu và hướng bơi.", descEn: "Pectoral fin muscles adjust angle for precise depth and direction control." },
+          { id: "m3", x: 75, y: 50, labelVi: "Cơ cuống đuôi", labelEn: "Peduncle Muscles", descVi: "Cơ cuống đuôi cứng chắc chuyển đổi lực cơ thành lực đẩy hiệu quả.", descEn: "Rigid peduncle muscles efficiently convert muscle force to propulsion." }
+        ]
+      },
+      {
+        percent: 25,
+        labelVi: "Nội tạng",
+        labelEn: "Internal Organs",
+        descVi: "Hệ thống nội tạng duy trì cơ thể gã khổng lồ đại dương.",
+        descEn: "Organ systems sustaining this ocean giant.",
+        filter: "hue-rotate(185deg) saturate(1.8) brightness(0.82) contrast(1.15)",
+        accent: "blue",
+        hotspots: [
+          { id: "o1", x: 60, y: 52, labelVi: "Gan khổng lồ", labelEn: "Massive Liver", descVi: "Gan rất lớn lưu trữ dầu squalene giúp cơ thể nổi không tốn năng lượng.", descEn: "Enormous liver stores squalene oil enabling effortless passive buoyancy." },
+          { id: "o2", x: 45, y: 58, labelVi: "Dạ dày lọc", labelEn: "Filter Stomach", descVi: "Dạ dày xử lý lượng lớn sinh khối phù du được nuốt cùng nước biển.", descEn: "Stomach processes huge biomass of plankton swallowed with seawater." },
+          { id: "o3", x: 35, y: 44, labelVi: "Tim 2 ngăn", labelEn: "Two-Chamber Heart", descVi: "Tim bơm máu oxy đến toàn bộ cơ thể khổng lồ dài tới 18 mét.", descEn: "Heart pumps oxygenated blood throughout a body reaching 18 meters." }
+        ]
+      },
+      {
+        percent: 0,
+        labelVi: "Xương sụn",
+        labelEn: "Cartilage Skeleton",
+        descVi: "Bộ khung xương sụn nhẹ nâng đỡ cơ thể khổng lồ.",
+        descEn: "Lightweight cartilage skeleton supporting the giant body.",
+        filter: "grayscale(1) contrast(1.7) brightness(1.25) invert(0.08)",
+        accent: "slate",
+        hotspots: [
+          { id: "b1", x: 75, y: 45, labelVi: "Hộp sọ sụn", labelEn: "Chondrocranium", descVi: "Hộp sọ sụn nhẹ bảo vệ não và hệ giác quan của loài lớn nhất đại dương.", descEn: "Lightweight cartilage cranium protects the brain of the ocean's largest fish." },
+          { id: "b2", x: 50, y: 40, labelVi: "Cột sống sụn", labelEn: "Vertebral Column", descVi: "Hàng trăm đốt sụn tạo cột sống dẻo dai chịu được áp lực bơi liên tục.", descEn: "Hundreds of cartilage vertebrae form a flexible spine for continuous swimming." },
+          { id: "b3", x: 28, y: 38, labelVi: "Vây sụn", labelEn: "Fin Cartilage", descVi: "Các vây được nâng đỡ bởi tia sụn (ceratotrichia) linh hoạt thay cho xương.", descEn: "Fins supported by flexible ceratotrichia cartilage rays instead of bone." }
+        ]
+      }
     ],
     depth: "0 - 1900m",
     size: "Kích thước: 18m",

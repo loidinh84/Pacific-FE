@@ -66,6 +66,7 @@ export default function Navbar() {
   const navLinks = [
     { label: t("nav.explore"), href: "/", hasDropdown: true },
     { label: t("nav.species"), href: "/search", hasDropdown: true },
+    { label: language === "vi" ? "Độ Sâu Đại Dương" : "Ocean Depth", href: "/ocean-depth", hasDropdown: false },
     { label: t("nav.about"), href: "/#about", hasDropdown: true },
   ];
 

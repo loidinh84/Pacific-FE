@@ -160,6 +160,22 @@ const en = {
     viewMore: "View more",
     viewLess: "Show less",
   },
+  // Ocean Depth Explorer Page
+  oceanDepth: {
+    hudTitle: "Depth Gauge",
+    pressure: "Pressure",
+    temperature: "Temperature",
+    light: "Light",
+    visibility: "Visibility",
+    visGood: "Good",
+    visPoor: "Poor",
+    visNone: "None",
+    heroTitle: "Explore the Ocean Deep",
+    heroSubtitle: "Scroll down to begin your descent into the Pacific Ocean. Discover mysterious creatures and historic milestones in the planet's darkest depths.",
+    scrollDown: "Scroll down",
+    seaLevel: "Sea Level (0m)",
+    clickDetail: "Click to view details",
+  },
 };
 
 export default en;
