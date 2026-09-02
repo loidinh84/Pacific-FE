@@ -160,6 +160,22 @@ const vi = {
     viewMore: "Xem thêm",
     viewLess: "Rút gọn",
   },
+  // Ocean Depth Explorer Page
+  oceanDepth: {
+    hudTitle: "Máy đo độ sâu",
+    pressure: "Áp suất",
+    temperature: "Nhiệt độ",
+    light: "Ánh sáng",
+    visibility: "Tầm nhìn",
+    visGood: "Tốt",
+    visPoor: "Kém",
+    visNone: "Không",
+    heroTitle: "Thám Hiểm Đáy Đại Dương",
+    heroSubtitle: "Cuộn chuột xuống để bắt đầu hành trình lặn sâu vào lòng Thái Bình Dương. Khám phá những sinh vật kỳ bí và các cột mốc lịch sử ở nơi tối tăm nhất của hành tinh.",
+    scrollDown: "Cuộn xuống",
+    seaLevel: "Mực nước biển (0m)",
+    clickDetail: "Nhấn để xem chi tiết",
+  },
 };
 
 export default vi;
