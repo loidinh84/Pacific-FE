@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
+import Footer from "../../components/layout/Footer";
 import { useLanguageStore } from "../../stores/useLanguageStore";
 import { OCEAN_ZONES, DEPTH_LANDMARKS, CREATURES_BY_DEPTH } from "./depthData";
 import "./OceanDepth.css";
@@ -427,6 +428,8 @@ export default function OceanDepth() {
         {renderLandmarks()}
         {renderCreatures()}
       </div>
+
+      <Footer />
     </>
   );
 }
