@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Settings, Sun, Moon, LogOut } from "lucide-react";
+import { Settings, Sun, Moon, LogOut, User } from "lucide-react";
 import * as Images from "../../assets/Images";
 import { useTheme } from "../../hooks/useTheme";
 import { useClickOutside } from "../../hooks/useClickOutside";
@@ -150,6 +150,16 @@ export default function AdminLayout() {
                       {currentUser.email || "admin@pacific.org"}
                     </p>
                   </div>
+                  <Link
+                    to="/admin/profile"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl text-cyan-300 font-medium transition-colors cursor-pointer mb-0.5 ${
+                      isDark ? "hover:bg-cyan-500/10" : "hover:bg-cyan-50"
+                    }`}
+                  >
+                    <User size={13} />
+                    <span>Hồ sơ của tôi</span>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl text-rose-400 transition-colors cursor-pointer ${

@@ -19,6 +19,7 @@ import LocationsManagement from "./pages/Admin/Locations";
 import UsersManagement from "./pages/Admin/Users";
 import CommentsManagement from "./pages/Admin/Comments";
 import SystemSettings from "./pages/Admin/Settings";
+import AdminProfile from "./pages/Admin/Profile";
 
 import "./App.css";
 
@@ -121,6 +122,7 @@ function App() {
           <Route path="users" element={<UsersManagement />} />
           <Route path="comments" element={<CommentsManagement />} />
           <Route path="settings" element={<SystemSettings />} />
+          <Route path="profile" element={<AdminProfile />} />
         </Route>
 
         {/* Catch-all Route */}
