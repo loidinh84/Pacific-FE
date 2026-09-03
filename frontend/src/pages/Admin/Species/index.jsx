@@ -13,98 +13,61 @@ import {
   updateAdminSpecies,
 } from "../../../services/speciesApi";
 
-const MOCK_SPECIES = [
-  {
-    id: "1",
-    code: "SV000001",
-    name: "Cá mập trắng",
-    gbifId: "2431178",
-    source: "GBIF",
-    location: "Sunlight",
-    conservation: "Hiếm",
-    conservationCode: "VU",
-    views: 1023,
-    status: "Hiển thị",
-    is_visible: true,
-    scientificName: "Carcharodon carcharias",
-    classification: "Động vật",
-    size: "4 - 6 m",
-    depth: "100m",
-    waterTemp: "20°C",
-    geoZone: "Tầng giữa",
-    diet: "Ăn cá nhỏ",
-    lifespan: "10 năm",
-    groupName: "Kẻ săn mồi",
-    dateAdded: "7/5/2026",
-    description:
-      "Cá mập trắng lớn là loài sinh vật biển săn mồi đỉnh bảng với thính giác và thị giác vô cùng nhạy bén.",
-    images: [
-      "https://images.unsplash.com/photo-1560275619-4662804300e8?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1582967788606-a171c1080cb0?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  {
-    id: "2",
-    code: "SV000002",
-    name: "Bạch tuộc khổng lồ",
-    gbifId: "2289410",
-    source: "GBIF",
-    location: "Twilight",
-    conservation: "Hiếm",
-    conservationCode: "EN",
-    views: 854,
-    status: "Hiển thị",
-    is_visible: true,
-    scientificName: "Enteroctopus dofleini",
-    classification: "Động vật thân mềm",
-    size: "3 - 5 m",
-    depth: "750m",
-    waterTemp: "12°C",
-    geoZone: "Thái Bình Dương Bắc",
-    diet: "Tôm cua cá nhỏ",
-    lifespan: "5 năm",
-    groupName: "Thân mềm",
-    dateAdded: "12/4/2026",
-    description:
-      "Bạch tuộc khổng lồ Thái Bình Dương là loài bạch tuộc lớn nhất thế giới với trí thông minh nổi bật.",
-    images: [
-      "https://images.unsplash.com/photo-1545671913-b89ac1b4ac10?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  {
-    id: "3",
-    code: "SV000003",
-    name: "Cá voi xanh",
-    gbifId: "2440735",
-    source: "iNaturalist",
-    location: "Sunlight",
-    conservation: "Cực kỳ nguy cấp",
-    conservationCode: "CR",
-    views: 2410,
-    status: "Hiển thị",
-    is_visible: true,
-    scientificName: "Balaenoptera musculus",
-    classification: "Động vật có vú",
-    size: "25 - 30 m",
-    depth: "200m",
-    waterTemp: "15°C",
-    geoZone: "Đại dương mở",
-    diet: "Loài giáp xác nhỏ (Krill)",
-    lifespan: "80 - 90 năm",
-    groupName: "Động vật có vú",
-    dateAdded: "1/1/2026",
-    description: "Cá voi xanh là loài động vật lớn nhất từng tồn tại trên Trái Đất.",
-    images: [
-      "https://images.unsplash.com/photo-1568430460464-02e1dc605b12?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-];
+// Helper map backend item to table row item
+function mapSpeciesFromApi(item) {
+  return {
+    id: String(item.id),
+    code: item.code || `SV${String(item.id).padStart(6, "0")}`,
+    name: item.common_name || item.name || item.scientificName || "Sinh vật biển",
+    gbifId: item.slug || String(item.id),
+    source: item.source_api_id || "Pacific DB",
+    location: item.ocean_zones?.name || "Sunlight",
+    conservation: item.conservation_statuses?.name || "Ít lo ngại",
+    conservationCode: item.conservation_statuses?.code || "LC",
+    views: Number(item.view_count) || 0,
+    status: item.is_visible ? "Hiển thị" : "Ẩn",
+    is_visible: Boolean(item.is_visible),
+    scientificName: item.scientificName || item.scientific_name || "Chưa cập nhật",
+    classification: item.species_groups?.name || "Động vật biển",
+    size:
+      item.size_min_cm && item.size_max_cm
+        ? `${item.size_min_cm} - ${item.size_max_cm} cm`
+        : item.size_min_cm
+        ? `${item.size_min_cm} cm`
+        : "Chưa cập nhật",
+    depth:
+      item.depth_min_m !== null && item.depth_max_m !== null
+        ? `${item.depth_min_m} - ${item.depth_max_m}m`
+        : item.depth_min_m !== null
+        ? `${item.depth_min_m}m`
+        : "Chưa cập nhật",
+    waterTemp:
+      item.temperature_min_c !== null
+        ? item.temperature_max_c !== null
+          ? `${item.temperature_min_c} - ${item.temperature_max_c}°C`
+          : `${item.temperature_min_c}°C`
+        : "Chưa cập nhật",
+    geoZone: item.ocean_zones?.name || "Thái Bình Dương",
+    diet: item.diet || "Chưa cập nhật",
+    lifespan: item.lifespan_years ? `${item.lifespan_years} năm` : "Chưa cập nhật",
+    groupName: item.species_groups?.name || "Sinh vật biển",
+    dateAdded: new Date(item.created_at || Date.now()).toLocaleDateString("vi-VN"),
+    description: item.description || "Chưa có mô tả chi tiết.",
+    model3dUrl: item.model_3d_url || item.model3dUrl || "",
+    soundUrl: item.sound_url || item.soundUrl || "",
+    images:
+      Array.isArray(item.species_media) && item.species_media.length > 0
+        ? item.species_media.map((m) => m.url)
+        : Array.isArray(item.images)
+        ? item.images
+        : [],
+  };
+}
 
 export default function SpeciesManagement() {
   const { isDark } = useTheme();
-  const [speciesList, setSpeciesList] = useState(MOCK_SPECIES);
-  const [selectedRowId, setSelectedRowId] = useState("1");
+  const [speciesList, setSpeciesList] = useState([]);
+  const [selectedRowId, setSelectedRowId] = useState(null);
   const [checkedIds, setCheckedIds] = useState([]);
   const [activeDetailTab, setActiveDetailTab] = useState("info");
 
@@ -116,58 +79,44 @@ export default function SpeciesManagement() {
   const [isAddEditOpen, setIsAddEditOpen] = useState(false);
   const [editingSpecies, setEditingSpecies] = useState(null);
   const [isApiSyncOpen, setIsApiSyncOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  // Load from Backend API on mount
+  // Load from Backend API using idiomatic React async effect pattern
   useEffect(() => {
-    const loadBackendData = async () => {
-      setIsLoading(true);
+    let ignore = false;
+
+    const startFetching = async () => {
       try {
         const res = await fetchAdminSpeciesList();
-        if (res.success && res.data && res.data.length > 0) {
-          const mapped = res.data.map((item) => ({
-            id: String(item.id),
-            code: item.code || `SV${String(item.id).padStart(6, "0")}`,
-            name: item.name || item.vietnamese_name || item.common_name || "Cá mập trắng",
-            gbifId: item.slug || "2431178",
-            source: "GBIF",
-            location: item.ocean_zones?.name || "Sunlight",
-            conservation: item.conservation_statuses?.name || "Sắp nguy cấp",
-            conservationCode: item.conservation_statuses?.code || "VU",
-            views: item.view_count || 1023,
-            status: item.is_visible ? "Hiển thị" : "Ẩn",
-            is_visible: item.is_visible,
-            scientificName: item.scientific_name || "Carcharodon carcharias",
-            classification: "Động vật",
-            size: "4 - 6 m",
-            depth: "100m",
-            waterTemp: "20°C",
-            geoZone: "Tầng giữa",
-            diet: "Ăn cá nhỏ",
-            lifespan: "10 năm",
-            groupName: item.species_groups?.name || "Kẻ săn mồi",
-            dateAdded: new Date(item.created_at || Date.now()).toLocaleDateString("vi-VN"),
-            description: item.description || "Dữ liệu sinh vật biển được đồng bộ từ PostgreSQL.",
-            images:
-              item.species_media && item.species_media.length > 0
-                ? item.species_media.map((m) => m.url)
-                : [
-                    "https://images.unsplash.com/photo-1560275619-4662804300e8?auto=format&fit=crop&w=600&q=80",
-                  ],
-          }));
-
+        if (!ignore && res?.success && Array.isArray(res.data)) {
+          const mapped = res.data.map(mapSpeciesFromApi);
           setSpeciesList(mapped);
-          if (mapped.length > 0) setSelectedRowId(mapped[0].id);
+          if (mapped.length > 0) {
+            setSelectedRowId((prev) =>
+              prev && mapped.some((m) => m.id === prev) ? prev : null
+            );
+          } else {
+            setSelectedRowId(null);
+          }
         }
       } catch (err) {
-        console.warn("Dùng dữ liệu mẫu do offline/chưa có dữ liệu:", err.message);
+        if (!ignore) {
+          console.warn("Lỗi khi tải danh sách sinh vật:", err.message);
+        }
       } finally {
-        setIsLoading(false);
+        if (!ignore) {
+          setIsLoading(false);
+        }
       }
     };
 
-    loadBackendData();
-  }, []);
+    startFetching();
+
+    return () => {
+      ignore = true;
+    };
+  }, [refreshKey]);
 
   // Filtered Species
   const filteredList = (speciesList || []).filter((sp) => {
@@ -184,11 +133,9 @@ export default function SpeciesManagement() {
     return matchSearch && matchCons;
   });
 
-  const selectedSpecies =
-    speciesList.find((sp) => sp.id === selectedRowId) ||
-    filteredList[0] ||
-    speciesList[0] ||
-    MOCK_SPECIES[0];
+  const selectedSpecies = selectedRowId
+    ? speciesList.find((sp) => sp.id === selectedRowId) || null
+    : null;
 
   // Actions
   const handleToggleCheckAll = () => {
@@ -255,85 +202,32 @@ export default function SpeciesManagement() {
 
   const handleSaveSpeciesModal = async (form) => {
     if (editingSpecies) {
-      let updatedData = null;
       try {
         const res = await updateAdminSpecies(editingSpecies.id, form);
         if (res?.success && res?.data) {
-          updatedData = res.data;
+          const updated = mapSpeciesFromApi(res.data);
+          setSpeciesList((prev) => prev.map((sp) => (sp.id === editingSpecies.id ? updated : sp)));
+        } else {
+          setRefreshKey((k) => k + 1);
         }
       } catch (err) {
         console.warn("Backend update API fallback:", err.message);
+        setRefreshKey((k) => k + 1);
       }
-
-      setSpeciesList((prev) =>
-        prev.map((sp) =>
-          sp.id === editingSpecies.id
-            ? {
-                ...sp,
-                name: form.name || sp.name,
-                scientificName: form.scientificName || sp.scientificName,
-                location: form.oceanZone || sp.location,
-                conservationCode: form.conservationStatus || sp.conservationCode,
-                description: form.description || sp.description,
-                images: form.images || sp.images,
-                depth: `${form.depthMin || 0}-${form.depthMax || 100}m`,
-                size: `${form.sizeMinCm || 100} - ${form.sizeMaxCm || 400} cm`,
-                diet: form.diet || sp.diet,
-                lifespan: `${form.lifespanYears || 20} năm`,
-                model3dUrl: form.model3dUrl,
-                soundUrl: form.soundUrl,
-                ...(updatedData
-                  ? {
-                      code: updatedData.code || sp.code,
-                      name: updatedData.common_name || form.name,
-                      scientificName: updatedData.scientificName || form.scientificName,
-                    }
-                  : {}),
-              }
-            : sp
-        )
-      );
     } else {
-      let createdData = null;
       try {
         const res = await createAdminSpecies(form);
         if (res?.success && res?.data) {
-          createdData = res.data;
+          const newSp = mapSpeciesFromApi(res.data);
+          setSpeciesList((prev) => [newSp, ...prev]);
+          setSelectedRowId(newSp.id);
+        } else {
+          setRefreshKey((k) => k + 1);
         }
       } catch (err) {
         console.warn("Backend create API fallback:", err.message);
+        setRefreshKey((k) => k + 1);
       }
-
-      const newId = createdData?.id ? String(createdData.id) : String(Date.now());
-      const newSp = {
-        id: newId,
-        code: createdData?.code || `SV${String(speciesList.length + 1).padStart(6, "0")}`,
-        name: createdData?.common_name || form.name || "Sinh vật mới",
-        gbifId: createdData?.slug || "2431178",
-        source: "GBIF",
-        location: form.oceanZone || "Sunlight",
-        conservation: "Sắp nguy cấp",
-        conservationCode: form.conservationStatus || "VU",
-        views: 0,
-        status: "Hiển thị",
-        is_visible: true,
-        scientificName: createdData?.scientificName || form.scientificName || "Species sci",
-        classification: "Động vật",
-        size: `${form.sizeMinCm || 100} - ${form.sizeMaxCm || 400} cm`,
-        depth: `${form.depthMin || 0}-${form.depthMax || 100}m`,
-        waterTemp: `${form.tempMinC || 10}-${form.tempMaxC || 25}°C`,
-        geoZone: "Thái Bình Dương",
-        diet: form.diet || "Kẻ săn mồi",
-        lifespan: `${form.lifespanYears || 20} năm`,
-        groupName: "Kẻ săn mồi",
-        dateAdded: new Date().toLocaleDateString("vi-VN"),
-        description: form.description || "Mô tả sinh vật...",
-        images: form.images || [],
-        model3dUrl: form.model3dUrl,
-        soundUrl: form.soundUrl,
-      };
-      setSpeciesList([newSp, ...speciesList]);
-      setSelectedRowId(newId);
     }
     setIsAddEditOpen(false);
   };
@@ -368,32 +262,37 @@ export default function SpeciesManagement() {
                 : "bg-white hover:bg-slate-50 border-slate-200 text-indigo-700 shadow-sm"
             }`}
           >
-            <RefreshCw size={15} />
-            <span>Đồng bộ API</span>
+            <RefreshCw size={16} />
+            <span>Đồng bộ API ({speciesList.length})</span>
           </button>
 
           <button
             onClick={handleOpenAddModal}
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan hover:brightness-110 text-white text-xs md:text-sm font-bold transition-all cursor-pointer shadow-md active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-pacific-blue-bright via-cyan-500 to-pacific-teal hover:brightness-110 text-white text-xs md:text-sm font-bold shadow-lg shadow-cyan-500/20 transition-all cursor-pointer active:scale-95"
           >
             <Plus size={16} />
-            <span>Thêm sinh vật mới</span>
+            <span>Thêm sinh vật</span>
           </button>
         </div>
       </div>
 
-      {/* ── MAIN CONTENT GRID ── */}
+      {/* ── MAIN 2-COLUMN LAYOUT: FILTER SIDEBAR (LEFT) + TABLE & DETAIL (RIGHT) ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* 1. LEFT FILTER SIDEBAR */}
-        <SpeciesFilterSidebar
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          selectedConservation={selectedConservation}
-          setSelectedConservation={setSelectedConservation}
-        />
+        {/* Left Column: Filter Sidebar */}
+        <div className="lg:col-span-3">
+          <SpeciesFilterSidebar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedConservation={selectedConservation}
+            setSelectedConservation={setSelectedConservation}
+            speciesCount={filteredList.length}
+            totalCount={speciesList.length}
+            isDark={isDark}
+          />
+        </div>
 
-        {/* 2. RIGHT DATA TABLE AREA */}
-        <main className="lg:col-span-8 xl:col-span-9 flex flex-col">
+        {/* Right Column: Species Table & Expanded Detail */}
+        <div className="lg:col-span-9 space-y-6">
           <SpeciesTable
             isLoading={isLoading}
             filteredList={filteredList}
@@ -403,19 +302,18 @@ export default function SpeciesManagement() {
             checkedIds={checkedIds}
             handleToggleCheckAll={handleToggleCheckAll}
             handleToggleCheckRow={handleToggleCheckRow}
+            handleToggleVisibility={handleToggleVisibility}
+            handleOpenEditModal={handleOpenEditModal}
+            handleDelete={handleDelete}
             selectedSpecies={selectedSpecies}
             activeDetailTab={activeDetailTab}
             setActiveDetailTab={setActiveDetailTab}
-            handleOpenEditModal={handleOpenEditModal}
-            handleToggleVisibility={handleToggleVisibility}
-            handleDelete={handleDelete}
           />
-        </main>
+        </div>
       </div>
 
       {/* ── MODALS ── */}
       <AddEditSpeciesModal
-        key={editingSpecies?.id || (isAddEditOpen ? "open-add" : "closed")}
         isOpen={isAddEditOpen}
         onClose={() => setIsAddEditOpen(false)}
         onSave={handleSaveSpeciesModal}
@@ -425,7 +323,10 @@ export default function SpeciesManagement() {
       <ApiSyncModal
         isOpen={isApiSyncOpen}
         onClose={() => setIsApiSyncOpen(false)}
-        onSyncAll={() => console.log("Done syncing all")}
+        onSyncAll={() => {
+          setRefreshKey((k) => k + 1);
+          setIsApiSyncOpen(false);
+        }}
       />
     </div>
   );

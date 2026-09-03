@@ -19,6 +19,7 @@ import {
   Layers,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import { useLockBodyScroll } from "../../../hooks/useLockBodyScroll";
 import { searchSpeciesTaxonomy, uploadMediaFile } from "../../../services/speciesApi";
 import OceanSoundPickerModal from "./OceanSoundPickerModal";
 
@@ -226,16 +227,7 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
   const [isSoundPickerOpen, setIsSoundPickerOpen] = useState(false);
 
   // Lock body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
+  useLockBodyScroll(isOpen);
 
   if (!isOpen) return null;
 

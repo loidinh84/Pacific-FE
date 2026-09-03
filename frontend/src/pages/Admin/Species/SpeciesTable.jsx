@@ -5,20 +5,20 @@ import SpeciesExpandedDetail from "./SpeciesExpandedDetail";
 import SpeciesPaginationFooter from "./SpeciesPaginationFooter";
 
 export default function SpeciesTable({
-  isLoading,
-  filteredList,
-  totalCount,
-  selectedRowId,
-  setSelectedRowId,
-  checkedIds,
-  handleToggleCheckAll,
-  handleToggleCheckRow,
-  selectedSpecies,
-  activeDetailTab,
-  setActiveDetailTab,
-  handleOpenEditModal,
-  handleToggleVisibility,
-  handleDelete,
+  isLoading = false,
+  filteredList = [],
+  totalCount = 0,
+  selectedRowId = null,
+  setSelectedRowId = () => {},
+  checkedIds = [],
+  handleToggleCheckAll = () => {},
+  handleToggleCheckRow = () => {},
+  selectedSpecies = null,
+  activeDetailTab = "info",
+  setActiveDetailTab = () => {},
+  handleOpenEditModal = () => {},
+  handleToggleVisibility = () => {},
+  handleDelete = () => {},
 }) {
   const { isDark } = useTheme();
 
@@ -83,7 +83,6 @@ export default function SpeciesTable({
             </tr>
           </thead>
 
-          {/* Table Body */}
           <tbody
             className={`divide-y font-medium ${
               isDark
@@ -91,6 +90,13 @@ export default function SpeciesTable({
                 : "divide-slate-200 text-slate-800"
             }`}
           >
+            {filteredList.length === 0 && !isLoading && (
+              <tr>
+                <td colSpan={9} className="p-12 text-center text-sm text-slate-400">
+                  Chưa có sinh vật nào phù hợp với bộ lọc hoặc cơ sở dữ liệu đang trống.
+                </td>
+              </tr>
+            )}
             {filteredList.map((item) => {
               const isExpanded = selectedRowId === item.id;
               const isChecked = checkedIds.includes(item.id);

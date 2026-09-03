@@ -1,48 +1,63 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { getStoredUser } from "../utils/auth";
 
 /**
- * ProtectedRoute Component - Bảo vệ các Route yêu cầu Đăng nhập & Quyền Admin
- * @param {Object} props
- * @param {boolean} [props.requireAdmin=false] - Yêu cầu quyền admin / super_admin
- * @param {React.ReactNode} [props.children] - Component con
+ * Route chỉ dành riêng cho Quản trị viên (Admin & Super Admin)
+ * Nếu chưa đăng nhập -> chuyển về /login
+ * Nếu đã đăng nhập nhưng không phải admin -> chuyển về trang chủ /
  */
-export default function ProtectedRoute({ requireAdmin = false, children }) {
+export function AdminRoute({ children }) {
   const location = useLocation();
+  const user = getStoredUser();
 
-  const token =
-    localStorage.getItem("pacific_token") ||
-    localStorage.getItem("token") ||
-    sessionStorage.getItem("pacific_token") ||
-    sessionStorage.getItem("token");
-
-  const storedUser =
-    localStorage.getItem("pacific_user") ||
-    localStorage.getItem("user") ||
-    sessionStorage.getItem("pacific_user") ||
-    sessionStorage.getItem("user");
-
-  let user = null;
-  if (storedUser) {
-    try {
-      user = JSON.parse(storedUser);
-    } catch (error) {
-      console.warn("Lỗi parse thông tin user trong ProtectedRoute:", error);
-      user = null;
-    }
-  }
-
-  // 1. Chưa đăng nhập -> Chuyển hướng về /login
-  if (!token) {
+  if (!user || !user.token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // 2. Yêu cầu quyền Admin nhưng role không hợp lệ -> Chuyển hướng về trang chủ
-  if (requireAdmin) {
-    const role = user?.role;
-    if (role !== "admin" && role !== "super_admin") {
-      return <Navigate to="/" replace />;
-    }
+  if (user.role !== "admin" && user.role !== "super_admin") {
+    return <Navigate to="/" replace />;
   }
 
   return children;
+}
+
+/**
+ * Route chỉ dành cho Giao diện Khách & Người dùng thông thường (Client)
+ * Nếu Admin đã đăng nhập, tự động chuyển hướng họ vào /admin/species
+ */
+export function ClientRoute({ children }) {
+  const user = getStoredUser();
+
+  if (user && (user.role === "admin" || user.role === "super_admin")) {
+    return <Navigate to="/admin/species" replace />;
+  }
+
+  return children;
+}
+
+/**
+ * Route yêu cầu đăng nhập với tư cách Người dùng thông thường (VD: /profile)
+ * Nếu chưa đăng nhập -> /login. Nếu là Admin -> /admin/species.
+ */
+export function UserProtectedRoute({ children }) {
+  const location = useLocation();
+  const user = getStoredUser();
+
+  if (!user || !user.token) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (user.role === "admin" || user.role === "super_admin") {
+    return <Navigate to="/admin/species" replace />;
+  }
+
+  return children;
+}
+
+// Default export for backward compatibility
+export default function ProtectedRoute({ requireAdmin = false, children }) {
+  if (requireAdmin) {
+    return <AdminRoute>{children}</AdminRoute>;
+  }
+  return <UserProtectedRoute>{children}</UserProtectedRoute>;
 }

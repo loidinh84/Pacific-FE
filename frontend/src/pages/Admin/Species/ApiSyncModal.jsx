@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, RefreshCw, CheckCircle2, Loader2, Radio } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import { useLockBodyScroll } from "../../../hooks/useLockBodyScroll";
 import {
   fetchApiSyncStatus,
   retrySyncSpeciesItem,
@@ -22,16 +23,7 @@ export default function ApiSyncModal({ isOpen, onClose, onSyncAll }) {
   const [failedSpecies, setFailedSpecies] = useState([]);
 
   // Lock body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
+  useLockBodyScroll(isOpen);
 
   // Fetch live API health & incomplete species from Backend when modal opens
   useEffect(() => {

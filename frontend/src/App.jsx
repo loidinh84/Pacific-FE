@@ -7,7 +7,7 @@ import ResetPassword from "./pages/ResetPassword";
 import SpeciesDetail from "./pages/SpeciesDetail";
 import OceanDepth from "./pages/OceanDepth";
 import SpeciesView3D from "./pages/SpeciesView3D";
-import ProtectedRoute from "./components/ProtectedRoute";
+import { AdminRoute, ClientRoute, UserProtectedRoute } from "./components/ProtectedRoute";
 import ProfileLayout from "./pages/Profile";
 
 // Admin Pages
@@ -26,34 +26,90 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/species/:id" element={<SpeciesDetail />} />
-        <Route path="/ocean-depth" element={<OceanDepth />} />
-        <Route path="/species/:id/3d" element={<SpeciesView3D />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        {/* Public Client Routes (Blocked for Admin - Admin redirected to /admin/species) */}
+        <Route
+          path="/"
+          element={
+            <ClientRoute>
+              <Landing />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <ClientRoute>
+              <Search />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/species/:id"
+          element={
+            <ClientRoute>
+              <SpeciesDetail />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/ocean-depth"
+          element={
+            <ClientRoute>
+              <OceanDepth />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/species/:id/3d"
+          element={
+            <ClientRoute>
+              <SpeciesView3D />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <ClientRoute>
+              <Login />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <ClientRoute>
+              <Register />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <ClientRoute>
+              <ResetPassword />
+            </ClientRoute>
+          }
+        />
 
-        {/* User Profile Routes */}
+        {/* User Profile Routes (Protected for regular user, Admin redirected to /admin/species) */}
         <Route
           path="/profile"
           element={
-            <ProtectedRoute>
+            <UserProtectedRoute>
               <ProfileLayout />
-            </ProtectedRoute>
+            </UserProtectedRoute>
           }
         />
         <Route path="/profile/me" element={<Navigate to="/profile" replace />} />
 
-        {/* Admin Portal Nested Routes (Protected) */}
+        {/* Admin Portal Nested Routes (Strictly for Admin & Super Admin) */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute requireAdmin>
+            <AdminRoute>
               <AdminLayout />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         >
           <Route index element={<Navigate to="/admin/species" replace />} />
@@ -66,11 +122,12 @@ function App() {
           <Route path="comments" element={<CommentsManagement />} />
           <Route path="settings" element={<SystemSettings />} />
         </Route>
+
+        {/* Catch-all Route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
-
-

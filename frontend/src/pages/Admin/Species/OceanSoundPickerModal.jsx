@@ -11,6 +11,7 @@ import {
   Globe,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import { useLockBodyScroll } from "../../../hooks/useLockBodyScroll";
 import { getOceanAudioLibrary, searchOceanAudioAdvanced } from "../../../services/speciesApi";
 
 export default function OceanSoundPickerModal({
@@ -20,6 +21,7 @@ export default function OceanSoundPickerModal({
   currentSoundUrl = "",
 }) {
   const { isDark } = useTheme();
+  useLockBodyScroll(isOpen);
 
   // allSounds: full list loaded from API (source of truth, never mutated)
   const [allSounds, setAllSounds] = useState([]);

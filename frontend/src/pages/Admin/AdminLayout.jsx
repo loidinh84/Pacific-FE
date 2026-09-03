@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Settings, Sun, Moon, LogOut, ExternalLink } from "lucide-react";
+import { Settings, Sun, Moon, LogOut } from "lucide-react";
 import * as Images from "../../assets/Images";
 import { useTheme } from "../../hooks/useTheme";
 import { useClickOutside } from "../../hooks/useClickOutside";
@@ -150,15 +150,6 @@ export default function AdminLayout() {
                       {currentUser.email || "admin@pacific.org"}
                     </p>
                   </div>
-                  <Link
-                    to="/"
-                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl transition-colors cursor-pointer ${
-                      isDark ? "hover:bg-white/5" : "hover:bg-slate-100"
-                    }`}
-                  >
-                    <ExternalLink size={13} className="text-cyan-400" />
-                    <span>Trang chủ Pacific</span>
-                  </Link>
                   <button
                     onClick={handleLogout}
                     className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl text-rose-400 transition-colors cursor-pointer ${
