@@ -54,14 +54,19 @@ export default function AdminLayout() {
 
   return (
     <div
-      className={`min-h-screen flex flex-col transition-colors duration-300 font-sans ${
-        isDark ? "bg-[#0b1329] text-white" : "bg-[#f4f7fb] text-slate-900"
+      className={`min-h-screen flex flex-col transition-colors duration-300 font-sans relative ${
+        isDark ? "bg-[#1b254b] text-white" : "bg-[#f4f7fb] text-slate-900"
       }`}
     >
+      {/* Subtle Ambient Ocean Light */}
+      {isDark && (
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.22)_0%,rgba(6,182,212,0.08)_40%,transparent_70%)] pointer-events-none z-0" />
+      )}
+
       {/* ── 1. TOP HEADER (LOGO + RIGHT CONTROLS) ── */}
       <header
-        className={`w-full border-b transition-colors duration-300 ${
-          isDark ? "bg-[#0f1b38] border-white/10" : "bg-white border-slate-200"
+        className={`w-full border-b transition-colors duration-300 relative z-10 ${
+          isDark ? "bg-[#151f42]/90 backdrop-blur-md border-white/10" : "bg-white border-slate-200"
         }`}
       >
         <div className="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between gap-4">

@@ -1,12 +1,22 @@
+import { useState, useRef } from "react";
+import { Edit3, Camera, Loader2, Check } from "lucide-react";
+import { updateAdminAvatar } from "../../../services/adminProfileApi";
 import { useLanguage } from "../../../hooks/useLanguage";
 
 export default function OverviewTab({
   admin,
-  stats,
+  onAdminUpdated,
+  onOpenEditModal,
+  onOpenPasswordModal,
   isDark = true,
 }) {
   const { language } = useLanguage();
   const isEn = language === "en";
+
+  const fileInputRef = useRef(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const formatDate = (dateStr) => {
     if (!dateStr) return isEn ? "Not set" : "Chưa cập nhật";
@@ -22,96 +32,334 @@ export default function OverviewTab({
     }
   };
 
-  const accountRows = [
-    { label: isEn ? "Username" : "Tên đăng nhập", value: `@${admin?.username}`, isMono: true },
-    { label: isEn ? "Email" : "Địa chỉ Email", value: admin?.email },
-    { label: isEn ? "Full Name" : "Họ và tên", value: admin?.fullName || (isEn ? "Not set" : "Chưa cập nhật") },
-    { label: isEn ? "Phone Number" : "Số điện thoại", value: admin?.phoneNumber || (isEn ? "Not set" : "Chưa cập nhật") },
-    { label: isEn ? "Date of Birth" : "Ngày sinh", value: formatDate(admin?.dateOfBirth) },
-    {
-      label: isEn ? "Role" : "Vai trò",
-      value: admin?.role === "super_admin" ? (isEn ? "Super Administrator" : "Quản trị viên cấp cao") : (isEn ? "Administrator" : "Quản trị viên"),
-    },
-    { label: isEn ? "Bio & Notes" : "Ghi chú & Tiểu sử", value: admin?.bio || (isEn ? "No bio provided" : "Chưa có ghi chú tiểu sử") },
-  ];
+  const getMonogram = () => {
+    if (!admin?.fullName && !admin?.username) return "AD";
+    const name = admin.fullName || admin.username;
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
 
-  const securityRows = [
-    {
-      label: isEn ? "Active Session" : "Phiên đăng nhập",
-      detail: isEn ? "JWT • Max session 7 days" : "JWT • Phiên tối đa 7 ngày",
-      status: isEn ? "Active" : "Đang hoạt động",
-      statusClass: "text-emerald-400 bg-emerald-500/15 border-emerald-500/30",
-    },
-    {
-      label: isEn ? "Two-Factor Auth (2FA)" : "Xác thực 2 yếu tố",
-      detail: "TOTP Authenticator",
-      status: isEn ? "Disabled" : "Chưa bật",
-      statusClass: "text-amber-400 bg-amber-500/15 border-amber-500/30",
-    },
-    {
-      label: isEn ? "Account Activity" : "Hoạt động tài khoản",
-      detail: isEn
-        ? `Active within last ${stats?.memberDays || 1} days`
-        : `Có hoạt động trong ${stats?.memberDays || 1} ngày qua`,
-      status: isEn ? "Active" : "Đang hoạt động",
-      statusClass: "text-slate-300 bg-white/10 border-white/15",
-    },
-  ];
+  const handleAvatarClick = () => {
+    if (isUploadingAvatar) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError(isEn ? "Image size must be under 5MB" : "Kích thước ảnh không được vượt quá 5MB");
+      setTimeout(() => setUploadError(""), 3000);
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setUploadError(isEn ? "Please select a valid image file" : "Vui lòng chọn file hình ảnh hợp lệ");
+      setTimeout(() => setUploadError(""), 3000);
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    setUploadError("");
+    setUploadSuccess(false);
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Avatar = reader.result;
+        try {
+          const res = await updateAdminAvatar(base64Avatar);
+          if (res.success) {
+            const newAvatarUrl = res.avatarUrl || base64Avatar;
+            if (onAdminUpdated) {
+              onAdminUpdated({ avatar: newAvatarUrl });
+            }
+
+            try {
+              const localUser = JSON.parse(localStorage.getItem("pacific_user") || "{}");
+              localUser.avatar = newAvatarUrl;
+              localUser.avatar_url = newAvatarUrl;
+              localStorage.setItem("pacific_user", JSON.stringify(localUser));
+              window.dispatchEvent(new Event("pacific_auth_change"));
+            } catch (storageErr) {
+              console.warn("Storage sync warning:", storageErr);
+            }
+
+            setUploadSuccess(true);
+            setTimeout(() => setUploadSuccess(false), 2500);
+          }
+        } catch (err) {
+          console.error("Lỗi cập nhật ảnh đại diện:", err);
+          const msg = err.response?.data?.error || (isEn ? "Failed to update avatar" : "Không thể cập nhật ảnh đại diện");
+          setUploadError(msg);
+          setTimeout(() => setUploadError(""), 3500);
+        } finally {
+          setIsUploadingAvatar(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error("Lỗi đọc file ảnh:", err);
+      setIsUploadingAvatar(false);
+      setUploadError(isEn ? "Failed to read image" : "Lỗi khi đọc file ảnh");
+      setTimeout(() => setUploadError(""), 3000);
+    }
+  };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in duration-150">
-      {/* 1. Account Details Table (7 cols) */}
-      <div
-        className={`lg:col-span-7 rounded-2xl border p-6 space-y-5 ${
-          isDark
-            ? "bg-[#142144]/90 backdrop-blur-xl border-white/15 text-white shadow-lg"
-            : "bg-white border-slate-200 text-slate-900 shadow-sm"
-        }`}
-      >
-        <div className="pb-3.5 border-b border-white/15">
-          <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
-            {isEn ? "Account & Personal Details" : "Thông tin cá nhân & Tài khoản"}
-          </h3>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in duration-200 relative z-10">
+      {/* Hidden File Input for Quick Avatar Change */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleAvatarChange}
+        accept="image/png, image/jpeg, image/webp, image/gif"
+        className="hidden"
+      />
+
+      {/* ─── LEFT COLUMN (4 cols on lg) ─── */}
+      <div className="lg:col-span-4 space-y-6">
+        {/* 1. Profile Avatar & Identity Card */}
+        <div
+          className={`rounded-3xl border p-6 sm:p-8 flex flex-col items-center justify-center text-center space-y-4 ${
+            isDark
+              ? "bg-[#223263]/85 backdrop-blur-xl border-white/20 text-white shadow-xl"
+              : "bg-white border-slate-200 text-slate-900 shadow-sm"
+          }`}
+        >
+          {/* Avatar Circle with Quick Change Hover Overlay */}
+          <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
+            <div className="w-28 h-28 rounded-full bg-[#162247] border-2 border-white/25 p-1 flex items-center justify-center overflow-hidden shadow-inner relative transition-transform duration-200 group-hover:scale-105">
+              {admin?.avatar ? (
+                <img
+                  src={admin.avatar}
+                  alt={admin.fullName || admin.username}
+                  className="w-full h-full object-cover rounded-full"
+                />
+              ) : (
+                <span className="text-3xl font-extrabold text-white">{getMonogram()}</span>
+              )}
+
+              {/* Hover Dark Overlay + Camera Icon */}
+              <div className="absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-white">
+                {isUploadingAvatar ? (
+                  <Loader2 size={24} className="animate-spin text-cyan-400" />
+                ) : uploadSuccess ? (
+                  <Check size={26} className="text-emerald-400" />
+                ) : (
+                  <>
+                    <Camera size={22} className="text-cyan-300 mb-0.5" />
+                    <span className="text-[10px] font-semibold tracking-tight text-white/90">
+                      {isEn ? "Change" : "Đổi ảnh"}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Camera Floating Pill Badge */}
+            <button
+              type="button"
+              className="absolute bottom-0 right-0 p-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-md border-2 border-[#162247] transition-transform active:scale-90"
+              title={isEn ? "Upload new avatar" : "Tải lên ảnh mới"}
+            >
+              <Camera size={13} />
+            </button>
+          </div>
+
+          {/* Quick Upload Feedback Messages */}
+          {uploadError && (
+            <p className="text-xs text-rose-400 font-medium animate-in fade-in">{uploadError}</p>
+          )}
+          {uploadSuccess && (
+            <p className="text-xs text-emerald-400 font-medium animate-in fade-in">
+              {isEn ? "Avatar updated!" : "Đã cập nhật ảnh đại diện!"}
+            </p>
+          )}
+
+          {/* Name & Role */}
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              {admin?.fullName || admin?.username}
+            </h2>
+            <p className="text-xs font-bold uppercase tracking-wider text-cyan-400">
+              {admin?.role === "super_admin"
+                ? (isEn ? "SUPER ADMIN" : "QUẢN TRỊ VIÊN CẤP CAO")
+                : (isEn ? "ADMIN" : "QUẢN TRỊ VIÊN")}
+            </p>
+          </div>
+
+          {/* Status Badge */}
+          <div className="pt-1">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 tracking-wide">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              {isEn ? "ACTIVE" : "ĐANG HOẠT ĐỘNG"}
+            </span>
+          </div>
         </div>
 
-        <div className="divide-y divide-white/10 text-sm">
-          {accountRows.map((row, idx) => (
-            <div key={idx} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-              <span className="text-slate-300 font-medium sm:w-1/3 shrink-0">{row.label}</span>
-              <span className={`text-white font-medium ${row.isMono ? "font-mono text-cyan-300" : ""}`}>
-                {row.value}
+        {/* 2. Account Security Card */}
+        <div
+          className={`rounded-3xl border p-6 space-y-5 ${
+            isDark
+              ? "bg-[#223263]/85 backdrop-blur-xl border-white/20 text-white shadow-xl"
+              : "bg-white border-slate-200 text-slate-900 shadow-sm"
+          }`}
+        >
+          <div className="pb-3 border-b border-white/15">
+            <h3 className="text-base font-bold text-white tracking-tight">
+              {isEn ? "Account Security" : "Bảo mật tài khoản"}
+            </h3>
+          </div>
+
+          <div className="space-y-3.5 text-sm">
+            {/* Email Verification */}
+            <div className="flex items-center justify-between py-1">
+              <span className="text-slate-200 font-medium">
+                {isEn ? "Email Verification" : "Xác thực Email"}
+              </span>
+              <span className="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5 tracking-wide">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                {isEn ? "Completed" : "HOÀN TẤT"}
               </span>
             </div>
-          ))}
+
+            {/* Phone Verification */}
+            <div className="flex items-center justify-between py-1">
+              <span className="text-slate-200 font-medium">
+                {isEn ? "Phone Verification" : "Xác thực Số Điện Thoại"}
+              </span>
+              {admin?.phoneNumber ? (
+                <span className="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5 tracking-wide">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  {isEn ? "Completed" : "HOÀN TẤT"}
+                </span>
+              ) : (
+                <span className="text-slate-400 font-medium text-xs uppercase flex items-center gap-1.5 tracking-wide">
+                  <span className="w-2 h-2 rounded-full bg-slate-500"></span>
+                  {isEn ? "Not Updated" : "CHƯA CẬP NHẬT"}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Change Password Button */}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={onOpenPasswordModal}
+              className="w-full py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-[#17244c] hover:bg-[#1e2f60] border border-white/20 shadow-sm active:scale-[0.98] transition-all cursor-pointer text-center"
+            >
+              {isEn ? "Change Security Password" : "Đổi mật khẩu bảo mật"}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* 2. Security & Session Table (5 cols) */}
-      <div
-        className={`lg:col-span-5 rounded-2xl border p-6 space-y-5 ${
-          isDark
-            ? "bg-[#142144]/90 backdrop-blur-xl border-white/15 text-white shadow-lg"
-            : "bg-white border-slate-200 text-slate-900 shadow-sm"
-        }`}
-      >
-        <div className="pb-3.5 border-b border-white/15">
-          <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
-            {isEn ? "Security & Active Session" : "Bảo mật & Phiên làm việc"}
-          </h3>
-        </div>
+      {/* ─── RIGHT COLUMN (8 cols on lg) ─── */}
+      <div className="lg:col-span-8">
+        <div
+          className={`rounded-3xl border p-6 sm:p-8 space-y-6 ${
+            isDark
+              ? "bg-[#223263]/85 backdrop-blur-xl border-white/20 text-white shadow-xl"
+              : "bg-white border-slate-200 text-slate-900 shadow-sm"
+          }`}
+        >
+          {/* Card Header: Title + Edit Button */}
+          <div className="flex items-center justify-between pb-4 border-b border-white/15">
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              {isEn ? "Personal Profile" : "Hồ sơ cá nhân"}
+            </h2>
+            <button
+              type="button"
+              onClick={onOpenEditModal}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/20 active:scale-95 transition-all cursor-pointer"
+            >
+              <Edit3 size={15} />
+              <span>{isEn ? "Edit" : "Chỉnh sửa"}</span>
+            </button>
+          </div>
 
-        <div className="divide-y divide-white/10 text-sm">
-          {securityRows.map((sec, idx) => (
-            <div key={idx} className="py-4 flex items-center justify-between gap-3">
-              <div className="space-y-0.5">
-                <p className="font-semibold text-white text-sm sm:text-base">{sec.label}</p>
-                <p className="text-xs sm:text-sm text-cyan-200/70">{sec.detail}</p>
+          {/* 6 Grid Fields (2 cols) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+            {/* Field 1: Username */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                {isEn ? "Username" : "TÊN ĐĂNG NHẬP"}
+              </label>
+              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-mono font-medium shadow-inner">
+                @{admin?.username}
               </div>
-              <span className={`text-xs font-semibold px-2.5 py-1 rounded-md border shrink-0 ${sec.statusClass}`}>
-                {sec.status}
-              </span>
             </div>
-          ))}
+
+            {/* Field 2: Full Name */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                {isEn ? "Full Name" : "HỌ VÀ TÊN"}
+              </label>
+              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+                {admin?.fullName || (isEn ? "Not set" : "Chưa cập nhật")}
+              </div>
+            </div>
+
+            {/* Field 3: Phone Number */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                {isEn ? "Phone Number" : "SỐ ĐIỆN THOẠI"}
+              </label>
+              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+                {admin?.phoneNumber || (isEn ? "Not set" : "Chưa cập nhật")}
+              </div>
+            </div>
+
+            {/* Field 4: Email */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                {isEn ? "Email" : "EMAIL"}
+              </label>
+              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+                {admin?.email}
+              </div>
+            </div>
+
+            {/* Field 5: Date of Birth */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                {isEn ? "Date of Birth" : "NGÀY SINH"}
+              </label>
+              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+                {formatDate(admin?.dateOfBirth)}
+              </div>
+            </div>
+
+            {/* Field 6: Role / Status */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                {isEn ? "Role" : "VAI TRÒ"}
+              </label>
+              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+                {admin?.role === "super_admin"
+                  ? (isEn ? "Super Administrator" : "Quản trị viên cấp cao")
+                  : (isEn ? "Administrator" : "Quản trị viên")}
+              </div>
+            </div>
+          </div>
+
+          {/* Bio / Description note */}
+          {admin?.bio && (
+            <div className="space-y-2 pt-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                {isEn ? "Bio & Notes" : "TIỂU SỬ & GHI CHÚ"}
+              </label>
+              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium leading-relaxed shadow-inner">
+                {admin.bio}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

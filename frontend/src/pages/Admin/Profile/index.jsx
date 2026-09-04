@@ -2,46 +2,34 @@ import { useState, useEffect } from "react";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
 import { useLanguage } from "../../../hooks/useLanguage";
-import {
-  fetchAdminProfile,
-  fetchAdminStats,
-} from "../../../services/adminProfileApi";
+import { fetchAdminProfile } from "../../../services/adminProfileApi";
 
-import AdminProfileHeader from "./AdminProfileHeader";
-import AdminStats from "./AdminStats";
 import TabNavigation from "./TabNavigation";
 import OverviewTab from "./OverviewTab";
-import SettingsTab from "./SettingsTab";
 import ActivityLogTab from "./ActivityLogTab";
 import EditAdminProfileModal from "./EditAdminProfileModal";
+import ChangePasswordModal from "./ChangePasswordModal";
 
 export default function AdminProfile() {
-  const { isDark, toggleTheme } = useTheme();
+  const { isDark } = useTheme();
   const { language } = useLanguage();
   const isEn = language === "en";
 
   const [activeTab, setActiveTab] = useState("overview");
   const [admin, setAdmin] = useState(null);
-  const [stats, setStats] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   const loadData = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const [profileRes, statsRes] = await Promise.all([
-        fetchAdminProfile(),
-        fetchAdminStats(),
-      ]);
-
+      const profileRes = await fetchAdminProfile();
       if (profileRes.success) {
         setAdmin(profileRes.admin);
-      }
-      if (statsRes.success) {
-        setStats(statsRes.stats);
       }
     } catch (err) {
       console.error("Lỗi khi tải hồ sơ quản trị viên:", err);
@@ -117,42 +105,22 @@ export default function AdminProfile() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6 animate-in fade-in duration-200">
-      {/* 1. Compact Header Banner & Actionable System Alerts */}
-      <AdminProfileHeader
-        admin={admin}
-        stats={stats}
-        onOpenEditModal={() => setIsEditModalOpen(true)}
-        isDark={isDark}
-      />
-
-      {/* 2. Actionable Stats 4-Card Dashboard */}
-      <AdminStats
-        stats={stats}
-        onSelectActivityTab={() => setActiveTab("activity")}
-        isDark={isDark}
-      />
-
-      {/* 3. Enterprise Tab Navigation */}
+      {/* 1. 2-Tab Navigation (Thông tin hồ sơ & Nhật ký thao tác) */}
       <TabNavigation
         activeTab={activeTab}
         onTabChange={setActiveTab}
         isDark={isDark}
       />
 
-      {/* 4. Tab Contents */}
+      {/* 2. Tab Contents */}
       <div>
         {activeTab === "overview" && (
           <OverviewTab
             admin={admin}
-            stats={stats}
+            onAdminUpdated={handleAdminUpdated}
+            onOpenEditModal={() => setIsEditModalOpen(true)}
+            onOpenPasswordModal={() => setIsPasswordModalOpen(true)}
             isDark={isDark}
-          />
-        )}
-
-        {activeTab === "settings" && (
-          <SettingsTab
-            isDark={isDark}
-            onThemeToggle={toggleTheme}
           />
         )}
 
@@ -161,12 +129,19 @@ export default function AdminProfile() {
         )}
       </div>
 
-      {/* 5. Edit Admin Profile Modal */}
+      {/* 3. Edit Admin Profile Modal */}
       <EditAdminProfileModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         admin={admin}
         onAdminUpdated={handleAdminUpdated}
+        isDark={isDark}
+      />
+
+      {/* 4. Change Password Security Modal */}
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
         isDark={isDark}
       />
     </div>

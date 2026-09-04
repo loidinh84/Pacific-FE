@@ -19,7 +19,6 @@ export default function AdminStats({ stats, onSelectActivityTab, isDark = true }
       unit: isEn ? "species" : "loài",
       actionText: isEn ? "+ Add species" : "+ Thêm mới",
       actionLink: "/admin/species",
-      isWarning: stats?.speciesManaged === 0,
     },
     {
       label: isEn ? "Classification Groups" : "Nhóm phân loại",
@@ -53,7 +52,7 @@ export default function AdminStats({ stats, onSelectActivityTab, isDark = true }
               {m.label}
             </span>
             <div className="flex items-baseline gap-2 mt-1.5">
-              <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${m.isWarning ? "text-amber-400" : "text-white"}`}>
+              <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
                 {m.value.toLocaleString(isEn ? "en-US" : "vi-VN")}
               </span>
               <span className="text-xs sm:text-sm text-slate-400 font-medium">{m.unit}</span>
