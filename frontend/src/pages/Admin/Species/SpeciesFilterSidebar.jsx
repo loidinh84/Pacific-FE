@@ -15,9 +15,9 @@ export default function SpeciesFilterSidebar({
     <aside className="lg:col-span-4 xl:col-span-3 space-y-4 max-h-[calc(100vh-120px)] overflow-y-auto pr-1.5 custom-scrollbar sticky top-20">
       {/* Filter Card 1: Tìm kiếm */}
       <div
-        className={`p-4 rounded-2xl border space-y-2 shadow-lg ${
+        className={`p-4 rounded-2xl border space-y-2 shadow-sm ${
           isDark
-            ? "bg-[#142144]/90 backdrop-blur-xl border-white/15 text-white"
+            ? "bg-[#0b1739]/85 backdrop-blur-md border-white/20 text-white"
             : "bg-white border-slate-200 text-slate-800 shadow-sm"
         }`}
       >
@@ -45,9 +45,9 @@ export default function SpeciesFilterSidebar({
 
       {/* Filter Card 2: Loại sinh vật */}
       <div
-        className={`p-4 rounded-2xl border space-y-2.5 shadow-lg ${
+        className={`p-4 rounded-2xl border space-y-2.5 shadow-sm ${
           isDark
-            ? "bg-[#142144]/90 backdrop-blur-xl border-white/15 text-white"
+            ? "bg-[#0b1739]/85 backdrop-blur-md border-white/20 text-white"
             : "bg-white border-slate-200 text-slate-800 shadow-sm"
         }`}
       >
@@ -77,9 +77,9 @@ export default function SpeciesFilterSidebar({
 
       {/* Filter Card 3: Nhóm sinh vật Tree Navigation */}
       <div
-        className={`p-4 rounded-2xl border space-y-2.5 shadow-lg ${
+        className={`p-4 rounded-2xl border space-y-2.5 shadow-sm ${
           isDark
-            ? "bg-[#142144]/90 backdrop-blur-xl border-white/15 text-white"
+            ? "bg-[#0b1739]/85 backdrop-blur-md border-white/20 text-white"
             : "bg-white border-slate-200 text-slate-800 shadow-sm"
         }`}
       >
@@ -146,9 +146,9 @@ export default function SpeciesFilterSidebar({
 
       {/* Filter Card 4: Tình trạng bảo tồn */}
       <div
-        className={`p-4 rounded-2xl border space-y-2.5 shadow-lg ${
+        className={`p-4 rounded-2xl border space-y-2.5 shadow-sm ${
           isDark
-            ? "bg-[#142144]/90 backdrop-blur-xl border-white/15 text-white"
+            ? "bg-[#0b1739]/85 backdrop-blur-md border-white/20 text-white"
             : "bg-white border-slate-200 text-slate-800 shadow-sm"
         }`}
       >

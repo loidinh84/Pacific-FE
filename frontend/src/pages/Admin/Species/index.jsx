@@ -234,41 +234,24 @@ export default function SpeciesManagement() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* ── TOP HEADER TITLE & ACTION BUTTONS ── */}
+      {/* ── TOP HEADER (TITLE + ACTIONS) ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1
-            className={`text-2xl md:text-3xl font-black font-heading tracking-tight ${
-              isDark ? "text-white" : "text-slate-900"
-            }`}
-          >
-            Quản lý sinh vật
-          </h1>
-          <p
-            className={`text-xs md:text-sm font-medium mt-1 ${
-              isDark ? "text-pacific-blue-pale" : "text-slate-500"
-            }`}
-          >
-            Tra cứu, cập nhật thông tin và đồng bộ hóa danh mục sinh vật biển Thái Bình Dương
-          </p>
-        </div>
+        <h1 className="text-2xl md:text-3xl font-black font-heading tracking-tight text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]">
+          Quản lý sinh vật
+        </h1>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={() => setIsApiSyncOpen(true)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs md:text-sm font-bold transition-all cursor-pointer shadow-md active:scale-95 ${
-              isDark
-                ? "bg-[#284980] hover:bg-[#345ba0] border-white/20 text-white"
-                : "bg-white hover:bg-slate-50 border-slate-200 text-indigo-700 shadow-sm"
-            }`}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/25 bg-[#0e1c3e]/80 hover:bg-[#142654] text-white text-xs md:text-sm font-bold transition-all cursor-pointer shadow-sm active:scale-95 backdrop-blur-sm"
           >
-            <RefreshCw size={16} />
+            <RefreshCw size={16} className="text-cyan-300" />
             <span>Đồng bộ API ({speciesList.length})</span>
           </button>
 
           <button
             onClick={handleOpenAddModal}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-pacific-blue-bright via-cyan-500 to-pacific-teal hover:brightness-110 text-white text-xs md:text-sm font-bold shadow-lg shadow-cyan-500/20 transition-all cursor-pointer active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs md:text-sm font-bold shadow-sm transition-all cursor-pointer active:scale-95"
           >
             <Plus size={16} />
             <span>Thêm sinh vật</span>

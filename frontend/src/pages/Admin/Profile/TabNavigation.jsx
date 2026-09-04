@@ -14,7 +14,7 @@ export default function TabNavigation({
   ];
 
   return (
-    <div className="flex items-center border-b border-white/15 gap-2 pb-px overflow-x-auto scrollbar-none">
+    <div className="inline-flex p-1.5 rounded-2xl bg-[#0c1836]/92 backdrop-blur-md border border-white/20 shadow-sm gap-1.5 overflow-x-auto scrollbar-none mb-2">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
 
@@ -23,10 +23,10 @@ export default function TabNavigation({
             key={tab.id}
             type="button"
             onClick={() => onTabChange(tab.id)}
-            className={`px-4 sm:px-5 py-3 text-sm sm:text-base font-semibold tracking-tight transition-colors cursor-pointer border-b-2 -mb-px whitespace-nowrap ${
+            className={`px-5 py-2.5 rounded-xl text-sm sm:text-base transition-all cursor-pointer whitespace-nowrap ${
               isActive
-                ? "border-cyan-400 text-cyan-300 font-bold"
-                : "border-transparent text-white/70 hover:text-white hover:border-white/30"
+                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black shadow-sm"
+                : "text-white/90 hover:text-white hover:bg-white/10 font-bold"
             }`}
           >
             <span>{tab.label}</span>

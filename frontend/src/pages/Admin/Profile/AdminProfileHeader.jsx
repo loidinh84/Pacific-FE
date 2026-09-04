@@ -35,7 +35,7 @@ export default function AdminProfileHeader({
       <div
         className={`rounded-2xl border p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all ${
           isDark
-            ? "bg-[#142144]/90 backdrop-blur-xl border-white/15 text-white shadow-lg"
+            ? "bg-[#0b1739]/90 backdrop-blur-md border-white/20 text-white shadow-sm"
             : "bg-white border-slate-200 text-slate-900 shadow-sm"
         }`}
       >
@@ -69,7 +69,7 @@ export default function AdminProfileHeader({
         <button
           type="button"
           onClick={onOpenEditModal}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/20 active:scale-95 transition-all cursor-pointer shrink-0 self-end sm:self-auto"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-sm active:scale-95 transition-all cursor-pointer shrink-0 self-end sm:self-auto"
         >
           <Edit3 size={15} />
           <span>{isEn ? "Edit Profile" : "Chỉnh sửa hồ sơ"}</span>

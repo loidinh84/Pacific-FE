@@ -58,15 +58,24 @@ export default function AdminLayout() {
         isDark ? "bg-[#1b254b] text-white" : "bg-[#f4f7fb] text-slate-900"
       }`}
     >
-      {/* Subtle Ambient Ocean Light */}
+      {/* Ocean Sunbeams & Coral Reef Atmosphere */}
       {isDark && (
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.22)_0%,rgba(6,182,212,0.08)_40%,transparent_70%)] pointer-events-none z-0" />
+        <>
+          {/* Base Underwater Coral Sunbeams Image */}
+          <div
+            className="fixed inset-0 bg-cover bg-center bg-no-repeat pointer-events-none z-0 opacity-85"
+            style={{ backgroundImage: `url(${Images.PacificOceanCoralBg})` }}
+          />
+
+          {/* Deep Ocean Soft Ambient Vignette & Contrast Overlay (Light & Crisp, No Heavy Dark Shadow) */}
+          <div className="fixed inset-0 bg-gradient-to-b from-[#0a142c]/30 via-transparent to-[#081024]/40 pointer-events-none z-0" />
+        </>
       )}
 
       {/* ── 1. TOP HEADER (LOGO + RIGHT CONTROLS) ── */}
       <header
-        className={`w-full border-b transition-colors duration-300 relative z-10 ${
-          isDark ? "bg-[#151f42]/90 backdrop-blur-md border-white/10" : "bg-white border-slate-200"
+        className={`w-full border-b transition-colors duration-300 relative z-50 ${
+          isDark ? "bg-[#0c1633]/90 backdrop-blur-md border-white/15" : "bg-white border-slate-200"
         }`}
       >
         <div className="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between gap-4">
@@ -93,7 +102,7 @@ export default function AdminLayout() {
               onClick={toggleTheme}
               className={`p-2 rounded-xl border transition-all cursor-pointer ${
                 isDark
-                  ? "bg-white/5 hover:bg-white/10 border-white/10 text-amber-300 hover:text-amber-200"
+                  ? "bg-white/10 hover:bg-white/20 border-white/20 text-amber-300 hover:text-amber-200"
                   : "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700 hover:text-slate-900"
               }`}
               title={
@@ -107,11 +116,11 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/settings"
               className={({ isActive }) =>
-                `flex items-center gap-1.5 text-sm font-medium transition-colors cursor-pointer ${
+                `flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer ${
                   isActive
-                    ? "text-cyan-400 font-bold"
+                    ? "text-cyan-300 font-bold"
                     : isDark
-                    ? "text-white/80 hover:text-white"
+                    ? "text-white/90 hover:text-white"
                     : "text-slate-700 hover:text-slate-900"
                 }`
               }
@@ -126,13 +135,13 @@ export default function AdminLayout() {
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className={`flex items-center gap-1 text-sm font-serif italic tracking-wide transition-colors cursor-pointer ${
                   isDark
-                    ? "text-white/90 hover:text-white"
+                    ? "text-white hover:text-cyan-200"
                     : "text-slate-800 hover:text-black"
                 }`}
               >
                 <span>
                   Xin chào,{" "}
-                  <strong className="font-semibold not-italic font-sans text-cyan-400">
+                  <strong className="font-semibold not-italic font-sans text-cyan-300">
                     [{currentUser.username || "Admin"}]
                   </strong>
                 </span>
@@ -141,17 +150,17 @@ export default function AdminLayout() {
               {/* User Dropdown */}
               {isUserMenuOpen && (
                 <div
-                  className={`absolute right-0 mt-2 w-52 p-2 rounded-2xl border shadow-xl z-50 animate-in fade-in zoom-in-95 duration-150 ${
+                  className={`absolute right-0 mt-2 w-52 p-2 rounded-2xl border shadow-lg z-50 animate-in fade-in zoom-in-95 duration-150 ${
                     isDark
-                      ? "bg-[#132244] border-white/15 text-white shadow-black/50"
+                      ? "bg-[#0f1d3f] border-white/20 text-white"
                       : "bg-white border-slate-200 text-slate-800 shadow-slate-300"
                   }`}
                 >
                   <div className="px-3 py-2 border-b border-white/10 mb-1">
-                    <p className="text-xs font-bold leading-tight font-sans not-italic">
+                    <p className="text-xs font-bold leading-tight font-sans not-italic text-white">
                       {currentUser.username || "Admin 1"}
                     </p>
-                    <p className="text-[11px] text-slate-400 font-sans not-italic">
+                    <p className="text-[11px] text-slate-300 font-sans not-italic">
                       {currentUser.email || "admin@pacific.org"}
                     </p>
                   </div>
@@ -159,7 +168,7 @@ export default function AdminLayout() {
                     to="/admin/profile"
                     onClick={() => setIsUserMenuOpen(false)}
                     className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl text-cyan-300 font-medium transition-colors cursor-pointer mb-0.5 ${
-                      isDark ? "hover:bg-cyan-500/10" : "hover:bg-cyan-50"
+                      isDark ? "hover:bg-cyan-500/20" : "hover:bg-cyan-50"
                     }`}
                   >
                     <User size={13} />
@@ -167,8 +176,8 @@ export default function AdminLayout() {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl text-rose-400 transition-colors cursor-pointer ${
-                      isDark ? "hover:bg-rose-500/10" : "hover:bg-rose-50"
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl text-rose-400 font-medium transition-colors cursor-pointer ${
+                      isDark ? "hover:bg-rose-500/20" : "hover:bg-rose-50"
                     }`}
                   >
                     <LogOut size={13} />
@@ -182,12 +191,12 @@ export default function AdminLayout() {
       </header>
 
       {/* ── 2. THANH ĐIỀU HƯỚNG ── */}
-      <div className="w-full flex items-center justify-center pt-2 px-3">
+      <div className="w-full flex items-center justify-center pt-3 px-3 relative z-20">
         <nav
-          className={`flex items-center gap-1 px-1 py-1 rounded-full border shadow-md transition-all max-w-full overflow-x-auto scrollbar-none ${
+          className={`flex items-center gap-1.5 p-1.5 rounded-full border shadow-sm transition-all max-w-full overflow-x-auto scrollbar-none ${
             isDark
-              ? "bg-[#283868] border-white/10 text-white"
-              : "bg-[#e2e8f5] border-slate-300 text-slate-800"
+              ? "bg-[#0e1b3d]/90 backdrop-blur-md border-white/20 text-white"
+              : "bg-white/90 backdrop-blur-md border-slate-300 text-slate-800 shadow-slate-200/50"
           }`}
         >
           {adminTabs.map((tab) => (
@@ -195,14 +204,12 @@ export default function AdminLayout() {
               key={tab.path}
               to={tab.path}
               className={({ isActive }) =>
-                `px-3 py-1 rounded-full text-md font-bold transition-all whitespace-nowrap cursor-pointer ${
+                `px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? isDark
-                      ? "bg-[#435f9f] text-white font-bold shadow-sm"
-                      : "bg-white text-blue-800 font-bold shadow-sm"
+                    ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black shadow-sm"
                     : isDark
-                      ? "text-white/80 hover:text-gray-400"
-                      : "text-slate-700 hover:text-slate-950 hover:bg-white/60"
+                      ? "text-white hover:text-cyan-200 hover:bg-white/15"
+                      : "text-slate-800 hover:text-black hover:bg-slate-200"
                 }`
               }
             >
@@ -213,7 +220,7 @@ export default function AdminLayout() {
       </div>
 
       {/* ── 3. MAIN CONTENT OUTLET ── */}
-      <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 relative z-0">
         <Outlet />
       </main>
     </div>

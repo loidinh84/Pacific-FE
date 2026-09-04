@@ -123,17 +123,17 @@ export default function OverviewTab({
 
       {/* ─── LEFT COLUMN (4 cols on lg) ─── */}
       <div className="lg:col-span-4 space-y-6">
-        {/* 1. Profile Avatar & Identity Card */}
+        {/* 1. Profile Summary Card */}
         <div
-          className={`rounded-3xl border p-6 sm:p-8 flex flex-col items-center justify-center text-center space-y-4 ${
+          className={`rounded-3xl border p-6 flex flex-col items-center text-center space-y-4 ${
             isDark
-              ? "bg-[#223263]/85 backdrop-blur-xl border-white/20 text-white shadow-xl"
+              ? "bg-[#0d1a38]/92 backdrop-blur-md border-white/20 text-white shadow-sm"
               : "bg-white border-slate-200 text-slate-900 shadow-sm"
           }`}
         >
           {/* Avatar Circle with Quick Change Hover Overlay */}
           <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
-            <div className="w-28 h-28 rounded-full bg-[#162247] border-2 border-white/25 p-1 flex items-center justify-center overflow-hidden shadow-inner relative transition-transform duration-200 group-hover:scale-105">
+            <div className="w-28 h-28 rounded-full bg-[#081228] border-2 border-white/25 p-1 flex items-center justify-center overflow-hidden shadow-inner relative transition-transform duration-200 group-hover:scale-105">
               {admin?.avatar ? (
                 <img
                   src={admin.avatar}
@@ -164,7 +164,7 @@ export default function OverviewTab({
             {/* Camera Floating Pill Badge */}
             <button
               type="button"
-              className="absolute bottom-0 right-0 p-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-md border-2 border-[#162247] transition-transform active:scale-90"
+              className="absolute bottom-0 right-0 p-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-sm border-2 border-[#0d1a38] transition-transform active:scale-90 cursor-pointer"
               title={isEn ? "Upload new avatar" : "Tải lên ảnh mới"}
             >
               <Camera size={13} />
@@ -186,7 +186,7 @@ export default function OverviewTab({
             <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
               {admin?.fullName || admin?.username}
             </h2>
-            <p className="text-xs font-bold uppercase tracking-wider text-cyan-400">
+            <p className="text-xs font-bold uppercase tracking-wider text-cyan-300">
               {admin?.role === "super_admin"
                 ? (isEn ? "SUPER ADMIN" : "QUẢN TRỊ VIÊN CẤP CAO")
                 : (isEn ? "ADMIN" : "QUẢN TRỊ VIÊN")}
@@ -195,7 +195,7 @@ export default function OverviewTab({
 
           {/* Status Badge */}
           <div className="pt-1">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 tracking-wide">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 tracking-wide shadow-sm">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               {isEn ? "ACTIVE" : "ĐANG HOẠT ĐỘNG"}
             </span>
@@ -206,12 +206,12 @@ export default function OverviewTab({
         <div
           className={`rounded-3xl border p-6 space-y-5 ${
             isDark
-              ? "bg-[#223263]/85 backdrop-blur-xl border-white/20 text-white shadow-xl"
+              ? "bg-[#0d1a38]/92 backdrop-blur-md border-white/20 text-white shadow-sm"
               : "bg-white border-slate-200 text-slate-900 shadow-sm"
           }`}
         >
           <div className="pb-3 border-b border-white/15">
-            <h3 className="text-base font-bold text-white tracking-tight">
+            <h3 className="text-lg font-black text-white tracking-tight">
               {isEn ? "Account Security" : "Bảo mật tài khoản"}
             </h3>
           </div>
@@ -219,10 +219,10 @@ export default function OverviewTab({
           <div className="space-y-3.5 text-sm">
             {/* Email Verification */}
             <div className="flex items-center justify-between py-1">
-              <span className="text-slate-200 font-medium">
+              <span className="text-white font-bold">
                 {isEn ? "Email Verification" : "Xác thực Email"}
               </span>
-              <span className="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5 tracking-wide">
+              <span className="text-emerald-400 font-black text-xs uppercase flex items-center gap-1.5 tracking-wide">
                 <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                 {isEn ? "Completed" : "HOÀN TẤT"}
               </span>
@@ -230,17 +230,17 @@ export default function OverviewTab({
 
             {/* Phone Verification */}
             <div className="flex items-center justify-between py-1">
-              <span className="text-slate-200 font-medium">
+              <span className="text-white font-bold">
                 {isEn ? "Phone Verification" : "Xác thực Số Điện Thoại"}
               </span>
               {admin?.phoneNumber ? (
-                <span className="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5 tracking-wide">
+                <span className="text-emerald-400 font-black text-xs uppercase flex items-center gap-1.5 tracking-wide">
                   <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                   {isEn ? "Completed" : "HOÀN TẤT"}
                 </span>
               ) : (
-                <span className="text-slate-400 font-medium text-xs uppercase flex items-center gap-1.5 tracking-wide">
-                  <span className="w-2 h-2 rounded-full bg-slate-500"></span>
+                <span className="text-slate-300 font-bold text-xs uppercase flex items-center gap-1.5 tracking-wide">
+                  <span className="w-2 h-2 rounded-full bg-slate-400"></span>
                   {isEn ? "Not Updated" : "CHƯA CẬP NHẬT"}
                 </span>
               )}
@@ -252,7 +252,7 @@ export default function OverviewTab({
             <button
               type="button"
               onClick={onOpenPasswordModal}
-              className="w-full py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-[#17244c] hover:bg-[#1e2f60] border border-white/20 shadow-sm active:scale-[0.98] transition-all cursor-pointer text-center"
+              className="w-full py-2.5 px-4 rounded-xl text-sm font-bold text-cyan-200 hover:text-white bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/40 shadow-sm backdrop-blur-md active:scale-[0.98] transition-all cursor-pointer text-center"
             >
               {isEn ? "Change Security Password" : "Đổi mật khẩu bảo mật"}
             </button>
@@ -265,7 +265,7 @@ export default function OverviewTab({
         <div
           className={`rounded-3xl border p-6 sm:p-8 space-y-6 ${
             isDark
-              ? "bg-[#223263]/85 backdrop-blur-xl border-white/20 text-white shadow-xl"
+              ? "bg-[#0d1a38]/92 backdrop-blur-md border-white/20 text-white shadow-sm"
               : "bg-white border-slate-200 text-slate-900 shadow-sm"
           }`}
         >
@@ -277,7 +277,7 @@ export default function OverviewTab({
             <button
               type="button"
               onClick={onOpenEditModal}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/20 active:scale-95 transition-all cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-sm active:scale-95 transition-all cursor-pointer"
             >
               <Edit3 size={15} />
               <span>{isEn ? "Edit" : "Chỉnh sửa"}</span>
@@ -288,60 +288,60 @@ export default function OverviewTab({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
             {/* Field 1: Username */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-black uppercase tracking-wider text-cyan-300">
                 {isEn ? "Username" : "TÊN ĐĂNG NHẬP"}
               </label>
-              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-mono font-medium shadow-inner">
+              <div className="w-full px-4 py-3 bg-[#122147]/90 border border-white/25 rounded-xl text-sm sm:text-base text-white font-mono font-bold shadow-inner">
                 @{admin?.username}
               </div>
             </div>
 
             {/* Field 2: Full Name */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-black uppercase tracking-wider text-cyan-300">
                 {isEn ? "Full Name" : "HỌ VÀ TÊN"}
               </label>
-              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+              <div className="w-full px-4 py-3 bg-[#122147]/90 border border-white/25 rounded-xl text-sm sm:text-base text-white font-bold shadow-inner">
                 {admin?.fullName || (isEn ? "Not set" : "Chưa cập nhật")}
               </div>
             </div>
 
             {/* Field 3: Phone Number */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-black uppercase tracking-wider text-cyan-300">
                 {isEn ? "Phone Number" : "SỐ ĐIỆN THOẠI"}
               </label>
-              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+              <div className="w-full px-4 py-3 bg-[#122147]/90 border border-white/25 rounded-xl text-sm sm:text-base text-white font-bold shadow-inner">
                 {admin?.phoneNumber || (isEn ? "Not set" : "Chưa cập nhật")}
               </div>
             </div>
 
             {/* Field 4: Email */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-black uppercase tracking-wider text-cyan-300">
                 {isEn ? "Email" : "EMAIL"}
               </label>
-              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+              <div className="w-full px-4 py-3 bg-[#122147]/90 border border-white/25 rounded-xl text-sm sm:text-base text-white font-bold shadow-inner">
                 {admin?.email}
               </div>
             </div>
 
             {/* Field 5: Date of Birth */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-black uppercase tracking-wider text-cyan-300">
                 {isEn ? "Date of Birth" : "NGÀY SINH"}
               </label>
-              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+              <div className="w-full px-4 py-3 bg-[#122147]/90 border border-white/25 rounded-xl text-sm sm:text-base text-white font-bold shadow-inner">
                 {formatDate(admin?.dateOfBirth)}
               </div>
             </div>
 
             {/* Field 6: Role / Status */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-black uppercase tracking-wider text-cyan-300">
                 {isEn ? "Role" : "VAI TRÒ"}
               </label>
-              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
+              <div className="w-full px-4 py-3 bg-[#122147]/90 border border-white/25 rounded-xl text-sm sm:text-base text-white font-bold shadow-inner">
                 {admin?.role === "super_admin"
                   ? (isEn ? "Super Administrator" : "Quản trị viên cấp cao")
                   : (isEn ? "Administrator" : "Quản trị viên")}
@@ -352,10 +352,10 @@ export default function OverviewTab({
           {/* Bio / Description note */}
           {admin?.bio && (
             <div className="space-y-2 pt-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-black uppercase tracking-wider text-cyan-300">
                 {isEn ? "Bio & Notes" : "TIỂU SỬ & GHI CHÚ"}
               </label>
-              <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium leading-relaxed shadow-inner">
+              <div className="w-full px-4 py-3 bg-[#122147]/90 border border-white/25 rounded-xl text-sm sm:text-base text-white font-bold leading-relaxed shadow-inner">
                 {admin.bio}
               </div>
             </div>
