@@ -10,7 +10,7 @@ export default function TabNavigation({
 
   const tabs = [
     { id: "overview", label: isEn ? "Profile Info" : "Thông tin hồ sơ" },
-    { id: "activity", label: isEn ? "Audit Logs" : "Nhật ký thao tác" },
+    { id: "activity", label: isEn ? "Activity History" : "Lịch sử thao tác" },
   ];
 
   return (
