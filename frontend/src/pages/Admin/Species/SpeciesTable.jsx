@@ -24,17 +24,17 @@ export default function SpeciesTable({
 
   return (
     <div
-      className={`border rounded-3xl overflow-hidden shadow-2xl w-full flex flex-col justify-between h-[calc(100vh-120px)] min-h-[620px] relative transition-colors duration-300 ${
+      className={`border rounded-3xl overflow-hidden shadow-sm w-full flex flex-col justify-between h-[calc(100vh-120px)] min-h-[620px] relative transition-colors duration-300 ${
         isDark
-          ? "bg-[#142144]/90 backdrop-blur-xl border-white/15"
-          : "bg-white border-slate-200 shadow-md"
+          ? "bg-[#0d1a38]/92 backdrop-blur-md border-white/20"
+          : "bg-white border-slate-200 shadow-sm"
       }`}
     >
       {/* Loading Overlay */}
       {isLoading && (
         <div
           className={`absolute inset-0 z-10 flex items-center justify-center backdrop-blur-xs ${
-            isDark ? "bg-[#142144]/60" : "bg-white/60"
+            isDark ? "bg-[#0d1a38]/60" : "bg-white/60"
           }`}
         >
           <Loader2 size={24} className="text-cyan-400 animate-spin" />
@@ -49,7 +49,7 @@ export default function SpeciesTable({
             <tr
               className={`font-bold border-b text-sm ${
                 isDark
-                  ? "bg-[#1e2f5c] text-white border-white/15"
+                  ? "bg-[#081228] text-white border-white/20"
                   : "bg-slate-100 text-slate-700 border-slate-200"
               }`}
             >

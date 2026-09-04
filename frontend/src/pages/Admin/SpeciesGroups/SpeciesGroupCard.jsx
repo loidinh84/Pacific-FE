@@ -8,10 +8,10 @@ export default function SpeciesGroupCard({ group, onEdit, onDelete }) {
 
   return (
     <div
-      className={`group relative rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:shadow-lg flex flex-col justify-between ${
+      className={`group relative rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:border-cyan-400/60 flex flex-col justify-between ${
         isDark
-          ? "bg-[#182649] border-white/10 hover:border-cyan-400/40 hover:bg-[#1c2c54]"
-          : "bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-md"
+          ? "bg-[#0d1a38]/92 backdrop-blur-md border-white/20 hover:bg-[#122248] shadow-sm"
+          : "bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-sm"
       }`}
     >
       <div className="flex items-start justify-between gap-4">
@@ -41,8 +41,8 @@ export default function SpeciesGroupCard({ group, onEdit, onDelete }) {
           </div>
 
           <p
-            className={`text-xs sm:text-sm font-normal line-clamp-2 leading-relaxed ${
-              isDark ? "text-slate-400" : "text-slate-600"
+            className={`text-xs sm:text-sm font-medium line-clamp-2 leading-relaxed ${
+              isDark ? "text-slate-200" : "text-slate-600"
             }`}
           >
             {group.description || "Chưa có mô tả chi tiết cho nhóm sinh vật này."}
@@ -72,7 +72,7 @@ export default function SpeciesGroupCard({ group, onEdit, onDelete }) {
               onClick={() => onEdit(group)}
               className={`px-4 py-1.5 rounded-xl border text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center min-w-[62px] ${
                 isDark
-                  ? "bg-white/5 hover:bg-white/15 border-white/20 text-white hover:border-cyan-400/50"
+                  ? "bg-white/10 hover:bg-cyan-500/20 border-white/20 text-white hover:text-cyan-200 hover:border-cyan-400/50"
                   : "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-800"
               }`}
             >
@@ -84,7 +84,7 @@ export default function SpeciesGroupCard({ group, onEdit, onDelete }) {
               onClick={() => onDelete(group)}
               className={`px-4 py-1.5 rounded-xl border text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center min-w-[62px] ${
                 isDark
-                  ? "bg-white/5 hover:bg-rose-500/20 border-white/20 text-white/90 hover:text-rose-300 hover:border-rose-400/50"
+                  ? "bg-white/10 hover:bg-rose-500/20 border-white/20 text-rose-200 hover:text-rose-100 hover:border-rose-400/50"
                   : "bg-slate-100 hover:bg-rose-50 border-slate-200 text-slate-700 hover:text-rose-600"
               }`}
             >

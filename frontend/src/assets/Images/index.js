@@ -7,6 +7,7 @@ import Zalo from "./Icon_of_Zalo.svg.webp";
 import PacificOceanMap from "./PacificOceanMap.jpg";
 import NoFound from "./NoFound.png";
 import Ocean3DBg from "./Ocean3DBg.jpg";
+import PacificOceanCoralBg from "./PacificOceanCoralBg.png";
 import SharkAnatomy from "./SharkAnatomy.jpg";
 import SharkGallery1 from "./SharkGallery1.jpg";
 import SharkGallery2 from "./SharkGallery2.jpg";
@@ -23,11 +24,10 @@ export {
   PacificOceanMap,
   NoFound,
   Ocean3DBg,
+  PacificOceanCoralBg,
   SharkAnatomy,
   SharkGallery1,
   SharkGallery2,
   SharkGallery3,
   SharkGallery4,
 };
-
-

@@ -186,18 +186,14 @@ export default function SpeciesGroupsManagement() {
       <div className="space-y-4">
         {/* Title & Top Right Actions */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h1
-            className={`text-2xl sm:text-3xl font-black font-heading tracking-tight ${
-              isDark ? "text-white" : "text-slate-900"
-            }`}
-          >
+          <h1 className="text-2xl sm:text-3xl font-black font-heading tracking-tight text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]">
             Nhóm sinh vật
           </h1>
 
           <button
             type="button"
             onClick={handleOpenCreate}
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-bold transition-all shadow-lg active:scale-95 cursor-pointer shrink-0"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs sm:text-sm font-bold transition-all shadow-sm active:scale-95 cursor-pointer shrink-0"
           >
             <Plus size={16} />
             <span>Tạo nhóm mới</span>
@@ -210,18 +206,14 @@ export default function SpeciesGroupsManagement() {
           <div className="relative flex-1 max-w-md">
             <Search
               size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cyan-300"
             />
             <input
               type="text"
-              placeholder="Tìm kiếm tên nhóm"
+              placeholder="Tìm kiếm tên nhóm..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-9 pr-4 py-2 rounded-xl text-xs sm:text-sm focus:outline-none transition-all ${
-                isDark
-                  ? "bg-[#182649] border border-white/15 text-white placeholder:text-slate-400 focus:border-cyan-400"
-                  : "bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500 shadow-sm"
-              }`}
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-none transition-all bg-[#0a142c]/90 border border-white/20 text-white placeholder:text-slate-300 focus:border-cyan-400 shadow-inner"
             />
           </div>
 
@@ -229,13 +221,9 @@ export default function SpeciesGroupsManagement() {
           <button
             type="button"
             onClick={() => setIsAssignOpen(true)}
-            className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95 cursor-pointer shrink-0 ${
-              isDark
-                ? "bg-[#2b3c6b] hover:bg-[#344882] text-white border border-white/10"
-                : "bg-slate-200 hover:bg-slate-300 text-slate-800"
-            }`}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95 cursor-pointer shrink-0 bg-[#0e1c3e]/80 hover:bg-[#142654] text-white border border-white/20 shadow-sm backdrop-blur-md"
           >
-            <Layers size={15} className="text-cyan-400" />
+            <Layers size={15} className="text-cyan-300" />
             <span>Gán sinh vật vào nhóm</span>
           </button>
         </div>
@@ -243,7 +231,7 @@ export default function SpeciesGroupsManagement() {
 
       {/* ── 2. MAIN CONTAINER (2-COLUMN GRID) ── */}
       <div
-        className={`rounded-2xl border p-5 sm:p-7 shadow-xl space-y-6 transition-all ${
+        className={`rounded-2xl border p-5 sm:p-7 shadow-sm space-y-6 transition-all ${
           isDark
             ? "bg-[#101b38]/90 border-white/10 backdrop-blur-md"
             : "bg-white border-slate-200"

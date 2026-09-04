@@ -87,7 +87,7 @@ export default function ActivityLogTab({ isDark = true }) {
     <div
       className={`rounded-3xl border p-6 sm:p-8 space-y-6 animate-in fade-in duration-150 relative z-10 ${
         isDark
-          ? "bg-[#223263]/85 backdrop-blur-xl border-white/20 text-white shadow-xl"
+          ? "bg-[#0d1a38]/92 backdrop-blur-md border-white/20 text-white shadow-sm"
           : "bg-white border-slate-200 text-slate-900 shadow-sm"
       }`}
     >
@@ -98,11 +98,11 @@ export default function ActivityLogTab({ isDark = true }) {
             <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
               {isEn ? "Activity History" : "Lịch sử thao tác"}
             </h3>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-white/10 text-white/70 border border-white/15">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-white/10 text-white/90 border border-white/20">
               {isEn ? "Read-only" : "Chỉ xem"}
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-cyan-200/70 mt-1">
+          <p className="text-xs sm:text-sm text-cyan-200/90 mt-1">
             {isEn
               ? `${pagination.total} administrative actions recorded (automatic log)`
               : `${pagination.total} thao tác quản trị được hệ thống tự động ghi nhận`}
@@ -114,18 +114,18 @@ export default function ActivityLogTab({ isDark = true }) {
           type="button"
           onClick={() => loadActivities(pagination.page)}
           disabled={isLoading}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#17244c] hover:bg-[#1e2f60] border border-white/20 transition-all cursor-pointer shrink-0 disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 shadow-sm backdrop-blur-md transition-all cursor-pointer shrink-0 disabled:opacity-50"
         >
-          <RefreshCw size={14} className={isLoading ? "animate-spin text-cyan-400" : ""} />
+          <RefreshCw size={14} className={isLoading ? "animate-spin text-cyan-300" : ""} />
           <span>{isEn ? "Refresh" : "Làm mới"}</span>
         </button>
       </div>
 
       {/* Audit Table */}
-      <div className="overflow-x-auto rounded-2xl border border-white/15">
+      <div className="overflow-x-auto rounded-2xl border border-white/20">
         <table className="w-full text-left text-sm border-collapse">
           <thead>
-            <tr className="bg-[#17244c] text-white/80 font-semibold border-b border-white/15">
+            <tr className="bg-[#081228] text-white font-bold border-b border-white/20">
               <th className="py-3.5 px-4">{isEn ? "Timestamp" : "Thời gian"}</th>
               <th className="py-3.5 px-4">{isEn ? "Admin" : "Người thực hiện"}</th>
               <th className="py-3.5 px-4">{isEn ? "Action" : "Hành động"}</th>
@@ -134,7 +134,7 @@ export default function ActivityLogTab({ isDark = true }) {
               <th className="py-3.5 px-4 text-center">{isEn ? "Status" : "Trạng thái"}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10 bg-[#17244c]/40">
+          <tbody className="divide-y divide-white/10 bg-[#081228]/50">
             {isLoading ? (
               <tr>
                 <td colSpan="6" className="py-12 text-center text-white/60">

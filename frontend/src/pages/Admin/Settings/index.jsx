@@ -85,13 +85,13 @@ export default function SystemSettings() {
         <div
           className={`lg:col-span-4 xl:col-span-3 rounded-2xl border p-4 space-y-3 transition-colors ${
             isDark
-              ? "bg-[#111c38] border-white/10"
+              ? "bg-[#0d1a38]/92 backdrop-blur-md border-white/20 shadow-sm"
               : "bg-white border-slate-200 shadow-sm"
           }`}
         >
           <h2
-            className={`text-xl font-bold tracking-wide  px-2 mb-2 ${
-              isDark ? "text-white/80" : "text-slate-800"
+            className={`text-xl font-bold tracking-wide px-2 mb-2 ${
+              isDark ? "text-white" : "text-slate-800"
             }`}
           >
             Thiết lập hệ thống
@@ -105,17 +105,17 @@ export default function SystemSettings() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer text-left ${
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer text-left ${
                     isActive
                       ? isDark
-                        ? "bg-[#29407c] text-white shadow-md shadow-blue-900/30 border border-cyan-400"
+                        ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-sm border border-cyan-400/40"
                         : "bg-blue-600 text-white shadow-sm border border-cyan-400"
                       : isDark
-                      ? "text-white/70 hover:text-white hover:bg-white/5"
+                      ? "text-slate-200 hover:text-white hover:bg-white/10"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
-                  <Icon size={16} className={isActive ? "text-cyan-300" : ""} />
+                  <Icon size={16} className={isActive ? "text-white" : "text-cyan-300"} />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -127,24 +127,24 @@ export default function SystemSettings() {
         <div
           className={`lg:col-span-8 xl:col-span-9 rounded-2xl border p-6 md:p-8 space-y-8 transition-colors ${
             isDark
-              ? "bg-[#111c38] border-white/10"
-              : "bg-white border-slate-200 shadow-sm"
+              ? "bg-[#0d1a38]/92 backdrop-blur-md border-white/20 shadow-sm text-white"
+              : "bg-white border-slate-200 shadow-sm text-slate-900"
           }`}
         >
           {/* TAB 1: THÔNG TIN CHUNG (Theo đúng mockup) */}
           {activeTab === "general" && (
             <div className="space-y-8 animate-in fade-in duration-200">
-              <h1 className="text-xl md:text-2xl font-bold font-heading">
+              <h1 className="text-xl md:text-2xl font-bold font-heading text-white">
                 Thông tin chung
               </h1>
 
               {/* 1. Khối Thương hiệu */}
               <div
                 className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
-                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                  isDark ? "bg-[#122147]/90 border-white/20 shadow-sm" : "bg-slate-50 border-slate-200"
                 }`}
               >
-                <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider">
+                <h3 className="text-sm font-bold text-cyan-300 uppercase tracking-wider">
                   Thương hiệu
                 </h3>
 
@@ -152,7 +152,7 @@ export default function SystemSettings() {
                   {/* Cột trái: Form nhập tên & SEO */}
                   <div className="md:col-span-8 space-y-3">
                     <div>
-                      <label className="text-xs text-slate-400 block mb-1">Tên Website</label>
+                      <label className="text-xs text-cyan-300 font-bold block mb-1">Tên Website</label>
                       <input
                         type="text"
                         value={generalForm.websiteName}
