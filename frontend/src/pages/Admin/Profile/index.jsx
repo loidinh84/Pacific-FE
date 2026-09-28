@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
 import { useLanguage } from "../../../hooks/useLanguage";
@@ -23,7 +23,7 @@ export default function AdminProfile() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -37,10 +37,32 @@ export default function AdminProfile() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadData();
+    let ignore = false;
+    const fetchInit = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const profileRes = await fetchAdminProfile();
+        if (!ignore && profileRes.success) {
+          setAdmin(profileRes.admin);
+        }
+      } catch (err) {
+        if (!ignore) {
+          console.error("Lỗi khi tải hồ sơ quản trị viên:", err);
+          setError("Không thể tải thông tin hồ sơ Admin. Vui lòng kiểm tra lại quyền truy cập hoặc đăng nhập lại.");
+        }
+      } finally {
+        if (!ignore) setIsLoading(false);
+      }
+    };
+
+    fetchInit();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handleAdminUpdated = (updatedAdmin) => {

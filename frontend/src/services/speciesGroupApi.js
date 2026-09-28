@@ -1,15 +1,12 @@
 import axios from "axios";
+import { getStoredToken } from "../utils/auth";
 
-const API_BASE_URL = "http://localhost:3000/api/admin/species-groups";
-const SPECIES_BASE_URL = "http://localhost:3000/api/admin/species";
+const _BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+const API_BASE_URL = `${_BASE}/admin/species-groups`;
+const SPECIES_BASE_URL = `${_BASE}/admin/species`;
 
 const getAuthHeaders = () => {
-  const token =
-    localStorage.getItem("pacific_token") ||
-    localStorage.getItem("token") ||
-    sessionStorage.getItem("pacific_token") ||
-    sessionStorage.getItem("token");
-
+  const token = getStoredToken();
   return {
     headers: {
       Authorization: token ? `Bearer ${token}` : "",

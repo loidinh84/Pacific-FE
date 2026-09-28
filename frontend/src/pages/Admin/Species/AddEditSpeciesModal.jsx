@@ -21,29 +21,36 @@ import {
 import { useTheme } from "../../../hooks/useTheme";
 import { useLockBodyScroll } from "../../../hooks/useLockBodyScroll";
 import { searchSpeciesTaxonomy, uploadMediaFile } from "../../../services/speciesApi";
+import { fetchAdminSpeciesGroups } from "../../../services/speciesGroupApi";
 import OceanSoundPickerModal from "./OceanSoundPickerModal";
 
+// Helper to remove redundant text in parentheses
+const cleanLabel = (text) => {
+  if (!text) return "";
+  return text.replace(/\s*\([^)]*\)/g, "").trim();
+};
+
 const OCEAN_ZONE_OPTIONS = [
-  { value: "Sunlight", label: "Tầng nắng (Sunlight / Epipelagic)" },
-  { value: "Twilight", label: "Tầng hoàng hôn (Twilight / Mesopelagic)" },
-  { value: "Midnight", label: "Tầng nửa đêm (Midnight / Bathypelagic)" },
-  { value: "Abyssal", label: "Tầng vực sâu (Abyssal / Abyssopelagic)" },
-  { value: "Hadal", label: "Tầng khe sâu (Hadal / Hadalpelagic)" },
+  { value: "Sunlight", label: "Tầng nắng" },
+  { value: "Twilight", label: "Tầng hoàng hôn" },
+  { value: "Midnight", label: "Tầng nửa đêm" },
+  { value: "Abyssal", label: "Tầng vực sâu" },
+  { value: "Hadal", label: "Tầng khe sâu" },
 ];
 
 const CONSERVATION_STATUS_OPTIONS = [
-  { value: "LC", label: "Ít lo ngại (LC)" },
-  { value: "VU", label: "Sắp nguy cấp (VU)" },
-  { value: "EN", label: "Nguy cấp (EN)" },
-  { value: "CR", label: "Cực kỳ nguy cấp (CR)" },
-  { value: "DD", label: "Thiếu dữ liệu (DD)" },
-  { value: "NE", label: "Chưa đánh giá (NE)" },
+  { value: "LC", label: "Ít lo ngại" },
+  { value: "VU", label: "Sắp nguy cấp" },
+  { value: "EN", label: "Nguy cấp" },
+  { value: "CR", label: "Cực kỳ nguy cấp" },
+  { value: "DD", label: "Thiếu dữ liệu" },
+  { value: "NE", label: "Chưa đánh giá" },
 ];
 
 const GROUP_OPTIONS = [
   { value: "1", label: "Cá mập & Kẻ săn mồi lớn" },
   { value: "2", label: "Động vật có vú biển" },
-  { value: "3", label: "Động vật thân mềm (Bạch tuộc/Mực)" },
+  { value: "3", label: "Động vật thân mềm" },
   { value: "4", label: "Cá sặc sỡ rạn san hô" },
 ];
 
@@ -55,11 +62,11 @@ const API_PROVIDER_OPTIONS = [
 ];
 
 const DIET_OPTIONS = [
-  { value: "Kẻ săn mồi (Carnivore)", label: "Kẻ săn mồi (Carnivore)" },
-  { value: "Ăn thực vật (Herbivore)", label: "Ăn thực vật (Herbivore)" },
-  { value: "Ăn sinh vật phù du (Planktonivore)", label: "Ăn sinh vật phù du (Planktonivore)" },
-  { value: "Ăn tạp (Omnivore)", label: "Ăn tạp (Omnivore)" },
-  { value: "Ăn xác thối (Scavenger)", label: "Ăn xác thối (Scavenger)" },
+  { value: "Kẻ săn mồi (Carnivore)", label: "Kẻ săn mồi" },
+  { value: "Ăn thực vật (Herbivore)", label: "Ăn thực vật" },
+  { value: "Ăn sinh vật phù du (Planktonivore)", label: "Ăn sinh vật phù du" },
+  { value: "Ăn tạp (Omnivore)", label: "Ăn tạp" },
+  { value: "Ăn xác thối (Scavenger)", label: "Ăn xác thối" },
 ];
 
 function CustomSelect({ options, value, onChange, isDark, direction = "down" }) {
@@ -161,22 +168,72 @@ const getInitialFormData = (editingSpecies) => {
     return {
       name: editingSpecies.name || "",
       scientificName: editingSpecies.scientificName || editingSpecies.scientific_name || "",
-      oceanZone: editingSpecies.location || editingSpecies.oceanZone || "Sunlight",
+      oceanZone: editingSpecies.oceanZone || editingSpecies.location || "Sunlight",
       conservationStatus: editingSpecies.conservationCode || "VU",
-      depthMin: editingSpecies.depthMin || "0",
-      depthMax: editingSpecies.depthMax || "100",
-      groupId: editingSpecies.groupId || "1",
-      sizeMinCm: editingSpecies.sizeMinCm || "300",
-      sizeMaxCm: editingSpecies.sizeMaxCm || "600",
-      weightMinKg: editingSpecies.weightMinKg || "600",
-      weightMaxKg: editingSpecies.weightMaxKg || "2200",
-      lifespanYears: editingSpecies.lifespanYears || "70",
-      diet: editingSpecies.diet || "Kẻ săn mồi (Carnivore)",
-      tempMinC: editingSpecies.tempMinC || "12",
-      tempMaxC: editingSpecies.tempMaxC || "24",
-      model3dUrl: editingSpecies.model3dUrl || "",
-      soundUrl: editingSpecies.soundUrl || "",
-      gbifQuery: editingSpecies.scientificName || "",
+      depthMin:
+        editingSpecies.depthMin != null && editingSpecies.depthMin !== ""
+          ? String(editingSpecies.depthMin)
+          : editingSpecies.depth_min_m != null
+          ? String(editingSpecies.depth_min_m)
+          : "",
+      depthMax:
+        editingSpecies.depthMax != null && editingSpecies.depthMax !== ""
+          ? String(editingSpecies.depthMax)
+          : editingSpecies.depth_max_m != null
+          ? String(editingSpecies.depth_max_m)
+          : "",
+      groupId:
+        editingSpecies.groupId != null && editingSpecies.groupId !== ""
+          ? String(editingSpecies.groupId)
+          : editingSpecies.group_id != null
+          ? String(editingSpecies.group_id)
+          : "",
+      sizeMinCm:
+        editingSpecies.sizeMinCm != null && editingSpecies.sizeMinCm !== ""
+          ? String(editingSpecies.sizeMinCm)
+          : editingSpecies.size_min_cm != null
+          ? String(editingSpecies.size_min_cm)
+          : "",
+      sizeMaxCm:
+        editingSpecies.sizeMaxCm != null && editingSpecies.sizeMaxCm !== ""
+          ? String(editingSpecies.sizeMaxCm)
+          : editingSpecies.size_max_cm != null
+          ? String(editingSpecies.size_max_cm)
+          : "",
+      weightMinKg:
+        editingSpecies.weightMinKg != null && editingSpecies.weightMinKg !== ""
+          ? String(editingSpecies.weightMinKg)
+          : editingSpecies.weight_min_kg != null
+          ? String(editingSpecies.weight_min_kg)
+          : "",
+      weightMaxKg:
+        editingSpecies.weightMaxKg != null && editingSpecies.weightMaxKg !== ""
+          ? String(editingSpecies.weightMaxKg)
+          : editingSpecies.weight_max_kg != null
+          ? String(editingSpecies.weight_max_kg)
+          : "",
+      lifespanYears:
+        editingSpecies.lifespanYears != null && editingSpecies.lifespanYears !== ""
+          ? String(editingSpecies.lifespanYears)
+          : editingSpecies.lifespan_years != null
+          ? String(editingSpecies.lifespan_years)
+          : "",
+      diet: editingSpecies.diet || "",
+      tempMinC:
+        editingSpecies.tempMinC != null && editingSpecies.tempMinC !== ""
+          ? String(editingSpecies.tempMinC)
+          : editingSpecies.temperature_min_c != null
+          ? String(editingSpecies.temperature_min_c)
+          : "",
+      tempMaxC:
+        editingSpecies.tempMaxC != null && editingSpecies.tempMaxC !== ""
+          ? String(editingSpecies.tempMaxC)
+          : editingSpecies.temperature_max_c != null
+          ? String(editingSpecies.temperature_max_c)
+          : "",
+      model3dUrl: editingSpecies.model3dUrl || editingSpecies.model_3d_url || "",
+      soundUrl: editingSpecies.soundUrl || editingSpecies.sound_url || "",
+      gbifQuery: editingSpecies.scientificName || editingSpecies.scientific_name || "",
       description: editingSpecies.description || "",
       mediaItems: (editingSpecies.images || []).map((item) =>
         typeof item === "string"
@@ -190,17 +247,17 @@ const getInitialFormData = (editingSpecies) => {
     scientificName: "",
     oceanZone: "Sunlight",
     conservationStatus: "VU",
-    depthMin: "0",
-    depthMax: "100",
-    groupId: "1",
-    sizeMinCm: "100",
-    sizeMaxCm: "400",
-    weightMinKg: "100",
-    weightMaxKg: "1000",
-    lifespanYears: "20",
-    diet: "Kẻ săn mồi (Carnivore)",
-    tempMinC: "10",
-    tempMaxC: "25",
+    depthMin: "",
+    depthMax: "",
+    groupId: "",
+    sizeMinCm: "",
+    sizeMaxCm: "",
+    weightMinKg: "",
+    weightMaxKg: "",
+    lifespanYears: "",
+    diet: "",
+    tempMinC: "",
+    tempMaxC: "",
     model3dUrl: "",
     soundUrl: "",
     gbifQuery: "",
@@ -217,6 +274,10 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
   const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [activeTab, setActiveTab] = useState("basic"); // "basic" | "bio" | "media"
   const [formData, setFormData] = useState(() => getInitialFormData(editingSpecies));
+  const [groupOptions, setGroupOptions] = useState(() => [
+    { value: "", label: "Chưa phân nhóm" },
+    ...GROUP_OPTIONS,
+  ]);
   const [isSearchingGbif, setIsSearchingGbif] = useState(false);
   const [selectedApiProvider, setSelectedApiProvider] = useState("auto"); // "auto" | "gbif" | "inaturalist" | "worms"
   const [gbifFound, setGbifFound] = useState(false);
@@ -228,6 +289,44 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
 
   // Lock body scroll when modal is open
   useLockBodyScroll(isOpen);
+
+  // Synchronize formData whenever modal opens or editingSpecies changes
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(getInitialFormData(editingSpecies));
+      setGbifFound(false);
+      setGbifMessage("");
+      setActiveTab("basic");
+    }
+  }, [isOpen, editingSpecies]);
+
+  // Load dynamic species groups from API
+  useEffect(() => {
+    let isMounted = true;
+    async function loadGroups() {
+      try {
+        const res = await fetchAdminSpeciesGroups();
+        if (isMounted && res?.success && Array.isArray(res.groups)) {
+          const loaded = [
+            { value: "", label: "Chưa phân nhóm" },
+            ...res.groups.map((g) => ({
+              value: String(g.id),
+              label: cleanLabel(g.name),
+            })),
+          ];
+          setGroupOptions(loaded);
+        }
+      } catch (err) {
+        console.warn("Lỗi khi tải danh sách nhóm cho modal:", err);
+      }
+    }
+    if (isOpen) {
+      loadGroups();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -398,8 +497,8 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200 ${
-        isDark ? "bg-black/30 text-white" : "bg-slate-900/30 text-slate-800"
+      className={`fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200 ${
+        isDark ? "bg-black/40 text-white" : "bg-slate-900/40 text-slate-800"
       }`}
     >
       {/* Theme-Aware Glassmorphism Modal Card */}
@@ -616,7 +715,7 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
                   Nhóm sinh vật
                 </label>
                 <CustomSelect
-                  options={GROUP_OPTIONS}
+                  options={groupOptions}
                   value={formData.groupId}
                   onChange={(val) => setFormData({ ...formData, groupId: val })}
                   isDark={isDark}

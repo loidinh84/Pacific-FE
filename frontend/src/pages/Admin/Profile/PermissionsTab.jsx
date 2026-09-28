@@ -2,7 +2,6 @@ import {
   ShieldCheck,
   CheckCircle2,
   XCircle,
-  KeyRound,
   Layers,
   Fish,
   MapPin,

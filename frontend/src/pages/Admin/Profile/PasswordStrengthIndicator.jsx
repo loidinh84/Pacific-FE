@@ -16,9 +16,9 @@ export default function PasswordStrengthIndicator({ password = "" }) {
     if (hasNumber) score += 1;
     if (hasSpecial) score += 1;
 
-    let label = "Yếu";
-    let colorClass = "bg-rose-500 text-rose-400";
-    let barWidth = "20%";
+    let label;
+    let colorClass;
+    let barWidth;
 
     if (!password) {
       label = "Chưa nhập";

@@ -1,4 +1,3 @@
-import { Edit3, Trash2 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
 
 export default function SpeciesGroupCard({ group, onEdit, onDelete }) {

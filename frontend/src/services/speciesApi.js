@@ -1,9 +1,10 @@
 import axios from "axios";
+import { getStoredToken } from "../utils/auth";
 
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
 const getAuthHeaders = () => {
-  const token = localStorage.getItem("pacific_token") || localStorage.getItem("token");
+  const token = getStoredToken();
   return {
     headers: {
       Authorization: token ? `Bearer ${token}` : "",
@@ -129,6 +130,46 @@ export const deleteAdminSpecies = async (id) => {
     console.error("Lỗi khi xóa sinh vật:", error);
     throw error;
   }
+};
+
+/**
+ * Admin: Bulk soft delete multiple species
+ */
+export const bulkDeleteAdminSpecies = async (ids = []) => {
+  if (!ids.length) return { successful: [], failed: [] };
+  const results = await Promise.allSettled(
+    ids.map((id) => deleteAdminSpecies(id))
+  );
+  const successful = [];
+  const failed = [];
+  results.forEach((res, index) => {
+    if (res.status === "fulfilled") {
+      successful.push(ids[index]);
+    } else {
+      failed.push({ id: ids[index], reason: res.reason?.message });
+    }
+  });
+  return { successful, failed };
+};
+
+/**
+ * Admin: Bulk toggle visibility for multiple species
+ */
+export const bulkToggleSpeciesVisibility = async (ids = [], isVisible) => {
+  if (!ids.length) return { successful: [], failed: [] };
+  const results = await Promise.allSettled(
+    ids.map((id) => toggleSpeciesVisibility(id, isVisible))
+  );
+  const successful = [];
+  const failed = [];
+  results.forEach((res, index) => {
+    if (res.status === "fulfilled") {
+      successful.push(ids[index]);
+    } else {
+      failed.push({ id: ids[index], reason: res.reason?.message });
+    }
+  });
+  return { successful, failed };
 };
 
 /**
@@ -305,6 +346,94 @@ export const fetchOceanLocations = async () => {
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách địa điểm đại dương:", error);
+    throw error;
+  }
+};
+
+/**
+ * ── API PROVIDERS MANAGEMENT (ADMIN) ──
+ */
+
+/**
+ * Lấy danh sách tất cả các nguồn API Providers
+ * @param {boolean} includePing Nếu true, backend sẽ đo ping kết nối thời gian thực
+ */
+export const fetchAdminApiProviders = async (includePing = false) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/admin/api-providers`, {
+      ...getAuthHeaders(),
+      params: { ping: includePing ? "1" : "0" },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách API Providers:", error);
+    throw error;
+  }
+};
+
+/**
+ * Thêm nguồn API mới (Preset Catalog hoặc Custom REST Endpoint)
+ */
+export const createAdminApiProvider = async (providerData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/admin/api-providers`,
+      providerData,
+      getAuthHeaders()
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi thêm nguồn API:", error);
+    throw error;
+  }
+};
+
+/**
+ * Cập nhật nguồn API (Bật/Tắt, sửa endpoint, API Key, v.v.)
+ */
+export const updateAdminApiProvider = async (id, providerData) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/admin/api-providers/${id}`,
+      providerData,
+      getAuthHeaders()
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật nguồn API:", error);
+    throw error;
+  }
+};
+
+/**
+ * Xóa nguồn API
+ */
+export const deleteAdminApiProvider = async (id) => {
+  try {
+    const response = await axios.delete(
+      `${API_BASE_URL}/admin/api-providers/${id}`,
+      getAuthHeaders()
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi xóa nguồn API:", error);
+    throw error;
+  }
+};
+
+/**
+ * Kiểm tra kết nối / Ping Test một nguồn API
+ */
+export const testAdminApiProvider = async (id, testData = null) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/admin/api-providers/${id}/test`,
+      testData || {},
+      getAuthHeaders()
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi test kết nối API:", error);
     throw error;
   }
 };

@@ -1,9 +1,10 @@
 import axios from "axios";
+import { getStoredToken } from "../utils/auth";
 
-const API_BASE_URL = "http://localhost:3000/api/users";
+const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api"}/users`;
 
 const getAuthHeaders = () => {
-  const token = localStorage.getItem("pacific_token") || localStorage.getItem("token");
+  const token = getStoredToken();
   return {
     headers: {
       Authorization: token ? `Bearer ${token}` : "",

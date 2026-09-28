@@ -1,5 +1,15 @@
 import { Fragment } from "react";
-import { CheckSquare, Square, Loader2 } from "lucide-react";
+import {
+  CheckSquare,
+  Square,
+  Loader2,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  Fish,
+  RotateCcw,
+  Plus,
+} from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
 import SpeciesExpandedDetail from "./SpeciesExpandedDetail";
 import SpeciesPaginationFooter from "./SpeciesPaginationFooter";
@@ -19,8 +29,41 @@ export default function SpeciesTable({
   handleOpenEditModal = () => {},
   handleToggleVisibility = () => {},
   handleDelete = () => {},
+  // Sorting props
+  sortBy = null,
+  sortOrder = "asc",
+  onSort = () => {},
+  // Filter reset & Add modal props for Empty state
+  onResetFilters = null,
+  onOpenAddModal = null,
+  hasActiveFilters = false,
+  // Pagination props
+  page = 1,
+  totalPages = 1,
+  perPage = 20,
+  onPageChange = () => {},
+  onPerPageChange = () => {},
 }) {
   const { isDark } = useTheme();
+
+  // Helper render sort icon
+  const renderSortIcon = (columnKey) => {
+    if (sortBy === columnKey) {
+      return sortOrder === "asc" ? (
+        <ArrowUp size={14} className="text-cyan-400 shrink-0" />
+      ) : (
+        <ArrowDown size={14} className="text-cyan-400 shrink-0" />
+      );
+    }
+    return (
+      <ArrowUpDown
+        size={13}
+        className={`shrink-0 opacity-40 group-hover:opacity-100 transition-opacity ${
+          isDark ? "text-white/50" : "text-slate-400"
+        }`}
+      />
+    );
+  };
 
   return (
     <div
@@ -37,22 +80,23 @@ export default function SpeciesTable({
             isDark ? "bg-[#142144]/60" : "bg-white/60"
           }`}
         >
-          <Loader2 size={24} className="text-cyan-400 animate-spin" />
+          <Loader2 size={28} className="text-cyan-400 animate-spin" />
         </div>
       )}
 
       {/* Scrollable Table Area */}
       <div className="overflow-x-auto overflow-y-auto w-full flex-1 custom-scrollbar">
-        <table className="w-full text-left text-sm border-collapse table-fixed min-w-[850px]">
-          {/* Table Header */}
-          <thead>
+        <table className="w-full text-left text-sm border-collapse table-fixed min-w-[880px]">
+          {/* Table Header with Interactive Column Sorting */}
+          <thead className="sticky top-0 z-10">
             <tr
-              className={`font-bold border-b text-sm ${
+              className={`font-bold border-b text-sm select-none ${
                 isDark
-                  ? "bg-[#1e2f5c] text-white border-white/15"
-                  : "bg-slate-100 text-slate-700 border-slate-200"
+                  ? "bg-[#1b2b54] text-white border-white/15 shadow-sm"
+                  : "bg-slate-100 text-slate-700 border-slate-200 shadow-sm"
               }`}
             >
+              {/* Checkbox Column */}
               <th className="p-3.5 w-10 text-center">
                 <button
                   onClick={handleToggleCheckAll}
@@ -61,24 +105,107 @@ export default function SpeciesTable({
                       ? "text-white/60 hover:text-white"
                       : "text-slate-400 hover:text-slate-900"
                   }`}
+                  title={
+                    checkedIds.length === filteredList.length && filteredList.length > 0
+                      ? "Bỏ chọn tất cả"
+                      : "Chọn tất cả"
+                  }
                 >
                   {checkedIds.length === filteredList.length &&
                   filteredList.length > 0 ? (
-                    <CheckSquare size={14} className="text-cyan-400" />
+                    <CheckSquare size={15} className="text-cyan-400" />
                   ) : (
-                    <Square size={14} />
+                    <Square size={15} />
                   )}
                 </button>
               </th>
-              <th className="p-3.5 w-[14%]">Mã sinh vật</th>
-              <th className="p-3.5 w-[20%]">Tên sinh vật</th>
-              <th className="p-3.5 w-[16%]">Mã định danh</th>
-              <th className="p-3.5 w-[11%] whitespace-nowrap">Nguồn dữ liệu</th>
-              <th className="p-3.5 w-[10%] whitespace-nowrap">Vị trí</th>
-              <th className="p-3.5 w-[12%] whitespace-nowrap">Bảo tồn</th>
-              <th className="p-3.5 w-[9%] whitespace-nowrap">Lượt xem</th>
+
+              {/* Mã sinh vật */}
+              <th className="p-3.5 w-[14%]">
+                <button
+                  onClick={() => onSort("code")}
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                >
+                  <span className={sortBy === "code" ? "text-cyan-400" : ""}>Mã sinh vật</span>
+                  {renderSortIcon("code")}
+                </button>
+              </th>
+
+              {/* Tên sinh vật */}
+              <th className="p-3.5 w-[20%]">
+                <button
+                  onClick={() => onSort("name")}
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                >
+                  <span className={sortBy === "name" ? "text-cyan-400" : ""}>Tên sinh vật</span>
+                  {renderSortIcon("name")}
+                </button>
+              </th>
+
+              {/* Mã định danh (GBIF/Slug) */}
+              <th className="p-3.5 w-[16%]">
+                <button
+                  onClick={() => onSort("gbifId")}
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                >
+                  <span className={sortBy === "gbifId" ? "text-cyan-400" : ""}>Mã định danh</span>
+                  {renderSortIcon("gbifId")}
+                </button>
+              </th>
+
+              {/* Nguồn dữ liệu */}
+              <th className="p-3.5 w-[11%] whitespace-nowrap">
+                <button
+                  onClick={() => onSort("source")}
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                >
+                  <span className={sortBy === "source" ? "text-cyan-400" : ""}>Nguồn</span>
+                  {renderSortIcon("source")}
+                </button>
+              </th>
+
+              {/* Vị trí */}
+              <th className="p-3.5 w-[10%] whitespace-nowrap">
+                <button
+                  onClick={() => onSort("location")}
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                >
+                  <span className={sortBy === "location" ? "text-cyan-400" : ""}>Vị trí</span>
+                  {renderSortIcon("location")}
+                </button>
+              </th>
+
+              {/* Bảo tồn */}
+              <th className="p-3.5 w-[12%] whitespace-nowrap">
+                <button
+                  onClick={() => onSort("conservationCode")}
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                >
+                  <span className={sortBy === "conservationCode" ? "text-cyan-400" : ""}>Bảo tồn</span>
+                  {renderSortIcon("conservationCode")}
+                </button>
+              </th>
+
+              {/* Lượt xem */}
+              <th className="p-3.5 w-[9%] whitespace-nowrap">
+                <button
+                  onClick={() => onSort("views")}
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                >
+                  <span className={sortBy === "views" ? "text-cyan-400" : ""}>Lượt xem</span>
+                  {renderSortIcon("views")}
+                </button>
+              </th>
+
+              {/* Trạng thái */}
               <th className="p-3.5 w-[12%] text-right whitespace-nowrap">
-                Trạng thái
+                <button
+                  onClick={() => onSort("is_visible")}
+                  className="group flex items-center justify-end gap-1.5 cursor-pointer font-bold w-full text-right hover:text-cyan-400 transition-colors"
+                >
+                  <span className={sortBy === "is_visible" ? "text-cyan-400" : ""}>Trạng thái</span>
+                  {renderSortIcon("is_visible")}
+                </button>
               </th>
             </tr>
           </thead>
@@ -90,13 +217,68 @@ export default function SpeciesTable({
                 : "divide-slate-200 text-slate-800"
             }`}
           >
+            {/* Empty State Illustration */}
             {filteredList.length === 0 && !isLoading && (
               <tr>
-                <td colSpan={9} className="p-12 text-center text-sm text-slate-400">
-                  Chưa có sinh vật nào phù hợp với bộ lọc hoặc cơ sở dữ liệu đang trống.
+                <td colSpan={9} className="p-10 sm:p-16 text-center">
+                  <div className="max-w-md mx-auto flex flex-col items-center justify-center">
+                    <div className="relative mb-5">
+                      {/* Ambient circles */}
+                      <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl animate-pulse" />
+                      <div
+                        className={`relative w-20 h-20 rounded-3xl border flex items-center justify-center shadow-xl ${
+                          isDark
+                            ? "bg-[#182a55] border-cyan-500/30 text-cyan-400"
+                            : "bg-cyan-50 border-cyan-200 text-cyan-600"
+                        }`}
+                      >
+                        <Fish size={38} className="animate-bounce duration-1000" />
+                      </div>
+                    </div>
+
+                    <h3
+                      className={`text-lg sm:text-xl font-bold font-heading ${
+                        isDark ? "text-white" : "text-slate-800"
+                      }`}
+                    >
+                      Không tìm thấy sinh vật phù hợp
+                    </h3>
+                    <p
+                      className={`text-xs sm:text-sm mt-2 leading-relaxed ${
+                        isDark ? "text-slate-400" : "text-slate-500"
+                      }`}
+                    >
+                      {hasActiveFilters
+                        ? "Không có sinh vật nào khớp với bộ lọc hoặc từ khóa tìm kiếm của bạn. Hãy thử xóa bộ lọc để xem toàn bộ danh mục."
+                        : "Cơ sở dữ liệu sinh vật hiện đang trống hoặc chưa có bản ghi nào được tạo."}
+                    </p>
+
+                    <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+                      {hasActiveFilters && onResetFilters && (
+                        <button
+                          onClick={onResetFilters}
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-cyan-500/15 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/25 transition-all cursor-pointer active:scale-95"
+                        >
+                          <RotateCcw size={15} />
+                          <span>Đặt lại bộ lọc</span>
+                        </button>
+                      )}
+
+                      {onOpenAddModal && (
+                        <button
+                          onClick={onOpenAddModal}
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-500/25 transition-all cursor-pointer active:scale-95"
+                        >
+                          <Plus size={15} />
+                          <span>Thêm sinh vật mới</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </td>
               </tr>
             )}
+
             {filteredList.map((item) => {
               const isExpanded = selectedRowId === item.id;
               const isChecked = checkedIds.includes(item.id);
@@ -144,7 +326,7 @@ export default function SpeciesTable({
                         isDark ? "text-white" : "text-slate-900"
                       }`}
                     >
-                      {item.name || "Cá mập trắng"}
+                      {item.name || item.scientificName || "Sinh vật biển"}
                     </td>
                     <td
                       className={`p-3.5 font-mono truncate ${
@@ -212,6 +394,11 @@ export default function SpeciesTable({
       <SpeciesPaginationFooter
         filteredCount={filteredList.length}
         totalCount={totalCount}
+        page={page}
+        totalPages={totalPages}
+        perPage={perPage}
+        onPageChange={onPageChange}
+        onPerPageChange={onPerPageChange}
       />
     </div>
   );

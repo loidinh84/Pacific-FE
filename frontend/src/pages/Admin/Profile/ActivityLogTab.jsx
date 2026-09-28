@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -17,7 +17,7 @@ export default function ActivityLogTab({ isDark = true }) {
   const [pagination, setPagination] = useState({ page: 1, limit: 15, total: 0, totalPages: 1 });
   const [isLoading, setIsLoading] = useState(false);
 
-  const loadActivities = async (page = 1) => {
+  const loadActivities = useCallback(async (page = 1) => {
     setIsLoading(true);
     try {
       const res = await fetchAdminActivity({ page, limit: 15, filter: "all" });
@@ -30,10 +30,29 @@ export default function ActivityLogTab({ isDark = true }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadActivities(1);
+    let ignore = false;
+    const fetchInit = async () => {
+      setIsLoading(true);
+      try {
+        const res = await fetchAdminActivity({ page: 1, limit: 15, filter: "all" });
+        if (!ignore && res.success) {
+          setActivities(res.activities || []);
+          setPagination(res.pagination || { page: 1, limit: 15, total: 0, totalPages: 1 });
+        }
+      } catch (err) {
+        if (!ignore) console.error("Lỗi khi tải lịch sử hoạt động:", err);
+      } finally {
+        if (!ignore) setIsLoading(false);
+      }
+    };
+
+    fetchInit();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handlePageChange = (newPage) => {

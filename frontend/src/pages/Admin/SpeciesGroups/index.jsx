@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Search,
   Plus,
@@ -57,7 +57,7 @@ export default function SpeciesGroupsManagement() {
   };
 
   // Load groups from API
-  const loadGroups = async () => {
+  const loadGroups = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetchAdminSpeciesGroups();
@@ -70,10 +70,33 @@ export default function SpeciesGroupsManagement() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadGroups();
+    let ignore = false;
+    const fetchGroups = async () => {
+      setIsLoading(true);
+      try {
+        const res = await fetchAdminSpeciesGroups();
+        if (!ignore && res.success && Array.isArray(res.groups)) {
+          setGroups(res.groups);
+        }
+      } catch (err) {
+        if (!ignore) {
+          console.error("Lỗi khi tải nhóm sinh vật:", err);
+          showToast("Không thể tải danh sách nhóm sinh vật.", "error");
+        }
+      } finally {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchGroups();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // Filter groups based on search query
@@ -93,11 +116,6 @@ export default function SpeciesGroupsManagement() {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredGroups.slice(start, start + itemsPerPage);
   }, [currentPage, filteredGroups, itemsPerPage]);
-
-  // Reset to page 1 on search change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
 
   // Handlers for Add/Edit
   const handleOpenCreate = () => {
@@ -216,7 +234,10 @@ export default function SpeciesGroupsManagement() {
               type="text"
               placeholder="Tìm kiếm tên nhóm"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
               className={`w-full pl-9 pr-4 py-2 rounded-xl text-xs sm:text-sm focus:outline-none transition-all ${
                 isDark
                   ? "bg-[#182649] border border-white/15 text-white placeholder:text-slate-400 focus:border-cyan-400"

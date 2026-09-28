@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -20,13 +20,10 @@ export default function SettingsTab({
 
   // Settings State
   const [notificationsEmail, setNotificationsEmail] = useState(true);
-  const [localLang, setLocalLang] = useState(language);
+  const [selectedLang, setSelectedLang] = useState(null);
+  const currentLang = selectedLang ?? language;
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [settingsSuccess, setSettingsSuccess] = useState("");
-
-  useEffect(() => {
-    setLocalLang(language);
-  }, [language]);
 
   // Change Password State
   const [currentPassword, setCurrentPassword] = useState("");
@@ -46,11 +43,12 @@ export default function SettingsTab({
     setIsSavingSettings(true);
     setSettingsSuccess("");
     try {
-      changeLanguage(localLang);
+      changeLanguage(currentLang);
+      setSelectedLang(null);
       await updateAdminSettings({
         notificationsEmail,
         theme: isDark ? "dark" : "light",
-        language: localLang,
+        language: currentLang,
       });
       setSettingsSuccess(
         isEn ? "Preferences saved successfully." : "Đã lưu cài đặt thành công."
@@ -64,7 +62,7 @@ export default function SettingsTab({
   };
 
   const handleLanguageDropdown = (newLang) => {
-    setLocalLang(newLang);
+    setSelectedLang(newLang);
     changeLanguage(newLang);
   };
 
@@ -194,7 +192,7 @@ export default function SettingsTab({
             </label>
             <div className="relative">
               <select
-                value={localLang}
+                value={currentLang}
                 onChange={(e) => handleLanguageDropdown(e.target.value)}
                 className="w-full appearance-none px-4 py-2.5 pr-10 bg-[#0e1732] border border-white/15 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
               >

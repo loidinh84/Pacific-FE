@@ -1,10 +1,19 @@
-import { useState, useEffect } from "react";
-import { X, Camera, Loader2, AlertCircle, CheckCircle2, Lock, User } from "lucide-react";
+import { useState } from "react";
+import { X, Camera, Loader2, AlertCircle, CheckCircle2, Lock } from "lucide-react";
 import { updateAdminProfile, updateAdminAvatar } from "../../../services/adminProfileApi";
 import { useLanguage } from "../../../hooks/useLanguage";
 
-export default function EditAdminProfileModal({
-  isOpen,
+export default function EditAdminProfileModal(props) {
+  if (!props.isOpen) return null;
+  return (
+    <EditAdminProfileModalContent
+      key={props.admin?.id || "profile"}
+      {...props}
+    />
+  );
+}
+
+function EditAdminProfileModalContent({
   onClose,
   admin,
   onAdminUpdated,
@@ -13,37 +22,19 @@ export default function EditAdminProfileModal({
   const { language } = useLanguage();
   const isEn = language === "en";
 
-  const [username, setUsername] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [bio, setBio] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [username, setUsername] = useState(admin?.username || "");
+  const [fullName, setFullName] = useState(admin?.fullName || "");
+  const [bio, setBio] = useState(admin?.bio || "");
+  const [email, setEmail] = useState(admin?.email || "");
+  const [phoneNumber, setPhoneNumber] = useState(admin?.phoneNumber || "");
+  const [dateOfBirth, setDateOfBirth] = useState(admin?.dateOfBirth || "");
   const [currentPassword, setCurrentPassword] = useState("");
-  const [avatarPreview, setAvatarPreview] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState(admin?.avatar || "");
   const [avatarBase64, setAvatarBase64] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
-  useEffect(() => {
-    if (admin && isOpen) {
-      setUsername(admin.username || "");
-      setFullName(admin.fullName || "");
-      setBio(admin.bio || "");
-      setEmail(admin.email || "");
-      setPhoneNumber(admin.phoneNumber || "");
-      setDateOfBirth(admin.dateOfBirth || "");
-      setAvatarPreview(admin.avatar || "");
-      setAvatarBase64("");
-      setCurrentPassword("");
-      setErrorMessage("");
-      setSuccessMessage("");
-    }
-  }, [admin, isOpen]);
-
-  if (!isOpen) return null;
 
   const isEmailChanged = admin && email.trim().toLowerCase() !== admin.email.toLowerCase();
 

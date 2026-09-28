@@ -1,9 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Settings, Sun, Moon, LogOut, User } from "lucide-react";
 import * as Images from "../../assets/Images";
 import { useTheme } from "../../hooks/useTheme";
 import { useClickOutside } from "../../hooks/useClickOutside";
+import { getStoredUser, clearStoredAuth } from "../../utils/auth";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -14,31 +15,20 @@ export default function AdminLayout() {
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
 
-  const storedUser =
-    localStorage.getItem("pacific_user") ||
-    localStorage.getItem("user") ||
-    sessionStorage.getItem("pacific_user") ||
-    sessionStorage.getItem("user");
+  const [currentUser, setCurrentUser] = useState(
+    () => getStoredUser() || { username: "Admin", email: "admin@pacific.org" }
+  );
 
-  let currentUser = { username: "Admin 1", email: "admin@pacific.org" };
-  if (storedUser) {
-    try {
-      currentUser = JSON.parse(storedUser);
-    } catch (error) {
-      console.warn("Lỗi parse thông tin user từ storage:", error);
-    }
-  }
+  useEffect(() => {
+    const handler = () => {
+      setCurrentUser(getStoredUser() || { username: "Admin", email: "admin@pacific.org" });
+    };
+    window.addEventListener("pacific_auth_change", handler);
+    return () => window.removeEventListener("pacific_auth_change", handler);
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("pacific_token");
-    localStorage.removeItem("pacific_user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("pacific_token");
-    sessionStorage.removeItem("pacific_user");
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
-    window.dispatchEvent(new Event("pacific_auth_change"));
+    clearStoredAuth();
     setIsUserMenuOpen(false);
     navigate("/login");
   };

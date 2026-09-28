@@ -24,4 +24,23 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        // Tách vendor libraries thành các chunk riêng
+        advancedChunks: {
+          groups: [
+            { name: "vendor-react", test: /node_modules\/(react|react-dom|react-router)/ },
+            { name: "vendor-icons", test: /node_modules\/lucide-react/ },
+            { name: "vendor-three", test: /node_modules\/(three|@react-three)/ },
+            { name: "vendor-motion", test: /node_modules\/framer-motion/ },
+            { name: "vendor-axios", test: /node_modules\/axios/ },
+          ],
+        },
+      },
+    },
+    // Tăng giới hạn warning lên 600KB
+    chunkSizeWarningLimit: 600,
+  },
 });
+

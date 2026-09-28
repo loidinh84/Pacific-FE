@@ -3,24 +3,51 @@
  * Centralized Authentication & Storage Utilities
  */
 
+export function isJwtExpired(token) {
+  if (!token || typeof token !== "string") return true;
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return true;
+    const payload = JSON.parse(
+      atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"))
+    );
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      return true;
+    }
+    return false;
+  } catch {
+    return true;
+  }
+}
+
 export function getStoredToken() {
-  return (
+  const token =
     localStorage.getItem("pacific_token") ||
     localStorage.getItem("token") ||
     sessionStorage.getItem("pacific_token") ||
-    sessionStorage.getItem("token")
-  );
+    sessionStorage.getItem("token");
+
+  if (!token) return null;
+
+  if (isJwtExpired(token)) {
+    clearStoredAuth();
+    return null;
+  }
+
+  return token;
 }
 
 export function getStoredUser() {
   const token = getStoredToken();
+  if (!token) return null;
+
   const storedUser =
     localStorage.getItem("pacific_user") ||
     localStorage.getItem("user") ||
     sessionStorage.getItem("pacific_user") ||
     sessionStorage.getItem("user");
 
-  if (!token || !storedUser) return null;
+  if (!storedUser) return null;
 
   try {
     const user = JSON.parse(storedUser);
@@ -47,3 +74,4 @@ export function setStoredAuth(token, user) {
   if (user) localStorage.setItem("pacific_user", JSON.stringify(user));
   window.dispatchEvent(new Event("pacific_auth_change"));
 }
+

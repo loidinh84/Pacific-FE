@@ -1,6 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { X, Search, Check, Plus, Loader2 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import { useLockBodyScroll } from "../../../hooks/useLockBodyScroll";
 import {
   fetchAllSpeciesForAssign,
   assignSpeciesToGroup,
@@ -17,23 +18,43 @@ export default function AssignSpeciesModal({
   const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [allSpecies, setAllSpecies] = useState([]);
   const [assignedSpeciesIds, setAssignedSpeciesIds] = useState(new Set());
-  const [initialAssignedIds, setInitialAssignedIds] = useState(new Set());
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoadingSpecies, setIsLoadingSpecies] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Set default group when modal opens
-  useEffect(() => {
-    if (isOpen && groups.length > 0) {
-      const initialGroup = groups[0];
-      setSelectedGroupId(initialGroup.id);
-    }
+  useLockBodyScroll(isOpen);
+
+  // Compute assigned IDs for a given group from species list
+  const getAssignedIdsForGroup = useCallback((groupId, speciesList) => {
+    const assigned = new Set();
+    if (!groupId || !speciesList) return assigned;
+    speciesList.forEach((sp) => {
+      const spGroupId = sp.groupId || sp.group_id || sp.species_groups?.id;
+      if (spGroupId && String(spGroupId) === String(groupId)) {
+        assigned.add(String(sp.id));
+      }
+    });
+    return assigned;
+  }, []);
+
+  // Handler when user clicks a group tab on the left
+  const handleSelectGroup = (groupId) => {
+    setSelectedGroupId(groupId);
+    setAssignedSpeciesIds(getAssignedIdsForGroup(groupId, allSpecies));
+  };
+
+  const currentGroupId = selectedGroupId ?? (groups.length > 0 ? groups[0].id : null);
+  const currentGroup = groups.find((g) => String(g.id) === String(currentGroupId)) || groups[0];
+
+  const handleClose = () => {
+    setSelectedGroupId(null);
     setSearchTerm("");
     setErrorMessage("");
-  }, [isOpen, groups]);
+    onClose();
+  };
 
-  // Load all species from database when modal opens
+  // Load all species and initialize default group when modal opens
   useEffect(() => {
     if (!isOpen) return;
 
@@ -45,6 +66,10 @@ export default function AssignSpeciesModal({
         if (isMounted) {
           const list = res.data || [];
           setAllSpecies(list);
+          const activeGroupId = selectedGroupId ?? (groups.length > 0 ? groups[0].id : null);
+          if (activeGroupId) {
+            setAssignedSpeciesIds(getAssignedIdsForGroup(activeGroupId, list));
+          }
         }
       } catch (err) {
         console.error("Lỗi khi tải danh sách sinh vật:", err);
@@ -58,26 +83,7 @@ export default function AssignSpeciesModal({
     return () => {
       isMounted = false;
     };
-  }, [isOpen]);
-
-  // Update assigned set whenever selected group changes
-  useEffect(() => {
-    if (!selectedGroupId || allSpecies.length === 0) return;
-
-    const currentAssigned = new Set();
-    allSpecies.forEach((sp) => {
-      const spGroupId = sp.groupId || sp.group_id || sp.species_groups?.id;
-      if (spGroupId && String(spGroupId) === String(selectedGroupId)) {
-        currentAssigned.add(String(sp.id));
-      }
-    });
-
-    setAssignedSpeciesIds(new Set(currentAssigned));
-    setInitialAssignedIds(new Set(currentAssigned));
-  }, [selectedGroupId, allSpecies]);
-
-  // Selected group object
-  const currentGroup = groups.find((g) => String(g.id) === String(selectedGroupId)) || groups[0];
+  }, [isOpen, groups, selectedGroupId, getAssignedIdsForGroup]);
 
   // Filter species based on search query
   const filteredSpecies = useMemo(() => {
@@ -109,27 +115,28 @@ export default function AssignSpeciesModal({
 
   // Save changes
   const handleSave = async () => {
-    if (!selectedGroupId) return;
+    const targetGroupId = selectedGroupId ?? (groups.length > 0 ? groups[0].id : null);
+    if (!targetGroupId) return;
 
     setIsSaving(true);
     setErrorMessage("");
 
     try {
       const idsToAssign = Array.from(assignedSpeciesIds);
-      await assignSpeciesToGroup(selectedGroupId, idsToAssign);
+      await assignSpeciesToGroup(targetGroupId, idsToAssign);
 
       // Cập nhật lại state local của allSpecies
       setAllSpecies((prev) =>
         prev.map((sp) => {
           const isSelected = assignedSpeciesIds.has(String(sp.id));
-          const wasInThisGroup = String(sp.groupId || sp.group_id || sp.species_groups?.id) === String(selectedGroupId);
+          const wasInThisGroup = String(sp.groupId || sp.group_id || sp.species_groups?.id) === String(targetGroupId);
 
           if (isSelected) {
             return {
               ...sp,
-              groupId: selectedGroupId,
-              group_id: selectedGroupId,
-              species_groups: { id: selectedGroupId, name: currentGroup?.name },
+              groupId: targetGroupId,
+              group_id: targetGroupId,
+              species_groups: { id: targetGroupId, name: currentGroup?.name },
             };
           } else if (wasInThisGroup) {
             return {
@@ -146,7 +153,7 @@ export default function AssignSpeciesModal({
       if (onSuccess) {
         onSuccess(`Đã cập nhật danh sách sinh vật cho nhóm "${currentGroup?.name}"`);
       }
-      onClose();
+      handleClose();
     } catch (err) {
       console.error("Lỗi khi gán sinh vật:", err);
       setErrorMessage(err.response?.data?.error || "Có lỗi xảy ra khi lưu thay đổi.");
@@ -187,7 +194,7 @@ export default function AssignSpeciesModal({
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className={`p-2 rounded-xl border transition-colors cursor-pointer ${
               isDark
                 ? "bg-white/10 hover:bg-white/20 border-white/20 text-white"
@@ -221,13 +228,13 @@ export default function AssignSpeciesModal({
 
             <div className="space-y-1.5">
               {groups.map((g) => {
-                const isSelected = String(g.id) === String(selectedGroupId);
+                const isSelected = String(g.id) === String(currentGroupId);
                 const color = g.color || "#3b82f6";
                 return (
                   <button
                     key={g.id}
                     type="button"
-                    onClick={() => setSelectedGroupId(g.id)}
+                    onClick={() => handleSelectGroup(g.id)}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer text-left ${
                       isSelected
                         ? isDark

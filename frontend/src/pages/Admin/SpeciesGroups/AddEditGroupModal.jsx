@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { X, Loader2, Pipette } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
 
@@ -13,8 +13,17 @@ const PRESET_COLORS = [
   "#ef4444", // Red
 ];
 
-export default function AddEditGroupModal({
-  isOpen,
+export default function AddEditGroupModal(props) {
+  if (!props.isOpen) return null;
+  return (
+    <AddEditGroupModalContent
+      key={props.editingGroup?.id || "create"}
+      {...props}
+    />
+  );
+}
+
+function AddEditGroupModalContent({
   onClose,
   onSave,
   editingGroup = null,
@@ -22,30 +31,15 @@ export default function AddEditGroupModal({
 }) {
   const { isDark } = useTheme();
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [color, setColor] = useState("#06b6d4");
-  const [isVisible, setIsVisible] = useState(true);
+  const [name, setName] = useState(editingGroup?.name || "");
+  const [description, setDescription] = useState(editingGroup?.description || "");
+  const [color, setColor] = useState(editingGroup?.color || "#06b6d4");
+  const [isVisible, setIsVisible] = useState(
+    editingGroup?.is_visible !== undefined ? editingGroup.is_visible : true
+  );
   const [error, setError] = useState("");
 
   const customColorInputRef = useRef(null);
-
-  useEffect(() => {
-    if (editingGroup) {
-      setName(editingGroup.name || "");
-      setDescription(editingGroup.description || "");
-      setColor(editingGroup.color || "#06b6d4");
-      setIsVisible(editingGroup.is_visible !== undefined ? editingGroup.is_visible : true);
-    } else {
-      setName("");
-      setDescription("");
-      setColor("#06b6d4");
-      setIsVisible(true);
-    }
-    setError("");
-  }, [editingGroup, isOpen]);
-
-  if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();

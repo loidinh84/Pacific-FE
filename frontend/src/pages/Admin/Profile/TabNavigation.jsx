@@ -3,7 +3,6 @@ import { useLanguage } from "../../../hooks/useLanguage";
 export default function TabNavigation({
   activeTab,
   onTabChange,
-  isDark = true,
 }) {
   const { language } = useLanguage();
   const isEn = language === "en";
