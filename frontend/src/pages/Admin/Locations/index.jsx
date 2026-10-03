@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useMemo, useRef } from "react";
 import {
   MapPin,
@@ -5,7 +6,6 @@ import {
   Pencil,
   Trash2,
   Star,
-  StarOff,
   Search,
   RefreshCw,
   X,
@@ -18,10 +18,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  ChevronUp,
   Check,
   CheckCircle2,
-  Image as ImageIcon,
   Navigation,
   ExternalLink,
 } from "lucide-react";
@@ -769,7 +767,7 @@ const LocationDetailDrawer = ({
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  <span className={`text-xs font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
                     Tọa độ địa lý
                   </span>
                   {detail.latitude != null && detail.longitude != null && (
@@ -807,7 +805,7 @@ const LocationDetailDrawer = ({
                   isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
                 }`}
               >
-                <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                <span className={`text-xs font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
                   Mô tả địa điểm
                 </span>
                 <p className={`text-xs leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
@@ -818,7 +816,7 @@ const LocationDetailDrawer = ({
               {/* Species at this location */}
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  <span className={`text-xs font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
                     Sinh vật sinh sống ({detail.recentSpecies?.length || 0})
                   </span>
                 </div>
@@ -960,8 +958,6 @@ export default function LocationsManagement() {
     return () => clearTimeout(h);
   }, [searchTerm]);
 
-  useEffect(() => { setPage(1); }, [debouncedSearch, filterFeatured, filterZone]);
-
   // Fetch
   useEffect(() => {
     let ignore = false;
@@ -1051,7 +1047,7 @@ export default function LocationsManagement() {
         setLocationList((prev) => prev.map((l) => l.id === loc.id ? { ...l, isFeatured: res.isFeatured } : l));
         showToast(res.message, "success");
       }
-    } catch (err) {
+    } catch {
       showToast("Không thể cập nhật trạng thái nổi bật.", "error");
     }
   };
@@ -1152,10 +1148,23 @@ export default function LocationsManagement() {
             type="text"
             placeholder="Tìm tên, mô tả..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
             className={`flex-1 bg-transparent text-sm outline-none ${isDark ? "text-white placeholder:text-slate-500" : "text-slate-900 placeholder:text-slate-400"}`}
           />
-          {searchTerm && <button onClick={() => setSearchTerm("")} className="text-slate-400 hover:text-white cursor-pointer"><X size={13} /></button>}
+          {searchTerm && (
+            <button
+              onClick={() => {
+                setSearchTerm("");
+                setPage(1);
+              }}
+              className="text-slate-400 hover:text-white cursor-pointer"
+            >
+              <X size={13} />
+            </button>
+          )}
         </div>
 
         {/* Filter: Nổi bật */}
@@ -1166,7 +1175,10 @@ export default function LocationsManagement() {
             { value: "false", label: "Thường" },
           ]}
           value={filterFeatured}
-          onChange={(val) => setFilterFeatured(val)}
+          onChange={(val) => {
+            setFilterFeatured(val);
+            setPage(1);
+          }}
           isDark={isDark}
           size="sm"
           className="min-w-[105px]"
@@ -1179,7 +1191,10 @@ export default function LocationsManagement() {
             ...OCEAN_ZONES.map((z) => ({ value: String(z.id), label: cleanZoneName(z.name) })),
           ]}
           value={filterZone}
-          onChange={(val) => setFilterZone(val)}
+          onChange={(val) => {
+            setFilterZone(val);
+            setPage(1);
+          }}
           isDark={isDark}
           size="sm"
           className="min-w-[125px]"
