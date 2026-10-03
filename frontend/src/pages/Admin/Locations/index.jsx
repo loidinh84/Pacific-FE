@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
   MapPin,
   Plus,
@@ -20,12 +20,15 @@ import {
   ChevronDown,
   ChevronUp,
   Check,
+  CheckCircle2,
   Image as ImageIcon,
   Navigation,
+  ExternalLink,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../../hooks/useTheme";
 import { useToast } from "../../../hooks/useToast";
+import { useLockBodyScroll } from "../../../hooks/useLockBodyScroll";
 import ToastContainer from "../../../hooks/ToastContainer";
 import { clearStoredAuth } from "../../../utils/auth";
 import {
@@ -61,6 +64,114 @@ const OCEAN_ZONES = [
 
 const cleanZoneName = (name) => name?.split("/")?.[0]?.trim() || name || "";
 
+// ── Custom Dropdown (synchronized with Species module) ───
+function CustomSelect({
+  options = [],
+  value,
+  onChange,
+  isDark,
+  direction = "down",
+  align = "left",
+  className = "",
+  buttonClassName = "",
+  size = "md",
+  placeholder = "Chọn...",
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedOption =
+    options.find((opt) => String(opt.value) === String(value)) || options[0];
+
+  const positionClasses =
+    direction === "up" ? "bottom-full mb-1.5" : "top-full mt-1.5";
+  const alignClasses = align === "right" ? "right-0 left-auto" : "left-0";
+  const pyCls = size === "sm" ? "py-2 px-3 text-xs" : "py-2.5 px-3.5 text-sm";
+
+  return (
+    <div className={`relative ${className}`} ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`w-full ${pyCls} rounded-xl font-medium flex items-center justify-between gap-2 transition-all cursor-pointer select-none ${
+          isDark
+            ? "bg-[#0d1730] border border-white/15 text-white hover:border-cyan-400/50"
+            : "bg-slate-50 border border-slate-200 text-slate-900 hover:border-cyan-500/50"
+        } ${
+          open
+            ? isDark
+              ? "border-cyan-400 ring-2 ring-cyan-400/20"
+              : "border-cyan-500 ring-2 ring-cyan-500/20"
+            : ""
+        } ${buttonClassName}`}
+      >
+        <span className="truncate">{selectedOption?.label || placeholder}</span>
+        <ChevronDown
+          size={size === "sm" ? 14 : 16}
+          className={`shrink-0 transition-transform duration-200 ${
+            open
+              ? "rotate-180 text-cyan-400"
+              : isDark
+              ? "text-cyan-400/70"
+              : "text-slate-400"
+          }`}
+        />
+      </button>
+
+      {open && (
+        <div
+          className={`absolute ${alignClasses} min-w-full w-max max-w-xs ${positionClasses} z-50 rounded-2xl border overflow-y-auto max-h-52 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden p-1.5 space-y-0.5 animate-in fade-in zoom-in-95 duration-150 ${
+            isDark
+              ? "bg-[#0f1c3d] border-cyan-500/30 text-white"
+              : "bg-white border-slate-200 text-slate-900"
+          }`}
+        >
+          {options.map((opt) => {
+            const isSelected = String(opt.value) === String(value);
+            return (
+              <button
+                key={String(opt.value)}
+                type="button"
+                onClick={() => {
+                  onChange(opt.value);
+                  setOpen(false);
+                }}
+                className={`w-full px-3 py-2 rounded-xl text-xs sm:text-sm font-medium flex items-center justify-between gap-3 transition-all text-left cursor-pointer ${
+                  isSelected
+                    ? isDark
+                      ? "bg-cyan-500/20 text-cyan-300 font-bold"
+                      : "bg-cyan-50 text-cyan-700 font-bold"
+                    : isDark
+                    ? "hover:bg-white/10 text-white/90 hover:text-white"
+                    : "hover:bg-slate-100 text-slate-700 hover:text-slate-900"
+                }`}
+              >
+                <span className="truncate">{opt.label}</span>
+                {isSelected && (
+                  <CheckCircle2
+                    size={14}
+                    className="text-cyan-400 shrink-0 ml-1"
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Featured badge ───────────────────────────────────────
 const FeaturedBadge = ({ isFeatured }) =>
   isFeatured ? (
@@ -81,11 +192,11 @@ const LocationCard = ({ loc, isDark, onEdit, onDelete, onToggleFeatured, isSelec
     className={`rounded-2xl border overflow-hidden transition-all cursor-pointer group ${
       isSelected
         ? isDark ? "border-cyan-500/60 ring-1 ring-cyan-500/30 bg-cyan-500/5" : "border-cyan-400 ring-1 ring-cyan-300 bg-cyan-50"
-        : isDark ? "border-white/10 bg-[#162040] hover:border-white/25" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"
+        : isDark ? "border-white/10 bg-[#162040] hover:border-white/25" : "border-slate-200 bg-white hover:border-slate-300"
     }`}
   >
     {/* Location Image */}
-    <div className="relative h-36 bg-gradient-to-br from-slate-700 to-slate-900 overflow-hidden">
+    <div className="relative h-36 bg-slate-800 overflow-hidden">
       {loc.imageUrl ? (
         <img
           src={loc.imageUrl}
@@ -98,16 +209,16 @@ const LocationCard = ({ loc, isDark, onEdit, onDelete, onToggleFeatured, isSelec
           <Globe size={32} className="text-slate-500" />
         </div>
       )}
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      {/* Soft gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
       {/* Featured star button */}
       <button
         onClick={(e) => { e.stopPropagation(); onToggleFeatured(loc); }}
-        className={`absolute top-2 right-2 p-1.5 rounded-lg backdrop-blur-sm transition-all cursor-pointer ${
+        className={`absolute top-2 right-2 p-1.5 rounded-lg transition-all cursor-pointer ${
           loc.isFeatured
             ? "bg-amber-500/30 text-amber-300 hover:bg-amber-500/50"
-            : "bg-black/30 text-white/50 hover:text-amber-300 hover:bg-amber-500/20"
+            : "bg-black/40 text-white/60 hover:text-amber-300 hover:bg-amber-500/20"
         }`}
         title={loc.isFeatured ? "Bỏ nổi bật" : "Đánh dấu nổi bật"}
       >
@@ -237,8 +348,8 @@ const AddEditModal = ({ isOpen, editingLocation, onClose, onSave, isDark }) => {
     }`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className={`w-full max-w-xl rounded-2xl border shadow-2xl animate-in fade-in zoom-in-95 duration-200 ${
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 animate-in fade-in duration-200">
+      <div className={`w-full max-w-xl rounded-2xl border animate-in fade-in zoom-in-95 duration-200 ${
         isDark ? "bg-[#162040] border-white/15 text-white" : "bg-white border-slate-200 text-slate-900"
       }`}>
         {/* Header */}
@@ -274,16 +385,17 @@ const AddEditModal = ({ isOpen, editingLocation, onClose, onSave, isDark }) => {
             <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-slate-300" : "text-slate-600"}`}>
               Tầng đại dương
             </label>
-            <select
+            <CustomSelect
+              options={[
+                { value: "", label: "— Chưa phân loại —" },
+                ...OCEAN_ZONES.map((z) => ({ value: String(z.id), label: cleanZoneName(z.name) })),
+              ]}
               value={form.oceanZoneId}
-              onChange={(e) => setForm((p) => ({ ...p, oceanZoneId: e.target.value }))}
-              className={`${inputCls("oceanZoneId")} cursor-pointer`}
-            >
-              <option value="">— Chưa phân loại —</option>
-              {OCEAN_ZONES.map((z) => (
-                <option key={z.id} value={z.id}>{cleanZoneName(z.name)}</option>
-              ))}
-            </select>
+              onChange={(val) => setForm((p) => ({ ...p, oceanZoneId: val }))}
+              isDark={isDark}
+              direction="down"
+              className="w-full"
+            />
           </div>
 
           {/* Coordinates */}
@@ -370,7 +482,7 @@ const AddEditModal = ({ isOpen, editingLocation, onClose, onSave, isDark }) => {
               onClick={() => setForm((p) => ({ ...p, isFeatured: !p.isFeatured }))}
               className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${form.isFeatured ? "bg-amber-500" : isDark ? "bg-white/20" : "bg-slate-300"}`}
             >
-              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-all ${form.isFeatured ? "left-5.5" : "left-0.5"}`} style={{ left: form.isFeatured ? "1.375rem" : "0.125rem" }} />
+              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${form.isFeatured ? "left-5.5" : "left-0.5"}`} style={{ left: form.isFeatured ? "1.375rem" : "0.125rem" }} />
             </button>
           </div>
         </div>
@@ -401,8 +513,8 @@ const AddEditModal = ({ isOpen, editingLocation, onClose, onSave, isDark }) => {
 const ConfirmDelete = ({ isOpen, location, isLoading, onConfirm, onClose, isDark }) => {
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className={`w-full max-w-md rounded-2xl border p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 ${isDark ? "bg-[#1a2744] border-white/15" : "bg-white border-slate-200"}`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 animate-in fade-in duration-200">
+      <div className={`w-full max-w-md rounded-2xl border p-6 animate-in fade-in zoom-in-95 duration-200 ${isDark ? "bg-[#1a2744] border-white/15" : "bg-white border-slate-200"}`}>
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-rose-500/15 flex items-center justify-center">
             <Trash2 size={18} className="text-rose-400" />
@@ -433,156 +545,378 @@ const ConfirmDelete = ({ isOpen, location, isLoading, onConfirm, onClose, isDark
   );
 };
 
-// ── Location Detail Panel ─────────────────────────────────
-const LocationDetailPanel = ({ locationId, isDark, onClose, onEdit }) => {
+// ── Location Detail Drawer (Slide-over) ───────────────────
+const LocationDetailDrawer = ({
+  locationId,
+  isDark,
+  onClose,
+  onEdit,
+  onDelete,
+  onToggleFeatured,
+}) => {
   const [detail, setDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useLockBodyScroll(Boolean(locationId));
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   useEffect(() => {
     if (!locationId) return;
     setIsLoading(true);
     fetchAdminLocationById(locationId)
-      .then((res) => { if (res?.success) setDetail(res.location); })
+      .then((res) => {
+        if (res?.success) setDetail(res.location);
+      })
       .catch(console.warn)
       .finally(() => setIsLoading(false));
   }, [locationId]);
 
+  if (!locationId) return null;
+
   return (
-    <div className={`rounded-2xl border overflow-hidden ${isDark ? "bg-[#162040] border-white/10" : "bg-white border-slate-200"}`}>
-      <div className={`flex items-center justify-between px-4 py-3 border-b ${isDark ? "border-white/10" : "border-slate-100"}`}>
-        <span className={`text-sm font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Chi tiết địa điểm</span>
-        <div className="flex gap-1">
-          {detail && (
-            <button onClick={() => onEdit(detail)} className="p-1.5 rounded-lg text-sky-400 hover:bg-sky-500/10 cursor-pointer">
-              <Pencil size={13} />
-            </button>
-          )}
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/10 cursor-pointer">
-            <X size={14} className="text-slate-400" />
-          </button>
-        </div>
-      </div>
+    <div className="fixed inset-0 z-50 overflow-hidden">
+      {/* Backdrop (Dark overlay, click outside to close, NO blur) */}
+      <div
+        className="fixed inset-0 bg-black/50 transition-opacity animate-in fade-in duration-200"
+        onClick={onClose}
+      />
 
-      {isLoading && (
-        <div className="flex items-center justify-center py-12">
-          <RefreshCw size={20} className="animate-spin text-slate-400" />
-        </div>
-      )}
-
-      {!isLoading && detail && (
-        <div className="overflow-y-auto max-h-[calc(100vh-280px)]">
-          {/* Image header */}
-          <div className="relative h-44 bg-gradient-to-br from-slate-700 to-slate-900">
-            {detail.imageUrl ? (
-              <img src={detail.imageUrl} alt={detail.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display = "none"; }} />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Globe size={40} className="text-slate-600" />
+      {/* Slide-over panel */}
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+        <div
+          className={`w-screen max-w-md sm:max-w-lg flex flex-col border-l animate-in slide-in-from-right duration-300 ${
+            isDark
+              ? "bg-[#131d38] border-white/10 text-white"
+              : "bg-white border-slate-200 text-slate-900"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div
+            className={`flex items-center justify-between px-5 py-3.5 border-b shrink-0 ${
+              isDark ? "border-white/10" : "border-slate-100"
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-cyan-500/15 text-cyan-400 flex items-center justify-center">
+                <MapPin size={16} />
               </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent" />
-            <div className="absolute bottom-3 left-3 right-3">
-              <p className="text-white font-bold text-base">{detail.name}</p>
-              {detail.oceanZoneName && <p className="text-white/70 text-xs">{cleanZoneName(detail.oceanZoneName)}</p>}
+              <div>
+                <h3 className="text-sm font-bold leading-tight">Chi tiết địa điểm</h3>
+                <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  Thông tin tọa độ và sinh thái
+                </p>
+              </div>
             </div>
-            {detail.isFeatured && (
-              <div className="absolute top-2 right-2 flex items-center gap-1 bg-amber-500/80 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-full">
-                <Star size={10} fill="currentColor" />
-                Nổi bật
-              </div>
-            )}
+
+            <div className="flex items-center gap-1.5">
+              {detail && (
+                <>
+                  <button
+                    onClick={() => onToggleFeatured(detail)}
+                    className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                      detail.isFeatured
+                        ? "bg-amber-500/20 border-amber-500/30 text-amber-400 hover:bg-amber-500/30"
+                        : isDark
+                        ? "bg-white/5 border-white/10 text-slate-400 hover:text-amber-400 hover:bg-white/10"
+                        : "bg-slate-50 border-slate-200 text-slate-500 hover:text-amber-500 hover:bg-slate-100"
+                    }`}
+                    title={detail.isFeatured ? "Bỏ nổi bật" : "Đánh dấu nổi bật"}
+                  >
+                    <Star size={14} fill={detail.isFeatured ? "currentColor" : "none"} />
+                  </button>
+
+                  <button
+                    onClick={() => onEdit(detail)}
+                    className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                      isDark
+                        ? "bg-white/5 border-white/10 text-cyan-400 hover:bg-cyan-500/15 hover:border-cyan-500/30"
+                        : "bg-slate-50 border-slate-200 text-cyan-600 hover:bg-cyan-50 hover:border-cyan-200"
+                    }`}
+                    title="Chỉnh sửa thông tin"
+                  >
+                    <Pencil size={14} />
+                  </button>
+
+                  <button
+                    onClick={() => onDelete(detail)}
+                    className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                      isDark
+                        ? "bg-white/5 border-white/10 text-rose-400 hover:bg-rose-500/15 hover:border-rose-500/30"
+                        : "bg-slate-50 border-slate-200 text-rose-500 hover:bg-rose-50 hover:border-rose-200"
+                    }`}
+                    title="Xóa địa điểm"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </>
+              )}
+
+              <button
+                onClick={onClose}
+                className={`p-2 rounded-xl transition-colors cursor-pointer ml-1 ${
+                  isDark
+                    ? "hover:bg-white/10 text-slate-400 hover:text-white"
+                    : "hover:bg-slate-100 text-slate-500 hover:text-slate-800"
+                }`}
+                title="Đóng (Esc)"
+              >
+                <X size={16} />
+              </button>
+            </div>
           </div>
 
-          <div className="p-4 space-y-4">
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { icon: Fish, label: "Số loài", val: detail.speciesCount, color: "text-cyan-400" },
-                { icon: Users, label: "Đã khám phá", val: detail.exploredCount, color: "text-emerald-400" },
-              ].map(({ icon: Icon, label, val, color }) => (
-                <div key={label} className={`rounded-xl p-3 ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <Icon size={12} className={color} />
-                    <span className="text-xs text-slate-400">{label}</span>
-                  </div>
-                  <p className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>{val}</p>
-                </div>
-              ))}
+          {/* Loading state */}
+          {isLoading && (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-3">
+              <RefreshCw size={24} className="animate-spin text-cyan-400" />
+              <p className={`text-xs font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                Đang tải dữ liệu địa điểm...
+              </p>
             </div>
+          )}
 
-            {/* Coordinates */}
-            {(detail.latitude != null || detail.longitude != null) && (
-              <div className={`rounded-xl p-3 ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
-                <p className="text-xs text-slate-400 mb-2 font-semibold">Tọa độ</p>
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-400">Vĩ độ</span>
-                    <span className={`font-mono ${isDark ? "text-white" : "text-slate-900"}`}>{formatCoord(detail.latitude, "lat")}</span>
+          {/* Body content */}
+          {!isLoading && detail && (
+            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+              {/* Image banner */}
+              <div className="relative h-48 rounded-2xl overflow-hidden bg-slate-800 border border-white/10 group">
+                {detail.imageUrl ? (
+                  <img
+                    src={detail.imageUrl}
+                    alt={detail.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 gap-2">
+                    <Globe size={40} className="opacity-50" />
+                    <span className="text-xs">Chưa có ảnh đại diện</span>
                   </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-400">Kinh độ</span>
-                    <span className={`font-mono ${isDark ? "text-white" : "text-slate-900"}`}>{formatCoord(detail.longitude, "lng")}</span>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+
+                {/* Badges on top */}
+                <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+                  {detail.oceanZoneName ? (
+                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-500/80 text-white">
+                      {cleanZoneName(detail.oceanZoneName)}
+                    </span>
+                  ) : <span />}
+                  <FeaturedBadge isFeatured={detail.isFeatured} />
+                </div>
+
+                {/* Name & Coordinates on bottom */}
+                <div className="absolute bottom-3 left-3 right-3">
+                  <h2 className="text-white font-bold text-lg leading-tight">
+                    {detail.name}
+                  </h2>
+                  {(detail.latitude != null || detail.longitude != null) && (
+                    <p className="text-white/80 text-xs font-mono mt-0.5 flex items-center gap-1">
+                      <Navigation size={11} className="inline" />
+                      {formatCoord(detail.latitude, "lat")} · {formatCoord(detail.longitude, "lng")}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <div
+                  className={`rounded-2xl p-3.5 border ${
+                    isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Fish size={14} className="text-cyan-400" />
+                    <span className="text-xs text-slate-400 font-medium">Sinh vật liên kết</span>
+                  </div>
+                  <p className={`text-2xl font-black ${isDark ? "text-white" : "text-slate-900"}`}>
+                    {detail.speciesCount}
+                    <span className="text-xs font-normal text-slate-400 ml-1">loài</span>
+                  </p>
+                </div>
+
+                <div
+                  className={`rounded-2xl p-3.5 border ${
+                    isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Users size={14} className="text-emerald-400" />
+                    <span className="text-xs text-slate-400 font-medium">Lượt khám phá</span>
+                  </div>
+                  <p className={`text-2xl font-black ${isDark ? "text-white" : "text-slate-900"}`}>
+                    {detail.exploredCount}
+                    <span className="text-xs font-normal text-slate-400 ml-1">lượt</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Coordinates & Google Maps */}
+              <div
+                className={`rounded-2xl p-4 border space-y-3 ${
+                  isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                    Tọa độ địa lý
+                  </span>
+                  {detail.latitude != null && detail.longitude != null && (
+                    <a
+                      href={`https://www.google.com/maps?q=${detail.latitude},${detail.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors"
+                    >
+                      <span>Mở Google Maps</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className={`p-2.5 rounded-xl ${isDark ? "bg-black/30" : "bg-white border border-slate-200"}`}>
+                    <span className="text-slate-400 block mb-0.5">Vĩ độ (Latitude)</span>
+                    <span className={`font-mono font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+                      {formatCoord(detail.latitude, "lat")}
+                    </span>
+                  </div>
+                  <div className={`p-2.5 rounded-xl ${isDark ? "bg-black/30" : "bg-white border border-slate-200"}`}>
+                    <span className="text-slate-400 block mb-0.5">Kinh độ (Longitude)</span>
+                    <span className={`font-mono font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+                      {formatCoord(detail.longitude, "lng")}
+                    </span>
                   </div>
                 </div>
-                {detail.latitude != null && detail.longitude != null && (
-                  <a
-                    href={`https://www.google.com/maps?q=${detail.latitude},${detail.longitude}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
-                    onClick={(e) => e.stopPropagation()}
+              </div>
+
+              {/* Description */}
+              <div
+                className={`rounded-2xl p-4 border space-y-2 ${
+                  isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  Mô tả địa điểm
+                </span>
+                <p className={`text-xs leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                  {detail.description || "Chưa có mô tả chi tiết cho địa điểm này."}
+                </p>
+              </div>
+
+              {/* Species at this location */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                    Sinh vật sinh sống ({detail.recentSpecies?.length || 0})
+                  </span>
+                </div>
+
+                {detail.recentSpecies && detail.recentSpecies.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {detail.recentSpecies.map((sp) => (
+                      <div
+                        key={sp.id}
+                        className={`flex items-center gap-2.5 p-2 rounded-xl border transition-all ${
+                          isDark
+                            ? "bg-white/5 border-white/10 hover:border-cyan-400/40"
+                            : "bg-slate-50 border-slate-200 hover:border-cyan-400/50"
+                        }`}
+                      >
+                        <div className="w-11 h-11 rounded-lg overflow-hidden shrink-0 bg-slate-800 border border-white/10">
+                          {sp.image ? (
+                            <img src={sp.image} alt={sp.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Fish size={18} className="text-slate-500" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className={`text-xs font-bold truncate ${isDark ? "text-white" : "text-slate-900"}`}>
+                            {sp.name}
+                          </p>
+                          {sp.scientificName && (
+                            <p className="text-[11px] text-cyan-400/80 italic truncate font-serif">
+                              {sp.scientificName}
+                            </p>
+                          )}
+                          <p className="text-[10px] text-slate-400 font-mono mt-0.5">
+                            #{sp.code}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div
+                    className={`rounded-2xl p-6 text-center border border-dashed ${
+                      isDark ? "border-white/15 text-slate-400" : "border-slate-300 text-slate-500"
+                    }`}
                   >
-                    <Navigation size={11} />
-                    Xem trên Google Maps →
-                  </a>
+                    <Fish size={24} className="mx-auto mb-1.5 opacity-40" />
+                    <p className="text-xs font-medium">Chưa có loài sinh vật nào liên kết với địa điểm này</p>
+                  </div>
                 )}
               </div>
-            )}
 
-            {/* Description */}
-            {detail.description && (
-              <div className={`rounded-xl p-3 ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
-                <p className="text-xs text-slate-400 mb-1.5 font-semibold">Mô tả</p>
-                <p className={`text-xs leading-relaxed ${isDark ? "text-slate-200" : "text-slate-700"}`}>{detail.description}</p>
-              </div>
-            )}
-
-            {/* Recent species */}
-            {detail.recentSpecies?.length > 0 && (
-              <div>
-                <p className={`text-xs font-semibold mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>
-                  Sinh vật tại địa điểm ({detail.recentSpecies.length})
-                </p>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {detail.recentSpecies.map((sp) => (
-                    <div key={sp.id} className="rounded-lg overflow-hidden aspect-square bg-slate-800" title={sp.name}>
-                      {sp.image ? (
-                        <img src={sp.image} alt={sp.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Fish size={16} className="text-slate-500" />
-                        </div>
-                      )}
-                    </div>
-                  ))}
+              {/* System Metadata */}
+              <div
+                className={`rounded-2xl p-3.5 border text-xs space-y-1.5 ${
+                  isDark ? "bg-white/5 border-white/10 text-slate-400" : "bg-slate-50 border-slate-200 text-slate-500"
+                }`}
+              >
+                <div className="flex justify-between">
+                  <span>Slug đường dẫn:</span>
+                  <span className={`font-mono ${isDark ? "text-slate-300" : "text-slate-700"}`}>/{detail.slug}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Ngày khởi tạo:</span>
+                  <span className={isDark ? "text-slate-300" : "text-slate-700"}>{formatDate(detail.createdAt)}</span>
                 </div>
               </div>
-            )}
-
-            {/* Meta */}
-            <div className={`text-xs rounded-xl p-3 space-y-1.5 ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Slug</span>
-                <span className={`font-mono ${isDark ? "text-slate-300" : "text-slate-700"}`}>/{detail.slug}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Ngày tạo</span>
-                <span className={isDark ? "text-slate-300" : "text-slate-700"}>{formatDate(detail.createdAt)}</span>
-              </div>
             </div>
-          </div>
+          )}
+
+          {/* Footer actions */}
+          {detail && (
+            <div
+              className={`p-4 border-t shrink-0 flex items-center gap-3 ${
+                isDark ? "border-white/10 bg-[#101932]" : "border-slate-100 bg-slate-50"
+              }`}
+            >
+              <button
+                onClick={() => onEdit(detail)}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold bg-blue-500 hover:bg-blue-600 text-white transition-all cursor-pointer active:scale-95"
+              >
+                <Pencil size={13} />
+                <span>Chỉnh sửa địa điểm</span>
+              </button>
+              <button
+                onClick={onClose}
+                className={`py-2.5 px-4 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                  isDark
+                    ? "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:text-white"
+                    : "bg-white border-slate-200 text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                Đóng
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -757,21 +1091,21 @@ export default function LocationsManagement() {
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={handleExportCSV}
-            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95 ${isDark ? "bg-white/10 hover:bg-white/15 border-white/20 text-white" : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"}`}
+            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer active:scale-95 ${isDark ? "bg-white/10 hover:bg-white/15 border-white/20 text-white" : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"}`}
           >
             <Download size={14} />
             Xuất CSV
           </button>
           <button
             onClick={() => setRefreshKey((k) => k + 1)}
-            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95 ${isDark ? "bg-white/10 hover:bg-white/15 border-white/20 text-white" : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"}`}
+            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer active:scale-95 ${isDark ? "bg-white/10 hover:bg-white/15 border-white/20 text-white" : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"}`}
           >
             <RefreshCw size={14} className={isLoading ? "animate-spin" : ""} />
             Làm mới
           </button>
           <button
             onClick={handleOpenAdd}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold shadow-lg shadow-blue-500/20 transition-all cursor-pointer active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold transition-all cursor-pointer active:scale-95"
           >
             <Plus size={15} />
             Thêm địa điểm
@@ -824,133 +1158,161 @@ export default function LocationsManagement() {
           {searchTerm && <button onClick={() => setSearchTerm("")} className="text-slate-400 hover:text-white cursor-pointer"><X size={13} /></button>}
         </div>
 
-        <select
+        {/* Filter: Nổi bật */}
+        <CustomSelect
+          options={[
+            { value: "all", label: "Tất cả" },
+            { value: "true", label: "⭐ Nổi bật" },
+            { value: "false", label: "Thường" },
+          ]}
           value={filterFeatured}
-          onChange={(e) => setFilterFeatured(e.target.value)}
-          className={`rounded-xl border px-3 py-2 text-sm font-medium outline-none cursor-pointer ${isDark ? "bg-white/5 border-white/15 text-white" : "bg-slate-50 border-slate-200 text-slate-700"}`}
-        >
-          <option value="all">Tất cả</option>
-          <option value="true">⭐ Nổi bật</option>
-          <option value="false">Thường</option>
-        </select>
+          onChange={(val) => setFilterFeatured(val)}
+          isDark={isDark}
+          size="sm"
+          className="min-w-[105px]"
+        />
 
-        <select
+        {/* Filter: Tầng đại dương */}
+        <CustomSelect
+          options={[
+            { value: "all", label: "Tất cả tầng" },
+            ...OCEAN_ZONES.map((z) => ({ value: String(z.id), label: cleanZoneName(z.name) })),
+          ]}
           value={filterZone}
-          onChange={(e) => setFilterZone(e.target.value)}
-          className={`rounded-xl border px-3 py-2 text-sm font-medium outline-none cursor-pointer ${isDark ? "bg-white/5 border-white/15 text-white" : "bg-slate-50 border-slate-200 text-slate-700"}`}
-        >
-          <option value="all">Tất cả tầng</option>
-          {OCEAN_ZONES.map((z) => <option key={z.id} value={z.id}>{cleanZoneName(z.name)}</option>)}
-        </select>
+          onChange={(val) => setFilterZone(val)}
+          isDark={isDark}
+          size="sm"
+          className="min-w-[125px]"
+        />
 
-        <select
+        {/* Filter: Sắp xếp */}
+        <CustomSelect
+          options={[
+            { value: "id_asc", label: "Thứ tự tạo ↑" },
+            { value: "id_desc", label: "Thứ tự tạo ↓" },
+            { value: "name_asc", label: "Tên A→Z" },
+            { value: "name_desc", label: "Tên Z→A" },
+            { value: "is_featured_desc", label: "Nổi bật trước" },
+          ]}
           value={`${sortBy}_${sortOrder}`}
-          onChange={(e) => { const [f, o] = e.target.value.split("_"); setSortBy(f); setSortOrder(o); }}
-          className={`rounded-xl border px-3 py-2 text-sm font-medium outline-none cursor-pointer ${isDark ? "bg-white/5 border-white/15 text-white" : "bg-slate-50 border-slate-200 text-slate-700"}`}
-        >
-          <option value="id_asc">Thứ tự tạo ↑</option>
-          <option value="id_desc">Thứ tự tạo ↓</option>
-          <option value="name_asc">Tên A→Z</option>
-          <option value="name_desc">Tên Z→A</option>
-          <option value="is_featured_desc">Nổi bật trước</option>
-        </select>
+          onChange={(val) => {
+            const lastIdx = val.lastIndexOf("_");
+            const f = val.slice(0, lastIdx);
+            const o = val.slice(lastIdx + 1);
+            setSortBy(f);
+            setSortOrder(o);
+          }}
+          isDark={isDark}
+          size="sm"
+          className="min-w-[135px]"
+        />
 
-        <select
-          value={perPage}
-          onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}
-          className={`rounded-xl border px-3 py-2 text-sm font-medium outline-none cursor-pointer ${isDark ? "bg-white/5 border-white/15 text-white" : "bg-slate-50 border-slate-200 text-slate-700"}`}
-        >
-          {[12, 24, 48].map((n) => <option key={n} value={n}>{n} / trang</option>)}
-        </select>
+        {/* Filter: Số mục trên trang */}
+        <CustomSelect
+          options={[
+            { value: "12", label: "12 / trang" },
+            { value: "24", label: "24 / trang" },
+            { value: "48", label: "48 / trang" },
+          ]}
+          value={String(perPage)}
+          onChange={(val) => {
+            setPerPage(Number(val));
+            setPage(1);
+          }}
+          isDark={isDark}
+          size="sm"
+          align="right"
+          className="min-w-[110px]"
+        />
 
         <span className={`ml-auto text-xs font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}>
           {isLoading ? "Đang tải..." : `${pagination.total} địa điểm`}
         </span>
       </div>
 
-      {/* ── MAIN LAYOUT ── */}
-      <div className={`grid gap-5 ${selectedId ? "grid-cols-1 lg:grid-cols-12" : "grid-cols-1"}`}>
-        {/* Card Grid */}
-        <div className={selectedId ? "lg:col-span-8" : "col-span-1"}>
-          {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className={`rounded-2xl border overflow-hidden ${isDark ? "bg-[#162040] border-white/10" : "bg-white border-slate-200"}`}>
-                  <div className={`h-36 animate-pulse ${isDark ? "bg-white/5" : "bg-slate-200"}`} />
-                  <div className="p-3 space-y-2">
-                    <div className={`h-3 rounded animate-pulse ${isDark ? "bg-white/5" : "bg-slate-200"}`} />
-                    <div className={`h-3 w-2/3 rounded animate-pulse ${isDark ? "bg-white/5" : "bg-slate-200"}`} />
-                  </div>
+      {/* ── CARD GRID (Always clean & responsive 4-columns) ── */}
+      <div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className={`rounded-2xl border overflow-hidden ${isDark ? "bg-[#162040] border-white/10" : "bg-white border-slate-200"}`}>
+                <div className={`h-36 animate-pulse ${isDark ? "bg-white/5" : "bg-slate-200"}`} />
+                <div className="p-3 space-y-2">
+                  <div className={`h-3 rounded animate-pulse ${isDark ? "bg-white/5" : "bg-slate-200"}`} />
+                  <div className={`h-3 w-2/3 rounded animate-pulse ${isDark ? "bg-white/5" : "bg-slate-200"}`} />
                 </div>
+              </div>
+            ))}
+          </div>
+        ) : locationList.length === 0 ? (
+          <div className={`rounded-2xl border p-16 text-center ${isDark ? "bg-[#162040] border-white/10" : "bg-white border-slate-200"}`}>
+            <Globe size={36} className="mx-auto text-slate-400 mb-3" />
+            <p className={`font-semibold ${isDark ? "text-slate-300" : "text-slate-600"}`}>Không tìm thấy địa điểm nào</p>
+            <p className="text-xs text-slate-400 mt-1 mb-4">Thử thay đổi bộ lọc hoặc thêm địa điểm mới</p>
+            <button
+              onClick={handleOpenAdd}
+              className="px-4 py-2 rounded-xl bg-blue-500 text-white text-xs font-bold cursor-pointer"
+            >
+              + Thêm địa điểm đầu tiên
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {locationList.map((loc) => (
+                <LocationCard
+                  key={loc.id}
+                  loc={loc}
+                  isDark={isDark}
+                  onEdit={handleOpenEdit}
+                  onDelete={handleDeleteRequest}
+                  onToggleFeatured={handleToggleFeatured}
+                  isSelected={selectedId === loc.id}
+                  onClick={() => setSelectedId(selectedId === loc.id ? null : loc.id)}
+                />
               ))}
             </div>
-          ) : locationList.length === 0 ? (
-            <div className={`rounded-2xl border p-16 text-center ${isDark ? "bg-[#162040] border-white/10" : "bg-white border-slate-200"}`}>
-              <Globe size={36} className="mx-auto text-slate-400 mb-3" />
-              <p className={`font-semibold ${isDark ? "text-slate-300" : "text-slate-600"}`}>Không tìm thấy địa điểm nào</p>
-              <p className="text-xs text-slate-400 mt-1 mb-4">Thử thay đổi bộ lọc hoặc thêm địa điểm mới</p>
-              <button
-                onClick={handleOpenAdd}
-                className="px-4 py-2 rounded-xl bg-blue-500 text-white text-xs font-bold cursor-pointer"
-              >
-                + Thêm địa điểm đầu tiên
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className={`grid gap-4 ${selectedId ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}`}>
-                {locationList.map((loc) => (
-                  <LocationCard
-                    key={loc.id}
-                    loc={loc}
-                    isDark={isDark}
-                    onEdit={handleOpenEdit}
-                    onDelete={handleDeleteRequest}
-                    onToggleFeatured={handleToggleFeatured}
-                    isSelected={selectedId === loc.id}
-                    onClick={() => setSelectedId(selectedId === loc.id ? null : loc.id)}
-                  />
-                ))}
-              </div>
 
-              {/* Pagination */}
-              {pagination.totalPages > 1 && (
-                <div className={`flex items-center justify-between mt-4 px-1 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                  <span>Trang {page} / {pagination.totalPages} · {pagination.total} địa điểm</span>
-                  <div className="flex gap-1">
-                    <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className={`p-1.5 rounded-lg disabled:opacity-30 cursor-pointer ${isDark ? "hover:bg-white/10" : "hover:bg-slate-100"}`}>
-                      <ChevronLeft size={14} />
-                    </button>
-                    {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                      const p = Math.max(1, Math.min(pagination.totalPages - 4, page - 2)) + i;
-                      return (
-                        <button key={p} onClick={() => setPage(p)} className={`w-7 h-7 rounded-lg text-xs font-semibold cursor-pointer ${p === page ? "bg-blue-500 text-white" : isDark ? "hover:bg-white/10 text-slate-300" : "hover:bg-slate-100 text-slate-600"}`}>
-                          {p}
-                        </button>
-                      );
-                    })}
-                    <button onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))} disabled={page === pagination.totalPages} className={`p-1.5 rounded-lg disabled:opacity-30 cursor-pointer ${isDark ? "hover:bg-white/10" : "hover:bg-slate-100"}`}>
-                      <ChevronRight size={14} />
-                    </button>
-                  </div>
+            {/* Pagination */}
+            {pagination.totalPages > 1 && (
+              <div className={`flex items-center justify-between mt-4 px-1 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <span>Trang {page} / {pagination.totalPages} · {pagination.total} địa điểm</span>
+                <div className="flex gap-1">
+                  <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className={`p-1.5 rounded-lg disabled:opacity-30 cursor-pointer ${isDark ? "hover:bg-white/10" : "hover:bg-slate-100"}`}>
+                    <ChevronLeft size={14} />
+                  </button>
+                  {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                    const p = Math.max(1, Math.min(pagination.totalPages - 4, page - 2)) + i;
+                    return (
+                      <button key={p} onClick={() => setPage(p)} className={`w-7 h-7 rounded-lg text-xs font-semibold cursor-pointer ${p === page ? "bg-blue-500 text-white" : isDark ? "hover:bg-white/10 text-slate-300" : "hover:bg-slate-100 text-slate-600"}`}>
+                        {p}
+                      </button>
+                    );
+                  })}
+                  <button onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))} disabled={page === pagination.totalPages} className={`p-1.5 rounded-lg disabled:opacity-30 cursor-pointer ${isDark ? "hover:bg-white/10" : "hover:bg-slate-100"}`}>
+                    <ChevronRight size={14} />
+                  </button>
                 </div>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* Detail Panel */}
-        {selectedId && (
-          <div className="lg:col-span-4">
-            <LocationDetailPanel
-              locationId={selectedId}
-              isDark={isDark}
-              onClose={() => setSelectedId(null)}
-              onEdit={handleOpenEdit}
-            />
-          </div>
+              </div>
+            )}
+          </>
         )}
       </div>
+
+      {/* ── Slide-over Detail Drawer ── */}
+      <LocationDetailDrawer
+        locationId={selectedId}
+        isDark={isDark}
+        onClose={() => setSelectedId(null)}
+        onEdit={(loc) => {
+          setSelectedId(null);
+          handleOpenEdit(loc);
+        }}
+        onDelete={(loc) => {
+          handleDeleteRequest(loc);
+        }}
+        onToggleFeatured={handleToggleFeatured}
+      />
 
       {/* ── MODALS ── */}
       <AddEditModal
