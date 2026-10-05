@@ -22,22 +22,35 @@ export function AdminRoute({ children }) {
 }
 
 /**
- * Route chỉ dành cho Giao diện Khách & Người dùng thông thường (Client)
- * Nếu Admin đã đăng nhập, tự động chuyển hướng họ vào /admin/species
+ * Route dành riêng cho khách chưa đăng nhập (Auth: Login, Register, Forgot Password).
+ * Nếu đã đăng nhập:
+ * - Admin/Super Admin -> chuyển hướng vào /admin/species
+ * - Người dùng thông thường -> chuyển về trang chủ /
  */
-export function ClientRoute({ children }) {
+export function GuestRoute({ children }) {
   const user = getStoredUser();
 
-  if (user && (user.role === "admin" || user.role === "super_admin")) {
-    return <Navigate to="/admin/species" replace />;
+  if (user && user.token) {
+    if (user.role === "admin" || user.role === "super_admin") {
+      return <Navigate to="/admin/species" replace />;
+    }
+    return <Navigate to="/" replace />;
   }
 
   return children;
 }
 
 /**
+ * Route cho Giao diện Khách & Người dùng (Client Pages: Trang chủ, Khám phá, Chi tiết sinh vật...)
+ * Cho phép cả khách vãng lai, người dùng lẫn Admin xem công khai một cách liền mạch, không bị chặn.
+ */
+export function ClientRoute({ children }) {
+  return children;
+}
+
+/**
  * Route yêu cầu đăng nhập với tư cách Người dùng thông thường (VD: /profile)
- * Nếu chưa đăng nhập -> /login. Nếu là Admin -> /admin/species.
+ * Nếu chưa đăng nhập -> /login. Nếu là Admin -> chuyển vào /admin/profile.
  */
 export function UserProtectedRoute({ children }) {
   const location = useLocation();
@@ -48,7 +61,7 @@ export function UserProtectedRoute({ children }) {
   }
 
   if (user.role === "admin" || user.role === "super_admin") {
-    return <Navigate to="/admin/species" replace />;
+    return <Navigate to="/admin/profile" replace />;
   }
 
   return children;

@@ -304,7 +304,7 @@ export default function SpeciesDetailModal({
 
                   {/* Description Box */}
                   <div>
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    <h4 className="text-xs font-bold text-slate-400 mb-2">
                       Mô tả & Giới thiệu
                     </h4>
                     <div
@@ -327,7 +327,7 @@ export default function SpeciesDetailModal({
                 <div className={`p-4 rounded-2xl border ${isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"}`}>
                   <div className="flex items-center gap-2 mb-2 text-cyan-400">
                     <Compass size={18} />
-                    <span className="text-xs font-bold uppercase tracking-wider">Vùng đại dương</span>
+                    <span className="text-xs font-bold">Vùng đại dương</span>
                   </div>
                   <p className="text-base font-bold">
                     {current.ocean_zones?.name || species.oceanZone || "Sunlight Zone (0 - 200m)"}
@@ -340,7 +340,7 @@ export default function SpeciesDetailModal({
                 <div className={`p-4 rounded-2xl border ${isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"}`}>
                   <div className="flex items-center gap-2 mb-2 text-amber-400">
                     <Thermometer size={18} />
-                    <span className="text-xs font-bold uppercase tracking-wider">Nhiệt độ nước</span>
+                    <span className="text-xs font-bold">Nhiệt độ nước</span>
                   </div>
                   <p className="text-base font-bold">
                     {current.temperature_min_c != null && current.temperature_max_c != null
@@ -353,7 +353,7 @@ export default function SpeciesDetailModal({
                 <div className={`p-4 rounded-2xl border ${isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"}`}>
                   <div className="flex items-center gap-2 mb-2 text-blue-400">
                     <Waves size={18} />
-                    <span className="text-xs font-bold uppercase tracking-wider">Áp suất biển</span>
+                    <span className="text-xs font-bold">Áp suất biển</span>
                   </div>
                   <p className="text-base font-bold">
                     {current.pressure_atm ? `${current.pressure_atm} atm` : species.pressure || "Chưa cập nhật"}
@@ -364,7 +364,7 @@ export default function SpeciesDetailModal({
                 <div className={`p-4 rounded-2xl border ${isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"}`}>
                   <div className="flex items-center gap-2 mb-2 text-purple-400">
                     <Wind size={18} />
-                    <span className="text-xs font-bold uppercase tracking-wider">Mức độ ánh sáng</span>
+                    <span className="text-xs font-bold">Mức độ ánh sáng</span>
                   </div>
                   <p className="text-base font-bold">{current.light_level || species.lightLevel || "Bình thường"}</p>
                   <p className="text-xs text-slate-400 mt-1">Cường độ ánh sáng tại vùng nước sinh tồn</p>
@@ -373,7 +373,7 @@ export default function SpeciesDetailModal({
                 <div className={`p-4 rounded-2xl border ${isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"}`}>
                   <div className="flex items-center gap-2 mb-2 text-rose-400">
                     <ShieldAlert size={18} />
-                    <span className="text-xs font-bold uppercase tracking-wider">Tình trạng bảo tồn</span>
+                    <span className="text-xs font-bold">Tình trạng bảo tồn</span>
                   </div>
                   <p className="text-base font-bold">
                     {current.conservation_statuses?.name || species.conservation}
@@ -386,7 +386,7 @@ export default function SpeciesDetailModal({
                 <div className={`p-4 rounded-2xl border ${isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"}`}>
                   <div className="flex items-center gap-2 mb-2 text-emerald-400">
                     <Layers size={18} />
-                    <span className="text-xs font-bold uppercase tracking-wider">Tập tính & Chế độ ăn</span>
+                    <span className="text-xs font-bold">Tập tính & Chế độ ăn</span>
                   </div>
                   <p className="text-base font-bold truncate">
                     {current.diet || species.diet || "Chưa cập nhật"}
@@ -449,7 +449,7 @@ export default function SpeciesDetailModal({
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  <h4 className="text-xs font-bold text-slate-400">
                     Lượt xem 7 ngày gần nhất
                   </h4>
                   <span className="text-xs text-cyan-400 font-semibold">Được ghi nhận từ truy cập portal</span>

@@ -322,7 +322,7 @@ export default function SpeciesExpandedDetail({
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <BarChart3 size={16} className="text-cyan-400" />
-                    <h4 className="text-xs font-bold uppercase tracking-wider">
+                    <h4 className="text-xs font-bold">
                       Biểu đồ tương tác 7 ngày qua
                     </h4>
                   </div>

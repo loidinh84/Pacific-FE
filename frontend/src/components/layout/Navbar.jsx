@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronDown, Check, LogOut, User, HelpCircle } from "lucide-react";
+import { ChevronDown, Check, LogOut, User, HelpCircle, Shield } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useScroll } from "../../hooks/useScroll";
 import { useClickOutside } from "../../hooks/useClickOutside";
@@ -205,6 +205,17 @@ export default function Navbar() {
                       {user.email}
                     </p>
                   </div>
+
+                  {(user.role === "admin" || user.role === "super_admin") && (
+                    <Link
+                      to="/admin/species"
+                      onClick={() => setIsUserOpen(false)}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/15 transition-all cursor-pointer"
+                    >
+                      <Shield size={15} className="text-cyan-400" />
+                      <span>Quản trị hệ thống</span>
+                    </Link>
+                  )}
 
                   <Link
                     to="/profile"

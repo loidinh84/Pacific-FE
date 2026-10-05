@@ -7,7 +7,7 @@ import ResetPassword from "./pages/ResetPassword";
 import SpeciesDetail from "./pages/SpeciesDetail";
 import OceanDepth from "./pages/OceanDepth";
 import SpeciesView3D from "./pages/SpeciesView3D";
-import { AdminRoute, ClientRoute, UserProtectedRoute } from "./components/ProtectedRoute";
+import { AdminRoute, ClientRoute, GuestRoute, UserProtectedRoute } from "./components/ProtectedRoute";
 import ProfileLayout from "./pages/Profile";
 
 // Admin Pages
@@ -28,7 +28,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Client Routes (Blocked for Admin - Admin redirected to /admin/species) */}
+        {/* Public Client Routes (Open for all visitors, users, and admins) */}
         <Route
           path="/"
           element={
@@ -69,28 +69,30 @@ function App() {
             </ClientRoute>
           }
         />
+
+        {/* Auth Routes (Redirect to / or /admin/species if already authenticated) */}
         <Route
           path="/login"
           element={
-            <ClientRoute>
+            <GuestRoute>
               <Login />
-            </ClientRoute>
+            </GuestRoute>
           }
         />
         <Route
           path="/register"
           element={
-            <ClientRoute>
+            <GuestRoute>
               <Register />
-            </ClientRoute>
+            </GuestRoute>
           }
         />
         <Route
           path="/reset-password"
           element={
-            <ClientRoute>
+            <GuestRoute>
               <ResetPassword />
-            </ClientRoute>
+            </GuestRoute>
           }
         />
 
