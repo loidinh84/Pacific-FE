@@ -53,7 +53,7 @@ export default function SpeciesDetail() {
         <RelatedSpecies currentSpeciesId={species.id} language={language} />
 
         {/* 5. Species community opinions and comments */}
-        <SpeciesComments />
+        <SpeciesComments speciesId={id || species?.id} species={species} />
       </main>
 
       <Footer />
