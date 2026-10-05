@@ -9,23 +9,20 @@ import {
   Fish,
   RotateCcw,
   Plus,
+  Eye,
+  Edit,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
-import SpeciesExpandedDetail from "./SpeciesExpandedDetail";
 import SpeciesPaginationFooter from "./SpeciesPaginationFooter";
 
 export default function SpeciesTable({
   isLoading = false,
   filteredList = [],
   totalCount = 0,
-  selectedRowId = null,
-  setSelectedRowId = () => {},
   checkedIds = [],
   handleToggleCheckAll = () => {},
   handleToggleCheckRow = () => {},
-  selectedSpecies = null,
-  activeDetailTab = "info",
-  setActiveDetailTab = () => {},
+  onOpenDetailModal = () => {},
   handleOpenEditModal = () => {},
   handleToggleVisibility = () => {},
   handleDelete = () => {},
@@ -198,7 +195,7 @@ export default function SpeciesTable({
               </th>
 
               {/* Trạng thái */}
-              <th className="p-3.5 w-[12%] text-right whitespace-nowrap">
+              <th className="p-3.5 w-[10%] text-right whitespace-nowrap">
                 <button
                   onClick={() => onSort("is_visible")}
                   className="group flex items-center justify-end gap-1.5 cursor-pointer font-bold w-full text-right hover:text-cyan-400 transition-colors"
@@ -206,6 +203,11 @@ export default function SpeciesTable({
                   <span className={sortBy === "is_visible" ? "text-cyan-400" : ""}>Trạng thái</span>
                   {renderSortIcon("is_visible")}
                 </button>
+              </th>
+
+              {/* Thao tác */}
+              <th className="p-3.5 w-[8%] text-center whitespace-nowrap">
+                <span>Thao tác</span>
               </th>
             </tr>
           </thead>
@@ -220,7 +222,7 @@ export default function SpeciesTable({
             {/* Empty State Illustration */}
             {filteredList.length === 0 && !isLoading && (
               <tr>
-                <td colSpan={9} className="p-10 sm:p-16 text-center">
+                <td colSpan={10} className="p-10 sm:p-16 text-center">
                   <div className="max-w-md mx-auto flex flex-col items-center justify-center">
                     <div className="relative mb-5">
                       {/* Ambient circles */}
@@ -280,23 +282,16 @@ export default function SpeciesTable({
             )}
 
             {filteredList.map((item) => {
-              const isExpanded = selectedRowId === item.id;
               const isChecked = checkedIds.includes(item.id);
 
               return (
                 <Fragment key={item.id}>
                   <tr
-                    onClick={() =>
-                      setSelectedRowId(isExpanded ? null : item.id)
-                    }
+                    onClick={() => onOpenDetailModal(item)}
                     className={`transition-colors cursor-pointer ${
-                      isExpanded
-                        ? isDark
-                          ? "bg-[#25396e] border-l-4 border-cyan-400 font-semibold"
-                          : "bg-cyan-50/80 border-l-4 border-cyan-500 font-semibold text-slate-900"
-                        : isDark
-                          ? "hover:bg-white/5"
-                          : "hover:bg-slate-50"
+                      isDark
+                        ? "hover:bg-white/5"
+                        : "hover:bg-slate-50"
                     }`}
                   >
                     <td
@@ -370,19 +365,33 @@ export default function SpeciesTable({
                         {item.status}
                       </span>
                     </td>
+                    <td className="p-3.5 text-center" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={() => onOpenDetailModal(item)}
+                          className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                            isDark
+                              ? "hover:bg-cyan-500/20 text-cyan-400"
+                              : "hover:bg-cyan-50 text-cyan-600"
+                          }`}
+                          title="Xem chi tiết sinh vật"
+                        >
+                          <Eye size={15} />
+                        </button>
+                        <button
+                          onClick={(e) => handleOpenEditModal(item, e)}
+                          className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                            isDark
+                              ? "hover:bg-amber-500/20 text-amber-400"
+                              : "hover:bg-amber-50 text-amber-600"
+                          }`}
+                          title="Chỉnh sửa thông tin"
+                        >
+                          <Edit size={15} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
-
-                  {/* ── EXPANDED ROW DETAIL PANEL ── */}
-                  {isExpanded && (
-                    <SpeciesExpandedDetail
-                      selectedSpecies={selectedSpecies}
-                      activeDetailTab={activeDetailTab}
-                      setActiveDetailTab={setActiveDetailTab}
-                      handleOpenEditModal={handleOpenEditModal}
-                      handleToggleVisibility={handleToggleVisibility}
-                      handleDelete={handleDelete}
-                    />
-                  )}
                 </Fragment>
               );
             })}

@@ -7,6 +7,7 @@ import SpeciesFilterSidebar from "./SpeciesFilterSidebar";
 import SpeciesTable from "./SpeciesTable";
 import SpeciesBulkActionsBar from "./SpeciesBulkActionsBar";
 import ConfirmModal from "./ConfirmModal";
+import SpeciesDetailModal from "./SpeciesDetailModal";
 import { useTheme } from "../../../hooks/useTheme";
 import { useToast } from "../../../hooks/useToast";
 import ToastContainer from "../../../hooks/ToastContainer";
@@ -53,62 +54,62 @@ function mapSpeciesFromApi(item) {
       item.group_id != null
         ? String(item.group_id)
         : item.species_groups?.id != null
-        ? String(item.species_groups.id)
-        : "",
+          ? String(item.species_groups.id)
+          : "",
     depthMin:
       item.depth_min_m != null
         ? String(item.depth_min_m)
         : item.depthMin != null
-        ? String(item.depthMin)
-        : "",
+          ? String(item.depthMin)
+          : "",
     depthMax:
       item.depth_max_m != null
         ? String(item.depth_max_m)
         : item.depthMax != null
-        ? String(item.depthMax)
-        : "",
+          ? String(item.depthMax)
+          : "",
     sizeMinCm:
       item.size_min_cm != null
         ? String(item.size_min_cm)
         : item.sizeMinCm != null
-        ? String(item.sizeMinCm)
-        : "",
+          ? String(item.sizeMinCm)
+          : "",
     sizeMaxCm:
       item.size_max_cm != null
         ? String(item.size_max_cm)
         : item.sizeMaxCm != null
-        ? String(item.sizeMaxCm)
-        : "",
+          ? String(item.sizeMaxCm)
+          : "",
     weightMinKg:
       item.weight_min_kg != null
         ? String(item.weight_min_kg)
         : item.weightMinKg != null
-        ? String(item.weightMinKg)
-        : "",
+          ? String(item.weightMinKg)
+          : "",
     weightMaxKg:
       item.weight_max_kg != null
         ? String(item.weight_max_kg)
         : item.weightMaxKg != null
-        ? String(item.weightMaxKg)
-        : "",
+          ? String(item.weightMaxKg)
+          : "",
     lifespanYears:
       item.lifespan_years != null
         ? String(item.lifespan_years)
         : item.lifespanYears != null
-        ? String(item.lifespanYears)
-        : "",
+          ? String(item.lifespanYears)
+          : "",
     tempMinC:
       item.temperature_min_c != null
         ? String(item.temperature_min_c)
         : item.tempMinC != null
-        ? String(item.tempMinC)
-        : "",
+          ? String(item.tempMinC)
+          : "",
     tempMaxC:
       item.temperature_max_c != null
         ? String(item.temperature_max_c)
         : item.tempMaxC != null
-        ? String(item.tempMaxC)
-        : "",
+          ? String(item.tempMaxC)
+          : "",
     size:
       item.size_min_cm != null && item.size_max_cm != null
         ? `${item.size_min_cm} - ${item.size_max_cm} cm`
@@ -154,10 +155,10 @@ export default function SpeciesManagement() {
   const { isDark } = useTheme();
   const { toasts, showToast, removeToast } = useToast();
   const [speciesList, setSpeciesList] = useState([]);
-  const [selectedRowId, setSelectedRowId] = useState(null);
   const [checkedIds, setCheckedIds] = useState([]);
-  const [activeDetailTab, setActiveDetailTab] = useState("info");
   const [authError, setAuthError] = useState(false);
+  const [detailSpecies, setDetailSpecies] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   // Pagination State
   const [page, setPage] = useState(1);
@@ -340,21 +341,15 @@ export default function SpeciesManagement() {
     sortOrder,
   ]);
 
-  const selectedSpecies = selectedRowId
-    ? speciesList.find((sp) => sp.id === selectedRowId) || null
-    : null;
-
   // Actions
   const handlePageChange = (newPage) => {
     setPage(newPage);
-    setSelectedRowId(null);
     setCheckedIds([]);
   };
 
   const handlePerPageChange = (newPerPage) => {
     setPerPage(newPerPage);
     setPage(1);
-    setSelectedRowId(null);
     setCheckedIds([]);
   };
 
@@ -402,7 +397,9 @@ export default function SpeciesManagement() {
     try {
       await toggleSpeciesVisibility(id, newVis);
       showToast(
-        newVis ? `Đã hiển thị sinh vật "${target.name}"` : `Đã ẩn sinh vật "${target.name}"`,
+        newVis
+          ? `Đã hiển thị sinh vật "${target.name}"`
+          : `Đã ẩn sinh vật "${target.name}"`,
         "success",
       );
     } catch (err) {
@@ -410,13 +407,18 @@ export default function SpeciesManagement() {
       setSpeciesList((prev) =>
         prev.map((sp) =>
           sp.id === id
-            ? { ...sp, is_visible: !newVis, status: !newVis ? "Hiển thị" : "Ẩn" }
+            ? {
+                ...sp,
+                is_visible: !newVis,
+                status: !newVis ? "Hiển thị" : "Ẩn",
+              }
             : sp,
         ),
       );
-      const msg = err?.response?.status === 401
-        ? "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại."
-        : "Không thể cập nhật trạng thái. Vui lòng thử lại.";
+      const msg =
+        err?.response?.status === 401
+          ? "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại."
+          : "Không thể cập nhật trạng thái. Vui lòng thử lại.";
       showToast(msg, "error");
     }
   };
@@ -430,13 +432,20 @@ export default function SpeciesManagement() {
     setSpeciesList((prev) =>
       prev.map((sp) =>
         checkedIds.includes(sp.id)
-          ? { ...sp, is_visible: isVisible, status: isVisible ? "Hiển thị" : "Ẩn" }
+          ? {
+              ...sp,
+              is_visible: isVisible,
+              status: isVisible ? "Hiển thị" : "Ẩn",
+            }
           : sp,
       ),
     );
 
     try {
-      const { successful, failed } = await bulkToggleSpeciesVisibility(checkedIds, isVisible);
+      const { successful, failed } = await bulkToggleSpeciesVisibility(
+        checkedIds,
+        isVisible,
+      );
       if (failed.length > 0) {
         showToast(
           `Cập nhật thành công ${successful.length} sinh vật, có ${failed.length} mục gặp lỗi.`,
@@ -452,7 +461,10 @@ export default function SpeciesManagement() {
       }
     } catch (err) {
       console.error("Lỗi cập nhật trạng thái hàng loạt:", err);
-      showToast("Không thể cập nhật trạng thái hàng loạt. Đang tải lại dữ liệu...", "error");
+      showToast(
+        "Không thể cập nhật trạng thái hàng loạt. Đang tải lại dữ liệu...",
+        "error",
+      );
       setRefreshKey((k) => k + 1);
     } finally {
       setIsBulkProcessing(false);
@@ -501,7 +513,10 @@ export default function SpeciesManagement() {
         setSpeciesList((prev) => prev.filter((sp) => sp.id !== id));
         setCheckedIds((prev) => prev.filter((item) => item !== id));
         if (selectedRowId === id) setSelectedRowId(null);
-        showToast(`Đã xóa "${target?.name || "sinh vật"}" thành công.`, "success");
+        showToast(
+          `Đã xóa "${target?.name || "sinh vật"}" thành công.`,
+          "success",
+        );
         setConfirmModal({
           isOpen: false,
           type: null,
@@ -513,17 +528,21 @@ export default function SpeciesManagement() {
           isLoading: false,
         });
       } catch (err) {
-        const msg = err?.response?.status === 401
-          ? "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại."
-          : "Không thể xóa sinh vật. Vui lòng thử lại.";
+        const msg =
+          err?.response?.status === 401
+            ? "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại."
+            : "Không thể xóa sinh vật. Vui lòng thử lại.";
         showToast(msg, "error");
         setConfirmModal((prev) => ({ ...prev, isLoading: false }));
       }
     } else if (confirmModal.type === "bulk") {
       const idsToDelete = confirmModal.ids;
       try {
-        const { successful, failed } = await bulkDeleteAdminSpecies(idsToDelete);
-        setSpeciesList((prev) => prev.filter((sp) => !successful.includes(sp.id)));
+        const { successful, failed } =
+          await bulkDeleteAdminSpecies(idsToDelete);
+        setSpeciesList((prev) =>
+          prev.filter((sp) => !successful.includes(sp.id)),
+        );
         setCheckedIds((prev) => prev.filter((id) => !successful.includes(id)));
         if (selectedRowId && successful.includes(selectedRowId)) {
           setSelectedRowId(null);
@@ -534,7 +553,10 @@ export default function SpeciesManagement() {
             "warning",
           );
         } else {
-          showToast(`Đã xóa thành công ${successful.length} sinh vật đã chọn.`, "success");
+          showToast(
+            `Đã xóa thành công ${successful.length} sinh vật đã chọn.`,
+            "success",
+          );
         }
         setConfirmModal({
           isOpen: false,
@@ -574,7 +596,10 @@ export default function SpeciesManagement() {
           setSpeciesList((prev) =>
             prev.map((sp) => (sp.id === editingSpecies.id ? updated : sp)),
           );
-          showToast(`Đã cập nhật sinh vật "${updated.name}" thành công!`, "success");
+          showToast(
+            `Đã cập nhật sinh vật "${updated.name}" thành công!`,
+            "success",
+          );
         } else {
           setRefreshKey((k) => k + 1);
         }
@@ -589,7 +614,10 @@ export default function SpeciesManagement() {
           const newSp = mapSpeciesFromApi(res.data);
           setSpeciesList((prev) => [newSp, ...prev]);
           setSelectedRowId(newSp.id);
-          showToast(`Đã tạo mới sinh vật "${newSp.name}" thành công!`, "success");
+          showToast(
+            `Đã tạo mới sinh vật "${newSp.name}" thành công!`,
+            "success",
+          );
         } else {
           setRefreshKey((k) => k + 1);
         }
@@ -618,9 +646,7 @@ export default function SpeciesManagement() {
   };
 
   const hasActiveFilters = Boolean(
-    searchTerm ||
-    selectedConservation !== "all" ||
-    selectedGroupId !== "all"
+    searchTerm || selectedConservation !== "all" || selectedGroupId !== "all",
   );
 
   const handleExportCSV = () => {
@@ -653,20 +679,24 @@ export default function SpeciesManagement() {
     ]);
 
     const csvContent =
-      "\uFEFF" + [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
+      "\uFEFF" +
+      [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `pacific_sinh_vat_${new Date().toISOString().slice(0, 10)}.csv`
+      `pacific_sinh_vat_${new Date().toISOString().slice(0, 10)}.csv`,
     );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    showToast(`Đã xuất thành công ${filteredList.length} sinh vật ra file CSV!`, "success");
+    showToast(
+      `Đã xuất thành công ${filteredList.length} sinh vật ra file CSV!`,
+      "success",
+    );
   };
 
   return (
@@ -675,20 +705,12 @@ export default function SpeciesManagement() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1
-            className={`text-2xl md:text-3xl font-black font-heading tracking-tight ${
+            className={`text-2xl md:text-3xl font-bold font-heading tracking-tight ${
               isDark ? "text-white" : "text-slate-900"
             }`}
           >
             Quản lý sinh vật
           </h1>
-          <p
-            className={`text-xs md:text-sm font-medium mt-1 ${
-              isDark ? "text-pacific-blue-pale" : "text-slate-500"
-            }`}
-          >
-            Tra cứu, sắp xếp, cập nhật thông tin và đồng bộ hóa danh mục sinh vật biển
-            Thái Bình Dương
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
@@ -737,10 +759,17 @@ export default function SpeciesManagement() {
           }`}
         >
           <div className="flex items-start sm:items-center gap-3">
-            <AlertTriangle className="text-amber-400 shrink-0 mt-0.5 sm:mt-0" size={22} />
+            <AlertTriangle
+              className="text-amber-400 shrink-0 mt-0.5 sm:mt-0"
+              size={22}
+            />
             <div className="text-xs sm:text-sm">
-              <span className="font-bold">Phiên đăng nhập quản trị đã hết hạn hoặc không hợp lệ (401).</span>{" "}
-              Vui lòng đăng nhập lại tài khoản Admin (<strong>adminOcean@gmail.com</strong>) để tải dữ liệu sinh vật và thực hiện đồng bộ.
+              <span className="font-bold">
+                Phiên đăng nhập quản trị đã hết hạn hoặc không hợp lệ (401).
+              </span>{" "}
+              Vui lòng đăng nhập lại tài khoản Admin (
+              <strong>adminOcean@gmail.com</strong>) để tải dữ liệu sinh vật và
+              thực hiện đồng bộ.
             </div>
           </div>
           <button
@@ -787,17 +816,16 @@ export default function SpeciesManagement() {
             isLoading={isLoading}
             filteredList={filteredList}
             totalCount={pagination.total}
-            selectedRowId={selectedRowId}
-            setSelectedRowId={setSelectedRowId}
             checkedIds={checkedIds}
             handleToggleCheckAll={handleToggleCheckAll}
             handleToggleCheckRow={handleToggleCheckRow}
             handleToggleVisibility={handleToggleVisibility}
             handleOpenEditModal={handleOpenEditModal}
             handleDelete={handleDelete}
-            selectedSpecies={selectedSpecies}
-            activeDetailTab={activeDetailTab}
-            setActiveDetailTab={setActiveDetailTab}
+            onOpenDetailModal={(sp) => {
+              setDetailSpecies(sp);
+              setIsDetailOpen(true);
+            }}
             // Sorting props
             sortBy={sortBy}
             sortOrder={sortOrder}
@@ -817,6 +845,15 @@ export default function SpeciesManagement() {
       </div>
 
       {/* ── MODALS ── */}
+      <SpeciesDetailModal
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        species={detailSpecies}
+        handleOpenEditModal={handleOpenEditModal}
+        handleToggleVisibility={handleToggleVisibility}
+        handleDelete={handleDelete}
+      />
+
       <AddEditSpeciesModal
         isOpen={isAddEditOpen}
         onClose={() => setIsAddEditOpen(false)}
@@ -838,7 +875,9 @@ export default function SpeciesManagement() {
         isOpen={confirmModal.isOpen}
         title={confirmModal.title}
         message={confirmModal.message}
-        confirmText={confirmModal.type === "bulk" ? "Xóa tất cả đã chọn" : "Xác nhận xóa"}
+        confirmText={
+          confirmModal.type === "bulk" ? "Xóa tất cả đã chọn" : "Xác nhận xóa"
+        }
         variant="danger"
         isLoading={confirmModal.isLoading}
         onConfirm={handleConfirmModalAction}

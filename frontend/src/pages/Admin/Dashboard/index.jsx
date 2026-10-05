@@ -51,36 +51,46 @@ export default function AdminDashboard() {
     rankings: { topSpecies: [], speciesByZone: [], topUsers: [] },
   });
 
-  const loadData = useCallback(async (selectedDays, isManualRefresh = false) => {
-    try {
-      if (isManualRefresh) setIsRefreshing(true);
-      else setIsLoading(true);
-      setAuthError(false);
+  const loadData = useCallback(
+    async (selectedDays, isManualRefresh = false) => {
+      try {
+        if (isManualRefresh) setIsRefreshing(true);
+        else setIsLoading(true);
+        setAuthError(false);
 
-      const res = await fetchAdminFullDashboard(selectedDays);
-      if (res?.success && res?.data) {
-        setDashboardData(res.data);
-        if (isManualRefresh) {
-          showToast("Đã cập nhật dữ liệu thống kê mới nhất!", "success");
+        const res = await fetchAdminFullDashboard(selectedDays);
+        if (res?.success && res?.data) {
+          setDashboardData(res.data);
+          if (isManualRefresh) {
+            showToast("Đã cập nhật dữ liệu thống kê mới nhất!", "success");
+          }
         }
+      } catch (err) {
+        if (err?.response?.status === 401 || err?.response?.status === 403) {
+          setAuthError(true);
+        } else {
+          showToast("Không thể tải dữ liệu thống kê.", "error");
+        }
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
       }
-    } catch (err) {
-      if (err?.response?.status === 401 || err?.response?.status === 403) {
-        setAuthError(true);
-      } else {
-        showToast("Không thể tải dữ liệu thống kê.", "error");
-      }
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  }, [showToast]);
+    },
+    [showToast],
+  );
 
   useEffect(() => {
     loadData(days);
   }, [days, loadData]);
 
-  const { users, contentAndView, comments, charts, rankings, recentActivities } = dashboardData;
+  const {
+    users,
+    contentAndView,
+    comments,
+    charts,
+    rankings,
+    recentActivities,
+  } = dashboardData;
 
   return (
     <div className="space-y-7 animate-in fade-in duration-300">
@@ -90,15 +100,12 @@ export default function AdminDashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1
-            className={`text-2xl sm:text-3xl font-black font-heading tracking-tight ${
+            className={`text-2xl sm:text-3xl font-bold font-heading tracking-tight ${
               isDark ? "text-white" : "text-slate-900"
             }`}
           >
             Tổng quan hệ thống
           </h1>
-          <p className={`text-xs sm:text-sm mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-            Báo cáo số liệu thời gian thực và phân tích sinh vật biển Thái Bình Dương
-          </p>
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -125,7 +132,10 @@ export default function AdminDashboard() {
             }`}
             title="Làm mới toàn bộ số liệu"
           >
-            <RefreshCw size={14} className={isRefreshing ? "animate-spin text-cyan-400" : ""} />
+            <RefreshCw
+              size={14}
+              className={isRefreshing ? "animate-spin text-cyan-400" : ""}
+            />
             <span>{isRefreshing ? "Đang tải..." : "Làm mới"}</span>
           </button>
         </div>
@@ -135,13 +145,16 @@ export default function AdminDashboard() {
       {authError && (
         <div
           className={`p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-            isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-200" : "bg-amber-50 border-amber-200 text-amber-900"
+            isDark
+              ? "bg-amber-500/10 border-amber-500/30 text-amber-200"
+              : "bg-amber-50 border-amber-200 text-amber-900"
           }`}
         >
           <div className="flex items-center gap-3">
             <AlertTriangle className="text-amber-400 shrink-0" size={20} />
             <p className="text-xs sm:text-sm font-medium">
-              Phiên đăng nhập hết hạn hoặc bạn không có quyền xem trang này. Vui lòng đăng nhập lại.
+              Phiên đăng nhập hết hạn hoặc bạn không có quyền xem trang này. Vui
+              lòng đăng nhập lại.
             </p>
           </div>
           <button
@@ -159,7 +172,9 @@ export default function AdminDashboard() {
 
       {/* ── SECTION 1: TÀI KHOẢN NGƯỜI DÙNG ── */}
       <div className="space-y-3">
-        <h2 className={`text-sm font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+        <h2
+          className={`text-sm font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}
+        >
           Tài khoản người dùng
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -211,7 +226,9 @@ export default function AdminDashboard() {
 
       {/* ── SECTION 2: NỘI DUNG & LƯỢT XEM ── */}
       <div className="space-y-3">
-        <h2 className={`text-sm font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+        <h2
+          className={`text-sm font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}
+        >
           Nội dung & Lượt tương tác
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -257,7 +274,9 @@ export default function AdminDashboard() {
 
       {/* ── SECTION 3: BÌNH LUẬN & KIỂM DUYỆT ── */}
       <div className="space-y-3">
-        <h2 className={`text-sm font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+        <h2
+          className={`text-sm font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}
+        >
           Bình luận & Báo cáo vi phạm
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

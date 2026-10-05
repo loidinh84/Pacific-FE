@@ -58,6 +58,7 @@ export default function AdminLayout() {
     { label: "Địa điểm", path: "/admin/locations" },
     { label: "Người dùng", path: "/admin/users", badge: notifications.pendingUsers },
     { label: "Bình luận", path: "/admin/comments", badge: notifications.pendingReports },
+    { label: "Câu đố", path: "/admin/quiz" },
   ];
 
   return (

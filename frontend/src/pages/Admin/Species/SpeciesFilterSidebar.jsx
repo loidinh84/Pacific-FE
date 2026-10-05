@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Search, Layers, X, Check } from "lucide-react";
+import { Search, Layers, X } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
 
 // Helper to remove redundant text in parentheses (e.g. "(Fish)", "(Marine Mammals)")

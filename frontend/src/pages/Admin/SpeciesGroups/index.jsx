@@ -47,7 +47,11 @@ export default function SpeciesGroupsManagement() {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
   // Toast notification state
-  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
@@ -106,12 +110,15 @@ export default function SpeciesGroupsManagement() {
     return groups.filter(
       (g) =>
         g.name.toLowerCase().includes(q) ||
-        (g.description && g.description.toLowerCase().includes(q))
+        (g.description && g.description.toLowerCase().includes(q)),
     );
   }, [searchQuery, groups]);
 
   // Pagination calculations
-  const totalPages = Math.max(1, Math.ceil(filteredGroups.length / itemsPerPage));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredGroups.length / itemsPerPage),
+  );
   const paginatedGroups = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredGroups.slice(start, start + itemsPerPage);
@@ -149,7 +156,8 @@ export default function SpeciesGroupsManagement() {
         }
       }
     } catch (err) {
-      const msg = err.response?.data?.error || "Có lỗi xảy ra khi lưu nhóm sinh vật.";
+      const msg =
+        err.response?.data?.error || "Có lỗi xảy ra khi lưu nhóm sinh vật.";
       showToast(msg, "error");
     } finally {
       setIsModalLoading(false);
@@ -205,7 +213,7 @@ export default function SpeciesGroupsManagement() {
         {/* Title & Top Right Actions */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h1
-            className={`text-2xl sm:text-3xl font-black font-heading tracking-tight ${
+            className={`text-2xl sm:text-3xl font-bold font-heading tracking-tight ${
               isDark ? "text-white" : "text-slate-900"
             }`}
           >
@@ -340,24 +348,28 @@ export default function SpeciesGroupsManagement() {
               </button>
 
               {/* Page numbers */}
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                <button
-                  key={pageNum}
-                  type="button"
-                  onClick={() => setCurrentPage(pageNum)}
-                  className={`min-w-[28px] h-7 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    currentPage === pageNum
-                      ? "bg-blue-600 text-white shadow-sm font-black"
-                      : "hover:bg-white/10 text-slate-400 hover:text-white"
-                  }`}
-                >
-                  {pageNum}
-                </button>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (pageNum) => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`min-w-[28px] h-7 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      currentPage === pageNum
+                        ? "bg-blue-600 text-white shadow-sm font-black"
+                        : "hover:bg-white/10 text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                ),
+              )}
 
               <button
                 type="button"
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
                 disabled={currentPage === totalPages}
                 className="p-1.5 rounded-lg border border-white/10 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent text-slate-400 hover:text-white transition-colors cursor-pointer"
                 title="Trang sau"
