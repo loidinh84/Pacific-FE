@@ -7,7 +7,6 @@ import SpeciesFilterSidebar from "./SpeciesFilterSidebar";
 import SpeciesTable from "./SpeciesTable";
 import SpeciesBulkActionsBar from "./SpeciesBulkActionsBar";
 import ConfirmModal from "./ConfirmModal";
-import SpeciesDetailModal from "./SpeciesDetailModal";
 import { useTheme } from "../../../hooks/useTheme";
 import { useToast } from "../../../hooks/useToast";
 import ToastContainer from "../../../hooks/ToastContainer";
@@ -155,10 +154,10 @@ export default function SpeciesManagement() {
   const { isDark } = useTheme();
   const { toasts, showToast, removeToast } = useToast();
   const [speciesList, setSpeciesList] = useState([]);
+  const [selectedRowId, setSelectedRowId] = useState(null);
   const [checkedIds, setCheckedIds] = useState([]);
+  const [activeDetailTab, setActiveDetailTab] = useState("info");
   const [authError, setAuthError] = useState(false);
-  const [detailSpecies, setDetailSpecies] = useState(null);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   // Pagination State
   const [page, setPage] = useState(1);
@@ -334,15 +333,21 @@ export default function SpeciesManagement() {
     sortOrder,
   ]);
 
+  const selectedSpecies = selectedRowId
+    ? speciesList.find((sp) => sp.id === selectedRowId) || null
+    : null;
+
   // Actions
   const handlePageChange = (newPage) => {
     setPage(newPage);
+    setSelectedRowId(null);
     setCheckedIds([]);
   };
 
   const handlePerPageChange = (newPerPage) => {
     setPerPage(newPerPage);
     setPage(1);
+    setSelectedRowId(null);
     setCheckedIds([]);
   };
 
@@ -505,10 +510,7 @@ export default function SpeciesManagement() {
         await deleteAdminSpecies(id);
         setSpeciesList((prev) => prev.filter((sp) => sp.id !== id));
         setCheckedIds((prev) => prev.filter((item) => item !== id));
-        if (detailSpecies?.id === id) {
-          setDetailSpecies(null);
-          setIsDetailOpen(false);
-        }
+        if (selectedRowId === id) setSelectedRowId(null);
         showToast(
           `Đã xóa "${target?.name || "sinh vật"}" thành công.`,
           "success",
@@ -540,9 +542,8 @@ export default function SpeciesManagement() {
           prev.filter((sp) => !successful.includes(sp.id)),
         );
         setCheckedIds((prev) => prev.filter((id) => !successful.includes(id)));
-        if (detailSpecies && successful.includes(detailSpecies.id)) {
-          setDetailSpecies(null);
-          setIsDetailOpen(false);
+        if (selectedRowId && successful.includes(selectedRowId)) {
+          setSelectedRowId(null);
         }
         if (failed.length > 0) {
           showToast(
@@ -610,6 +611,7 @@ export default function SpeciesManagement() {
         if (res?.success && res?.data) {
           const newSp = mapSpeciesFromApi(res.data);
           setSpeciesList((prev) => [newSp, ...prev]);
+          setSelectedRowId(newSp.id);
           showToast(
             `Đã tạo mới sinh vật "${newSp.name}" thành công!`,
             "success",
@@ -628,6 +630,7 @@ export default function SpeciesManagement() {
   const handleSelectGroup = (groupId) => {
     setSelectedGroupId(groupId);
     setPage(1);
+    setSelectedRowId(null);
     setCheckedIds([]);
   };
 
@@ -811,16 +814,17 @@ export default function SpeciesManagement() {
             isLoading={isLoading}
             filteredList={filteredList}
             totalCount={pagination.total}
+            selectedRowId={selectedRowId}
+            setSelectedRowId={setSelectedRowId}
             checkedIds={checkedIds}
             handleToggleCheckAll={handleToggleCheckAll}
             handleToggleCheckRow={handleToggleCheckRow}
             handleToggleVisibility={handleToggleVisibility}
             handleOpenEditModal={handleOpenEditModal}
             handleDelete={handleDelete}
-            onOpenDetailModal={(sp) => {
-              setDetailSpecies(sp);
-              setIsDetailOpen(true);
-            }}
+            selectedSpecies={selectedSpecies}
+            activeDetailTab={activeDetailTab}
+            setActiveDetailTab={setActiveDetailTab}
             // Sorting props
             sortBy={sortBy}
             sortOrder={sortOrder}
@@ -840,15 +844,6 @@ export default function SpeciesManagement() {
       </div>
 
       {/* ── MODALS ── */}
-      <SpeciesDetailModal
-        isOpen={isDetailOpen}
-        onClose={() => setIsDetailOpen(false)}
-        species={detailSpecies}
-        handleOpenEditModal={handleOpenEditModal}
-        handleToggleVisibility={handleToggleVisibility}
-        handleDelete={handleDelete}
-      />
-
       <AddEditSpeciesModal
         isOpen={isAddEditOpen}
         onClose={() => setIsAddEditOpen(false)}

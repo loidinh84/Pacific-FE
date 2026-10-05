@@ -13,16 +13,21 @@ import {
   Edit,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import SpeciesExpandedDetail from "./SpeciesExpandedDetail";
 import SpeciesPaginationFooter from "./SpeciesPaginationFooter";
 
 export default function SpeciesTable({
   isLoading = false,
   filteredList = [],
   totalCount = 0,
+  selectedRowId = null,
+  setSelectedRowId = () => {},
   checkedIds = [],
   handleToggleCheckAll = () => {},
   handleToggleCheckRow = () => {},
-  onOpenDetailModal = () => {},
+  selectedSpecies = null,
+  activeDetailTab = "info",
+  setActiveDetailTab = () => {},
   handleOpenEditModal = () => {},
   handleToggleVisibility = () => {},
   handleDelete = () => {},
@@ -282,16 +287,23 @@ export default function SpeciesTable({
             )}
 
             {filteredList.map((item) => {
+              const isExpanded = selectedRowId === item.id;
               const isChecked = checkedIds.includes(item.id);
 
               return (
                 <Fragment key={item.id}>
                   <tr
-                    onClick={() => onOpenDetailModal(item)}
+                    onClick={() =>
+                      setSelectedRowId(isExpanded ? null : item.id)
+                    }
                     className={`transition-colors cursor-pointer ${
-                      isDark
-                        ? "hover:bg-white/5"
-                        : "hover:bg-slate-50"
+                      isExpanded
+                        ? isDark
+                          ? "bg-[#25396e] border-l-4 border-cyan-400 font-semibold"
+                          : "bg-cyan-50/80 border-l-4 border-cyan-500 font-semibold text-slate-900"
+                        : isDark
+                          ? "hover:bg-white/5"
+                          : "hover:bg-slate-50"
                     }`}
                   >
                     <td
@@ -368,13 +380,15 @@ export default function SpeciesTable({
                     <td className="p-3.5 text-center" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-center gap-1">
                         <button
-                          onClick={() => onOpenDetailModal(item)}
+                          onClick={() => setSelectedRowId(isExpanded ? null : item.id)}
                           className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                            isDark
+                            isExpanded
+                              ? "bg-cyan-500/20 text-cyan-400"
+                              : isDark
                               ? "hover:bg-cyan-500/20 text-cyan-400"
                               : "hover:bg-cyan-50 text-cyan-600"
                           }`}
-                          title="Xem chi tiết sinh vật"
+                          title={isExpanded ? "Thu gọn chi tiết" : "Xem chi tiết sinh vật"}
                         >
                           <Eye size={15} />
                         </button>
@@ -392,6 +406,18 @@ export default function SpeciesTable({
                       </div>
                     </td>
                   </tr>
+
+                  {/* ── EXPANDED ROW DETAIL PANEL ── */}
+                  {isExpanded && (
+                    <SpeciesExpandedDetail
+                      selectedSpecies={selectedSpecies}
+                      activeDetailTab={activeDetailTab}
+                      setActiveDetailTab={setActiveDetailTab}
+                      handleOpenEditModal={handleOpenEditModal}
+                      handleToggleVisibility={handleToggleVisibility}
+                      handleDelete={handleDelete}
+                    />
+                  )}
                 </Fragment>
               );
             })}

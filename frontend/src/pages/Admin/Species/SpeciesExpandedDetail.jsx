@@ -34,7 +34,7 @@ export default function SpeciesExpandedDetail({
   return (
     <tr>
       <td
-        colSpan={9}
+        colSpan={10}
         className={`p-0 border-b-2 border-cyan-500/40 ${
           isDark ? "bg-[#16254e]/95" : "bg-slate-100/90"
         }`}
