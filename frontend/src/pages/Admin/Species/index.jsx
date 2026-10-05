@@ -251,13 +251,6 @@ export default function SpeciesManagement() {
             total: res.pagination?.total ?? mapped.length,
             totalPages: res.pagination?.totalPages ?? 1,
           });
-          if (mapped.length > 0) {
-            setSelectedRowId((prev) =>
-              prev && mapped.some((m) => m.id === prev) ? prev : null,
-            );
-          } else {
-            setSelectedRowId(null);
-          }
         }
       } catch (err) {
         if (!ignore) {
@@ -512,7 +505,10 @@ export default function SpeciesManagement() {
         await deleteAdminSpecies(id);
         setSpeciesList((prev) => prev.filter((sp) => sp.id !== id));
         setCheckedIds((prev) => prev.filter((item) => item !== id));
-        if (selectedRowId === id) setSelectedRowId(null);
+        if (detailSpecies?.id === id) {
+          setDetailSpecies(null);
+          setIsDetailOpen(false);
+        }
         showToast(
           `Đã xóa "${target?.name || "sinh vật"}" thành công.`,
           "success",
@@ -544,8 +540,9 @@ export default function SpeciesManagement() {
           prev.filter((sp) => !successful.includes(sp.id)),
         );
         setCheckedIds((prev) => prev.filter((id) => !successful.includes(id)));
-        if (selectedRowId && successful.includes(selectedRowId)) {
-          setSelectedRowId(null);
+        if (detailSpecies && successful.includes(detailSpecies.id)) {
+          setDetailSpecies(null);
+          setIsDetailOpen(false);
         }
         if (failed.length > 0) {
           showToast(
@@ -613,7 +610,6 @@ export default function SpeciesManagement() {
         if (res?.success && res?.data) {
           const newSp = mapSpeciesFromApi(res.data);
           setSpeciesList((prev) => [newSp, ...prev]);
-          setSelectedRowId(newSp.id);
           showToast(
             `Đã tạo mới sinh vật "${newSp.name}" thành công!`,
             "success",
@@ -632,7 +628,6 @@ export default function SpeciesManagement() {
   const handleSelectGroup = (groupId) => {
     setSelectedGroupId(groupId);
     setPage(1);
-    setSelectedRowId(null);
     setCheckedIds([]);
   };
 
