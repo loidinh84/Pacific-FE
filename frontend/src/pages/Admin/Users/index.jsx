@@ -35,6 +35,7 @@ import {
   updateAdminUserStatus,
   updateAdminUserRole,
   resetAdminUserPassword,
+  fetchAdminUserActivity,
 } from "../../../services/adminUserApi";
 
 // ── Helpers ──────────────────────────────────────────────
@@ -247,174 +248,279 @@ const ResetPasswordDialog = ({
   );
 };
 
-// ── User Detail Panel ─────────────────────────────────────
-const UserDetailPanel = ({ userId, isDark, onClose }) => {
+// ── User Detail Modal ─────────────────────────────────────
+const UserDetailModal = ({ userId, isDark, onClose }) => {
   const [detail, setDetail] = useState(null);
+  const [activity, setActivity] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isActivityLoading, setIsActivityLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("info");
 
   useEffect(() => {
     if (!userId) return;
     setIsLoading(true);
     fetchAdminUserById(userId)
-      .then((res) => {
-        if (res?.success) setDetail(res.user);
-      })
+      .then((res) => { if (res?.success) setDetail(res.user); })
       .catch(console.warn)
       .finally(() => setIsLoading(false));
   }, [userId]);
 
+  useEffect(() => {
+    if (activeTab !== "activity" || !userId || activity) return;
+    setIsActivityLoading(true);
+    fetchAdminUserActivity(userId, 8)
+      .then((res) => { if (res?.success) setActivity(res.activity); })
+      .catch(console.warn)
+      .finally(() => setIsActivityLoading(false));
+  }, [activeTab, userId, activity]);
+
+  const formatRelTime = (dateStr) => {
+    if (!dateStr) return "";
+    const now = new Date();
+    const date = new Date(dateStr);
+    const diff = Math.floor((now - date) / 1000);
+    if (diff < 60) return "Vừa xong";
+    if (diff < 3600) return `${Math.floor(diff / 60)} phút trước`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} giờ trước`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)} ngày trước`;
+    return date.toLocaleDateString("vi-VN");
+  };
+
+  const statusColor = (s) => {
+    if (s === "visible") return "text-emerald-400";
+    if (s === "hidden") return "text-amber-400";
+    return "text-slate-400";
+  };
+
   return (
     <div
-      className={`rounded-2xl border overflow-hidden ${isDark ? "bg-[#162040] border-white/10" : "bg-white border-slate-200"}`}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      onClick={onClose}
     >
-      {/* Header */}
       <div
-        className={`flex items-center justify-between px-4 py-3 border-b ${isDark ? "border-white/10" : "border-slate-100"}`}
+        className={`relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl border shadow-2xl animate-in fade-in zoom-in-95 duration-200 ${
+          isDark ? "bg-[#141e3c] border-white/10" : "bg-white border-slate-200"
+        }`}
+        onClick={(e) => e.stopPropagation()}
       >
-        <span
-          className={`text-sm font-bold ${isDark ? "text-white" : "text-slate-900"}`}
-        >
-          Chi tiết người dùng
-        </span>
-        <button
-          onClick={onClose}
-          className="p-1 rounded-lg hover:bg-white/10 cursor-pointer"
-        >
-          <X size={14} className="text-slate-400" />
-        </button>
-      </div>
-
-      {isLoading && (
-        <div className="flex items-center justify-center py-12">
-          <RefreshCw size={20} className="animate-spin text-slate-400" />
+        {/* Header */}
+        <div className={`flex items-center justify-between px-6 py-4 border-b ${isDark ? "border-white/10" : "border-slate-100"}`}>
+          <h2 className={`text-base font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+            Chi tiết người dùng
+          </h2>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/10 cursor-pointer transition-colors">
+            <X size={16} className="text-slate-400" />
+          </button>
         </div>
-      )}
 
-      {!isLoading && detail && (
-        <div className="p-4 space-y-4">
-          {/* Profile card */}
-          <div className="flex items-center gap-3">
-            <Avatar src={detail.avatar} username={detail.username} size={12} />
-            <div className="min-w-0">
-              <p
-                className={`font-bold text-sm truncate ${isDark ? "text-white" : "text-slate-900"}`}
-              >
-                {detail.fullName || detail.username}
-              </p>
-              <p className="text-xs text-slate-400 truncate">
-                @{detail.username}
-              </p>
-              <p className="text-xs text-slate-400 truncate">{detail.email}</p>
-            </div>
-          </div>
-
-          {/* Badges */}
-          <div className="flex flex-wrap gap-2">
-            <RoleBadge role={detail.role} />
-            <StatusBadge status={detail.status} />
-          </div>
-
-          {/* Stats grid */}
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              {
-                icon: Heart,
-                label: "Yêu thích",
-                val: detail.stats?.totalFavorites ?? 0,
-                color: "text-rose-400",
-              },
-              {
-                icon: Eye,
-                label: "Lượt xem",
-                val: detail.stats?.totalViews ?? 0,
-                color: "text-cyan-400",
-              },
-              {
-                icon: MapPin,
-                label: "Địa điểm",
-                val: detail.stats?.totalLocations ?? 0,
-                color: "text-emerald-400",
-              },
-              {
-                icon: MessageSquare,
-                label: "Bình luận",
-                val: detail.stats?.totalComments ?? 0,
-                color: "text-amber-400",
-              },
-            ].map(({ icon: Icon, label, val, color }) => (
-              <div
-                key={label}
-                className={`rounded-xl p-3 ${isDark ? "bg-white/5" : "bg-slate-50"}`}
-              >
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Icon size={12} className={color} />
-                  <span className="text-xs text-slate-400">{label}</span>
-                </div>
-                <p
-                  className={`text-lg font-bold ${isDark ? "text-white" : "text-slate-900"}`}
-                >
-                  {val.toLocaleString()}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Meta info */}
-          <div
-            className={`text-xs space-y-1.5 rounded-xl p-3 ${isDark ? "bg-white/5" : "bg-slate-50"}`}
-          >
-            {detail.phoneNumber && (
-              <div className="flex justify-between">
-                <span className="text-slate-400">SĐT</span>
-                <span className={isDark ? "text-white" : "text-slate-900"}>
-                  {detail.phoneNumber}
-                </span>
-              </div>
-            )}
-            {detail.dateOfBirth && (
-              <div className="flex justify-between">
-                <span className="text-slate-400">Ngày sinh</span>
-                <span className={isDark ? "text-white" : "text-slate-900"}>
-                  {formatDate(detail.dateOfBirth)}
-                </span>
-              </div>
-            )}
-            <div className="flex justify-between">
-              <span className="text-slate-400">Tham gia</span>
-              <span className={isDark ? "text-white" : "text-slate-900"}>
-                {formatDate(detail.joinedDate)}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Đăng nhập cuối</span>
-              <span className={isDark ? "text-white" : "text-slate-900"}>
-                {formatDateTime(detail.lastLogin)}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Số ngày là thành viên</span>
-              <span
-                className={`font-bold ${isDark ? "text-cyan-300" : "text-blue-600"}`}
-              >
-                {getMemberDays(detail.joinedDate)} ngày
-              </span>
-            </div>
-          </div>
-
-          {detail.bio && (
-            <div
-              className={`text-xs rounded-xl p-3 ${isDark ? "bg-white/5" : "bg-slate-50"}`}
+        {/* Tabs */}
+        <div className={`flex gap-6 px-6 border-b text-sm font-semibold ${isDark ? "border-white/10" : "border-slate-100"}`}>
+          {[{ id: "info", label: "Thông tin" }, { id: "activity", label: "Hoạt động" }].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`py-3 border-b-2 transition-all cursor-pointer ${
+                activeTab === tab.id
+                  ? "border-cyan-400 text-cyan-400"
+                  : `border-transparent ${isDark ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"}`
+              }`}
             >
-              <p className="text-slate-400 mb-1">Bio</p>
-              <p
-                className={`leading-relaxed ${isDark ? "text-slate-200" : "text-slate-700"}`}
-              >
-                {detail.bio}
-              </p>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {isLoading && (
+            <div className="flex items-center justify-center py-16">
+              <RefreshCw size={24} className="animate-spin text-slate-400" />
+            </div>
+          )}
+
+          {!isLoading && detail && activeTab === "info" && (
+            <div className="space-y-5">
+              {/* Profile card */}
+              <div className="flex items-center gap-4">
+                <Avatar src={detail.avatar} username={detail.username} size={16} />
+                <div>
+                  <p className={`font-bold text-lg ${isDark ? "text-white" : "text-slate-900"}`}>
+                    {detail.fullName || detail.username}
+                  </p>
+                  <p className="text-sm text-slate-400">@{detail.username} &middot; {detail.email}</p>
+                  <div className="flex gap-2 mt-2">
+                    <RoleBadge role={detail.role} />
+                    <StatusBadge status={detail.status} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { icon: Heart, label: "Yêu thích", val: detail.stats?.totalFavorites ?? 0, color: "text-rose-400" },
+                  { icon: Eye, label: "Lượt xem", val: detail.stats?.totalViews ?? 0, color: "text-cyan-400" },
+                  { icon: MapPin, label: "Địa điểm", val: detail.stats?.totalLocations ?? 0, color: "text-emerald-400" },
+                  { icon: MessageSquare, label: "Bình luận", val: detail.stats?.totalComments ?? 0, color: "text-amber-400" },
+                ].map(({ icon: Icon, label, val, color }) => (
+                  <div key={label} className={`rounded-xl p-3.5 ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <Icon size={13} className={color} />
+                      <span className="text-xs text-slate-400">{label}</span>
+                    </div>
+                    <p className={`text-xl font-black ${isDark ? "text-white" : "text-slate-900"}`}>
+                      {val.toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Meta info */}
+              <div className={`text-sm rounded-xl p-4 space-y-2.5 ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
+                {detail.phoneNumber && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">SĐT</span>
+                    <span className={isDark ? "text-white" : "text-slate-900"}>{detail.phoneNumber}</span>
+                  </div>
+                )}
+                {detail.dateOfBirth && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Ngày sinh</span>
+                    <span className={isDark ? "text-white" : "text-slate-900"}>{formatDate(detail.dateOfBirth)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Tham gia</span>
+                  <span className={isDark ? "text-white" : "text-slate-900"}>{formatDate(detail.joinedDate)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Đăng nhập cuối</span>
+                  <span className={isDark ? "text-white" : "text-slate-900"}>{formatDateTime(detail.lastLogin)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Số ngày là thành viên</span>
+                  <span className={`font-bold ${isDark ? "text-cyan-300" : "text-blue-600"}`}>
+                    {getMemberDays(detail.joinedDate)} ngày
+                  </span>
+                </div>
+              </div>
+
+              {detail.bio && (
+                <div className={`text-sm rounded-xl p-4 ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
+                  <p className="text-slate-400 mb-1.5 text-xs font-semibold uppercase tracking-wide">Bio</p>
+                  <p className={`leading-relaxed ${isDark ? "text-slate-200" : "text-slate-700"}`}>{detail.bio}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Activity Tab */}
+          {!isLoading && activeTab === "activity" && (
+            <div className="space-y-5">
+              {isActivityLoading && (
+                <div className="flex items-center justify-center py-12">
+                  <RefreshCw size={20} className="animate-spin text-slate-400" />
+                </div>
+              )}
+
+              {!isActivityLoading && activity && (
+                <>
+                  {/* Recent Comments */}
+                  <div>
+                    <h3 className={`text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}>
+                      <MessageSquare size={12} />
+                      Bình luận gần đây ({activity.recentComments.length})
+                    </h3>
+                    {activity.recentComments.length === 0 ? (
+                      <p className="text-xs text-slate-500 text-center py-4">Chưa có bình luận nào.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {activity.recentComments.map((c) => (
+                          <div key={c.id} className={`rounded-xl p-3 text-sm ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
+                            <div className="flex items-start justify-between gap-2 mb-1">
+                              <p className={`text-xs font-semibold ${statusColor(c.status)}`}>
+                                {c.status === "visible" ? "• Hiển thị" : c.status === "hidden" ? "• Ẩn" : `• ${c.status}`}
+                                {c.reportCount > 0 && (
+                                  <span className="ml-2 text-rose-400">⚠ {c.reportCount} report</span>
+                                )}
+                              </p>
+                              <span className="text-[11px] text-slate-500 shrink-0">{formatRelTime(c.createdAt)}</span>
+                            </div>
+                            <p className={`leading-relaxed ${isDark ? "text-slate-300" : "text-slate-700"}`}>{c.content}</p>
+                            {c.species && (
+                              <p className="text-[11px] text-slate-500 mt-1">
+                                → {c.species.name}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Recent Favorites */}
+                  <div>
+                    <h3 className={`text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}>
+                      <Heart size={12} />
+                      Sinh vật yêu thích ({activity.recentFavorites.length})
+                    </h3>
+                    {activity.recentFavorites.length === 0 ? (
+                      <p className="text-xs text-slate-500 text-center py-4">Chưa yêu thích sinh vật nào.</p>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-2">
+                        {activity.recentFavorites.map((f, i) => (
+                          <div key={i} className={`rounded-xl p-2.5 flex items-center gap-2.5 ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
+                            {f.species?.image ? (
+                              <img src={f.species.image} alt={f.species.name} className="w-9 h-9 rounded-lg object-cover shrink-0" />
+                            ) : (
+                              <div className="w-9 h-9 rounded-lg bg-cyan-500/20 flex items-center justify-center shrink-0">
+                                <Heart size={14} className="text-cyan-400" />
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className={`text-xs font-semibold truncate ${isDark ? "text-white" : "text-slate-900"}`}>
+                                {f.species?.name || "—"}
+                              </p>
+                              <p className="text-[10px] text-slate-500">{formatRelTime(f.createdAt)}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Recent Locations */}
+                  {activity.recentLocations.length > 0 && (
+                    <div>
+                      <h3 className={`text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${
+                        isDark ? "text-slate-400" : "text-slate-500"
+                      }`}>
+                        <MapPin size={12} />
+                        Địa điểm đã khám phá ({activity.recentLocations.length})
+                      </h3>
+                      <div className="space-y-1.5">
+                        {activity.recentLocations.map((l, i) => (
+                          <div key={i} className={`rounded-xl px-3 py-2 flex items-center justify-between text-sm ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
+                            <span className={`flex items-center gap-2 ${isDark ? "text-slate-200" : "text-slate-700"}`}>
+                              <MapPin size={12} className="text-emerald-400" />
+                              {l.location?.name || "—"}
+                            </span>
+                            <span className="text-[11px] text-slate-500">{formatRelTime(l.exploredAt)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -941,12 +1047,10 @@ export default function UsersManagement() {
         </span>
       </div>
 
-      {/* ── MAIN LAYOUT: TABLE + DETAIL PANEL ── */}
-      <div
-        className={`grid gap-5 ${selectedUserId ? "grid-cols-1 lg:grid-cols-12" : "grid-cols-1"}`}
-      >
+      {/* ── MAIN LAYOUT: TABLE (full width, detail is a modal) ── */}
+      <div className="grid grid-cols-1 gap-5">
         {/* TABLE */}
-        <div className={selectedUserId ? "lg:col-span-8" : "col-span-1"}>
+        <div className="col-span-1">
           <div
             className={`rounded-2xl border overflow-hidden ${isDark ? "bg-[#162040] border-white/10" : "bg-white border-slate-200"}`}
           >
@@ -1218,18 +1322,16 @@ export default function UsersManagement() {
             )}
           </div>
         </div>
-
-        {/* DETAIL PANEL */}
-        {selectedUserId && (
-          <div className="lg:col-span-4">
-            <UserDetailPanel
-              userId={selectedUserId}
-              isDark={isDark}
-              onClose={() => setSelectedUserId(null)}
-            />
-          </div>
-        )}
       </div>
+
+      {/* DETAIL MODAL */}
+      {selectedUserId && (
+        <UserDetailModal
+          userId={selectedUserId}
+          isDark={isDark}
+          onClose={() => setSelectedUserId(null)}
+        />
+      )}
 
       {/* ── MODALS ── */}
       <ConfirmDialog

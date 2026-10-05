@@ -72,3 +72,25 @@ export const resetAdminUserPassword = async (id, newPassword = "Pacific@123") =>
   );
   return res.data;
 };
+
+/**
+ * Lấy lịch sử hoạt động của người dùng (bình luận, yêu thích, địa điểm)
+ * @param {string} id - User ID
+ * @param {number} limit - Số lượng tối đa mỗi loại
+ */
+export const fetchAdminUserActivity = async (id, limit = 10) => {
+  const res = await axios.get(`${API_BASE}/${id}/activity`, {
+    params: { limit },
+    ...getAuthHeaders(),
+  });
+  return res.data;
+};
+
+/**
+ * Lấy thông báo admin (pending reports, pending users)
+ */
+export const fetchAdminNotifications = async () => {
+  const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+  const res = await axios.get(`${BASE}/admin/notifications`, getAuthHeaders());
+  return res.data;
+};

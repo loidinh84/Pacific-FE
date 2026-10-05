@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Settings, Sun, Moon, LogOut, User } from "lucide-react";
+import { Settings, Sun, Moon, LogOut, User, Bell } from "lucide-react";
 import * as Images from "../../assets/Images";
 import { useTheme } from "../../hooks/useTheme";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { getStoredUser, clearStoredAuth } from "../../utils/auth";
+import { fetchAdminNotifications } from "../../services/adminUserApi";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -12,8 +13,25 @@ export default function AdminLayout() {
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
+  const [notifications, setNotifications] = useState({ pendingReports: 0, pendingUsers: 0 });
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
+
+  // Poll notifications every 60 seconds
+  useEffect(() => {
+    let ignore = false;
+    const load = async () => {
+      try {
+        const res = await fetchAdminNotifications();
+        if (!ignore && res?.success) {
+          setNotifications(res.data);
+        }
+      } catch (_) {}
+    };
+    load();
+    const interval = setInterval(load, 60000);
+    return () => { ignore = true; clearInterval(interval); };
+  }, []);
 
   const [currentUser, setCurrentUser] = useState(
     () => getStoredUser() || { username: "Admin", email: "admin@pacific.org" }
@@ -38,8 +56,8 @@ export default function AdminLayout() {
     { label: "Sinh vật", path: "/admin/species" },
     { label: "Nhóm sinh vật", path: "/admin/groups" },
     { label: "Địa điểm", path: "/admin/locations" },
-    { label: "Người dùng", path: "/admin/users" },
-    { label: "Bình luận", path: "/admin/comments" },
+    { label: "Người dùng", path: "/admin/users", badge: notifications.pendingUsers },
+    { label: "Bình luận", path: "/admin/comments", badge: notifications.pendingReports },
   ];
 
   return (
@@ -185,7 +203,7 @@ export default function AdminLayout() {
               key={tab.path}
               to={tab.path}
               className={({ isActive }) =>
-                `px-3 py-1 rounded-full text-md font-bold transition-all whitespace-nowrap cursor-pointer ${
+                `relative px-3 py-1 rounded-full text-md font-bold transition-all whitespace-nowrap cursor-pointer ${
                   isActive
                     ? isDark
                       ? "bg-[#435f9f] text-white font-bold shadow-sm"
@@ -197,6 +215,11 @@ export default function AdminLayout() {
               }
             >
               {tab.label}
+              {tab.badge > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center leading-none">
+                  {tab.badge > 99 ? "99+" : tab.badge}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
