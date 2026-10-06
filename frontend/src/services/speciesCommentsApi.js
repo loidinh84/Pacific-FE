@@ -40,3 +40,20 @@ export const deleteSpeciesComment = async (commentId) => {
   );
   return res.data;
 };
+
+/**
+ * Ghi nhận lượt xem loài sinh vật (Backend sẽ tự lọc bỏ nếu là Admin)
+ */
+export const recordSpeciesView = async (idOrSlug) => {
+  try {
+    const res = await axios.post(
+      `${API_BASE}/${encodeURIComponent(idOrSlug)}/view`,
+      {},
+      getAuthHeaders()
+    );
+    return res.data;
+  } catch (err) {
+    // Không làm gián đoạn trải nghiệm nếu ghi log view thất bại
+    return null;
+  }
+};

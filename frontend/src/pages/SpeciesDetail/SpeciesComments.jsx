@@ -2,7 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Send, Trash2, ShieldCheck, MessageSquare, Loader2 } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
-import { getStoredUser } from "../../utils/auth";
+import { getClientEffectiveUser } from "../../utils/auth";
+import { useToast } from "../../hooks/useToast";
+import ToastContainer from "../../hooks/ToastContainer";
+import ConfirmModal from "../Admin/Species/ConfirmModal";
 import {
   fetchSpeciesComments,
   postSpeciesComment,
@@ -30,18 +33,33 @@ const formatRelativeTime = (dateStr) => {
 export function SpeciesComments({ speciesId }) {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { toasts, showToast, removeToast } = useToast();
 
-  const [currentUser, setCurrentUser] = useState(() => getStoredUser());
+  const [currentUser, setCurrentUser] = useState(() => getClientEffectiveUser());
   const [commentText, setCommentText] = useState("");
   const [commentsList, setCommentsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [deletingId, setDeletingId] = useState(null);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    commentId: null,
+  });
 
-  // Cập nhật thông tin user khi có thay đổi session
+  // Cập nhật thông tin user khi có thay đổi phiên hoặc chuyển đổi chế độ xem Khách
   useEffect(() => {
-    setCurrentUser(getStoredUser());
+    const handleSync = () => {
+      setCurrentUser(getClientEffectiveUser());
+    };
+    handleSync();
+    window.addEventListener("pacific_auth_change", handleSync);
+    window.addEventListener("pacific_preview_mode_change", handleSync);
+    window.addEventListener("storage", handleSync);
+    return () => {
+      window.removeEventListener("pacific_auth_change", handleSync);
+      window.removeEventListener("pacific_preview_mode_change", handleSync);
+      window.removeEventListener("storage", handleSync);
+    };
   }, []);
 
   // Tải danh sách bình luận từ backend theo loài
@@ -49,18 +67,17 @@ export function SpeciesComments({ speciesId }) {
     if (!speciesId) return;
     try {
       setIsLoading(true);
-      setErrorMsg("");
       const res = await fetchSpeciesComments(speciesId);
       if (res?.success) {
         setCommentsList(res.data || []);
       }
     } catch (err) {
       console.error("Lỗi khi tải bình luận sinh vật:", err);
-      setErrorMsg("Không thể tải bình luận lúc này.");
+      showToast("Không thể tải bình luận lúc này.", "error");
     } finally {
       setIsLoading(false);
     }
-  }, [speciesId]);
+  }, [speciesId, showToast]);
 
   useEffect(() => {
     loadComments();
@@ -78,38 +95,43 @@ export function SpeciesComments({ speciesId }) {
 
     try {
       setIsSubmitting(true);
-      setErrorMsg("");
       const res = await postSpeciesComment(speciesId, commentText.trim());
       if (res?.success && res.data) {
         setCommentsList((prev) => [res.data, ...prev]);
         setCommentText("");
+        showToast("Đã gửi bình luận thành công!", "success");
       } else {
-        setErrorMsg(res?.message || "Không thể gửi bình luận");
+        showToast(res?.message || "Không thể gửi bình luận", "error");
       }
     } catch (err) {
       console.error("Lỗi gửi bình luận:", err);
-      setErrorMsg(
-        err.response?.data?.message || "Lỗi khi gửi bình luận. Vui lòng thử lại!"
+      showToast(
+        err.response?.data?.message || "Lỗi khi gửi bình luận. Vui lòng thử lại!",
+        "error"
       );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Xóa bình luận
-  const handleDeleteComment = async (commentId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa bình luận này?")) return;
+  // Xác nhận xóa bình luận qua ConfirmModal
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.commentId) return;
     try {
-      setDeletingId(commentId);
-      const res = await deleteSpeciesComment(commentId);
+      setIsDeleting(true);
+      const res = await deleteSpeciesComment(deleteModal.commentId);
       if (res?.success) {
-        setCommentsList((prev) => prev.filter((c) => c.id !== commentId));
+        setCommentsList((prev) => prev.filter((c) => c.id !== deleteModal.commentId));
+        showToast("Đã xóa bình luận thành công.", "info");
+      } else {
+        showToast(res?.message || "Không thể xóa bình luận này.", "error");
       }
     } catch (err) {
       console.error("Lỗi xóa bình luận:", err);
-      alert("Không thể xóa bình luận này.");
+      showToast("Có lỗi xảy ra khi xóa bình luận.", "error");
     } finally {
-      setDeletingId(null);
+      setIsDeleting(false);
+      setDeleteModal({ isOpen: false, commentId: null });
     }
   };
 
@@ -117,7 +139,21 @@ export function SpeciesComments({ speciesId }) {
     currentUser?.role === "admin" || currentUser?.role === "super_admin";
 
   return (
-    <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 mb-12">
+    <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 mb-12 relative">
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
+
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        title="Xác nhận xóa bình luận"
+        message="Bạn có chắc chắn muốn gỡ bỏ bình luận này khỏi trang sinh vật? Thao tác này sẽ cập nhật ngay lập tức trên hệ thống."
+        confirmText="Xác nhận xóa"
+        cancelText="Hủy bỏ"
+        variant="danger"
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setDeleteModal({ isOpen: false, commentId: null })}
+      />
+
       <div className="bg-[#0e1f38] border border-white/10 rounded-2xl p-6 md:p-8 space-y-6 shadow-xl shadow-cyan-950/20">
         {/* Header với icon và số lượng bình luận */}
         <div className="flex items-center justify-between">
@@ -139,13 +175,6 @@ export function SpeciesComments({ speciesId }) {
             {commentsList.length} bình luận
           </span>
         </div>
-
-        {/* Thông báo lỗi nếu có */}
-        {errorMsg && (
-          <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs">
-            {errorMsg}
-          </div>
-        )}
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -262,16 +291,11 @@ export function SpeciesComments({ speciesId }) {
 
                       {canDelete && (
                         <button
-                          onClick={() => handleDeleteComment(c.id)}
-                          disabled={deletingId === c.id}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/15 transition-all cursor-pointer opacity-70 hover:opacity-100 disabled:opacity-40"
+                          onClick={() => setDeleteModal({ isOpen: true, commentId: c.id })}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/15 transition-all cursor-pointer opacity-70 hover:opacity-100"
                           title="Xóa bình luận này"
                         >
-                          {deletingId === c.id ? (
-                            <Loader2 size={13} className="animate-spin text-rose-400" />
-                          ) : (
-                            <Trash2 size={13} />
-                          )}
+                          <Trash2 size={14} />
                         </button>
                       )}
                     </div>

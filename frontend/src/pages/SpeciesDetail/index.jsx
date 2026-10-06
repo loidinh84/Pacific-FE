@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
@@ -8,11 +9,19 @@ import { RelatedSpecies } from "./RelatedSpecies";
 import { SpeciesComments } from "./SpeciesComments";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { useLanguage } from "../../hooks/useLanguage";
+import { recordSpeciesView } from "../../services/speciesCommentsApi";
 
 export default function SpeciesDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { language } = useLanguage();
+
+  // Ghi nhận lượt xem sinh vật (tự động bỏ qua nếu là Admin để giữ sạch dữ liệu phân tích)
+  useEffect(() => {
+    if (id) {
+      recordSpeciesView(id);
+    }
+  }, [id]);
 
   // Find species or fallback to first species (Great White Shark)
   const species =

@@ -1,10 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronDown, Check, LogOut, User, HelpCircle, Shield } from "lucide-react";
+import { ChevronDown, Check, LogOut, User, HelpCircle, Shield, Eye } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useScroll } from "../../hooks/useScroll";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import * as Images from "../../assets/Images";
+import {
+  getClientEffectiveUser,
+  getStoredUser,
+  isPreviewAsGuest,
+  setPreviewAsGuest,
+} from "../../utils/auth";
 
 export default function Navbar() {
   const { language, changeLanguage, t } = useLanguage();
@@ -17,32 +23,24 @@ export default function Navbar() {
   const langDropdownRef = useRef(null);
   const userDropdownRef = useRef(null);
 
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("pacific_user");
-    try {
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [user, setUser] = useState(() => getClientEffectiveUser());
+  const [isGuestMode, setIsGuestMode] = useState(() => isPreviewAsGuest());
 
   useEffect(() => {
     const checkUser = () => {
-      const saved = localStorage.getItem("pacific_user");
-      try {
-        setUser(saved ? JSON.parse(saved) : null);
-      } catch {
-        setUser(null);
-      }
+      setUser(getClientEffectiveUser());
+      setIsGuestMode(isPreviewAsGuest());
     };
 
     checkUser();
 
     window.addEventListener("storage", checkUser);
     window.addEventListener("pacific_auth_change", checkUser);
+    window.addEventListener("pacific_preview_mode_change", checkUser);
     return () => {
       window.removeEventListener("storage", checkUser);
       window.removeEventListener("pacific_auth_change", checkUser);
+      window.removeEventListener("pacific_preview_mode_change", checkUser);
     };
   }, [location]);
 
@@ -207,14 +205,28 @@ export default function Navbar() {
                   </div>
 
                   {(user.role === "admin" || user.role === "super_admin") && (
-                    <Link
-                      to="/admin/species"
-                      onClick={() => setIsUserOpen(false)}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/15 transition-all cursor-pointer"
-                    >
-                      <Shield size={15} className="text-cyan-400" />
-                      <span>Quản trị hệ thống</span>
-                    </Link>
+                    <>
+                      <Link
+                        to="/admin/species"
+                        onClick={() => setIsUserOpen(false)}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/15 transition-all cursor-pointer"
+                      >
+                        <Shield size={15} className="text-cyan-400" />
+                        <span>Quản trị hệ thống</span>
+                      </Link>
+
+                      <button
+                        onClick={() => {
+                          setIsUserOpen(false);
+                          setPreviewAsGuest(true);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-amber-300 hover:text-amber-200 hover:bg-amber-500/15 transition-all cursor-pointer"
+                        title="Tạm ẩn quyền admin để xem trang như một khách vãng lai thực thụ"
+                      >
+                        <Eye size={15} className="text-amber-400" />
+                        <span>Xem với tư cách Khách</span>
+                      </button>
+                    </>
                   )}
 
                   <Link
@@ -351,6 +363,51 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Floating Guest Mode Banner */}
+      {isGuestMode &&
+        (() => {
+          const rawAdminUser = getStoredUser();
+          const isActualAdmin =
+            rawAdminUser &&
+            (rawAdminUser.role === "admin" || rawAdminUser.role === "super_admin");
+          if (!isActualAdmin) return null;
+
+          return (
+            <aside
+              aria-label="Chế độ xem trước của quản trị viên"
+              className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto"
+            >
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#0c1830]/95 backdrop-blur-2xl border border-amber-500/50 text-white shadow-2xl shadow-cyan-950/70 text-xs">
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping shrink-0" />
+                <div className="text-left">
+                  <div className="font-bold text-amber-300 flex items-center gap-1.5">
+                    <Eye size={13} />
+                    <span>Chế độ xem Khách</span>
+                  </div>
+                  <p className="text-[10px] text-white/60">
+                    Đang ẩn quyền Admin để trải nghiệm góc nhìn người dùng
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 ml-2 pl-3 border-l border-white/15">
+                  <button
+                    onClick={() => setPreviewAsGuest(false)}
+                    className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold border border-amber-500/40 cursor-pointer transition-all active:scale-95 whitespace-nowrap"
+                  >
+                    Thoát chế độ khách
+                  </button>
+                  <Link
+                    to="/admin/species"
+                    onClick={() => setPreviewAsGuest(false)}
+                    className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 transition-all active:scale-95 whitespace-nowrap"
+                  >
+                    Vào Admin
+                  </Link>
+                </div>
+              </div>
+            </aside>
+          );
+        })()}
     </nav>
   );
 }
