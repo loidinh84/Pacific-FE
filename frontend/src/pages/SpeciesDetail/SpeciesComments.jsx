@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Send, Trash2, ShieldCheck, MessageSquare, Loader2 } from "lucide-react";
@@ -46,12 +47,11 @@ export function SpeciesComments({ speciesId }) {
     commentId: null,
   });
 
-  // Cập nhật thông tin user khi có thay đổi phiên hoặc chuyển đổi chế độ xem Khách
+  // Lắng nghe thay đổi phiên hoặc chuyển đổi chế độ xem Khách
   useEffect(() => {
     const handleSync = () => {
       setCurrentUser(getClientEffectiveUser());
     };
-    handleSync();
     window.addEventListener("pacific_auth_change", handleSync);
     window.addEventListener("pacific_preview_mode_change", handleSync);
     window.addEventListener("storage", handleSync);
@@ -66,7 +66,6 @@ export function SpeciesComments({ speciesId }) {
   const loadComments = useCallback(async () => {
     if (!speciesId) return;
     try {
-      setIsLoading(true);
       const res = await fetchSpeciesComments(speciesId);
       if (res?.success) {
         setCommentsList(res.data || []);

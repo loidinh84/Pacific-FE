@@ -52,7 +52,7 @@ export const recordSpeciesView = async (idOrSlug) => {
       getAuthHeaders()
     );
     return res.data;
-  } catch (err) {
+  } catch {
     // Không làm gián đoạn trải nghiệm nếu ghi log view thất bại
     return null;
   }

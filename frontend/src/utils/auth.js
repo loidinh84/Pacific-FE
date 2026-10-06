@@ -1,5 +1,4 @@
 /**
- * src/utils/auth.js
  * Centralized Authentication & Storage Utilities
  */
 
@@ -75,9 +74,7 @@ export function setStoredAuth(token, user) {
   window.dispatchEvent(new Event("pacific_auth_change"));
 }
 
-/**
- * Kiểm tra xem Admin có đang bật chế độ xem trang với tư cách Khách (Guest preview) hay không
- */
+
 export function isPreviewAsGuest() {
   return sessionStorage.getItem("pacific_preview_as_guest") === "true";
 }
@@ -95,10 +92,7 @@ export function setPreviewAsGuest(enable) {
   window.dispatchEvent(new Event("pacific_auth_change"));
 }
 
-/**
- * Lấy user hiệu lực cho giao diện Client:
- * Nếu Admin đang bật chế độ xem Khách -> trả về null để giao diện phản hồi 100% như khách vãng lai
- */
+
 export function getClientEffectiveUser() {
   if (isPreviewAsGuest()) {
     return null;
