@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Settings, Sun, Moon, LogOut, User, Bell } from "lucide-react";
 import * as Images from "../../assets/Images";
 import { useTheme } from "../../hooks/useTheme";
@@ -9,6 +9,7 @@ import { fetchAdminNotifications } from "../../services/adminUserApi";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toggleTheme, isDark } = useTheme();
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function AdminLayout() {
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
 
-  // Poll notifications every 60 seconds
+  // Tải và cập nhật số lượng thông báo kiểm duyệt: khi đổi trang, định kỳ và khi có thao tác xử lý
   useEffect(() => {
     let ignore = false;
     const load = async () => {
@@ -29,9 +30,14 @@ export default function AdminLayout() {
       } catch (_) {}
     };
     load();
-    const interval = setInterval(load, 60000);
-    return () => { ignore = true; clearInterval(interval); };
-  }, []);
+    const interval = setInterval(load, 30000);
+    window.addEventListener("pacific_admin_notification_update", load);
+    return () => {
+      ignore = true;
+      clearInterval(interval);
+      window.removeEventListener("pacific_admin_notification_update", load);
+    };
+  }, [location.pathname]);
 
   const [currentUser, setCurrentUser] = useState(
     () => getStoredUser() || { username: "Admin", email: "admin@pacific.org" }

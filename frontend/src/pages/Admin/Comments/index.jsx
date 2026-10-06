@@ -130,6 +130,7 @@ export default function CommentsManagement() {
           if (res?.success) {
             showToast("Đã chuyển bình luận vào thùng rác", "success");
             loadComments();
+            window.dispatchEvent(new Event("pacific_admin_notification_update"));
           } else {
             showToast(res?.error || "Không thể xóa bình luận", "error");
           }
@@ -158,6 +159,7 @@ export default function CommentsManagement() {
           if (res?.success) {
             showToast("Đã giữ bình luận và bỏ qua các báo cáo vi phạm", "success");
             loadComments();
+            window.dispatchEvent(new Event("pacific_admin_notification_update"));
           } else {
             showToast(res?.error || "Không thể xử lý yêu cầu", "error");
           }
