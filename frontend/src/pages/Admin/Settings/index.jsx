@@ -28,6 +28,10 @@ import {
   AlertCircle,
   HelpCircle,
   Eye,
+  Box,
+  Volume2,
+  VolumeX,
+  Waves,
 } from "lucide-react";
 import * as Images from "../../../assets/Images";
 import { useTheme } from "../../../hooks/useTheme";
@@ -36,6 +40,7 @@ import ToastContainer from "../../../hooks/ToastContainer";
 import { fetchAdminSettings, updateAdminSettings } from "../../../services/adminSettingsApi";
 import CustomSelect from "../Dashboard/components/CustomSelect";
 import { updateDocumentFavicon, updateDocumentMetaSEO } from "../../../utils/systemBranding";
+import { useLanguageStore } from "../../../stores/useLanguageStore";
 
 const SOCIAL_PRESETS = [
   { name: "Facebook", placeholder: "https://facebook.com/pacific.ocean", color: "text-blue-400" },
@@ -74,6 +79,7 @@ export default function SystemSettings() {
       defaultLanguage: "vi",
       enableAudioAutoPlay: false,
       enable3DViewer: true,
+      enableOceanEffects: true,
     },
     content: {
       autoModeration: true,
@@ -212,24 +218,18 @@ export default function SystemSettings() {
     showToast("Đã đặt lại về logo Pacific mặc định", "info");
   };
 
-  // Reset Tab 1 Defaults Handler
-  const handleResetGeneralDefaults = () => {
+  // Reset Tab 2 Defaults Handler
+  const handleResetDisplayDefaults = () => {
     setFormData((prev) => ({
       ...prev,
-      general: {
-        websiteName: "Pacific Ocean Portal",
-        seoDescription: "Cổng thông tin & tra cứu sinh vật biển Thái Bình Dương chuẩn khoa học",
-        contactEmail: "admin@pacific.org",
-        logoUrl: "",
-        socialLinks: [
-          { id: "1", platform: "Facebook", url: "https://facebook.com/pacific.ocean" },
-          { id: "2", platform: "Instagram", url: "https://instagram.com/pacific.ocean" },
-          { id: "3", platform: "YouTube", url: "https://youtube.com/@pacific.ocean" },
-        ],
+      display: {
+        defaultLanguage: "vi",
+        enableAudioAutoPlay: false,
+        enable3DViewer: true,
+        enableOceanEffects: true,
       },
     }));
-    if (logoInputRef.current) logoInputRef.current.value = "";
-    showToast("Đã khôi phục các giá trị mặc định cho Thông tin chung", "info");
+    showToast("Đã khôi phục các giá trị mặc định cho Hiển thị & Ngôn ngữ", "info");
   };
 
   // Generic Update Handler
@@ -270,6 +270,9 @@ export default function SystemSettings() {
           window.dispatchEvent(new CustomEvent("pacific_settings_update", { detail: res.data }));
           if (res.data?.general) {
             updateDocumentMetaSEO(res.data.general);
+          }
+          if (res.data?.display?.defaultLanguage) {
+            useLanguageStore.getState().changeLanguage(res.data.display.defaultLanguage);
           }
         } catch (_) {}
 
@@ -685,127 +688,369 @@ export default function SystemSettings() {
 
           {/* TAB 2: HIỂN THỊ & NGÔN NGỮ */}
           {activeTab === "display" && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <h1 className="text-xl md:text-2xl font-bold font-heading">
-                Hiển thị & Ngôn ngữ
-              </h1>
+            <div className="space-y-7 animate-in fade-in duration-200">
+              {/* Header Tab */}
+              <div className="border-b pb-4 border-white/10">
+                <h1 className="text-xl md:text-2xl font-bold font-heading flex items-center gap-2">
+                  <span>Hiển thị & Ngôn ngữ</span>
+                  <Languages size={20} className="text-cyan-400" />
+                </h1>
+                <p className={`text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  Cấu hình chủ đề giao diện sáng/tối, ngôn ngữ mặc định và các tính năng đa phương tiện 3D & âm thanh sinh vật
+                </p>
+              </div>
 
-              {/* Theme Toggle */}
+              {/* 2.1 Khối Giao diện hệ thống (Theme Mode) */}
               <div
                 className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
                   isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
                 }`}
               >
-                <h3 className="text-xs font-bold text-cyan-400">
-                  Giao diện hệ thống
-                </h3>
-                <div className="flex gap-4">
-                  <button
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Sun size={14} />
+                    <span>Giao diện hệ thống</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Chọn chủ đề màu sắc hiển thị phù hợp với thị giác và điều kiện ánh sáng làm việc
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  {/* Card Dark Mode */}
+                  <div
                     onClick={() => {
                       if (!isDark) toggleTheme();
                     }}
-                    className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border transition-all cursor-pointer ${
+                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-4 group ${
                       isDark
-                        ? "bg-blue-600/30 border-cyan-400 text-white font-bold"
-                        : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
+                        ? "border-cyan-400 bg-[#0d1730] shadow-lg shadow-cyan-950/40 ring-2 ring-cyan-400/20"
+                        : "border-slate-300 bg-white hover:border-slate-400 opacity-75"
                     }`}
                   >
-                    <Moon size={18} />
-                    <span>Chế độ tối (Dark Navy)</span>
-                  </button>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-cyan-400">
+                          <Moon size={18} />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+                            Chế độ tối (Dark Navy)
+                          </h4>
+                          <span className="text-[11px] text-slate-400">Tông màu đại dương sâu</span>
+                        </div>
+                      </div>
+                      <div
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                          isDark ? "border-cyan-400 bg-cyan-500" : "border-slate-400"
+                        }`}
+                      >
+                        {isDark && <Check size={12} strokeWidth={3} className="text-slate-900" />}
+                      </div>
+                    </div>
 
-                  <button
+                    {/* Mini Mockup Visual */}
+                    <div className="rounded-xl p-3 bg-[#080f24] border border-white/10 space-y-2">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
+                        <div className="w-16 h-2 rounded-full bg-white/20" />
+                      </div>
+                      <div className="w-full h-2 rounded-full bg-white/10" />
+                      <div className="w-3/4 h-2 rounded-full bg-white/10" />
+                    </div>
+
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      Dịu mắt khi làm việc buổi tối, tôn vinh sắc thái các rạn san hô và sinh vật biển phát quang sinh học.
+                    </p>
+                  </div>
+
+                  {/* Card Light Mode */}
+                  <div
                     onClick={() => {
                       if (isDark) toggleTheme();
                     }}
-                    className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border transition-all cursor-pointer ${
+                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-4 group ${
                       !isDark
-                        ? "bg-blue-600 text-white font-bold shadow-md"
-                        : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
+                        ? "border-blue-600 bg-white shadow-lg shadow-blue-500/10 ring-2 ring-blue-500/20"
+                        : "border-white/10 bg-[#0d1730] hover:border-white/20 opacity-75"
                     }`}
                   >
-                    <Sun size={18} />
-                    <span>Chế độ sáng (Light Clean)</span>
-                  </button>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500">
+                          <Sun size={18} />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                            Chế độ sáng (Light Clean)
+                          </h4>
+                          <span className="text-[11px] text-slate-500">Sáng sủa, thanh lịch</span>
+                        </div>
+                      </div>
+                      <div
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                          !isDark ? "border-blue-600 bg-blue-600" : "border-slate-500"
+                        }`}
+                      >
+                        {!isDark && <Check size={12} strokeWidth={3} className="text-white" />}
+                      </div>
+                    </div>
+
+                    {/* Mini Mockup Visual */}
+                    <div className="rounded-xl p-3 bg-slate-100 border border-slate-200 space-y-2">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />
+                        <div className="w-16 h-2 rounded-full bg-slate-300" />
+                      </div>
+                      <div className="w-full h-2 rounded-full bg-slate-200" />
+                      <div className="w-3/4 h-2 rounded-full bg-slate-200" />
+                    </div>
+
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                      Tối ưu độ tương phản, phù hợp khi thuyết trình hoặc sử dụng ở môi trường ánh sáng tự nhiên mạnh.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Ngôn ngữ mặc định */}
+              {/* 2.2 Khối Ngôn ngữ mặc định hệ thống */}
               <div
                 className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
                   isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
                 }`}
               >
-                <h3 className="text-xs font-bold text-cyan-400">
-                  Ngôn ngữ mặc định
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Globe size={14} />
+                    <span>Ngôn ngữ mặc định hệ thống</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Ngôn ngữ hiển thị khởi đầu khi khách truy cập mới lần đầu vào portal
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  {/* Tiếng Việt */}
+                  <div
                     onClick={() => updateSection("display", "defaultLanguage", "vi")}
-                    className={`p-3 rounded-xl border flex items-center gap-2 text-left cursor-pointer transition-all ${
+                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between gap-3 ${
                       formData.display.defaultLanguage === "vi"
-                        ? "border-cyan-500/40 bg-cyan-500/10 font-bold"
-                        : "border-white/10 bg-white/5 opacity-70"
+                        ? isDark
+                          ? "border-cyan-400 bg-cyan-950/20 ring-2 ring-cyan-400/20"
+                          : "border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20"
+                        : isDark
+                        ? "border-white/10 bg-[#0d1730] hover:border-white/20"
+                        : "border-slate-200 bg-white hover:border-slate-300"
                     }`}
                   >
-                    <span className="text-lg">🇻🇳</span>
-                    <div>
-                      <p className="text-xs font-bold">Tiếng Việt</p>
-                      <p className="text-[10px] text-slate-400">Mặc định hệ thống</p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl shrink-0">🇻🇳</span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">Tiếng Việt</h4>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-cyan-500/15 text-cyan-400 font-semibold border border-cyan-500/30">
+                            Khuyên dùng
+                          </span>
+                        </div>
+                        <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Toàn bộ giao diện & dữ liệu loài tiếng Việt chuẩn hóa
+                        </p>
+                      </div>
                     </div>
-                  </button>
-
-                  <button
-                    onClick={() => updateSection("display", "defaultLanguage", "en")}
-                    className={`p-3 rounded-xl border flex items-center gap-2 text-left cursor-pointer transition-all ${
-                      formData.display.defaultLanguage === "en"
-                        ? "border-cyan-500/40 bg-cyan-500/10 font-bold"
-                        : "border-white/10 bg-white/5 opacity-70"
-                    }`}
-                  >
-                    <span className="text-lg">🇬🇧</span>
-                    <div>
-                      <p className="text-xs font-bold">English</p>
-                      <p className="text-[10px] text-slate-400">International</p>
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-all ${
+                        formData.display.defaultLanguage === "vi"
+                          ? isDark
+                            ? "border-cyan-400 bg-cyan-500"
+                            : "border-blue-600 bg-blue-600"
+                          : "border-slate-400"
+                      }`}
+                    >
+                      {formData.display.defaultLanguage === "vi" && (
+                        <Check size={12} strokeWidth={3} className={isDark ? "text-slate-900" : "text-white"} />
+                      )}
                     </div>
-                  </button>
-                </div>
-              </div>
-
-              {/* Tùy chọn 3D & Âm thanh */}
-              <div
-                className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
-                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
-                }`}
-              >
-                <h3 className="text-xs font-bold text-cyan-400">
-                  Đa phương tiện tương tác
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-sm font-bold">Kích hoạt trình xem 3D sinh vật</h4>
-                      <p className="text-xs text-slate-400">Cho phép người dùng tương tác với mô hình 3D xoay 360 độ</p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={formData.display.enable3DViewer}
-                      onChange={(e) => updateSection("display", "enable3DViewer", e.target.checked)}
-                      className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                    />
                   </div>
 
-                  <div className="border-t border-white/10 pt-3 flex items-center justify-between">
-                    <div>
-                      <h4 className="text-sm font-bold">Tự động phát âm thanh đại dương</h4>
-                      <p className="text-xs text-slate-400">Phát âm thanh sinh cảnh biển khi vào trang chi tiết sinh vật</p>
+                  {/* English */}
+                  <div
+                    onClick={() => updateSection("display", "defaultLanguage", "en")}
+                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                      formData.display.defaultLanguage === "en"
+                        ? isDark
+                          ? "border-cyan-400 bg-cyan-950/20 ring-2 ring-cyan-400/20"
+                          : "border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20"
+                        : isDark
+                        ? "border-white/10 bg-[#0d1730] hover:border-white/20"
+                        : "border-slate-200 bg-white hover:border-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl shrink-0">🇬🇧</span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">English</h4>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/10 text-slate-300 font-semibold border border-white/15">
+                            International
+                          </span>
+                        </div>
+                        <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Global marine species database with English labels
+                        </p>
+                      </div>
                     </div>
-                    <input
-                      type="checkbox"
-                      checked={formData.display.enableAudioAutoPlay}
-                      onChange={(e) => updateSection("display", "enableAudioAutoPlay", e.target.checked)}
-                      className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                    />
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-all ${
+                        formData.display.defaultLanguage === "en"
+                          ? isDark
+                            ? "border-cyan-400 bg-cyan-500"
+                            : "border-blue-600 bg-blue-600"
+                          : "border-slate-400"
+                      }`}
+                    >
+                      {formData.display.defaultLanguage === "en" && (
+                        <Check size={12} strokeWidth={3} className={isDark ? "text-slate-900" : "text-white"} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2.3 Khối Đa phương tiện & Trải nghiệm đại dương */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Sparkles size={14} />
+                    <span>Đa phương tiện tương tác & Trải nghiệm đại dương</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Kiểm soát các công nghệ tương tác đồ họa 3D, âm thanh thủy âm và hiệu ứng môi trường
+                  </p>
+                </div>
+
+                <div className="space-y-4 divide-y divide-white/10 pt-1">
+                  {/* Toggle 1: 3D Viewer */}
+                  <div className="pt-2 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+                        <Box size={16} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">Kích hoạt trình xem 3D sinh vật</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30">
+                            WebGL 360°
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Cho phép người dùng xoay 360 độ và giải phẫu chi tiết mô hình 3D sinh vật ở trang chi tiết loài và trang /3d.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.display.enable3DViewer}
+                      onClick={() => updateSection("display", "enable3DViewer", !formData.display.enable3DViewer)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.display.enable3DViewer
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.display.enable3DViewer ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Toggle 2: Audio Autoplay */}
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+                        <Volume2 size={16} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">Tự động phát âm thanh sinh vật (Thủy âm)</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-300 font-semibold border border-blue-500/30">
+                            Bioacoustics
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Tự động phát tiếng kêu đặc trưng của sinh vật hoặc âm thanh sóng ngầm khi mở trang chi tiết loài.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.display.enableAudioAutoPlay}
+                      onClick={() => updateSection("display", "enableAudioAutoPlay", !formData.display.enableAudioAutoPlay)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.display.enableAudioAutoPlay
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.display.enableAudioAutoPlay ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Toggle 3: Ocean Ambient Effects */}
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0 mt-0.5">
+                        <Waves size={16} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">Hiệu ứng bọt khí & Ánh sáng đại dương</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 font-semibold border border-purple-500/30">
+                            Ambient Visual
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Hiển thị luồng sáng huyền ảo dưới đáy biển và các hạt bong bóng nước nổi lơ lửng trên toàn bộ portal.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.display.enableOceanEffects !== false}
+                      onClick={() => updateSection("display", "enableOceanEffects", formData.display.enableOceanEffects === false)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.display.enableOceanEffects !== false
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.display.enableOceanEffects !== false ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1011,6 +1256,21 @@ export default function SystemSettings() {
                       : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700"
                   }`}
                   title="Đặt lại thông tin thương hiệu về mặc định"
+                >
+                  <RotateCcw size={13} />
+                  <span>Khôi phục mặc định tab này</span>
+                </button>
+              )}
+              {activeTab === "display" && (
+                <button
+                  type="button"
+                  onClick={handleResetDisplayDefaults}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                    isDark
+                      ? "bg-white/5 border-white/10 hover:bg-white/10 text-slate-300 hover:text-white"
+                      : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700"
+                  }`}
+                  title="Đặt lại hiển thị & ngôn ngữ về mặc định"
                 >
                   <RotateCcw size={13} />
                   <span>Khôi phục mặc định tab này</span>
