@@ -58,6 +58,23 @@ export default function Navbar() {
     window.location.href = "/";
   };
 
+  const [systemSettings, setSystemSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem("pacific_system_settings");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const handleSettingsUpdate = (e) => {
+      if (e.detail) setSystemSettings(e.detail);
+    };
+    window.addEventListener("pacific_settings_update", handleSettingsUpdate);
+    return () => window.removeEventListener("pacific_settings_update", handleSettingsUpdate);
+  }, []);
+
   useClickOutside(langDropdownRef, () => setIsLangOpen(false));
   useClickOutside(userDropdownRef, () => setIsUserOpen(false));
 
@@ -88,12 +105,12 @@ export default function Navbar() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3">
           <img
-            src={Images.Logo}
+            src={systemSettings?.general?.logoUrl || Images.Logo}
             alt="Pacific Logo"
             className="w-8 h-8 object-contain"
           />
           <span className="font-heading text-2xl font-bold text-white tracking-tight">
-            Pacific
+            {systemSettings?.general?.websiteName || "Pacific"}
           </span>
         </Link>
 

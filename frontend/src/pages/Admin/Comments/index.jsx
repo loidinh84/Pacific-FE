@@ -382,7 +382,7 @@ export default function CommentsManagement() {
           // Render danh sách bình luận (Bám sát mockup Figma)
           comments.map((comment) => {
             const isDeleted = comment.status === "deleted" || Boolean(comment.deletedAt) || activeTab === "deleted";
-            const isReported = !isDeleted && (comment.hasPendingReports || activeTab === "reported");
+            const isReported = !isDeleted && Boolean(comment.hasPendingReports);
             const userInitial = (comment.user?.fullName || comment.user?.username || "N")[0]?.toUpperCase();
 
             return (
@@ -395,8 +395,8 @@ export default function CommentsManagement() {
                       : "bg-slate-50 border-slate-200 opacity-90"
                     : isReported
                     ? isDark
-                      ? "bg-[#181a38] border-rose-500/35 hover:border-rose-500/50 shadow-sm shadow-rose-950/20"
-                      : "bg-rose-50/50 border-rose-200 hover:border-rose-300"
+                      ? "bg-[#181a38] border-rose-500/50 hover:border-rose-500/70 shadow-md shadow-rose-950/30"
+                      : "bg-rose-50/60 border-rose-300 hover:border-rose-400 shadow-sm"
                     : isDark
                     ? "bg-[#142040] border-white/10 hover:border-white/20 shadow-sm"
                     : "bg-white border-slate-200 hover:border-slate-300 shadow-sm"
@@ -423,7 +423,7 @@ export default function CommentsManagement() {
 
                     {/* Metadata: User name • Species link • Time */}
                     <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs sm:text-sm">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm">
                         <span className={`font-bold truncate ${isDark ? "text-white" : "text-slate-900"}`}>
                           {comment.user?.fullName || comment.user?.username || "Người dùng ẩn danh"}
                         </span>
@@ -450,6 +450,25 @@ export default function CommentsManagement() {
                         <span className={`text-[11px] sm:text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                           {formatRelativeTime(comment.createdAt)}
                         </span>
+
+                        {/* Dấu hiệu nhận biết thông báo: Cần xử lý báo cáo vi phạm */}
+                        {isReported && (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/15 border border-rose-500/40 text-rose-400 shadow-sm">
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                            </span>
+                            <span>Cần kiểm duyệt ({comment.reportCount || 1})</span>
+                          </span>
+                        )}
+
+                        {/* Bình luận từng bị báo cáo nhưng Admin đã duyệt giữ lại */}
+                        {comment.isDismissed && !isDeleted && !isReported && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                            <ShieldCheck size={11} className="shrink-0" />
+                            <span>Đã duyệt (Giữ lại)</span>
+                          </span>
+                        )}
 
                         {comment.status === "hidden" && !isDeleted && (
                           <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-amber-500/15 border border-amber-500/30 text-amber-400">
@@ -549,8 +568,8 @@ export default function CommentsManagement() {
                   “{comment.content}”
                 </p>
 
-                {/* Khung Lý do Báo cáo Vi phạm (Hiển thị nổi bật theo Figma Image 2 khi chưa bị xóa) */}
-                {!isDeleted && comment.reportSummaries && comment.reportSummaries.length > 0 && (
+                {/* Khung Lý do Báo cáo Vi phạm (Hiển thị nổi bật theo Figma Image 2 khi có báo cáo chưa xử lý) */}
+                {!isDeleted && isReported && comment.reportSummaries && comment.reportSummaries.length > 0 && (
                   <div
                     className={`rounded-xl p-3.5 border transition-all space-y-1.5 ${
                       isDark

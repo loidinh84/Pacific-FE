@@ -51,6 +51,23 @@ export default function AdminLayout() {
     return () => window.removeEventListener("pacific_auth_change", handler);
   }, []);
 
+  const [systemSettings, setSystemSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem("pacific_system_settings");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const handleSettingsUpdate = (e) => {
+      if (e.detail) setSystemSettings(e.detail);
+    };
+    window.addEventListener("pacific_settings_update", handleSettingsUpdate);
+    return () => window.removeEventListener("pacific_settings_update", handleSettingsUpdate);
+  }, []);
+
   const handleLogout = () => {
     clearStoredAuth();
     setIsUserMenuOpen(false);
@@ -85,10 +102,10 @@ export default function AdminLayout() {
         }`}
       >
         <div className="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between gap-4">
-          {/* Left: Logo */}
+          {/* Left: Logo & Site Name */}
           <Link to="/admin" className="flex items-center gap-3 group">
             <img
-              src={Images.Logo}
+              src={systemSettings?.general?.logoUrl || Images.Logo}
               alt="Pacific Logo"
               className="w-8 h-8 object-contain group-hover:scale-105 transition-transform"
             />
@@ -97,7 +114,7 @@ export default function AdminLayout() {
                 isDark ? "text-white" : "text-slate-900"
               }`}
             >
-              Pacific
+              {systemSettings?.general?.websiteName || "Pacific"}
             </span>
           </Link>
 
