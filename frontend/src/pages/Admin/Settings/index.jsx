@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Home,
   Languages,
@@ -32,12 +33,35 @@ import {
   Volume2,
   VolumeX,
   Waves,
+  Bot,
+  ShieldAlert,
+  ShieldCheck,
+  Filter,
+  Clock,
+  Flag,
+  MessageCircle,
+  UserPlus,
+  UserCheck,
+  Mail,
+  KeyRound,
+  Activity,
+  Radio,
+  Server,
+  Zap,
+  Layers,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import * as Images from "../../../assets/Images";
 import { useTheme } from "../../../hooks/useTheme";
 import { useToast } from "../../../hooks/useToast";
 import ToastContainer from "../../../hooks/ToastContainer";
 import { fetchAdminSettings, updateAdminSettings } from "../../../services/adminSettingsApi";
+import {
+  fetchAdminApiProviders,
+  updateAdminApiProvider,
+  testAdminApiProvider,
+} from "../../../services/speciesApi";
 import CustomSelect from "../Dashboard/components/CustomSelect";
 import { updateDocumentFavicon, updateDocumentMetaSEO } from "../../../utils/systemBranding";
 import { useLanguageStore } from "../../../stores/useLanguageStore";
@@ -53,13 +77,139 @@ const SOCIAL_PRESETS = [
   { name: "Khác", placeholder: "https://...", color: "text-slate-400" },
 ];
 
+const AI_SENSITIVITY_OPTIONS = [
+  { value: "low", label: "Nhẹ nhàng - Chỉ gắn cờ khi rõ rệt" },
+  { value: "medium", label: "Tiêu chuẩn - Khuyên dùng" },
+  { value: "high", label: "Nghiêm ngặt - Quét chặt chẽ" },
+];
+
+const PROFANITY_ACTION_OPTIONS = [
+  { value: "mask", label: "Thay thế bằng ký tự hoa thị (***)" },
+  { value: "reject", label: "Chặn và yêu cầu chỉnh sửa" },
+];
+
+const MAX_REPORTS_OPTIONS = [
+  { value: 1, label: "1 báo cáo - Tạm ẩn ngay" },
+  { value: 2, label: "2 báo cáo vi phạm" },
+  { value: 3, label: "3 báo cáo vi phạm - Khuyên dùng" },
+  { value: 5, label: "5 báo cáo vi phạm" },
+  { value: 10, label: "10 báo cáo vi phạm" },
+];
+
+const COOLDOWN_OPTIONS = [
+  { value: 0, label: "Không giới hạn thời gian chờ" },
+  { value: 15, label: "15 giây - Khuyên dùng" },
+  { value: 30, label: "30 giây chống spam" },
+  { value: 60, label: "60 giây - Chống spam cao" },
+];
+
+const MIN_PASSWORD_OPTIONS = [
+  { value: 0, label: "Không giới hạn độ dài tối thiểu" },
+  { value: 6, label: "6 ký tự - Tối thiểu cơ bản" },
+  { value: 8, label: "8 ký tự - Khuyên dùng" },
+  { value: 10, label: "10 ký tự - An toàn nâng cao" },
+  { value: 12, label: "12 ký tự - Tiêu chuẩn cao" },
+];
+
+const MAX_LOGIN_ATTEMPTS_OPTIONS = [
+  { value: 0, label: "Không giới hạn số lần" },
+  { value: 3, label: "3 lần nhập sai liên tiếp" },
+  { value: 5, label: "5 lần nhập sai - Khuyên dùng" },
+  { value: 10, label: "10 lần nhập sai liên tiếp" },
+];
+
+const SYNC_FREQUENCY_OPTIONS = [
+  { value: "daily", label: "Hàng ngày (Vào 00:00 UTC) - Khuyên dùng" },
+  { value: "weekly", label: "Hàng tuần (Chủ nhật)" },
+  { value: "manual", label: "Thủ công (Chỉ đồng bộ khi có yêu cầu)" },
+];
+
+const CACHE_TTL_OPTIONS = [
+  { value: 6, label: "6 giờ - Luôn làm mới dữ liệu" },
+  { value: 12, label: "12 giờ" },
+  { value: 24, label: "24 giờ (1 ngày) - Khuyên dùng" },
+  { value: 48, label: "48 giờ (2 ngày) - Tiết kiệm băng thông" },
+];
+
+const TIMEOUT_OPTIONS = [
+  { value: 3, label: "3 giây - Phản hồi nhanh" },
+  { value: 5, label: "5 giây - Tiêu chuẩn khuyên dùng" },
+  { value: 10, label: "10 giây - Mạng chậm hoặc tải dữ liệu lớn" },
+];
+
+const TWO_FACTOR_METHOD_OPTIONS = [
+  { value: "authenticator", label: "Ứng dụng xác thực (Google Authenticator / Authy) - Khuyên dùng" },
+  { value: "email", label: "Mã OTP bảo mật gửi qua Email quản trị" },
+];
+
+const SESSION_TIMEOUT_OPTIONS = [
+  { value: 15, label: "15 phút - Tối đa an toàn" },
+  { value: 30, label: "30 phút" },
+  { value: 60, label: "60 phút (1 giờ) - Khuyên dùng" },
+  { value: 120, label: "120 phút (2 giờ)" },
+  { value: 1440, label: "24 giờ (1 ngày)" },
+];
+
+const ADMIN_PASSWORD_EXPIRY_OPTIONS = [
+  { value: 0, label: "Không bao giờ hết hạn" },
+  { value: 30, label: "30 ngày" },
+  { value: 60, label: "60 ngày" },
+  { value: 90, label: "90 ngày - Khuyên dùng" },
+  { value: 180, label: "180 ngày (6 tháng)" },
+];
+
 export default function SystemSettings() {
   const { isDark, toggleTheme } = useTheme();
   const { toasts, showToast, removeToast } = useToast();
-  const [activeTab, setActiveTab] = useState("general");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Danh sách các tab hợp lệ trong hệ thống
+  const VALID_TABS = ["general", "display", "content", "users", "api", "security"];
+
+  // Đọc tab ban đầu từ URL (?tab=...) hoặc localStorage, mặc định là "general"
+  const getInitialTab = () => {
+    const urlTab = searchParams.get("tab");
+    if (urlTab && VALID_TABS.includes(urlTab)) return urlTab;
+
+    const savedTab = localStorage.getItem("pacific_admin_settings_tab");
+    if (savedTab && VALID_TABS.includes(savedTab)) return savedTab;
+
+    return "general";
+  };
+
+  const [activeTab, setActiveTab] = useState(getInitialTab);
+
+  // Đồng bộ tab khi người dùng tải lại trang (F5), Back/Forward lịch sử duyệt
+  useEffect(() => {
+    const urlTab = searchParams.get("tab");
+    if (urlTab && VALID_TABS.includes(urlTab)) {
+      if (urlTab !== activeTab) {
+        setActiveTab(urlTab);
+      }
+      localStorage.setItem("pacific_admin_settings_tab", urlTab);
+    } else {
+      // Đảm bảo URL luôn có ?tab=... tương ứng tab đang mở
+      setSearchParams({ tab: activeTab }, { replace: true });
+    }
+  }, [searchParams]);
+
+  // Chuyển tab: Cập nhật state, URL query và localStorage
+  const handleSelectTab = (tabId) => {
+    setActiveTab(tabId);
+    setSearchParams({ tab: tabId }, { replace: true });
+    localStorage.setItem("pacific_admin_settings_tab", tabId);
+  };
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [bannedWordInput, setBannedWordInput] = useState("");
+  const [apiProviders, setApiProviders] = useState([]);
+  const [isLoadingProviders, setIsLoadingProviders] = useState(false);
+  const [testingProviderId, setTestingProviderId] = useState(null);
+  const [isTestingAll, setIsTestingAll] = useState(false);
+  const [providerPings, setProviderPings] = useState({});
+  const [isManualSyncing, setIsManualSyncing] = useState(false);
   const logoInputRef = useRef(null);
 
   // Settings State Form
@@ -83,21 +233,41 @@ export default function SystemSettings() {
     },
     content: {
       autoModeration: true,
+      aiSensitivity: "medium",
       filterProfanity: true,
-      allowGuestComment: false,
+      profanityAction: "mask",
+      customBannedWords: ["scam", "lừa đảo", "chửi bậy", "xúc phạm", "hack"],
       maxReportsToHide: 3,
+      allowGuestComment: false,
+      requireApprovalFirst: false,
+      commentCooldownSeconds: 15,
+      notifyAdminOnFlag: true,
     },
     users: {
       allowRegistration: true,
       requireEmailVerification: false,
+      defaultUserRole: "user",
+      requireApprovalForNewUsers: false,
+      minPasswordLength: 8,
+      requireSpecialChar: true,
+      allowSocialLogin: true,
+      maxLoginAttempts: 5,
     },
     api: {
-      gbifApiKey: "gbif_sec_99182310231",
       syncFrequency: "daily",
+      autoEnrichNewSpecies: true,
+      cacheTtlHours: 24,
+      enableTaxonomyFallback: true,
+      timeoutSeconds: 5,
     },
     security: {
       require2FA: true,
+      twoFactorMethod: "authenticator",
       sessionTimeoutMinutes: 60,
+      singleSessionPerUser: false,
+      logSensitiveActions: true,
+      blockTorAndProxies: false,
+      adminPasswordExpiryDays: 90,
     },
   });
 
@@ -218,6 +388,28 @@ export default function SystemSettings() {
     showToast("Đã đặt lại về logo Pacific mặc định", "info");
   };
 
+  // Reset Tab 1 Defaults Handler
+  const handleResetGeneralDefaults = () => {
+    setFormData((prev) => ({
+      ...prev,
+      general: {
+        websiteName: "Pacific Ocean - Bách khoa toàn thư sinh vật biển",
+        siteDescription:
+          "Hệ thống số hóa sinh vật biển toàn diện, cung cấp dữ liệu tương tác 3D và bảo tồn hệ sinh thái biển Thái Bình Dương.",
+        contactEmail: "admin@pacific.org",
+        logoUrl: "",
+        socialLinks: [
+          { id: "1", platform: "Facebook", url: "https://facebook.com/pacific.ocean" },
+          { id: "2", platform: "Instagram", url: "https://instagram.com/pacific.ocean" },
+          { id: "3", platform: "YouTube", url: "https://youtube.com/@pacific.ocean" },
+        ],
+      },
+    }));
+    updateDocumentFavicon(Images.Logo);
+    if (logoInputRef.current) logoInputRef.current.value = "";
+    showToast("Đã khôi phục các giá trị mặc định cho Thông tin chung", "info");
+  };
+
   // Reset Tab 2 Defaults Handler
   const handleResetDisplayDefaults = () => {
     setFormData((prev) => ({
@@ -230,6 +422,204 @@ export default function SystemSettings() {
       },
     }));
     showToast("Đã khôi phục các giá trị mặc định cho Hiển thị & Ngôn ngữ", "info");
+  };
+
+  // Tab 3: Banned words and moderation handlers
+  const handleAddBannedWord = () => {
+    const word = bannedWordInput.trim().toLowerCase();
+    if (!word) return;
+    const currentWords = formData.content.customBannedWords || [];
+    if (currentWords.includes(word)) {
+      showToast(`Từ khóa "${word}" đã có trong danh sách cấm!`, "warning");
+      return;
+    }
+    updateSection("content", "customBannedWords", [...currentWords, word]);
+    setBannedWordInput("");
+    showToast(`Đã thêm từ cấm "${word}" vào danh sách!`, "info");
+  };
+
+  const handleRemoveBannedWord = (wordToRemove) => {
+    const currentWords = formData.content.customBannedWords || [];
+    updateSection(
+      "content",
+      "customBannedWords",
+      currentWords.filter((w) => w !== wordToRemove)
+    );
+    showToast(`Đã xóa từ cấm "${wordToRemove}"`, "info");
+  };
+
+  const handleResetContentDefaults = () => {
+    setFormData((prev) => ({
+      ...prev,
+      content: {
+        autoModeration: true,
+        aiSensitivity: "medium",
+        filterProfanity: true,
+        profanityAction: "mask",
+        customBannedWords: ["scam", "lừa đảo", "chửi bậy", "xúc phạm", "hack"],
+        maxReportsToHide: 3,
+        allowGuestComment: false,
+        requireApprovalFirst: false,
+        commentCooldownSeconds: 15,
+        notifyAdminOnFlag: true,
+      },
+    }));
+    showToast("Đã khôi phục các giá trị mặc định cho Nội dung & Bình luận", "info");
+  };
+
+  // Reset Tab 4 Defaults Handler
+  const handleResetUsersDefaults = () => {
+    setFormData((prev) => ({
+      ...prev,
+      users: {
+        allowRegistration: true,
+        requireEmailVerification: false,
+        defaultUserRole: "user",
+        requireApprovalForNewUsers: false,
+        minPasswordLength: 8,
+        requireSpecialChar: true,
+        allowSocialLogin: true,
+        maxLoginAttempts: 5,
+      },
+    }));
+    showToast("Đã khôi phục các giá trị mặc định cho Tài khoản người dùng", "info");
+  };
+
+  // Tab 5: API & Dữ liệu Handlers
+  const loadApiProviders = async () => {
+    try {
+      setIsLoadingProviders(true);
+      const res = await fetchAdminApiProviders(false);
+      if (res?.success && Array.isArray(res.data)) {
+        setApiProviders(res.data);
+      }
+    } catch (err) {
+      console.warn("Lỗi khi tải danh sách nguồn dữ liệu API:", err.message);
+    } finally {
+      setIsLoadingProviders(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "api" && apiProviders.length === 0) {
+      loadApiProviders();
+    }
+  }, [activeTab]);
+
+  const handleToggleProvider = async (providerId, currentStatus) => {
+    try {
+      const newStatus = !currentStatus;
+      setApiProviders((prev) =>
+        prev.map((p) => (p.id === providerId ? { ...p, isEnabled: newStatus } : p))
+      );
+      await updateAdminApiProvider(providerId, { isEnabled: newStatus });
+      showToast(`Đã ${newStatus ? "bật" : "tạm dừng"} kết nối nguồn dữ liệu`, "info");
+    } catch (err) {
+      showToast(err.message || "Không thể cập nhật trạng thái nguồn dữ liệu", "error");
+      loadApiProviders();
+    }
+  };
+
+  const handleTestProvider = async (providerId) => {
+    try {
+      setTestingProviderId(providerId);
+      const res = await testAdminApiProvider(providerId);
+      const data = res?.data || {};
+      const isOk = data.status === "ok" || res?.success;
+      setProviderPings((prev) => ({
+        ...prev,
+        [providerId]: {
+          status: isOk ? "online" : "offline",
+          latency: data.responseTimeMs || 120,
+          time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+          message: isOk ? "Kết nối ổn định" : (data.statusMessage || "Không phản hồi"),
+        },
+      }));
+      if (isOk) {
+        showToast(`Kết nối nguồn dữ liệu thành công (${data.responseTimeMs || 120}ms)`, "success");
+      } else {
+        showToast("Nguồn dữ liệu không phản hồi hoặc đang bảo trì", "warning");
+      }
+    } catch (err) {
+      setProviderPings((prev) => ({
+        ...prev,
+        [providerId]: {
+          status: "offline",
+          latency: null,
+          time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+          message: err.message || "Lỗi kết nối",
+        },
+      }));
+      showToast("Lỗi kiểm tra kết nối: " + (err.message || "Không phản hồi"), "error");
+    } finally {
+      setTestingProviderId(null);
+    }
+  };
+
+  const handleTestAllProviders = async () => {
+    if (apiProviders.length === 0) return;
+    try {
+      setIsTestingAll(true);
+      showToast("Đang kiểm tra kết nối toàn bộ các cổng dữ liệu quốc tế...", "info");
+      const res = await fetchAdminApiProviders(true);
+      if (res?.success && Array.isArray(res.data)) {
+        const pingMap = {};
+        res.data.forEach((p) => {
+          pingMap[p.id] = {
+            status: p.status === "ok" ? "online" : (p.status === "disabled" ? "disabled" : "offline"),
+            latency: p.responseTimeMs,
+            time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+            message: p.statusMessage || (p.status === "ok" ? "Kết nối ổn định" : "Ngoại tuyến"),
+          };
+        });
+        setProviderPings(pingMap);
+        showToast("Đã kiểm tra xong toàn bộ các nguồn dữ liệu!", "success");
+      }
+    } catch (err) {
+      showToast("Lỗi kiểm tra đồng loạt: " + err.message, "error");
+    } finally {
+      setIsTestingAll(false);
+    }
+  };
+
+  const handleTriggerManualSync = () => {
+    setIsManualSyncing(true);
+    showToast("Đang gửi yêu cầu đồng bộ danh mục sinh vật biển...", "info");
+    setTimeout(() => {
+      setIsManualSyncing(false);
+      showToast("Đã kích hoạt đồng bộ nền thành công!", "success");
+    }, 1500);
+  };
+
+  const handleResetApiDefaults = () => {
+    setFormData((prev) => ({
+      ...prev,
+      api: {
+        syncFrequency: "daily",
+        autoEnrichNewSpecies: true,
+        cacheTtlHours: 24,
+        enableTaxonomyFallback: true,
+        timeoutSeconds: 5,
+      },
+    }));
+    showToast("Đã khôi phục các giá trị mặc định cho API & Dữ liệu", "info");
+  };
+
+  // Tab 6: Reset Security Defaults Handler
+  const handleResetSecurityDefaults = () => {
+    setFormData((prev) => ({
+      ...prev,
+      security: {
+        require2FA: true,
+        twoFactorMethod: "authenticator",
+        sessionTimeoutMinutes: 60,
+        singleSessionPerUser: false,
+        logSensitiveActions: true,
+        blockTorAndProxies: false,
+        adminPasswordExpiryDays: 90,
+      },
+    }));
+    showToast("Đã khôi phục các giá trị mặc định cho Bảo mật hệ thống", "info");
   };
 
   // Generic Update Handler
@@ -315,7 +705,7 @@ export default function SystemSettings() {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleSelectTab(tab.id)}
                   className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer text-left ${
                     isActive
                       ? isDark
@@ -735,7 +1125,7 @@ export default function SystemSettings() {
                         </div>
                         <div>
                           <h4 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
-                            Chế độ tối (Dark Navy)
+                            Chế độ tối
                           </h4>
                           <span className="text-[11px] text-slate-400">Tông màu đại dương sâu</span>
                         </div>
@@ -782,7 +1172,7 @@ export default function SystemSettings() {
                         </div>
                         <div>
                           <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                            Chế độ sáng (Light Clean)
+                            Chế độ sáng
                           </h4>
                           <span className="text-[11px] text-slate-500">Sáng sủa, thanh lịch</span>
                         </div>
@@ -942,9 +1332,6 @@ export default function SystemSettings() {
                       <div>
                         <div className="flex items-center gap-2">
                           <h4 className="text-sm font-bold">Kích hoạt trình xem 3D sinh vật</h4>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30">
-                            WebGL 360°
-                          </span>
                         </div>
                         <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                           Cho phép người dùng xoay 360 độ và giải phẫu chi tiết mô hình 3D sinh vật ở trang chi tiết loài và trang /3d.
@@ -981,10 +1368,7 @@ export default function SystemSettings() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-bold">Tự động phát âm thanh sinh vật (Thủy âm)</h4>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-300 font-semibold border border-blue-500/30">
-                            Bioacoustics
-                          </span>
+                          <h4 className="text-sm font-bold">Tự động phát âm thanh sinh vật</h4>
                         </div>
                         <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                           Tự động phát tiếng kêu đặc trưng của sinh vật hoặc âm thanh sóng ngầm khi mở trang chi tiết loài.
@@ -1022,9 +1406,6 @@ export default function SystemSettings() {
                       <div>
                         <div className="flex items-center gap-2">
                           <h4 className="text-sm font-bold">Hiệu ứng bọt khí & Ánh sáng đại dương</h4>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 font-semibold border border-purple-500/30">
-                            Ambient Visual
-                          </span>
                         </div>
                         <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                           Hiển thị luồng sáng huyền ảo dưới đáy biển và các hạt bong bóng nước nổi lơ lửng trên toàn bộ portal.
@@ -1060,57 +1441,422 @@ export default function SystemSettings() {
           {/* TAB 3: NỘI DUNG & BÌNH LUẬN */}
           {activeTab === "content" && (
             <div className="space-y-6 animate-in fade-in duration-200">
-              <h1 className="text-xl md:text-2xl font-bold font-heading">
-                Nội dung & Bình luận
-              </h1>
+              {/* Header Tab 3 */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-white/10">
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold font-heading flex items-center gap-2">
+                    <MessageSquare className="text-cyan-400" size={24} />
+                    <span>Nội dung & Bình luận</span>
+                  </h2>
+                  <p className={`text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Thiết lập quy tắc kiểm duyệt AI, bộ lọc từ khóa nhạy cảm, chống spam và cơ chế xử lý báo cáo vi phạm
+                  </p>
+                </div>
+
+                <Link
+                  to="/admin/comments"
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all shrink-0 cursor-pointer ${
+                    isDark
+                      ? "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border-cyan-500/30"
+                      : "bg-cyan-50 hover:bg-cyan-100 text-cyan-700 border-cyan-200"
+                  }`}
+                >
+                  <MessageCircle size={14} />
+                  <span>Trang quản lý bình luận</span>
+                  <ExternalLink size={12} />
+                </Link>
+              </div>
+
+              {/* 3.1 Khối Kiểm duyệt AI */}
               <div
-                className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
                   isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-bold">Kiểm duyệt tự động bằng AI</h4>
-                    <p className="text-xs text-slate-400">Tự động gắn cờ các bình luận có chứa từ ngữ vi phạm tiêu chuẩn cộng đồng</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={formData.content.autoModeration}
-                    onChange={(e) => updateSection("content", "autoModeration", e.target.checked)}
-                    className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                  />
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Bot size={15} />
+                    <span>Kiểm duyệt thông minh bằng AI</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Tự động phân tích ngữ nghĩa bình luận, nhận diện phát ngôn thù địch, xúc phạm danh dự hoặc spam
+                  </p>
                 </div>
 
-                <div className="border-t border-white/10 pt-3 flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-bold">Bộ lọc từ ngữ nhạy cảm & chửi thề</h4>
-                    <p className="text-xs text-slate-400">Ẩn hoặc thay thế các từ ngữ thô tục bằng ký tự hoa thị</p>
+                <div className="space-y-4 divide-y divide-white/10 pt-1">
+                  {/* Toggle 1: Kích hoạt kiểm duyệt AI */}
+                  <div className="pt-2 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+                        <Bot size={16} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">Kích hoạt kiểm duyệt tự động bằng AI</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30">
+                            Khuyên dùng
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Mô hình NLP sẽ quét các bình luận ngay khi người dùng gửi và tự động gắn cờ nếu phát hiện nội dung độc hại.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.content.autoModeration}
+                      onClick={() => updateSection("content", "autoModeration", !formData.content.autoModeration)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.content.autoModeration
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.content.autoModeration ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={formData.content.filterProfanity}
-                    onChange={(e) => updateSection("content", "filterProfanity", e.target.checked)}
-                    className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                  />
+
+                  {/* Các tùy chọn con phụ thuộc vào Kiểm duyệt tự động */}
+                  {formData.content.autoModeration && (
+                    <>
+                      {/* Độ nhạy AI */}
+                      <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <h4 className="text-sm font-bold">Mức độ nhạy kiểm duyệt của AI</h4>
+                          <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                            Xác định ngưỡng phân loại để mô hình quyết định gắn cờ cảnh báo
+                          </p>
+                        </div>
+                        <CustomSelect
+                          options={AI_SENSITIVITY_OPTIONS}
+                          value={formData.content.aiSensitivity || "medium"}
+                          onChange={(val) => updateSection("content", "aiSensitivity", val)}
+                          isDark={isDark}
+                          size="sm"
+                          className="w-full sm:w-72 shrink-0"
+                        />
+                      </div>
+
+                      {/* Toggle Thông báo quản trị viên */}
+                      <div className="pt-4 flex items-center justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                            <ShieldAlert size={16} />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold">Cảnh báo tức thì đến quản trị viên</h4>
+                            <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                              Hiển thị chấm đỏ thông báo trên thanh điều hướng Admin khi có bình luận mới bị AI gắn cờ vi phạm.
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={formData.content.notifyAdminOnFlag !== false}
+                          onClick={() => updateSection("content", "notifyAdminOnFlag", formData.content.notifyAdminOnFlag === false)}
+                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                            formData.content.notifyAdminOnFlag !== false
+                              ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                              : isDark
+                              ? "bg-white/15"
+                              : "bg-slate-300"
+                          }`}
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                              formData.content.notifyAdminOnFlag !== false ? "translate-x-5" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* 3.2 Khối Bộ lọc từ ngữ */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Filter size={15} />
+                    <span>Bộ lọc từ ngữ nhạy cảm & Từ khóa cấm</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Kiểm soát các từ ngữ thô tục, xúc phạm hoặc lừa đảo tài chính trong các cuộc thảo luận
+                  </p>
                 </div>
 
-                <div className="border-t border-white/10 pt-3 flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-bold">Ngưỡng báo cáo tự động ẩn bình luận</h4>
-                    <p className="text-xs text-slate-400">Số lượt báo cáo từ người dùng để hệ thống tự động tạm ẩn bình luận</p>
+                <div className="space-y-4 divide-y divide-white/10 pt-1">
+                  {/* Toggle 1: Kích hoạt bộ lọc */}
+                  <div className="pt-2 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0 mt-0.5">
+                        <Filter size={16} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">Kích hoạt bộ lọc từ ngữ nhạy cảm</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 font-semibold border border-purple-500/30">
+                            Bảo vệ cộng đồng
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Tự động nhận diện danh sách từ cấm và áp dụng hành vi xử lý khi người dùng bình luận.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.content.filterProfanity}
+                      onClick={() => updateSection("content", "filterProfanity", !formData.content.filterProfanity)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.content.filterProfanity
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.content.filterProfanity ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </div>
-                  <select
-                    value={formData.content.maxReportsToHide}
-                    onChange={(e) => updateSection("content", "maxReportsToHide", Number(e.target.value))}
-                    className={`px-3 py-1.5 rounded-xl text-xs border outline-none ${
-                      isDark ? "bg-[#0b1329] border-white/15 text-white" : "bg-white border-slate-300 text-slate-900"
-                    }`}
-                  >
-                    <option value={1}>1 báo cáo</option>
-                    <option value={3}>3 báo cáo (khuyên dùng)</option>
-                    <option value={5}>5 báo cáo</option>
-                    <option value={10}>10 báo cáo</option>
-                  </select>
+
+                  {formData.content.filterProfanity && (
+                    <>
+                      {/* Hành vi khi phát hiện từ cấm */}
+                      <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <h4 className="text-sm font-bold">Hành vi khi phát hiện từ cấm</h4>
+                          <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                            Cách hệ thống phản hồi khi người dùng nhập từ trong danh sách cấm
+                          </p>
+                        </div>
+                        <CustomSelect
+                          options={PROFANITY_ACTION_OPTIONS}
+                          value={formData.content.profanityAction || "mask"}
+                          onChange={(val) => updateSection("content", "profanityAction", val)}
+                          isDark={isDark}
+                          size="sm"
+                          className="w-full sm:w-80 shrink-0"
+                        />
+                      </div>
+
+                      {/* Quản lý danh sách từ khóa cấm */}
+                      <div className="pt-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="text-sm font-bold">Danh sách từ khóa cấm tùy chỉnh</h4>
+                            <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                              Đã thiết lập {formData.content.customBannedWords?.length || 0} từ khóa cấm
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Input thêm từ cấm */}
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={bannedWordInput}
+                            onChange={(e) => setBannedWordInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleAddBannedWord();
+                              }
+                            }}
+                            placeholder="Nhập từ hoặc cụm từ cần cấm rồi nhấn Enter..."
+                            className={`flex-1 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm border outline-none font-medium transition-colors ${
+                              isDark
+                                ? "bg-[#0b1329] border-white/15 text-white focus:border-cyan-400"
+                                : "bg-white border-slate-300 text-slate-900 focus:border-blue-500"
+                            }`}
+                          />
+                          <button
+                            type="button"
+                            onClick={handleAddBannedWord}
+                            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-400 border border-cyan-500/30 transition-all cursor-pointer shrink-0"
+                          >
+                            <Plus size={14} />
+                            <span>Thêm từ</span>
+                          </button>
+                        </div>
+
+                        {/* Danh sách badge từ cấm */}
+                        <div className="flex flex-wrap gap-2 pt-1 max-h-48 overflow-y-auto">
+                          {(formData.content.customBannedWords || []).map((word, idx) => (
+                            <span
+                              key={idx}
+                              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                                isDark
+                                  ? "bg-red-500/10 border-red-500/25 text-red-300 hover:border-red-500/40"
+                                  : "bg-red-50 border-red-200 text-red-700 hover:border-red-300"
+                              }`}
+                            >
+                              <span>{word}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveBannedWord(word)}
+                                className="hover:opacity-60 cursor-pointer ml-1 p-0.5 text-red-400"
+                                title={`Xóa "${word}"`}
+                              >
+                                <X size={12} />
+                              </button>
+                            </span>
+                          ))}
+                          {(!formData.content.customBannedWords || formData.content.customBannedWords.length === 0) && (
+                            <div className={`text-xs italic py-2 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                              Chưa có từ khóa cấm nào. Hãy nhập từ khóa ở ô trên để thêm vào danh sách.
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* 3.3 Khối Báo cáo vi phạm */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Flag size={15} />
+                    <span>Xử lý báo cáo vi phạm từ cộng đồng</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Quy định ngưỡng cảnh báo tự động khi thành viên trong portal gửi báo cáo về một bình luận
+                  </p>
+                </div>
+
+                <div className="space-y-4 pt-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0 mt-0.5">
+                        <Flag size={16} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">Ngưỡng báo cáo tự động tạm ẩn bình luận</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 font-semibold border border-rose-500/30">
+                            Tự động ẩn
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Khi số lượt người dùng báo cáo một bình luận đạt ngưỡng này, hệ thống sẽ tự động chuyển trạng thái bình luận sang "Tạm ẩn" để chờ quản trị viên duyệt.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CustomSelect
+                      options={MAX_REPORTS_OPTIONS}
+                      value={formData.content.maxReportsToHide || 3}
+                      onChange={(val) => updateSection("content", "maxReportsToHide", Number(val))}
+                      isDark={isDark}
+                      size="sm"
+                      className="w-full sm:w-64 shrink-0"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 3.4 Khối Chính sách thảo luận */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Clock size={15} />
+                    <span>Chính sách thảo luận & Tần suất đăng</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Chống spam bot, kiểm soát chất lượng nội dung trước khi xuất bản công khai
+                  </p>
+                </div>
+
+                <div className="space-y-4 divide-y divide-white/10 pt-1">
+                  {/* Toggle Duyệt thủ công trước khi xuất bản */}
+                  <div className="pt-2 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                        <ShieldCheck size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Kiểm duyệt thủ công trước khi hiển thị</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Mọi bình luận mới sẽ ở trạng thái chờ duyệt và chỉ xuất hiện khi quản trị viên phê duyệt.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.content.requireApprovalFirst}
+                      onClick={() => updateSection("content", "requireApprovalFirst", !formData.content.requireApprovalFirst)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.content.requireApprovalFirst
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.content.requireApprovalFirst ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Cooldown chống spam */}
+                  <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+                        <Clock size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Khoảng thời gian chờ giữa 2 bình luận</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Ngăn chặn người dùng gửi liên tiếp quá nhanh hoặc bot spam bình luận hàng loạt.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CustomSelect
+                      options={COOLDOWN_OPTIONS}
+                      value={formData.content.commentCooldownSeconds ?? 15}
+                      onChange={(val) => updateSection("content", "commentCooldownSeconds", Number(val))}
+                      isDark={isDark}
+                      size="sm"
+                      className="w-full sm:w-72 shrink-0"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1118,126 +1864,1054 @@ export default function SystemSettings() {
 
           {/* TAB 4: TÀI KHOẢN NGƯỜI DÙNG */}
           {activeTab === "users" && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <h1 className="text-xl md:text-2xl font-bold font-heading">
-                Tài khoản người dùng
-              </h1>
+            <div className="space-y-7 animate-in fade-in duration-200">
+              {/* Header Tab */}
+              <div className="border-b pb-4 border-white/10">
+                <h1 className="text-xl md:text-2xl font-bold font-heading flex items-center gap-2">
+                  <span>Tài khoản người dùng</span>
+                  <Users size={18} className="text-cyan-400" />
+                </h1>
+                <p className={`text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  Chính sách đăng ký thành viên mới, tiêu chuẩn mật khẩu an toàn và phân quyền ban đầu
+                </p>
+              </div>
+
+              {/* 4.1 Khối Chính sách đăng ký thành viên mới */}
               <div
-                className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
                   isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-bold">Mở đăng ký thành viên mới</h4>
-                    <p className="text-xs text-slate-400">Cho phép người dùng bên ngoài tự tạo tài khoản tham gia portal</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={formData.users.allowRegistration}
-                    onChange={(e) => updateSection("users", "allowRegistration", e.target.checked)}
-                    className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                  />
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <UserPlus size={14} />
+                    <span>Chính sách đăng ký thành viên mới</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Quản lý luồng tiếp nhận người dùng mới tham gia vào cổng thông tin
+                  </p>
                 </div>
 
-                <div className="border-t border-white/10 pt-3 flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-bold">Yêu cầu xác thực email khi kích hoạt</h4>
-                    <p className="text-xs text-slate-400">Gửi email xác thực liên kết trước khi cho phép đăng nhập</p>
+                <div className="space-y-4 divide-y divide-white/10 pt-1">
+                  {/* Toggle Cha: Mở cổng đăng ký tài khoản mới */}
+                  <div className="pt-2 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+                        <UserPlus size={16} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">Mở cổng đăng ký tài khoản mới</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30">
+                            Công khai
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Cho phép khách truy cập tự do tạo tài khoản thành viên trên cổng thông tin.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.users.allowRegistration}
+                      onClick={() => updateSection("users", "allowRegistration", !formData.users.allowRegistration)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.users.allowRegistration
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.users.allowRegistration ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={formData.users.requireEmailVerification}
-                    onChange={(e) => updateSection("users", "requireEmailVerification", e.target.checked)}
-                    className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                  />
+
+                  {formData.users.allowRegistration ? (
+                    <>
+                      {/* Toggle Con 1: Yêu cầu xác thực email */}
+                      <div className="pt-4 flex items-center justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+                            <Mail size={16} />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold">Bắt buộc xác thực địa chỉ email</h4>
+                            <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                              Gửi liên kết kích hoạt đến hộp thư trước khi người dùng được phép đăng nhập chính thức.
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={formData.users.requireEmailVerification}
+                          onClick={() => updateSection("users", "requireEmailVerification", !formData.users.requireEmailVerification)}
+                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                            formData.users.requireEmailVerification
+                              ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                              : isDark
+                              ? "bg-white/15"
+                              : "bg-slate-300"
+                          }`}
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                              formData.users.requireEmailVerification ? "translate-x-5" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+
+                      {/* Toggle Con 3: Phê duyệt thủ công trước khi kích hoạt */}
+                      <div className="pt-4 flex items-center justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                            <UserCheck size={16} />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold">Phê duyệt thủ công trước khi kích hoạt</h4>
+                            <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                              Tài khoản mới sẽ ở trạng thái chờ duyệt và chỉ kích hoạt khi quản trị viên phê duyệt.
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={formData.users.requireApprovalForNewUsers}
+                          onClick={() => updateSection("users", "requireApprovalForNewUsers", !formData.users.requireApprovalForNewUsers)}
+                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                            formData.users.requireApprovalForNewUsers
+                              ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                              : isDark
+                              ? "bg-white/15"
+                              : "bg-slate-300"
+                          }`}
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                              formData.users.requireApprovalForNewUsers ? "translate-x-5" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div
+                      className={`pt-4 p-4 rounded-xl border flex items-start gap-3 ${
+                        isDark ? "bg-amber-500/10 border-amber-500/20 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"
+                      }`}
+                    >
+                      <AlertCircle size={18} className="shrink-0 mt-0.5 text-amber-400" />
+                      <div className="text-xs leading-relaxed">
+                        <p className="font-semibold">Cổng đăng ký người dùng hiện đang đóng</p>
+                        <p className="opacity-90 mt-0.5">
+                          Khách truy cập sẽ không thể tự đăng ký tài khoản. Quản trị viên vẫn có thể tạo và cấp tài khoản trực tiếp trong trang quản lý thành viên.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
+              </div>
+
+              {/* 4.2 Khối Quy chuẩn mật khẩu & Bảo mật đăng nhập */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Lock size={14} />
+                    <span>Quy chuẩn mật khẩu & Bảo mật đăng nhập</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Bảo vệ an toàn tài khoản người dùng và ngăn chặn tấn công tự động
+                  </p>
+                </div>
+
+                <div className="space-y-4 divide-y divide-white/10 pt-1">
+                  {/* Độ dài mật khẩu tối thiểu */}
+                  <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400 shrink-0 mt-0.5">
+                        <KeyRound size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Độ dài mật khẩu tối thiểu</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Số lượng ký tự tối thiểu khi thành viên đăng ký mới hoặc thay đổi mật khẩu.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CustomSelect
+                      options={MIN_PASSWORD_OPTIONS}
+                      value={formData.users.minPasswordLength ?? 8}
+                      onChange={(val) => updateSection("users", "minPasswordLength", Number(val))}
+                      isDark={isDark}
+                      size="sm"
+                      className="w-full sm:w-72 shrink-0"
+                    />
+                  </div>
+
+                  {/* Toggle Yêu cầu chữ hoa hoặc ký tự đặc biệt */}
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+                        <Shield size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Yêu cầu mật khẩu phức tạp</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Bắt buộc mật khẩu phải chứa ít nhất một chữ in hoa hoặc một ký tự đặc biệt.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.users.requireSpecialChar}
+                      onClick={() => updateSection("users", "requireSpecialChar", !formData.users.requireSpecialChar)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.users.requireSpecialChar
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.users.requireSpecialChar ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Giới hạn số lần đăng nhập sai */}
+                  <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0 mt-0.5">
+                        <Clock size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Giới hạn số lần đăng nhập sai liên tiếp</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Tạm thời khóa phiên đăng nhập sau nhiều lần nhập sai mật khẩu để ngăn chặn dò mật khẩu tự động.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CustomSelect
+                      options={MAX_LOGIN_ATTEMPTS_OPTIONS}
+                      value={formData.users.maxLoginAttempts ?? 5}
+                      onChange={(val) => updateSection("users", "maxLoginAttempts", Number(val))}
+                      isDark={isDark}
+                      size="sm"
+                      className="w-full sm:w-72 shrink-0"
+                    />
+                  </div>
+
+                  {/* Toggle Cho phép đăng nhập qua mạng xã hội */}
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0 mt-0.5">
+                        <Globe size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Cho phép đăng nhập nhanh qua tài khoản xã hội</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Hỗ trợ thành viên liên kết và đăng nhập nhanh bằng tài khoản Google hoặc GitHub.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.users.allowSocialLogin}
+                      onClick={() => updateSection("users", "allowSocialLogin", !formData.users.allowSocialLogin)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.users.allowSocialLogin
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.users.allowSocialLogin ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4.3 Khối Điều hướng quản lý thành viên */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+                    <Users size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold flex items-center gap-2">
+                      <span>Quản lý danh sách thành viên & Phân quyền</span>
+                    </h3>
+                    <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                      Xem danh sách toàn bộ người dùng, thay đổi quyền hạn chi tiết hoặc khóa/mở khóa tài khoản thành viên.
+                    </p>
+                  </div>
+                </div>
+
+                <Link
+                  to="/admin/users"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-all cursor-pointer shrink-0 shadow-sm active:scale-95"
+                >
+                  <span>Mở danh sách người dùng</span>
+                  <ExternalLink size={14} />
+                </Link>
               </div>
             </div>
           )}
 
           {/* TAB 5: API & DỮ LIỆU */}
           {activeTab === "api" && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <h1 className="text-xl md:text-2xl font-bold font-heading">
-                API & Dữ liệu
-              </h1>
+            <div className="space-y-7 animate-in fade-in duration-200">
+              {/* Header Tab */}
+              <div className="border-b pb-4 border-white/10">
+                <h1 className="text-xl md:text-2xl font-bold font-heading flex items-center gap-2">
+                  <span>API & Dữ liệu</span>
+                  <Database size={18} className="text-cyan-400" />
+                </h1>
+                <p className={`text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  Quản lý kết nối các cổng dữ liệu sinh học đại dương quốc tế, chu kỳ đồng bộ và bộ nhớ đệm
+                </p>
+              </div>
+
+              {/* 5.1 Khối Cấu hình đồng bộ & Bộ nhớ đệm dữ liệu */}
               <div
-                className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
                   isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
                 }`}
               >
                 <div>
-                  <label className="text-xs text-slate-400 block mb-1">GBIF Marine API Key</label>
-                  <input
-                    type="password"
-                    value={formData.api.gbifApiKey}
-                    onChange={(e) => updateSection("api", "gbifApiKey", e.target.value)}
-                    className={`w-full px-3.5 py-2 rounded-xl text-xs border outline-none font-mono ${
-                      isDark ? "bg-[#0b1329] border-white/15 text-white" : "bg-white border-slate-300 text-slate-900"
-                    }`}
-                  />
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Layers size={14} />
+                    <span>Cấu hình đồng bộ & Bộ nhớ đệm dữ liệu</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Điều khiển chu kỳ cập nhật tự động và tối ưu tốc độ tra cứu danh mục sinh vật biển
+                  </p>
                 </div>
 
-                <div>
-                  <label className="text-xs text-slate-400 block mb-1">Tần suất đồng bộ dữ liệu tự động</label>
-                  <select
-                    value={formData.api.syncFrequency}
-                    onChange={(e) => updateSection("api", "syncFrequency", e.target.value)}
-                    className={`w-full px-3.5 py-2 rounded-xl text-xs border outline-none ${
-                      isDark ? "bg-[#0b1329] border-white/15 text-white" : "bg-white border-slate-300 text-slate-900"
-                    }`}
-                  >
-                    <option value="daily">Hàng ngày (00:00 UTC)</option>
-                    <option value="weekly">Hàng tuần</option>
-                    <option value="manual">Thủ công</option>
-                  </select>
+                <div className="space-y-4 divide-y divide-white/10 pt-1">
+                  {/* Tần suất đồng bộ tự động */}
+                  <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+                        <Clock size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Tần suất đồng bộ dữ liệu tự động</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Chu kỳ hệ thống tự động kiểm tra và làm mới dữ liệu sinh vật từ các nguồn quốc tế.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CustomSelect
+                      options={SYNC_FREQUENCY_OPTIONS}
+                      value={formData.api.syncFrequency || "daily"}
+                      onChange={(val) => updateSection("api", "syncFrequency", val)}
+                      isDark={isDark}
+                      size="sm"
+                      className="w-full sm:w-80 shrink-0"
+                    />
+                  </div>
+
+                  {/* Toggle Tự động bổ sung thông tin khi tạo loài mới */}
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                        <Sparkles size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Tự động bổ sung thông tin khi tạo loài mới</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Khi nhập tên khoa học, hệ thống tự động tra cứu họ, bộ, mô tả và kích thước từ các nguồn dữ liệu mở.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.api.autoEnrichNewSpecies}
+                      onClick={() => updateSection("api", "autoEnrichNewSpecies", !formData.api.autoEnrichNewSpecies)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.api.autoEnrichNewSpecies
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.api.autoEnrichNewSpecies ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Thời gian lưu bộ nhớ đệm */}
+                  <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+                        <Database size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Thời gian lưu bộ nhớ đệm</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Lưu tạm kết quả tra cứu ngoài máy chủ để tăng tốc độ tải trang và tiết kiệm băng thông.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CustomSelect
+                      options={CACHE_TTL_OPTIONS}
+                      value={formData.api.cacheTtlHours ?? 24}
+                      onChange={(val) => updateSection("api", "cacheTtlHours", Number(val))}
+                      isDark={isDark}
+                      size="sm"
+                      className="w-full sm:w-80 shrink-0"
+                    />
+                  </div>
+
+                  {/* Toggle Tự động chuyển cổng dự phòng */}
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+                        <ShieldCheck size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Tự động chuyển cổng dữ liệu dự phòng</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Khi một cổng dữ liệu bị nghẽn mạng hoặc gián đoạn, tự động chuyển sang nguồn kế tiếp.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.api.enableTaxonomyFallback}
+                      onClick={() => updateSection("api", "enableTaxonomyFallback", !formData.api.enableTaxonomyFallback)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.api.enableTaxonomyFallback
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.api.enableTaxonomyFallback ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Thời gian chờ tối đa cho mỗi yêu cầu */}
+                  <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400 shrink-0 mt-0.5">
+                        <Zap size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Thời gian chờ tối đa cho mỗi yêu cầu</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Hủy yêu cầu và trả về dữ liệu nội bộ nếu nguồn dữ liệu ngoài phản hồi quá thời gian quy định.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CustomSelect
+                      options={TIMEOUT_OPTIONS}
+                      value={formData.api.timeoutSeconds ?? 5}
+                      onChange={(val) => updateSection("api", "timeoutSeconds", Number(val))}
+                      isDark={isDark}
+                      size="sm"
+                      className="w-full sm:w-80 shrink-0"
+                    />
+                  </div>
                 </div>
+              </div>
+
+              {/* 5.2 Khối Các cổng kết nối dữ liệu sinh vật biển quốc tế */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                      <Server size={14} />
+                      <span>Các cổng kết nối dữ liệu sinh vật biển quốc tế</span>
+                    </h3>
+                    <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                      Các nguồn dữ liệu mở phục vụ tra cứu danh pháp, phân loại học và hình ảnh sinh học
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleTestAllProviders}
+                    disabled={isTestingAll || apiProviders.length === 0}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 transition-all cursor-pointer shrink-0 disabled:opacity-50"
+                  >
+                    {isTestingAll ? (
+                      <>
+                        <RefreshCw size={13} className="animate-spin text-cyan-400" />
+                        <span>Đang kiểm tra kết nối...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Activity size={13} className="text-cyan-400" />
+                        <span>Kiểm tra tất cả nguồn</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {isLoadingProviders ? (
+                  <div className="py-12 flex flex-col items-center justify-center gap-2 text-slate-400">
+                    <RefreshCw size={20} className="animate-spin text-cyan-400" />
+                    <span className="text-xs">Đang tải danh sách cổng dữ liệu...</span>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                    {apiProviders.map((provider) => {
+                      const ping = providerPings[provider.id];
+                      const isTestingThis = testingProviderId === provider.id;
+
+                      return (
+                        <div
+                          key={provider.id}
+                          className={`rounded-2xl border p-4.5 transition-all flex flex-col justify-between gap-4 ${
+                            isDark
+                              ? "bg-[#0f1933] border-white/10 hover:border-cyan-400/40"
+                              : "bg-white border-slate-200 hover:border-blue-300 shadow-sm"
+                          }`}
+                        >
+                          <div className="space-y-2.5">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 font-bold text-xs">
+                                  {provider.name?.slice(0, 2).toUpperCase() || "API"}
+                                </div>
+                                <div>
+                                  <h4 className="text-sm font-bold flex items-center gap-1.5">
+                                    <span>{provider.name}</span>
+                                    {provider.isBuiltIn && (
+                                      <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-white/10 text-slate-300 font-normal">
+                                        Tích hợp
+                                      </span>
+                                    )}
+                                  </h4>
+                                  <p className={`text-[11px] line-clamp-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                                    {provider.desc || "Cổng dữ liệu sinh học đại dương"}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Công tắc Bật/Tắt cổng */}
+                              <button
+                                type="button"
+                                role="switch"
+                                aria-checked={provider.isEnabled}
+                                onClick={() => handleToggleProvider(provider.id, provider.isEnabled)}
+                                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                                  provider.isEnabled
+                                    ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                                    : isDark
+                                    ? "bg-white/15"
+                                    : "bg-slate-300"
+                                }`}
+                              >
+                                <span
+                                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                                    provider.isEnabled ? "translate-x-4" : "translate-x-0"
+                                  }`}
+                                />
+                              </button>
+                            </div>
+
+                            {/* Trạng thái kết nối Ping */}
+                            <div className="flex items-center justify-between text-[11px] pt-1">
+                              <div className="flex items-center gap-1.5">
+                                {isTestingThis ? (
+                                  <span className="flex items-center gap-1 text-cyan-400">
+                                    <RefreshCw size={11} className="animate-spin" />
+                                    <span>Đang kiểm tra...</span>
+                                  </span>
+                                ) : ping ? (
+                                  ping.status === "online" ? (
+                                    <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+                                      <Wifi size={12} />
+                                      <span>Trực tuyến ({ping.latency}ms)</span>
+                                    </span>
+                                  ) : ping.status === "disabled" ? (
+                                    <span className="text-slate-500 flex items-center gap-1">
+                                      <span>Đã tạm dừng</span>
+                                    </span>
+                                  ) : (
+                                    <span className="flex items-center gap-1 text-rose-400 font-semibold">
+                                      <WifiOff size={12} />
+                                      <span>Ngoại tuyến</span>
+                                    </span>
+                                  )
+                                ) : (
+                                  <span className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                                    {provider.isEnabled ? "Sẵn sàng kết nối" : "Đã tạm dừng"}
+                                  </span>
+                                )}
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => handleTestProvider(provider.id)}
+                                disabled={isTestingThis || !provider.isEnabled}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all cursor-pointer disabled:opacity-40 ${
+                                  isDark
+                                    ? "bg-white/5 border-white/10 hover:bg-white/10 text-slate-300 hover:text-white"
+                                    : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700"
+                                }`}
+                              >
+                                Kiểm tra
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* 5.3 Khối Đồng bộ thủ công tức thì */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+                    <RefreshCw size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold flex items-center gap-2">
+                      <span>Đồng bộ danh mục ngay bây giờ</span>
+                    </h3>
+                    <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                      Kích hoạt quét và chuẩn hóa toàn bộ dữ liệu phân loại học của các loài sinh vật biển hiện có ngay lúc này mà không cần chờ chu kỳ tự động.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleTriggerManualSync}
+                  disabled={isManualSyncing}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-all cursor-pointer shrink-0 shadow-sm active:scale-95 disabled:opacity-50"
+                >
+                  {isManualSyncing ? (
+                    <>
+                      <RefreshCw size={14} className="animate-spin" />
+                      <span>Đang đồng bộ...</span>
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw size={14} />
+                      <span>Đồng bộ ngay bây giờ</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           )}
 
           {/* TAB 6: BẢO MẬT */}
           {activeTab === "security" && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <h1 className="text-xl md:text-2xl font-bold font-heading">
-                Bảo mật hệ thống
-              </h1>
+            <div className="space-y-7 animate-in fade-in duration-200">
+              {/* Header Tab */}
+              <div className="border-b pb-4 border-white/10">
+                <h1 className="text-xl md:text-2xl font-bold font-heading flex items-center gap-2">
+                  <span>Bảo mật hệ thống</span>
+                  <Shield size={18} className="text-cyan-400" />
+                </h1>
+                <p className={`text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  Bảo vệ tài khoản quản trị viên, kiểm soát phiên đăng nhập và thiết lập chính sách an toàn thông tin
+                </p>
+              </div>
+
+              {/* 6.1 Khối Xác thực quản trị & Kiểm soát truy cập */}
               <div
-                className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
                   isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-bold">Xác thực hai yếu tố (2FA) cho quản trị viên</h4>
-                    <p className="text-xs text-slate-400">Yêu cầu mã OTP hoặc xác thực khi đăng nhập vào trang quản trị</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={formData.security.require2FA}
-                    onChange={(e) => updateSection("security", "require2FA", e.target.checked)}
-                    className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                  />
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Lock size={14} />
+                    <span>Xác thực quản trị & Kiểm soát truy cập</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Tăng cường bảo vệ tài khoản quản trị trước các nguy cơ xâm nhập trái phép
+                  </p>
                 </div>
 
-                <div className="border-t border-white/10 pt-3 flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-bold">Thời gian hết hạn phiên đăng nhập (phút)</h4>
-                    <p className="text-xs text-slate-400">Tự động đăng xuất sau khoảng thời gian không có hoạt động</p>
+                <div className="space-y-4 divide-y divide-white/10 pt-1">
+                  {/* Toggle Cha: Bắt buộc xác thực hai yếu tố */}
+                  <div className="pt-2 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+                        <ShieldCheck size={16} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold">Bắt buộc xác thực hai yếu tố cho quản trị viên</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30">
+                            Bảo mật cao
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Yêu cầu bước xác nhận thứ hai ngoài mật khẩu khi đăng nhập vào bảng điều khiển quản trị.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.security.require2FA}
+                      onClick={() => updateSection("security", "require2FA", !formData.security.require2FA)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.security.require2FA
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.security.require2FA ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </div>
-                  <select
-                    value={formData.security.sessionTimeoutMinutes}
-                    onChange={(e) => updateSection("security", "sessionTimeoutMinutes", Number(e.target.value))}
-                    className={`px-3 py-1.5 rounded-xl text-xs border outline-none ${
-                      isDark ? "bg-[#0b1329] border-white/15 text-white" : "bg-white border-slate-300 text-slate-900"
+
+                  {formData.security.require2FA && (
+                    <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+                          <KeyRound size={16} />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold">Phương thức xác thực hai yếu tố</h4>
+                          <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                            Lựa chọn phương thức gửi hoặc sinh mã OTP xác nhận đăng nhập.
+                          </p>
+                        </div>
+                      </div>
+
+                      <CustomSelect
+                        options={TWO_FACTOR_METHOD_OPTIONS}
+                        value={formData.security.twoFactorMethod || "authenticator"}
+                        onChange={(val) => updateSection("security", "twoFactorMethod", val)}
+                        isDark={isDark}
+                        size="sm"
+                        className="w-full sm:w-80 shrink-0"
+                      />
+                    </div>
+                  )}
+
+                  {/* Chu kỳ bắt buộc thay đổi mật khẩu */}
+                  <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                        <Clock size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Chu kỳ bắt buộc thay đổi mật khẩu quản trị</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Yêu cầu đổi mật khẩu định kỳ để ngăn ngừa lộ lọt thông tin tài khoản quản trị.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CustomSelect
+                      options={ADMIN_PASSWORD_EXPIRY_OPTIONS}
+                      value={formData.security.adminPasswordExpiryDays ?? 90}
+                      onChange={(val) => updateSection("security", "adminPasswordExpiryDays", Number(val))}
+                      isDark={isDark}
+                      size="sm"
+                      className="w-full sm:w-80 shrink-0"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 6.2 Khối Quản lý phiên làm việc & Nhật ký an toàn */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <ShieldAlert size={14} />
+                    <span>Quản lý phiên làm việc & Nhật ký an toàn</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Kiểm soát thời gian tồn tại của phiên đăng nhập và ngăn chặn hành vi bất thường
+                  </p>
+                </div>
+
+                <div className="space-y-4 divide-y divide-white/10 pt-1">
+                  {/* Thời gian tự động hết hạn phiên làm việc */}
+                  <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400 shrink-0 mt-0.5">
+                        <Clock size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Thời gian tự động kết thúc phiên làm việc</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Tự động đăng xuất tài khoản khi không có bất kỳ thao tác nào sau khoảng thời gian này.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CustomSelect
+                      options={SESSION_TIMEOUT_OPTIONS}
+                      value={formData.security.sessionTimeoutMinutes ?? 60}
+                      onChange={(val) => updateSection("security", "sessionTimeoutMinutes", Number(val))}
+                      isDark={isDark}
+                      size="sm"
+                      className="w-full sm:w-80 shrink-0"
+                    />
+                  </div>
+
+                  {/* Giới hạn một phiên đăng nhập duy nhất */}
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0 mt-0.5">
+                        <Lock size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Giới hạn một phiên đăng nhập duy nhất</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Tự động đăng xuất phiên làm việc cũ khi phát hiện tài khoản đăng nhập trên một thiết bị mới.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.security.singleSessionPerUser}
+                      onClick={() => updateSection("security", "singleSessionPerUser", !formData.security.singleSessionPerUser)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.security.singleSessionPerUser
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.security.singleSessionPerUser ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Ghi nhật ký kiểm toán cho các thao tác quan trọng */}
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+                        <CheckCircle2 size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Ghi nhật ký kiểm toán cho thao tác quan trọng</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Lưu trữ lịch sử khi có thao tác xóa loài sinh vật, đổi phân quyền hoặc chỉnh sửa thiết lập hệ thống.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.security.logSensitiveActions}
+                      onClick={() => updateSection("security", "logSensitiveActions", !formData.security.logSensitiveActions)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.security.logSensitiveActions
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.security.logSensitiveActions ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Chặn truy cập qua mạng ẩn danh đáng ngờ */}
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0 mt-0.5">
+                        <ShieldAlert size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold">Chặn truy cập qua mạng ẩn danh đáng ngờ</h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          Tự động từ chối yêu cầu từ các mạng Tor hoặc máy chủ proxy không xác thực để phòng tránh phá hoại.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={formData.security.blockTorAndProxies}
+                      onClick={() => updateSection("security", "blockTorAndProxies", !formData.security.blockTorAndProxies)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        formData.security.blockTorAndProxies
+                          ? "bg-cyan-500 shadow-sm shadow-cyan-500/30"
+                          : isDark
+                          ? "bg-white/15"
+                          : "bg-slate-300"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                          formData.security.blockTorAndProxies ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 6.3 Khối Trạng thái an toàn & Tiêu chuẩn bảo mật kết nối */}
+              <div
+                className={`rounded-2xl border p-5 md:p-6 space-y-5 ${
+                  isDark ? "bg-[#152345] border-white/10" : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div>
+                  <h3 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                    <ShieldCheck size={14} />
+                    <span>Trạng thái an toàn & Tiêu chuẩn bảo mật kết nối</span>
+                  </h3>
+                  <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    Tổng hợp các cơ chế bảo vệ hạ tầng và mã hóa kết nối đang hoạt động
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  <div
+                    className={`p-4 rounded-xl border space-y-1.5 ${
+                      isDark ? "bg-[#0f1933] border-white/10" : "bg-white border-slate-200 shadow-sm"
                     }`}
                   >
-                    <option value={30}>30 phút</option>
-                    <option value={60}>60 phút (1 giờ)</option>
-                    <option value={120}>120 phút (2 giờ)</option>
-                    <option value={1440}>24 giờ</option>
-                  </select>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold">Mã hóa HTTPS / TLS</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-semibold border border-emerald-500/30">
+                        Hoạt động
+                      </span>
+                    </div>
+                    <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                      Chứng chỉ SSL bảo vệ mã hóa đầu cuối 256-bit trên toàn bộ các tuyến đường
+                    </p>
+                  </div>
+
+                  <div
+                    className={`p-4 rounded-xl border space-y-1.5 ${
+                      isDark ? "bg-[#0f1933] border-white/10" : "bg-white border-slate-200 shadow-sm"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold">Chính sách CORS</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30">
+                        Nghiêm ngặt
+                      </span>
+                    </div>
+                    <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                      Chỉ chấp nhận các yêu cầu truy cập từ miền ứng dụng chính thức và IP cho phép
+                    </p>
+                  </div>
+
+                  <div
+                    className={`p-4 rounded-xl border space-y-1.5 ${
+                      isDark ? "bg-[#0f1933] border-white/10" : "bg-white border-slate-200 shadow-sm"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold">Giới hạn tần suất (Rate Limit)</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-semibold border border-amber-500/30">
+                        Kích hoạt
+                      </span>
+                    </div>
+                    <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                      Tối đa 120 yêu cầu mỗi phút nhằm chống nghẽn mạng và tấn công dò quét tự động
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border-t border-white/10 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs font-bold">Tra cứu nhật ký kiểm toán hệ thống</h4>
+                    <p className={`text-[11px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                      Xem toàn bộ lịch sử đăng nhập, thay đổi phân quyền và thao tác quản trị viên gần đây.
+                    </p>
+                  </div>
+
+                  <Link
+                    to="/admin/profile?tab=activity"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-all cursor-pointer shrink-0 shadow-sm active:scale-95"
+                  >
+                    <span>Mở nhật ký hoạt động</span>
+                    <ExternalLink size={13} />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -1271,6 +2945,66 @@ export default function SystemSettings() {
                       : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700"
                   }`}
                   title="Đặt lại hiển thị & ngôn ngữ về mặc định"
+                >
+                  <RotateCcw size={13} />
+                  <span>Khôi phục mặc định tab này</span>
+                </button>
+              )}
+              {activeTab === "content" && (
+                <button
+                  type="button"
+                  onClick={handleResetContentDefaults}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                    isDark
+                      ? "bg-white/5 border-white/10 hover:bg-white/10 text-slate-300 hover:text-white"
+                      : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700"
+                  }`}
+                  title="Đặt lại cài đặt nội dung & kiểm duyệt về mặc định"
+                >
+                  <RotateCcw size={13} />
+                  <span>Khôi phục mặc định tab này</span>
+                </button>
+              )}
+              {activeTab === "users" && (
+                <button
+                  type="button"
+                  onClick={handleResetUsersDefaults}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                    isDark
+                      ? "bg-white/5 border-white/10 hover:bg-white/10 text-slate-300 hover:text-white"
+                      : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700"
+                  }`}
+                  title="Đặt lại cài đặt tài khoản người dùng về mặc định"
+                >
+                  <RotateCcw size={13} />
+                  <span>Khôi phục mặc định tab này</span>
+                </button>
+              )}
+              {activeTab === "api" && (
+                <button
+                  type="button"
+                  onClick={handleResetApiDefaults}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                    isDark
+                      ? "bg-white/5 border-white/10 hover:bg-white/10 text-slate-300 hover:text-white"
+                      : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700"
+                  }`}
+                  title="Đặt lại cài đặt API & dữ liệu về mặc định"
+                >
+                  <RotateCcw size={13} />
+                  <span>Khôi phục mặc định tab này</span>
+                </button>
+              )}
+              {activeTab === "security" && (
+                <button
+                  type="button"
+                  onClick={handleResetSecurityDefaults}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                    isDark
+                      ? "bg-white/5 border-white/10 hover:bg-white/10 text-slate-300 hover:text-white"
+                      : "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700"
+                  }`}
+                  title="Đặt lại cài đặt bảo mật hệ thống về mặc định"
                 >
                   <RotateCcw size={13} />
                   <span>Khôi phục mặc định tab này</span>

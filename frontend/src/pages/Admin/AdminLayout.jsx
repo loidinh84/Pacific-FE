@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Settings, Sun, Moon, LogOut, User, Bell } from "lucide-react";
+import { Settings, Sun, Moon, LogOut, User } from "lucide-react";
 import * as Images from "../../assets/Images";
 import { useTheme } from "../../hooks/useTheme";
 import { useClickOutside } from "../../hooks/useClickOutside";
@@ -27,7 +27,9 @@ export default function AdminLayout() {
         if (!ignore && res?.success) {
           setNotifications(res.data);
         }
-      } catch (_) {}
+      } catch (err) {
+        console.warn("Không thể tải thông báo quản trị viên:", err?.message || err);
+      }
     };
     load();
     const interval = setInterval(load, 30000);
