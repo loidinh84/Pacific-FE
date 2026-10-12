@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Settings, Sun, Moon, LogOut, User } from "lucide-react";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import { Settings, Sun, Moon, LogOut, User, ChevronDown } from "lucide-react";
 import * as Images from "../../assets/Images";
 import { useTheme } from "../../hooks/useTheme";
 import { useClickOutside } from "../../hooks/useClickOutside";
@@ -14,7 +20,10 @@ export default function AdminLayout() {
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
-  const [notifications, setNotifications] = useState({ pendingReports: 0, pendingUsers: 0 });
+  const [notifications, setNotifications] = useState({
+    pendingReports: 0,
+    pendingUsers: 0,
+  });
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
 
@@ -28,7 +37,10 @@ export default function AdminLayout() {
           setNotifications(res.data);
         }
       } catch (err) {
-        console.warn("Không thể tải thông báo quản trị viên:", err?.message || err);
+        console.warn(
+          "Không thể tải thông báo quản trị viên:",
+          err?.message || err,
+        );
       }
     };
     load();
@@ -42,12 +54,14 @@ export default function AdminLayout() {
   }, [location.pathname]);
 
   const [currentUser, setCurrentUser] = useState(
-    () => getStoredUser() || { username: "Admin", email: "admin@pacific.org" }
+    () => getStoredUser() || { username: "Admin", email: "admin@pacific.org" },
   );
 
   useEffect(() => {
     const handler = () => {
-      setCurrentUser(getStoredUser() || { username: "Admin", email: "admin@pacific.org" });
+      setCurrentUser(
+        getStoredUser() || { username: "Admin", email: "admin@pacific.org" },
+      );
     };
     window.addEventListener("pacific_auth_change", handler);
     return () => window.removeEventListener("pacific_auth_change", handler);
@@ -67,7 +81,11 @@ export default function AdminLayout() {
       if (e.detail) setSystemSettings(e.detail);
     };
     window.addEventListener("pacific_settings_update", handleSettingsUpdate);
-    return () => window.removeEventListener("pacific_settings_update", handleSettingsUpdate);
+    return () =>
+      window.removeEventListener(
+        "pacific_settings_update",
+        handleSettingsUpdate,
+      );
   }, []);
 
   const handleLogout = () => {
@@ -81,8 +99,16 @@ export default function AdminLayout() {
     { label: "Sinh vật", path: "/admin/species" },
     { label: "Nhóm sinh vật", path: "/admin/groups" },
     { label: "Địa điểm", path: "/admin/locations" },
-    { label: "Người dùng", path: "/admin/users", badge: notifications.pendingUsers },
-    { label: "Bình luận", path: "/admin/comments", badge: notifications.pendingReports },
+    {
+      label: "Người dùng",
+      path: "/admin/users",
+      badge: notifications.pendingUsers,
+    },
+    {
+      label: "Bình luận",
+      path: "/admin/comments",
+      badge: notifications.pendingReports,
+    },
     { label: "Câu đố", path: "/admin/quiz" },
   ];
 
@@ -100,7 +126,9 @@ export default function AdminLayout() {
       {/* ── 1. TOP HEADER (LOGO + RIGHT CONTROLS) ── */}
       <header
         className={`w-full border-b transition-colors duration-300 relative z-10 ${
-          isDark ? "bg-[#151f42]/90 backdrop-blur-md border-white/10" : "bg-white border-slate-200"
+          isDark
+            ? "bg-[#151f42]/90 backdrop-blur-md border-white/10"
+            : "bg-white border-slate-200"
         }`}
       >
         <div className="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between gap-4">
@@ -145,8 +173,8 @@ export default function AdminLayout() {
                   isActive
                     ? "text-cyan-400 font-bold"
                     : isDark
-                    ? "text-white/80 hover:text-white"
-                    : "text-slate-700 hover:text-slate-900"
+                      ? "text-white/80 hover:text-white"
+                      : "text-slate-700 hover:text-slate-900"
                 }`
               }
             >
@@ -158,7 +186,7 @@ export default function AdminLayout() {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className={`flex items-center gap-1 text-sm font-serif italic tracking-wide transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 text-sm transition-colors cursor-pointer ${
                   isDark
                     ? "text-white/90 hover:text-white"
                     : "text-slate-800 hover:text-black"
@@ -166,10 +194,16 @@ export default function AdminLayout() {
               >
                 <span>
                   Xin chào,{" "}
-                  <strong className="font-semibold not-italic font-sans text-cyan-400">
-                    [{currentUser.username || "Admin"}]
+                  <strong className="font-semibold text-cyan-400">
+                    {currentUser.username || "Admin"}
                   </strong>
                 </span>
+                <ChevronDown
+                  size={13}
+                  className={`text-slate-400 transition-transform duration-200 ${
+                    isUserMenuOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
 
               {/* User Dropdown */}
@@ -229,18 +263,18 @@ export default function AdminLayout() {
               key={tab.path}
               to={tab.path}
               className={({ isActive }) =>
-                `relative px-3 py-1 rounded-full text-md font-bold transition-all whitespace-nowrap cursor-pointer ${
+                `relative px-3.5 py-1 rounded-full text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
                   isActive
                     ? isDark
                       ? "bg-[#435f9f] text-white font-bold shadow-sm"
                       : "bg-white text-blue-800 font-bold shadow-sm"
                     : isDark
-                      ? "text-white/80 hover:text-gray-400"
+                      ? "text-white/80 hover:text-white hover:bg-white/10"
                       : "text-slate-700 hover:text-slate-950 hover:bg-white/60"
                 }`
               }
             >
-              {tab.label}
+              <span>{tab.label}</span>
               {tab.badge > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center leading-none">
                   {tab.badge > 99 ? "99+" : tab.badge}

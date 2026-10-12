@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   XCircle,
   Edit,
+  Pencil,
   Trash2,
   Check,
   TrendingUp,
@@ -541,7 +542,7 @@ export default function QuizManagement() {
                       }`}
                       title="Chỉnh sửa câu hỏi"
                     >
-                      <Edit size={16} />
+                      <Pencil size={15} />
                     </button>
                     <button
                       onClick={() =>
@@ -557,7 +558,7 @@ export default function QuizManagement() {
                       }`}
                       title="Xóa câu hỏi"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={15} />
                     </button>
                   </div>
                 </div>

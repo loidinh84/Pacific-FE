@@ -10,7 +10,7 @@ import {
   RotateCcw,
   Plus,
   Eye,
-  Edit,
+  Pencil,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
 import SpeciesExpandedDetail from "./SpeciesExpandedDetail";
@@ -401,7 +401,7 @@ export default function SpeciesTable({
                           }`}
                           title="Chỉnh sửa thông tin"
                         >
-                          <Edit size={15} />
+                          <Pencil size={15} />
                         </button>
                       </div>
                     </td>
