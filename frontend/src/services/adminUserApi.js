@@ -46,14 +46,17 @@ export const updateAdminUserStatus = async (id, status) => {
 };
 
 /**
- * Cập nhật vai trò người dùng (user | admin)
+ * Cập nhật vai trò người dùng (user | top_fan | expert | moderator | admin | super_admin)
  * @param {string} id - User ID
- * @param {string} role - "user" | "admin"
+ * @param {string} role - Vai trò mới
+ * @param {string} [confirmPassword] - Mật khẩu xác nhận của Admin
  */
-export const updateAdminUserRole = async (id, role) => {
+export const updateAdminUserRole = async (id, role, confirmPassword = "") => {
+  const payload = { role };
+  if (confirmPassword) payload.confirmPassword = confirmPassword;
   const res = await axios.patch(
     `${API_BASE}/${id}/role`,
-    { role },
+    payload,
     getAuthHeaders()
   );
   return res.data;
