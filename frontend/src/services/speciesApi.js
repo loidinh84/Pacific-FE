@@ -438,3 +438,22 @@ export const testAdminApiProvider = async (id, testData = null) => {
   }
 };
 
+/**
+ * Lấy chi tiết một loài sinh vật biển theo ID, Slug hoặc Code từ cơ sở dữ liệu
+ * @param {string|number} idOrSlug
+ * @returns {Promise<Object|null>}
+ */
+export const fetchSpeciesDetail = async (idOrSlug) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species/${idOrSlug}`);
+    if (response.data && response.data.success) {
+      return response.data.data;
+    }
+    return null;
+  } catch (error) {
+    console.warn(`Không thể lấy chi tiết loài ${idOrSlug} từ API:`, error.message);
+    return null;
+  }
+};
+
+

@@ -206,6 +206,13 @@ export function SpeciesDetailHero({ species }) {
                   alt={`${species.nameVi} - ảnh ${idx + 1}`}
                   className="w-full h-full object-cover select-none"
                   draggable={false}
+                  onError={(e) => {
+                    if (species.image && e.currentTarget.src !== species.image) {
+                      e.currentTarget.src = species.image;
+                    } else {
+                      e.currentTarget.src = "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&auto=format&fit=crop";
+                    }
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               </div>

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Eye, EyeOff, Box, ChevronDown, ChevronUp } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { Ocean3DBg } from "../../assets/Images";
+import { fetchSpeciesDetail } from "../../services/speciesApi";
 
 export default function SpeciesView3D() {
   const { id } = useParams();
@@ -13,7 +14,30 @@ export default function SpeciesView3D() {
   const [showInfo, setShowInfo] = useState(true);
   const [expandFacts, setExpandFacts] = useState(false);
 
-  const species = SEARCH_SPECIES_CATALOG.find((s) => s.id === id);
+  const [species, setSpecies] = useState(() => {
+    return (
+      SEARCH_SPECIES_CATALOG.find((s) => s.id === id || s.slug === id) ||
+      SEARCH_SPECIES_CATALOG[0]
+    );
+  });
+
+  useEffect(() => {
+    if (id) {
+      fetchSpeciesDetail(id).then((apiData) => {
+        if (!apiData) return;
+        setSpecies((prev) => ({
+          ...prev,
+          id: apiData.id || id,
+          slug: apiData.slug || id,
+          nameVi: apiData.commonName || prev?.nameVi,
+          nameEn: apiData.commonName || prev?.nameEn,
+          sciName: apiData.scientificName || prev?.sciName,
+          descVi: apiData.description || prev?.descVi,
+          descEn: apiData.description || prev?.descEn,
+        }));
+      });
+    }
+  }, [id]);
 
   if (!species) {
     return (

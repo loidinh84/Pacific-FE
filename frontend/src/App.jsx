@@ -7,6 +7,7 @@ import ResetPassword from "./pages/ResetPassword";
 import SpeciesDetail from "./pages/SpeciesDetail";
 import OceanDepth from "./pages/OceanDepth";
 import SpeciesView3D from "./pages/SpeciesView3D";
+import KnowledgeGraph from "./pages/KnowledgeGraph";
 import { AdminRoute, ClientRoute, GuestRoute, UserProtectedRoute } from "./components/ProtectedRoute";
 import ProfileLayout from "./pages/Profile";
 
@@ -66,6 +67,14 @@ function App() {
           element={
             <ClientRoute>
               <SpeciesView3D />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/knowledge-graph"
+          element={
+            <ClientRoute>
+              <KnowledgeGraph />
             </ClientRoute>
           }
         />
