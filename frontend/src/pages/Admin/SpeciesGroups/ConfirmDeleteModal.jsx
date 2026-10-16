@@ -13,12 +13,16 @@ export default function ConfirmDeleteModal({
   if (!isOpen || !group) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-150 ${
+        isDark ? "bg-black/30 text-white" : "bg-slate-900/30 text-slate-800"
+      }`}
+    >
       <div
         className={`relative w-full max-w-sm rounded-3xl border p-6 shadow-2xl transition-all ${
           isDark
-            ? "bg-[#18254b]/95 border-white/15 text-white shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
-            : "bg-white border-slate-200 text-slate-900 shadow-xl"
+            ? "bg-[#142247]/95 border-rose-500/40 text-white shadow-[0_25px_60px_rgba(0,0,0,0.7),0_0_35px_rgba(244,63,94,0.18)]"
+            : "bg-white border-slate-300 text-slate-900 shadow-2xl"
         }`}
       >
         <div className="flex flex-col items-center text-center">

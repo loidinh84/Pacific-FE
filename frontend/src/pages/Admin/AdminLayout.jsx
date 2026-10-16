@@ -1,44 +1,95 @@
-import { useState, useRef } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Settings, Sun, Moon, LogOut, ExternalLink } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import { Settings, Sun, Moon, LogOut, User, ChevronDown } from "lucide-react";
 import * as Images from "../../assets/Images";
 import { useTheme } from "../../hooks/useTheme";
 import { useClickOutside } from "../../hooks/useClickOutside";
+import { getStoredUser, clearStoredAuth } from "../../utils/auth";
+import { fetchAdminNotifications } from "../../services/adminUserApi";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toggleTheme, isDark } = useTheme();
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
+  const [notifications, setNotifications] = useState({
+    pendingReports: 0,
+    pendingUsers: 0,
+  });
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
 
-  const storedUser =
-    localStorage.getItem("pacific_user") ||
-    localStorage.getItem("user") ||
-    sessionStorage.getItem("pacific_user") ||
-    sessionStorage.getItem("user");
+  // Tải và cập nhật số lượng thông báo kiểm duyệt: khi đổi trang, định kỳ và khi có thao tác xử lý
+  useEffect(() => {
+    let ignore = false;
+    const load = async () => {
+      try {
+        const res = await fetchAdminNotifications();
+        if (!ignore && res?.success) {
+          setNotifications(res.data);
+        }
+      } catch (err) {
+        console.warn(
+          "Không thể tải thông báo quản trị viên:",
+          err?.message || err,
+        );
+      }
+    };
+    load();
+    const interval = setInterval(load, 30000);
+    window.addEventListener("pacific_admin_notification_update", load);
+    return () => {
+      ignore = true;
+      clearInterval(interval);
+      window.removeEventListener("pacific_admin_notification_update", load);
+    };
+  }, [location.pathname]);
 
-  let currentUser = { username: "Admin 1", email: "admin@pacific.org" };
-  if (storedUser) {
+  const [currentUser, setCurrentUser] = useState(
+    () => getStoredUser() || { username: "Admin", email: "admin@pacific.org" },
+  );
+
+  useEffect(() => {
+    const handler = () => {
+      setCurrentUser(
+        getStoredUser() || { username: "Admin", email: "admin@pacific.org" },
+      );
+    };
+    window.addEventListener("pacific_auth_change", handler);
+    return () => window.removeEventListener("pacific_auth_change", handler);
+  }, []);
+
+  const [systemSettings, setSystemSettings] = useState(() => {
     try {
-      currentUser = JSON.parse(storedUser);
-    } catch (error) {
-      console.warn("Lỗi parse thông tin user từ storage:", error);
+      const saved = localStorage.getItem("pacific_system_settings");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
     }
-  }
+  });
+
+  useEffect(() => {
+    const handleSettingsUpdate = (e) => {
+      if (e.detail) setSystemSettings(e.detail);
+    };
+    window.addEventListener("pacific_settings_update", handleSettingsUpdate);
+    return () =>
+      window.removeEventListener(
+        "pacific_settings_update",
+        handleSettingsUpdate,
+      );
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("pacific_token");
-    localStorage.removeItem("pacific_user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("pacific_token");
-    sessionStorage.removeItem("pacific_user");
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
-    window.dispatchEvent(new Event("pacific_auth_change"));
+    clearStoredAuth();
     setIsUserMenuOpen(false);
     navigate("/login");
   };
@@ -48,27 +99,43 @@ export default function AdminLayout() {
     { label: "Sinh vật", path: "/admin/species" },
     { label: "Nhóm sinh vật", path: "/admin/groups" },
     { label: "Địa điểm", path: "/admin/locations" },
-    { label: "Người dùng", path: "/admin/users" },
-    { label: "Bình luận", path: "/admin/comments" },
+    {
+      label: "Người dùng",
+      path: "/admin/users",
+      badge: notifications.pendingUsers,
+    },
+    {
+      label: "Bình luận",
+      path: "/admin/comments",
+      badge: notifications.pendingReports,
+    },
+    { label: "Câu đố", path: "/admin/quiz" },
   ];
 
   return (
     <div
-      className={`min-h-screen flex flex-col transition-colors duration-300 font-sans ${
-        isDark ? "bg-[#0b1329] text-white" : "bg-[#f4f7fb] text-slate-900"
+      className={`min-h-screen flex flex-col transition-colors duration-300 font-sans relative ${
+        isDark ? "bg-[#1b254b] text-white" : "bg-[#f4f7fb] text-slate-900"
       }`}
     >
+      {/* Subtle Ambient Ocean Light */}
+      {isDark && (
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.22)_0%,rgba(6,182,212,0.08)_40%,transparent_70%)] pointer-events-none z-0" />
+      )}
+
       {/* ── 1. TOP HEADER (LOGO + RIGHT CONTROLS) ── */}
       <header
-        className={`w-full border-b transition-colors duration-300 ${
-          isDark ? "bg-[#0f1b38] border-white/10" : "bg-white border-slate-200"
+        className={`w-full border-b transition-colors duration-300 relative z-10 ${
+          isDark
+            ? "bg-[#151f42]/90 backdrop-blur-md border-white/10"
+            : "bg-white border-slate-200"
         }`}
       >
         <div className="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between gap-4">
-          {/* Left: Logo */}
+          {/* Left: Logo & Site Name */}
           <Link to="/admin" className="flex items-center gap-3 group">
             <img
-              src={Images.Logo}
+              src={systemSettings?.general?.logoUrl || Images.Logo}
               alt="Pacific Logo"
               className="w-8 h-8 object-contain group-hover:scale-105 transition-transform"
             />
@@ -77,7 +144,7 @@ export default function AdminLayout() {
                 isDark ? "text-white" : "text-slate-900"
               }`}
             >
-              Pacific
+              {systemSettings?.general?.websiteName || "Pacific"}
             </span>
           </Link>
 
@@ -106,8 +173,8 @@ export default function AdminLayout() {
                   isActive
                     ? "text-cyan-400 font-bold"
                     : isDark
-                    ? "text-white/80 hover:text-white"
-                    : "text-slate-700 hover:text-slate-900"
+                      ? "text-white/80 hover:text-white"
+                      : "text-slate-700 hover:text-slate-900"
                 }`
               }
             >
@@ -119,7 +186,7 @@ export default function AdminLayout() {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className={`flex items-center gap-1 text-sm font-serif italic tracking-wide transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 text-sm transition-colors cursor-pointer ${
                   isDark
                     ? "text-white/90 hover:text-white"
                     : "text-slate-800 hover:text-black"
@@ -127,10 +194,16 @@ export default function AdminLayout() {
               >
                 <span>
                   Xin chào,{" "}
-                  <strong className="font-semibold not-italic font-sans text-cyan-400">
-                    [{currentUser.username || "Admin"}]
+                  <strong className="font-semibold text-cyan-400">
+                    {currentUser.username || "Admin"}
                   </strong>
                 </span>
+                <ChevronDown
+                  size={13}
+                  className={`text-slate-400 transition-transform duration-200 ${
+                    isUserMenuOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
 
               {/* User Dropdown */}
@@ -151,13 +224,14 @@ export default function AdminLayout() {
                     </p>
                   </div>
                   <Link
-                    to="/"
-                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl transition-colors cursor-pointer ${
-                      isDark ? "hover:bg-white/5" : "hover:bg-slate-100"
+                    to="/admin/profile"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs rounded-xl text-cyan-300 font-medium transition-colors cursor-pointer mb-0.5 ${
+                      isDark ? "hover:bg-cyan-500/10" : "hover:bg-cyan-50"
                     }`}
                   >
-                    <ExternalLink size={13} className="text-cyan-400" />
-                    <span>Trang chủ Pacific</span>
+                    <User size={13} />
+                    <span>Hồ sơ của tôi</span>
                   </Link>
                   <button
                     onClick={handleLogout}
@@ -189,18 +263,23 @@ export default function AdminLayout() {
               key={tab.path}
               to={tab.path}
               className={({ isActive }) =>
-                `px-3 py-1 rounded-full text-md font-bold transition-all whitespace-nowrap cursor-pointer ${
+                `relative px-3.5 py-1 rounded-full text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
                   isActive
                     ? isDark
                       ? "bg-[#435f9f] text-white font-bold shadow-sm"
                       : "bg-white text-blue-800 font-bold shadow-sm"
                     : isDark
-                      ? "text-white/80 hover:text-gray-400"
+                      ? "text-white/80 hover:text-white hover:bg-white/10"
                       : "text-slate-700 hover:text-slate-950 hover:bg-white/60"
                 }`
               }
             >
-              {tab.label}
+              <span>{tab.label}</span>
+              {tab.badge > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center leading-none">
+                  {tab.badge > 99 ? "99+" : tab.badge}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
