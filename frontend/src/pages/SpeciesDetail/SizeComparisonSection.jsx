@@ -1,27 +1,59 @@
 import { useState, useMemo } from "react";
-import { Ruler, Scale, User, Ship, Compass, Info, ArrowRightLeft } from "lucide-react";
+import { Ruler, Scale, User, Compass, ArrowRightLeft } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
+import { SubmarineIcon, CarIcon, BusIcon } from "../../assets/Icons";
 
+// Hệ quy chiếu kích thước chuẩn trực quan (Human & Familiar Objects Scale)
 const REFERENCES = {
+  human: {
+    id: "human",
+    nameVi: "Con người",
+    nameEn: "Adult Human",
+    lengthM: 1.7,
+    weightKg: 70,
+    Icon: User,
+    descVi: "Chiều cao chuẩn người trưởng thành (1.7m)",
+    descEn: "Standard adult human height (~1.7m)",
+  },
   diver: {
     id: "diver",
-    nameVi: "Thợ lặn trưởng thành",
-    nameEn: "Human Scuba Diver",
+    nameVi: "Thợ lặn",
+    nameEn: "Scuba Diver",
     lengthM: 1.8,
     weightKg: 75,
-    icon: User,
-    descVi: "Chiều cao trung bình thợ lặn có trang bị chân vịt (~1.8m)",
-    descEn: "Standard adult scuba diver with fins (~1.8m)",
+    Icon: User,
+    descVi: "Thợ lặn trang bị chân vịt chuyên dụng (~1.8m)",
+    descEn: "Scuba diver equipped with swim fins (~1.8m)",
+  },
+  car: {
+    id: "car",
+    nameVi: "Xe ô tô 4 chỗ",
+    nameEn: "Family Sedan",
+    lengthM: 4.5,
+    weightKg: 1500,
+    Icon: CarIcon,
+    descVi: "Chiều dài trung bình của xe hơi 4 chỗ (~4.5m)",
+    descEn: "Average length of a standard 4-seater car (~4.5m)",
   },
   submersible: {
     id: "submersible",
-    nameVi: "Tàu lặn nghiên cứu",
-    nameEn: "Research Submersible",
+    nameVi: "Tàu lặn ngầm",
+    nameEn: "Submersible",
     lengthM: 6.5,
     weightKg: 8000,
-    icon: Ship,
-    descVi: "Tàu ngầm lặn sâu thám hiểm hải dương học (~6.5m)",
+    Icon: SubmarineIcon,
+    descVi: "Tàu lặn nghiên cứu thám hiểm hải dương (~6.5m)",
     descEn: "Deep-sea oceanographic research submarine (~6.5m)",
+  },
+  bus: {
+    id: "bus",
+    nameVi: "Xe buýt đô thị",
+    nameEn: "City Bus",
+    lengthM: 12.0,
+    weightKg: 14000,
+    Icon: BusIcon,
+    descVi: "Chiều dài quy chuẩn của một chiếc xe buýt (~12m)",
+    descEn: "Standard urban transit bus length (~12m)",
   },
 };
 
@@ -29,15 +61,14 @@ export function SizeComparisonSection({ species }) {
   const { language } = useLanguage();
   const isEn = language === "en";
 
-  const [selectedRefKey, setSelectedRefKey] = useState("diver");
-  const currentRef = REFERENCES[selectedRefKey] || REFERENCES.diver;
+  const [selectedRefKey, setSelectedRefKey] = useState("human");
+  const currentRef = REFERENCES[selectedRefKey] || REFERENCES.human;
 
   // Trích xuất chiều dài tính theo mét
   const speciesLengthM = useMemo(() => {
     if (species?.sizeMaxCm) return Number(species.sizeMaxCm) / 100;
     if (species?.sizeMinCm) return Number(species.sizeMinCm) / 100;
 
-    // Phân tích từ chuỗi (vd "3.4m - 6m", "18m", "6m")
     if (typeof species?.size === "string") {
       const matches = species.size.match(/(\d+(\.\d+)?)/g);
       if (matches && matches.length > 0) {
@@ -69,7 +100,7 @@ export function SizeComparisonSection({ species }) {
   const lengthRatio = (speciesLengthM / currentRef.lengthM).toFixed(1);
   const weightRatio = (speciesWeightKg / currentRef.weightKg).toFixed(1);
 
-  // Tính % bề rộng hiển thị trong khung tỉ lệ (khung biểu diễn max 15m hoặc lớn hơn)
+  // Tính % bề rộng hiển thị trong khung tỉ lệ
   const maxScaleM = Math.max(12, speciesLengthM * 1.25, currentRef.lengthM * 1.5);
   const speciesPercent = Math.min(94, Math.max(12, (speciesLengthM / maxScaleM) * 100));
   const refPercent = Math.min(94, Math.max(10, (currentRef.lengthM / maxScaleM) * 100));
@@ -78,6 +109,8 @@ export function SizeComparisonSection({ species }) {
     ? species?.nameEn || species?.commonName || "Marine Creature"
     : species?.nameVi || species?.commonName || "Sinh vật biển";
 
+  const CurrentRefIcon = currentRef.Icon;
+
   return (
     <section className="py-14 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10">
       {/* ── HEADER ── */}
@@ -85,34 +118,35 @@ export function SizeComparisonSection({ species }) {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold mb-2.5">
             <Ruler size={13} />
-            <span>{isEn ? "Morphometrics & Allometry" : "Đo Đạc Hình Thái Học"}</span>
+            <span>{isEn ? "Morphometrics & allometry" : "Đo đạc hình thái học"}</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-white font-heading tracking-tight">
-            {isEn ? "Comparative Size Scale" : "Tương Quan Kích Thước Sinh Thái"}
+            {isEn ? "Comparative size scale" : "Tương quan kích thước sinh thái"}
           </h2>
           <p className="text-slate-400 text-sm mt-1 max-w-2xl">
             {isEn
-              ? `Visual length and mass comparison between ${speciesName} and standard reference models.`
-              : `Mô phỏng trực quan tương quan kích thước chiều dài và khối lượng thực tế giữa ${speciesName} và các vật chuẩn đại dương.`}
+              ? `Visual length and mass comparison between ${speciesName} and familiar daily objects or human reference models.`
+              : `Mô phỏng trực quan tương quan kích thước chiều dài và khối lượng thực tế giữa ${speciesName} và các vật thể quen thuộc (con người, xe hơi, xe buýt, tàu lặn).`}
           </p>
         </div>
 
-        {/* Nút chọn đối tượng so sánh */}
-        <div className="flex items-center gap-2 bg-[#081a30]/80 p-1.5 rounded-xl border border-white/10 backdrop-blur-md">
+        {/* Danh sách các vật mẫu quen thuộc để người xem dễ hình dung */}
+        <div className="flex flex-wrap items-center gap-1.5 bg-[#081a30]/80 p-1.5 rounded-xl border border-white/10 backdrop-blur-md">
           {Object.values(REFERENCES).map((ref) => {
-            const Icon = ref.icon;
+            const RefIcon = ref.Icon;
             const isSelected = selectedRefKey === ref.id;
             return (
               <button
                 key={ref.id}
                 onClick={() => setSelectedRefKey(ref.id)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
                     ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.25)]"
                     : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
                 }`}
+                title={isEn ? ref.descEn : ref.descVi}
               >
-                <Icon size={14} />
+                <RefIcon className="w-3.5 h-3.5 stroke-current" />
                 <span>{isEn ? ref.nameEn : ref.nameVi}</span>
               </button>
             );
@@ -125,16 +159,20 @@ export function SizeComparisonSection({ species }) {
         {/* Lưới tọa độ thước đo nền */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
-        {/* Water ambient glow */}
+        {/* Ambient glow */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Thước đo mét trên đỉnh */}
-        <div className="relative z-10 flex items-center justify-between text-[11px] font-mono text-slate-500 border-b border-white/10 pb-2 mb-8">
-          <span>0m</span>
+        {/* Thước đo mét chuẩn vạch số (Metric Ruler) */}
+        <div className="relative z-10 flex items-center justify-between text-[11px] font-mono text-slate-400 border-b border-white/15 pb-2 mb-8">
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-3 bg-cyan-400 inline-block rounded-xs" /> 0m
+          </span>
           <span>{(maxScaleM * 0.25).toFixed(1)}m</span>
           <span>{(maxScaleM * 0.5).toFixed(1)}m</span>
           <span>{(maxScaleM * 0.75).toFixed(1)}m</span>
-          <span>{maxScaleM.toFixed(1)}m</span>
+          <span className="flex items-center gap-1">
+            {maxScaleM.toFixed(1)}m <span className="w-1.5 h-3 bg-cyan-400 inline-block rounded-xs" />
+          </span>
         </div>
 
         {/* Khung trực quan hóa 2 sinh vật */}
@@ -157,12 +195,11 @@ export function SizeComparisonSection({ species }) {
                 className="h-full rounded-lg bg-gradient-to-r from-cyan-600 via-sky-500 to-teal-400 flex items-center px-3 relative transition-all duration-700 ease-out shadow-[0_0_15px_rgba(56,189,248,0.3)]"
                 style={{ width: `${speciesPercent}%` }}
               >
-                {/* Ảnh đại diện nhỏ dạng cắt */}
                 {species?.image && (
                   <img
                     src={species.image}
                     alt={speciesName}
-                    className="w-8 h-8 rounded-full object-cover mr-2 border border-white/40 shadow-sm"
+                    className="w-8 h-8 rounded-full object-cover mr-2 border border-white/40 shadow-sm shrink-0"
                   />
                 )}
                 <span className="text-[11px] font-bold text-white tracking-wide truncate">
@@ -190,7 +227,7 @@ export function SizeComparisonSection({ species }) {
                 className="h-full rounded-lg bg-gradient-to-r from-slate-600 to-slate-400 flex items-center px-3 relative transition-all duration-700 ease-out"
                 style={{ width: `${refPercent}%` }}
               >
-                <currentRef.icon size={18} className="text-white/80 mr-2 flex-shrink-0" />
+                <CurrentRefIcon className="w-4 h-4 text-white/90 mr-2 shrink-0 stroke-current" />
                 <span className="text-[11px] font-bold text-white tracking-wide truncate">
                   {isEn ? currentRef.nameEn : currentRef.nameVi} ({currentRef.lengthM}m)
                 </span>
@@ -204,7 +241,7 @@ export function SizeComparisonSection({ species }) {
           {/* Thẻ 1: Tương quan chiều dài */}
           <div className="bg-[#071324]/80 p-4 rounded-xl border border-white/10">
             <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
-              <span>{isEn ? "Relative Length" : "Tỉ Lệ Chiều Dài"}</span>
+              <span>{isEn ? "Relative length" : "Tỉ lệ chiều dài"}</span>
               <ArrowRightLeft size={14} className="text-cyan-400" />
             </div>
             <div className="text-xl font-bold text-white font-heading">
@@ -220,15 +257,15 @@ export function SizeComparisonSection({ species }) {
             </div>
             <p className="text-[11px] text-slate-400 mt-1">
               {isEn
-                ? `${speciesName} is ${lengthRatio}x the size of a ${currentRef.nameEn}.`
-                : `${speciesName} dài gấp ${lengthRatio} lần kích thước ${currentRef.nameVi.toLowerCase()}.`}
+                ? `${speciesName} is ${lengthRatio}x the size of ${currentRef.nameEn.toLowerCase()}.`
+                : `${speciesName} dài gấp ${lengthRatio} lần kích thước của ${currentRef.nameVi.toLowerCase()}.`}
             </p>
           </div>
 
           {/* Thẻ 2: Tương quan cân nặng */}
           <div className="bg-[#071324]/80 p-4 rounded-xl border border-white/10">
             <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
-              <span>{isEn ? "Relative Mass" : "Tỉ Lệ Khối Lượng"}</span>
+              <span>{isEn ? "Relative mass" : "Tỉ lệ khối lượng"}</span>
               <Scale size={14} className="text-amber-400" />
             </div>
             <div className="text-xl font-bold text-white font-heading">
@@ -252,7 +289,7 @@ export function SizeComparisonSection({ species }) {
           {/* Thẻ 3: Môi trường & phân tầng độ sâu */}
           <div className="bg-[#071324]/80 p-4 rounded-xl border border-white/10">
             <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
-              <span>{isEn ? "Ocean Zone Depth" : "Phân Phối Độ Sâu"}</span>
+              <span>{isEn ? "Ocean zone depth" : "Phân phối độ sâu"}</span>
               <Compass size={14} className="text-emerald-400" />
             </div>
             <div className="text-xl font-bold text-white font-heading">

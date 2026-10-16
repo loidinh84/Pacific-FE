@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import * as echarts from "echarts";
 import {
   Network,
-  Share2,
   ExternalLink,
   Target,
   ShieldAlert,
@@ -14,9 +13,7 @@ import {
   RotateCcw,
   Sparkles,
   Layers,
-  ArrowRight,
   Compass,
-  Info,
 } from "lucide-react";
 import { fetchSpeciesEcosystem } from "../../services/ecosystemApi";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -287,7 +284,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             const meta = ECOLOGICAL_RELATION_META[raw?.type] || {};
             return `
               <div style="font-family: inherit; font-size: 12px; line-height: 1.4; max-width: 290px;">
-                <div style="font-weight: 700; color: ${meta.color || "#38bdf8"}; margin-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
+                <div style="font-weight: 700; color: ${meta.color || "#38bdf8"}; margin-bottom: 4px; font-size: 11px; letter-spacing: 0.3px;">
                   ${isEn ? meta.labelEn : meta.labelVi}
                 </div>
                 ${raw?.description ? `<div style="color: #e2e8f0; font-size: 11px; margin-bottom: 6px; line-height: 1.45;">${raw.description}</div>` : ""}
@@ -438,32 +435,14 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
   return (
     <section className="py-14 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10">
-      {/* ─── 1. HEADER SECTION CHUẨN HỌC THUẬT ──────────────────────── */}
+      {/* ─── 1. HEADER SECTION ──────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-2.5">
-            <Network size={14} />
-            <span>{isEn ? "Marine Trophic & Ecological Network" : "Hệ Tri Thức Sinh Thái & Chuỗi Thức Ăn Biển Đông"}</span>
-          </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white font-heading tracking-tight">
-            {isEn ? "Ecosystem Dynamics & Trophic Matrix" : "Mạng Lưới Sinh Thái & Chuỗi Thức Ăn"}
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white font-heading tracking-tight flex items-center gap-2.5">
+            <Network size={22} className="text-cyan-400" />
+            {isEn ? "Ecosystem dynamics & trophic matrix" : "Mạng lưới sinh thái & chuỗi thức ăn"}
           </h2>
-          <p className="text-sm text-slate-300/90 mt-1.5 max-w-2xl leading-relaxed">
-            {isEn
-              ? "Mapping predatory flows, mutualistic symbiosis, and biogenic habitat dependencies established from Vietnamese East Sea marine research."
-              : "Mô hình hóa chuỗi thức ăn, quan hệ tương hỗ và sinh cảnh kiến tạo dựa trên dữ liệu nghiên cứu hải dương học tại vùng Biển Đông Việt Nam."}
-          </p>
         </div>
-
-        {/* Nút mở toàn cảnh Đồ thị Tri thức */}
-        <Link
-          to="/knowledge-graph"
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs font-bold transition-all shadow-lg shadow-cyan-950/40 shrink-0 cursor-pointer"
-        >
-          <Share2 size={14} />
-          <span>{isEn ? "Open Global Knowledge Graph" : "Mở Toàn Cảnh Đồ Thị Tri Thức"}</span>
-          <ArrowRight size={13} />
-        </Link>
       </div>
 
       {/* ─── 2. BIỂU ĐỒ EGO NETWORK GRAPH (ECHARTS CHÂN THỰC) ───────── */}
@@ -472,8 +451,8 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         <div className="px-5 py-3.5 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02]">
           <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-xs font-bold text-white uppercase tracking-wider">
-              {isEn ? "Ego Trophic Web Simulation" : "Mô Phỏng Mạng Lưới Sinh Thái Tập Trung"}
+            <span className="text-xs font-bold text-white tracking-wider">
+              {isEn ? "Ego trophic web" : "Mạng lưới sinh thái"}
             </span>
             <span className="text-[11px] px-2 py-0.5 rounded bg-white/10 text-slate-300 font-mono">
               {totalRelations} {isEn ? "interactions" : "mối liên kết"}
@@ -533,8 +512,15 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           )}
 
           {/* Ghi chú điều hướng tương tác */}
-          <div className="absolute bottom-3 left-4 pointer-events-none text-[10px] text-slate-500 bg-[#040e1b]/70 px-2.5 py-1 rounded border border-white/5">
-            * Kéo thả node để điều chỉnh trọng lực • Cuộn chuột để Phóng to / Thu nhỏ • Di chuột xem dữ liệu sinh thái
+          <div className="absolute bottom-3 left-4 pointer-events-none text-[11px] text-slate-300 bg-[#040e1b]/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 flex items-center gap-2 shadow-md">
+            <span className="flex items-center gap-1.5 text-cyan-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+              {isEn ? "Scroll to zoom" : "Cuộn để phóng to"}
+            </span>
+            <span className="text-white/20">•</span>
+            <span>{isEn ? "Drag to pan" : "Kéo để di chuyển"}</span>
+            <span className="text-white/20">•</span>
+            <span>{isEn ? "Hover node for info" : "Rê chuột xem chi tiết"}</span>
           </div>
         </div>
       </div>
@@ -551,7 +537,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 </div>
                 <div>
                   <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Prey & Dietary Base" : "Con Mồi & Nguồn Dinh Dưỡng"}
+                    {isEn ? "Prey & dietary base" : "Con mồi & nguồn dinh dưỡng"}
                   </h3>
                   <p className="text-[11px] text-slate-400">
                     Các loài sinh vật là thức ăn trực tiếp, cung cấp dòng năng lượng nuôi dưỡng loài này
@@ -578,7 +564,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 </div>
                 <div>
                   <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Trophic Predators & Apex Threats" : "Động Vật Ăn Thịt & Thiên Địch"}
+                    {isEn ? "Trophic predators & apex threats" : "Động vật ăn thịt & thiên địch"}
                   </h3>
                   <p className="text-[11px] text-slate-400">
                     Các loài săn bắt loài này, giữ vai trò kiểm soát kích thước quần thể trong chuỗi thức ăn
@@ -605,7 +591,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 </div>
                 <div>
                   <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Symbiotic & Mutualistic Network" : "Cộng Sinh Tương Hỗ & Hội Sinh"}
+                    {isEn ? "Symbiotic & mutualistic network" : "Cộng sinh tương hỗ & hội sinh"}
                   </h3>
                   <p className="text-[11px] text-slate-400">
                     Mối liên kết hai bên cùng có lợi hoặc nương tựa sinh thái giúp tăng khả năng sinh tồn
@@ -632,7 +618,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 </div>
                 <div>
                   <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Biogenic Habitat & Nursery Foundation" : "Sinh Cảnh Kiến Tạo & Nơi Nương Tựa"}
+                    {isEn ? "Biogenic habitat & nursery foundation" : "Sinh cảnh kiến tạo & nơi nương tựa"}
                   </h3>
                   <p className="text-[11px] text-slate-400">
                     Rạn san hô, thảm cỏ biển và rừng ngập mặn cung cấp bãi đẻ, bãi ươm và nơi ẩn náu
@@ -659,7 +645,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 </div>
                 <div>
                   <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Niche Competition" : "Cạnh Tranh Ổ Sinh Thái"}
+                    {isEn ? "Niche competition" : "Cạnh tranh ổ sinh thái"}
                   </h3>
                   <p className="text-[11px] text-slate-400">
                     Cạnh tranh nguồn thức ăn và không gian sống trong cùng phân vùng sinh thái

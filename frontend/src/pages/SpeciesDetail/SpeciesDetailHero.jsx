@@ -282,7 +282,7 @@ export function SpeciesDetailHero({ species }) {
 
         {/* Bảng phân loại khoa học (Bố cục 4 cột rộng rãi) */}
         <div className="bg-[#0b172a] border border-white/10 rounded-2xl p-5">
-          <p className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-4 flex items-center gap-2">
+          <p className="text-white/60 text-xs font-semibold tracking-wider mb-4 flex items-center gap-2">
             <Compass size={14} className="text-cyan-400" />
             {t("speciesDetail.taxonomyTitle")}
           </p>
@@ -344,7 +344,7 @@ export function SpeciesDetailHero({ species }) {
               <Gauge size={16} />
             </div>
             <div>
-              <span className="text-white/40 text-[10px] block uppercase font-medium">{t("speciesDetail.maxSize")}</span>
+              <span className="text-white/50 text-[11px] block font-medium">{t("speciesDetail.maxSize")}</span>
               <span className="text-white font-bold text-xs sm:text-sm">{size}</span>
             </div>
           </div>
@@ -354,7 +354,7 @@ export function SpeciesDetailHero({ species }) {
               <Compass size={16} />
             </div>
             <div>
-              <span className="text-white/40 text-[10px] block uppercase font-medium">{t("speciesDetail.depthZone")}</span>
+              <span className="text-white/50 text-[11px] block font-medium">{t("speciesDetail.depthZone")}</span>
               <span className="text-white font-bold text-xs sm:text-sm">{species.depth}</span>
             </div>
           </div>
@@ -364,7 +364,7 @@ export function SpeciesDetailHero({ species }) {
               <Sparkles size={16} />
             </div>
             <div>
-              <span className="text-white/40 text-[10px] block uppercase font-medium">{t("speciesDetail.weight")}</span>
+              <span className="text-white/50 text-[11px] block font-medium">{t("speciesDetail.weight")}</span>
               <span className="text-white font-bold text-xs sm:text-sm">{weight || (language === "en" ? "Updating" : "Đang cập nhật")}</span>
             </div>
           </div>
@@ -374,7 +374,7 @@ export function SpeciesDetailHero({ species }) {
               <ShieldAlert size={16} />
             </div>
             <div>
-              <span className="text-white/40 text-[10px] block uppercase font-medium">{t("speciesDetail.conservationStatus")}</span>
+              <span className="text-white/50 text-[11px] block font-medium">{t("speciesDetail.conservationStatus")}</span>
               <span className="text-rose-300 font-bold text-xs sm:text-sm">{status}</span>
             </div>
           </div>
@@ -383,7 +383,7 @@ export function SpeciesDetailHero({ species }) {
         {/* 4 Chuyên đề đặc điểm sinh thái học chuyên sâu */}
         {scientificDossier.length > 0 && (
           <div className="space-y-3 pt-2">
-            <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider">
+            <h3 className="text-sm font-semibold text-white/80 tracking-wide">
               {t("speciesDetail.bioFeatures")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -394,7 +394,7 @@ export function SpeciesDetailHero({ species }) {
                 >
                   <div className="flex items-center gap-2">
                     {dossierIcons[idx % dossierIcons.length]}
-                    <span className="text-cyan-400 text-xs font-bold tracking-wide uppercase">
+                    <span className="text-cyan-400 text-xs font-bold tracking-wide">
                       {dossier.category}
                     </span>
                   </div>

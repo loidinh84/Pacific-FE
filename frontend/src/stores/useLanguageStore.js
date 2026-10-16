@@ -31,8 +31,8 @@ export const useLanguageStore = create((set, get) => ({
   },
 
   // Translation helper function
-  t: (pathOrText) => {
-    if (!pathOrText) return "";
+  t: (pathOrText, fallback) => {
+    if (!pathOrText) return fallback || "";
     const { language, dynamicTranslations, translateDynamic } = get();
 
     // 1. Try finding in fixed dictionary by path key (e.g. "nav.explore")
@@ -50,6 +50,28 @@ export const useLanguageStore = create((set, get) => ({
 
     if (current && typeof current === "string") {
       return current;
+    }
+
+    // 1b. If not found in current language, try other language dictionary as fallback
+    const altLang = language === "vi" ? "en" : "vi";
+    if (translations[altLang]) {
+      let altCurrent = translations[altLang];
+      for (const key of keys) {
+        if (altCurrent && altCurrent[key] !== undefined) {
+          altCurrent = altCurrent[key];
+        } else {
+          altCurrent = null;
+          break;
+        }
+      }
+      if (altCurrent && typeof altCurrent === "string") {
+        return altCurrent;
+      }
+    }
+
+    // If explicit fallback provided
+    if (fallback !== undefined) {
+      return fallback;
     }
 
     // 2. If path key not found, fallback to raw text auto-translation

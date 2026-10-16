@@ -1,10 +1,27 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaFacebookF, FaYoutube, FaInstagram } from "react-icons/fa";
+import { CheckCircle2, Send } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import * as Images from "../../assets/Images";
 
 export default function Footer() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isEn = language === "en";
+  const [feedback, setFeedback] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleFeedbackSubmit = (e) => {
+    e.preventDefault();
+    if (!feedback.trim()) return;
+    setSubmitted(true);
+    setTimeout(() => {
+      setFeedback("");
+      setSubmitted(false);
+    }, 3500);
+  };
+
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-pacific-figma-dark border-t border-white/10 pt-16 pb-8 relative overflow-hidden text-white/70 text-sm">
@@ -88,13 +105,13 @@ export default function Footer() {
             </li>
             <li>
               <Link to="/ocean-depth" className="hover:text-pacific-cyan transition-colors">
-                {t("nav.oceanDepth") || "Độ sâu đại dương"}
+                {t("nav.oceanDepth", "Độ sâu đại dương")}
               </Link>
             </li>
             <li>
               <Link to="/knowledge-graph" className="hover:text-pacific-cyan transition-colors inline-flex items-center gap-1.5">
-                <span>{t("nav.knowledgeGraph") || "Đồ thị tri thức Biển Đông"}</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-500/30">Lab</span>
+                <span>{t("nav.knowledgeGraph", "Đồ thị tri thức")}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-500/30">Lab</span>
               </Link>
             </li>
             <li>
@@ -129,7 +146,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Col 4: Contact & Newsletter */}
+        {/* Col 4: Contact & Feedback */}
         <div>
           <h4 className="text-white font-bold mb-4 font-heading text-base">
             {t("footer.contactTitle")}
@@ -137,26 +154,43 @@ export default function Footer() {
           <p className="text-xs text-white/60 mb-3">
             {t("footer.contactDesc")}
           </p>
-          <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-3">
+          <form onSubmit={handleFeedbackSubmit} className="flex flex-col gap-2.5">
             <textarea
               rows={3}
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
               placeholder={t("footer.feedbackPlaceholder")}
-              className="px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-xs md:text-xs text-white focus:outline-none focus:border-pacific-blue-bright focus:bg-white/10 transition-all resize-none font-normal"
+              className="px-3.5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-white/35 focus:outline-none focus:border-cyan-400 focus:bg-white/10 transition-all resize-none font-normal"
             />
-            <button
-              type="submit"
-              className="py-2.5 bg-pacific-blue-bright hover:bg-pacific-blue-bright/80 text-white rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer active:translate-y-0.5"
-            >
-              {t("footer.btnSendFeedback")}
-            </button>
+            {submitted ? (
+              <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+                <CheckCircle2 size={15} />
+                <span>{isEn ? "Thank you for your feedback!" : "Cảm ơn bạn đã gửi ý kiến đóng góp!"}</span>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="py-2.5 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer active:translate-y-0.5 shadow-md shadow-cyan-950/40 flex items-center justify-center gap-2"
+              >
+                <Send size={13} />
+                <span>{t("footer.btnSendFeedback")}</span>
+              </button>
+            )}
           </form>
         </div>
       </div>
 
-      {/* Copyright Bar */}
+      {/* Copyright Bar - Harmonized & Clean Layout */}
       <div className="max-w-7xl mx-auto px-6 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/50">
-        <p>{t("footer.copyright")}</p>
-        <p>Pacific Ocean Explorations &copy; 2026</p>
+        <p className="flex items-center gap-1.5">
+          <span>&copy; {currentYear} Pacific.</span>
+          <span>{isEn ? "All rights reserved." : "Tất cả quyền được bảo lưu."}</span>
+        </p>
+        <div className="flex flex-wrap items-center gap-3 text-white/40">
+          <span>{t("footer.tagline", isEn ? "Marine biodiversity exploration & conservation platform" : "Nền tảng bảo tồn & khám phá đa dạng sinh học biển")}</span>
+          <span className="text-white/20 hidden sm:inline">•</span>
+          <span className="text-cyan-400/80 font-medium">Biển Đông & Thái Bình Dương</span>
+        </div>
       </div>
     </footer>
   );

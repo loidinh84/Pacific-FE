@@ -23,6 +23,45 @@ import ArrowBackLong from "./ArrowBackLong.svg?react";
 import ArrowDown from "./ArrowDown.svg?react";
 import Favorite from "./Favorite.svg?react";
 import Favorited from "./Favorited.svg?react";
-import Anchor from "./Anchor.svg?react"
+import Anchor from "./Anchor.svg?react";
+import JellyfishIcon from "./JellyfishIcon.svg?react";
+import OctopusIcon from "./OctopusIcon.svg?react";
+import SealIcon from "./SealIcon.svg?react";
+import LightbulbIcon from "./LightbulbIcon.svg?react";
+import CarIcon from "./CarIcon.svg?react";
+import BusIcon from "./BusIcon.svg?react";
 
-export { Add, ArrowBackLong, ArrowDown, Favorite, Favorited, Anchor, SunIcon, MoonIcon, FlashlightIcon, CircleDotIcon, SkullIcon, WaveIcon, DivingMaskIcon, SunsetIcon, DolphinIcon, WhaleIcon, SquidIcon, SharkIcon, FishIcon, CoralIcon, ShipIcon, GlobeIcon, SubmarineIcon, MapPinIcon, TurtleIcon, ShellIcon };
+export {
+  Add,
+  ArrowBackLong,
+  ArrowDown,
+  Favorite,
+  Favorited,
+  Anchor,
+  SunIcon,
+  MoonIcon,
+  FlashlightIcon,
+  CircleDotIcon,
+  SkullIcon,
+  WaveIcon,
+  DivingMaskIcon,
+  SunsetIcon,
+  DolphinIcon,
+  WhaleIcon,
+  SquidIcon,
+  SharkIcon,
+  FishIcon,
+  CoralIcon,
+  ShipIcon,
+  GlobeIcon,
+  SubmarineIcon,
+  MapPinIcon,
+  TurtleIcon,
+  ShellIcon,
+  JellyfishIcon,
+  OctopusIcon,
+  SealIcon,
+  LightbulbIcon,
+  CarIcon,
+  BusIcon,
+};

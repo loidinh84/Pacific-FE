@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Sparkles, Network, ArrowRight, ShieldAlert, MapPin, Zap } from "lucide-react";
+import { LightbulbIcon } from "../../assets/Icons";
 
 export function SemanticKnowledgeSection({
   loading,
@@ -30,9 +31,9 @@ export function SemanticKnowledgeSection({
         {/* ── HEADER ── */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/10 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-semibold tracking-wider mb-2">
               <Sparkles size={14} className="text-cyan-400 animate-pulse" />
-              <span>Phân Tích Tri Thức Ngữ Nghĩa Sinh Thái</span>
+              <span>Phân tích tri thức ngữ nghĩa sinh thái</span>
             </div>
             <h2 className="text-xl md:text-2xl font-extrabold text-white font-heading tracking-tight flex items-center gap-2">
               <span>Kết quả phân giải cho câu hỏi:</span>
@@ -131,8 +132,9 @@ export function SemanticKnowledgeSection({
 
                   {/* Diễn giải tri thức ngữ nghĩa (Scientific explanation box) */}
                   <div className="p-3 rounded-lg bg-black/30 border border-cyan-500/20 mb-3 text-xs text-slate-300 leading-relaxed font-sans">
-                    <p className="text-[11px] text-cyan-400/80 uppercase font-bold tracking-wider mb-1 flex items-center gap-1">
-                      <span>💡 Diễn giải tri thức sinh thái</span>
+                    <p className="text-[11px] text-cyan-400 font-bold tracking-wider mb-1 flex items-center gap-1.5">
+                      <LightbulbIcon className="w-3.5 h-3.5 text-amber-400 stroke-current shrink-0" />
+                      <span>Diễn giải tri thức sinh thái</span>
                     </p>
                     <p className="line-clamp-3">{item.semanticReason}</p>
                   </div>

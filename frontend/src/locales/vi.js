@@ -3,6 +3,8 @@ const vi = {
   nav: {
     explore: "Khám phá",
     species: "Sinh vật biển",
+    oceanDepth: "Độ sâu đại dương",
+    knowledgeGraph: "Đồ thị tri thức",
     about: "Về chúng tôi",
     quiz: "Trò chơi",
     register: "Đăng ký",
@@ -86,9 +88,10 @@ const vi = {
     contentPolicy: "Chính sách nội dung",
     contactTitle: "Đóng góp ý kiến",
     contactDesc: "Hãy chia sẻ cảm nghĩ của bạn!",
-    feedbackPlaceholder: "Hỏi nói theo cách bạn nghĩ...",
+    feedbackPlaceholder: "Hãy chia sẻ cảm nghĩ hoặc đóng góp ý kiến của bạn...",
     btnSendFeedback: "Gửi ý kiến",
     copyright: "© 2026 Pacific. Tất cả quyền được bảo lưu.",
+    tagline: "Nền tảng bảo tồn & khám phá đa dạng sinh học biển",
   },
   // Auth Pages
   auth: {

@@ -3,6 +3,8 @@ const en = {
   nav: {
     explore: "Explore",
     species: "Marine Life",
+    oceanDepth: "Ocean Depth",
+    knowledgeGraph: "Knowledge Graph",
     about: "About Us",
     quiz: "Quiz Game",
     register: "Register",
@@ -86,9 +88,10 @@ const en = {
     contentPolicy: "Content Policy",
     contactTitle: "Feedback & Suggestions",
     contactDesc: "Share your thoughts with us!",
-    feedbackPlaceholder: "Write your feedback...",
+    feedbackPlaceholder: "Write your feedback or thoughts...",
     btnSendFeedback: "Submit Feedback",
     copyright: "© 2026 Pacific. All rights reserved.",
+    tagline: "Marine biodiversity exploration & conservation platform",
   },
   // Auth Pages
   auth: {

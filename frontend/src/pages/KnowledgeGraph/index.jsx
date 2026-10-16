@@ -407,12 +407,12 @@ export default function KnowledgeGraph() {
         {/* ─── 1. HEADER SECTION CHUẨN KHOA HỌC ─────────────────────── */}
         <div className="mb-6 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 text-xs font-semibold tracking-wider mb-2">
               <Network size={14} />
-              <span>{isEn ? "East Sea Marine Knowledge Platform" : "Hệ Thống Tri Thức Sinh Thái Biển Đông"}</span>
+              <span>{isEn ? "East Sea marine knowledge platform" : "Hệ thống tri thức sinh thái Biển Đông"}</span>
             </div>
             <h1 className="text-2xl md:text-4xl font-extrabold text-white font-heading tracking-tight">
-              {isEn ? "East Sea Marine Ecosystem Knowledge Graph" : "Đồ Thị Tri Thức Đa Dạng Sinh Thái Biển Đông"}
+              {isEn ? "East Sea marine ecosystem knowledge graph" : "Đồ thị tri thức đa dạng sinh thái Biển Đông"}
             </h1>
             <p className="text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
               {isEn
@@ -425,19 +425,19 @@ export default function KnowledgeGraph() {
           <div className="flex items-center gap-3">
             <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-cyan-500/20 text-center">
               <div className="text-xl font-bold font-mono text-cyan-300">{stats.totalSpecies}</div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider">
-                {isEn ? "Species Nodes" : "Loài sinh vật"}
+              <div className="text-[10px] text-slate-400 tracking-wider">
+                {isEn ? "Species nodes" : "Loài sinh vật"}
               </div>
             </div>
             <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-cyan-500/20 text-center">
               <div className="text-xl font-bold font-mono text-white">{stats.totalLinks}</div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider">
-                {isEn ? "Trophic Links" : "Mối liên kết"}
+              <div className="text-[10px] text-slate-400 tracking-wider">
+                {isEn ? "Trophic links" : "Mối liên kết"}
               </div>
             </div>
             <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-rose-500/30 text-center">
               <div className="text-xl font-bold font-mono text-rose-400">{stats.threatenedCount}</div>
-              <div className="text-[10px] text-rose-300 uppercase tracking-wider">
+              <div className="text-[10px] text-rose-300 tracking-wider">
                 {isEn ? "Threatened" : "Sách Đỏ VN"}
               </div>
             </div>
@@ -534,7 +534,7 @@ export default function KnowledgeGraph() {
           <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2 pointer-events-auto">
             <span className="px-3 py-1 rounded-full bg-cyan-950/85 border border-cyan-500/40 text-cyan-300 text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-lg">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-              <span>{isEn ? "Force-directed Simulation" : "Mô Phỏng Trọng Lực Sinh Thái"}</span>
+              <span>{isEn ? "Force-directed simulation" : "Mô phỏng trọng lực sinh thái"}</span>
             </span>
 
             {/* Chú giải liên kết */}
@@ -609,9 +609,9 @@ export default function KnowledgeGraph() {
               <div>
                 {/* Header Drawer */}
                 <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                  <span className="text-[11px] font-bold tracking-wider text-cyan-400 flex items-center gap-1.5">
                     <Sparkles size={13} />
-                    <span>{isEn ? "Ecological Dossier" : "Hồ Sơ Quan Hệ Sinh Thái Học Thuật"}</span>
+                    <span>{isEn ? "Ecological dossier" : "Hồ sơ quan hệ sinh thái"}</span>
                   </span>
                   <button
                     onClick={() => setSelectedNode(null)}
@@ -662,11 +662,11 @@ export default function KnowledgeGraph() {
                 {/* Bảng thông số sinh thái học chi tiết */}
                 <div className="grid grid-cols-2 gap-2 text-xs mb-5 bg-white/[0.02] p-3 rounded-xl border border-white/5">
                   <div>
-                    <span className="text-slate-400 block text-[10px] uppercase tracking-wider">Mã định danh:</span>
+                    <span className="text-slate-400 block text-[10px] tracking-wider">Mã định danh:</span>
                     <span className="font-mono font-bold text-white text-[11px]">{selectedNode.code || "N/A"}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[10px] uppercase tracking-wider">Độ sâu sinh sống:</span>
+                    <span className="text-slate-400 block text-[10px] tracking-wider">Độ sâu sinh sống:</span>
                     <span className="font-mono text-cyan-300 text-[11px]">
                       {selectedNode.depthMin || 0}m - {selectedNode.depthMax || 50}m
                     </span>
@@ -676,7 +676,7 @@ export default function KnowledgeGraph() {
                 {/* Danh sách các mối liên kết sinh thái trong mạng lưới */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between pb-1 border-b border-white/10">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    <span className="text-xs font-bold tracking-wider text-slate-300">
                       Mối liên kết trong mạng lưới
                     </span>
                     <span className="text-cyan-400 font-mono text-xs font-bold">

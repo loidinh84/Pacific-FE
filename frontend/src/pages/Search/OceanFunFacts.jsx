@@ -39,7 +39,7 @@ export function OceanFunFacts() {
 
               {/* Content */}
               <div className="p-5">
-                <span className="inline-block px-2.5 py-0.5 rounded-full bg-cyan-500/12 border border-cyan-500/25 text-cyan-300 text-[10px] font-bold uppercase tracking-wider mb-3">
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-cyan-500/12 border border-cyan-500/25 text-cyan-300 text-[10px] font-bold tracking-wider mb-3">
                   {badge}
                 </span>
 
