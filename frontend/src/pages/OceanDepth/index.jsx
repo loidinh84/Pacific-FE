@@ -429,7 +429,9 @@ export default function OceanDepth() {
         {renderCreatures()}
       </div>
 
-      <Footer />
+      <div className="relative z-[100] bg-[#020b18]">
+        <Footer />
+      </div>
     </>
   );
 }
