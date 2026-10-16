@@ -98,6 +98,7 @@ export default function AdminLayout() {
     { label: "Thống kê", path: "/admin/stats" },
     { label: "Sinh vật", path: "/admin/species" },
     { label: "Nhóm sinh vật", path: "/admin/groups" },
+    { label: "Quan hệ sinh thái", path: "/admin/relationships" },
     { label: "Địa điểm", path: "/admin/locations" },
     {
       label: "Người dùng",

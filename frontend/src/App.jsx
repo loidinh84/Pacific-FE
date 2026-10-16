@@ -22,6 +22,7 @@ import CommentsManagement from "./pages/Admin/Comments";
 import QuizManagement from "./pages/Admin/Quiz";
 import SystemSettings from "./pages/Admin/Settings";
 import AdminProfile from "./pages/Admin/Profile";
+import RelationshipsManagement from "./pages/Admin/Relationships";
 
 import "./App.css";
 
@@ -130,6 +131,7 @@ function App() {
           <Route path="species" element={<SpeciesManagement />} />
           <Route path="groups" element={<SpeciesGroupsManagement />} />
           <Route path="species-groups" element={<Navigate to="/admin/groups" replace />} />
+          <Route path="relationships" element={<RelationshipsManagement />} />
           <Route path="locations" element={<LocationsManagement />} />
           <Route path="users" element={<UsersManagement />} />
           <Route path="comments" element={<CommentsManagement />} />

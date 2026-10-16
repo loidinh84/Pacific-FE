@@ -82,9 +82,20 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="/#species" className="hover:text-pacific-cyan transition-colors">
+              <Link to="/search" className="hover:text-pacific-cyan transition-colors">
                 {t("nav.species")}
-              </a>
+              </Link>
+            </li>
+            <li>
+              <Link to="/ocean-depth" className="hover:text-pacific-cyan transition-colors">
+                {t("nav.oceanDepth") || "Độ sâu đại dương"}
+              </Link>
+            </li>
+            <li>
+              <Link to="/knowledge-graph" className="hover:text-pacific-cyan transition-colors inline-flex items-center gap-1.5">
+                <span>{t("nav.knowledgeGraph") || "Đồ thị tri thức Biển Đông"}</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-500/30">Lab</span>
+              </Link>
             </li>
             <li>
               <a href="/#about" className="hover:text-pacific-cyan transition-colors">

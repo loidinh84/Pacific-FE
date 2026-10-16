@@ -44,6 +44,34 @@ export function SearchHeroHeader({
             {t("searchPage.btnSearch")}
           </button>
         </div>
+
+        {/* Smart Question Suggestions Chips */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 mt-3 text-xs">
+          <span className="text-cyan-400 font-semibold flex items-center gap-1 mr-1">
+            <span>💡 Thử hỏi:</span>
+          </span>
+          {[
+            "Thiên địch của sao biển gai",
+            "Cộng sinh với hải quỳ",
+            "Cực kỳ nguy cấp ở Côn Đảo",
+            "Loài ăn cỏ biển Biển Đông",
+            "Sinh vật tạo nơi cư trú",
+          ].map((chip) => (
+            <button
+              key={chip}
+              type="button"
+              onClick={() => {
+                setSearchTerm(chip);
+                if (onSearchSubmit) {
+                  setTimeout(() => onSearchSubmit({ preventDefault: () => {} }, chip), 10);
+                }
+              }}
+              className="px-2.5 py-1 rounded-full bg-white/5 hover:bg-cyan-500/20 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-200 text-[11px] transition-all cursor-pointer"
+            >
+              {chip}
+            </button>
+          ))}
+        </div>
       </form>
 
       {/* 4 Quick Stats Bar - Compact & Sleek */}

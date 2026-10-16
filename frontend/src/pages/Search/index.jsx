@@ -6,14 +6,21 @@ import { SearchFilterBar } from "./SearchFilterBar";
 import { FeaturedSpeciesSlider } from "./FeaturedSpeciesSlider";
 import { SearchGridList } from "./SearchGridList";
 import { OceanFunFacts } from "./OceanFunFacts";
+import { SemanticKnowledgeSection } from "./SemanticKnowledgeSection";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { useLanguage } from "../../hooks/useLanguage";
+import { searchSemantic } from "../../services/ecosystemApi";
 
 export default function Search() {
   const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortBy, setSortBy] = useState("az");
+
+  // State cho Tìm kiếm Ngữ nghĩa Tri thức Sinh thái
+  const [semanticResults, setSemanticResults] = useState(null);
+  const [semanticLoading, setSemanticLoading] = useState(false);
+  const [semanticQuery, setSemanticQuery] = useState("");
 
   /* Real-time Filter & Sort Logic */
   const filteredSpecies = useMemo(() => {
@@ -48,19 +55,46 @@ export default function Search() {
     });
   }, [searchTerm, selectedCategory, sortBy, language]);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    setTimeout(() => {
-      document
-        .getElementById("search-results")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 50);
+  const executeSemanticSearch = async (queryText) => {
+    const q = (queryText || searchTerm || "").trim();
+    if (!q || q.length < 3) {
+      setSemanticResults(null);
+      return;
+    }
+
+    setSemanticLoading(true);
+    setSemanticQuery(q);
+    try {
+      const res = await searchSemantic(q);
+      if (res && res.success && res.data && res.data.length > 0) {
+        setSemanticResults(res);
+        setTimeout(() => {
+          document
+            .getElementById("semantic-results")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      } else {
+        setSemanticResults(null);
+      }
+    } catch (e) {
+      console.warn("Lỗi semantic search:", e);
+      setSemanticResults(null);
+    } finally {
+      setSemanticLoading(false);
+    }
+  };
+
+  const handleSearchSubmit = (e, overrideTerm) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const term = overrideTerm || searchTerm;
+    executeSemanticSearch(term);
   };
 
   const handleSearchTermChange = (val) => {
     setSearchTerm(val);
 
-    if (val.length < searchTerm.length) {
+    if (val.length < searchTerm.length && val.length < 3) {
+      setSemanticResults(null);
       setTimeout(() => {
         document
           .getElementById("search-hero")
@@ -82,6 +116,15 @@ export default function Search() {
           searchTerm={searchTerm}
           setSearchTerm={handleSearchTermChange}
           onSearchSubmit={handleSearchSubmit}
+        />
+
+        {/* ── KẾT QUẢ PHÂN GIẢI TRI THỨC NGỮ NGHĨA (SEMANTIC KNOWLEDGE GRAPH RESULTS) ── */}
+        <SemanticKnowledgeSection
+          loading={semanticLoading}
+          data={semanticResults?.data}
+          detectedIntent={semanticResults?.detectedIntent}
+          query={semanticQuery}
+          onClear={() => setSemanticResults(null)}
         />
 
         <SearchFilterBar
