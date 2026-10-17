@@ -80,7 +80,7 @@ const vi = {
   },
   // Footer
   footer: {
-    brandDesc: "Khám phá thế giới đại dương kỳ diệu, nơi lưu giữ vô số bí ẩn và sinh vật tuyệt vời của Thái Bình Dương.",
+    brandDesc: "Khám phá thế giới đại dương kỳ diệu, nơi lưu giữ vô số bí ẩn và hệ sinh thái đa dạng của Biển Đông.",
     exploreTitle: "Khám phá",
     legalTitle: "Chính sách & Điều khoản",
     privacyPolicy: "Bảo mật thông tin",
@@ -91,7 +91,7 @@ const vi = {
     feedbackPlaceholder: "Hãy chia sẻ cảm nghĩ hoặc đóng góp ý kiến của bạn...",
     btnSendFeedback: "Gửi ý kiến",
     copyright: "© 2026 Pacific. Tất cả quyền được bảo lưu.",
-    tagline: "Nền tảng bảo tồn & khám phá đa dạng sinh học biển",
+    tagline: "Bảo tồn & khám phá đa dạng sinh học Biển Đông",
   },
   // Auth Pages
   auth: {

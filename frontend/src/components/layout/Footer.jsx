@@ -42,13 +42,13 @@ export default function Footer() {
             {t("footer.brandDesc")}
           </p>
 
-          {/* Social Icons */}
+          {/* Social Icons with cohesive brand colors & glowing hovers */}
           <div className="flex items-center gap-3">
             <a
               href="https://facebook.com"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-pacific-blue-bright/20 hover:border-pacific-blue-bright text-white/80 hover:text-white transition-all"
+              className="w-9 h-9 rounded-full bg-[#1877F2]/10 border border-[#1877F2]/30 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2] hover:shadow-[0_0_12px_rgba(24,119,242,0.4)] transition-all duration-300"
               title="Facebook"
             >
               <FaFacebookF size={14} />
@@ -57,7 +57,7 @@ export default function Footer() {
               href="https://youtube.com"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-pacific-blue-bright/20 hover:border-pacific-blue-bright text-white/80 hover:text-white transition-all"
+              className="w-9 h-9 rounded-full bg-[#FF0000]/10 border border-[#FF0000]/30 flex items-center justify-center text-[#FF0000] hover:bg-[#FF0000] hover:text-white hover:border-[#FF0000] hover:shadow-[0_0_12px_rgba(255,0,0,0.4)] transition-all duration-300"
               title="YouTube"
             >
               <FaYoutube size={16} />
@@ -66,7 +66,7 @@ export default function Footer() {
               href="https://instagram.com"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-pacific-blue-bright/20 hover:border-pacific-blue-bright text-white/80 hover:text-white transition-all"
+              className="w-9 h-9 rounded-full bg-[#E4405F]/10 border border-[#E4405F]/30 flex items-center justify-center text-[#E4405F] hover:bg-gradient-to-tr hover:from-[#F58529] hover:via-[#DD2A7B] hover:to-[#8134AF] hover:text-white hover:border-transparent hover:shadow-[0_0_12px_rgba(225,48,108,0.4)] transition-all duration-300"
               title="Instagram"
             >
               <FaInstagram size={15} />
@@ -75,13 +75,13 @@ export default function Footer() {
               href="https://zalo.me"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-pacific-blue-bright/20 hover:border-pacific-blue-bright transition-all p-2"
+              className="w-9 h-9 rounded-full bg-[#0068FF]/10 border border-[#0068FF]/30 flex items-center justify-center hover:bg-[#0068FF] hover:border-[#0068FF] hover:shadow-[0_0_12px_rgba(0,104,255,0.4)] transition-all duration-300 p-1.5 group"
               title="Zalo"
             >
               <img
                 src={Images.Zalo}
                 alt="Zalo"
-                className="w-full h-full object-contain filter brightness-90 hover:brightness-100"
+                className="w-full h-full object-contain rounded-full transition-transform group-hover:scale-110"
               />
             </a>
           </div>
@@ -109,9 +109,8 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/knowledge-graph" className="hover:text-pacific-cyan transition-colors inline-flex items-center gap-1.5">
-                <span>{t("nav.knowledgeGraph", "Đồ thị tri thức")}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-500/30">Lab</span>
+              <Link to="/knowledge-graph" className="hover:text-pacific-cyan transition-colors">
+                {t("nav.knowledgeGraph", "Đồ thị tri thức")}
               </Link>
             </li>
             <li>
@@ -180,17 +179,18 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Copyright Bar - Harmonized & Clean Layout */}
-      <div className="max-w-7xl mx-auto px-6 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/50">
+      {/* Copyright Bar - Centered & Focused on Biển Đông */}
+      <div className="max-w-7xl mx-auto px-6 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs text-white/50 text-center">
         <p className="flex items-center gap-1.5">
           <span>&copy; {currentYear} Pacific.</span>
           <span>{isEn ? "All rights reserved." : "Tất cả quyền được bảo lưu."}</span>
         </p>
-        <div className="flex flex-wrap items-center gap-3 text-white/40">
-          <span>{t("footer.tagline", isEn ? "Marine biodiversity exploration & conservation platform" : "Nền tảng bảo tồn & khám phá đa dạng sinh học biển")}</span>
-          <span className="text-white/20 hidden sm:inline">•</span>
-          <span className="text-cyan-400/80 font-medium">Biển Đông & Thái Bình Dương</span>
-        </div>
+        <span className="text-white/20 hidden sm:inline">•</span>
+        <p className="text-cyan-400 font-medium">
+          {isEn
+            ? "East Sea Marine Biodiversity Exploration & Conservation Platform"
+            : "Bảo tồn & Khám phá Đa dạng Sinh học Biển Đông"}
+        </p>
       </div>
     </footer>
   );

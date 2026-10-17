@@ -80,7 +80,7 @@ const en = {
   },
   // Footer
   footer: {
-    brandDesc: "Explore the wondrous oceanic world, repository of endless mysteries and incredible Pacific marine life.",
+    brandDesc: "Explore the wondrous marine world, home to endless mysteries and diverse ecosystems of the East Sea.",
     exploreTitle: "Explore",
     legalTitle: "Policies & Terms",
     privacyPolicy: "Privacy Policy",
@@ -91,7 +91,7 @@ const en = {
     feedbackPlaceholder: "Write your feedback or thoughts...",
     btnSendFeedback: "Submit Feedback",
     copyright: "© 2026 Pacific. All rights reserved.",
-    tagline: "Marine biodiversity exploration & conservation platform",
+    tagline: "East Sea Marine Biodiversity Exploration & Conservation Platform",
   },
   // Auth Pages
   auth: {

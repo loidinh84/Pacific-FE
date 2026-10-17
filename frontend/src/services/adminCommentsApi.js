@@ -11,7 +11,7 @@ const getAuthHeaders = () => {
 };
 
 /**
- * Lấy danh sách bình luận (hỗ trợ phân trang, tìm kiếm, lọc theo tab: all, reported, deleted, today)
+ * Lấy danh sách bình luận
  */
 export const fetchAdminComments = async (params = {}) => {
   const res = await axios.get(API_BASE, { params, ...getAuthHeaders() });
@@ -19,7 +19,7 @@ export const fetchAdminComments = async (params = {}) => {
 };
 
 /**
- * Xóa mềm bình luận (chuyển vào thùng rác)
+ * Xóa mềm bình luận
  */
 export const deleteAdminComment = async (id) => {
   const res = await axios.delete(`${API_BASE}/${id}`, getAuthHeaders());
@@ -30,7 +30,11 @@ export const deleteAdminComment = async (id) => {
  * Khôi phục bình luận đã xóa
  */
 export const restoreAdminComment = async (id) => {
-  const res = await axios.patch(`${API_BASE}/${id}/restore`, {}, getAuthHeaders());
+  const res = await axios.patch(
+    `${API_BASE}/${id}/restore`,
+    {},
+    getAuthHeaders(),
+  );
   return res.data;
 };
 
@@ -38,7 +42,11 @@ export const restoreAdminComment = async (id) => {
  * Bác bỏ báo cáo vi phạm — Giữ bình luận
  */
 export const dismissAdminCommentReports = async (id) => {
-  const res = await axios.post(`${API_BASE}/${id}/reports/dismiss`, {}, getAuthHeaders());
+  const res = await axios.post(
+    `${API_BASE}/${id}/reports/dismiss`,
+    {},
+    getAuthHeaders(),
+  );
   return res.data;
 };
 
@@ -46,7 +54,11 @@ export const dismissAdminCommentReports = async (id) => {
  * Tạm ẩn hoặc hiển thị lại bình luận
  */
 export const toggleHideAdminComment = async (id) => {
-  const res = await axios.patch(`${API_BASE}/${id}/toggle-hide`, {}, getAuthHeaders());
+  const res = await axios.patch(
+    `${API_BASE}/${id}/toggle-hide`,
+    {},
+    getAuthHeaders(),
+  );
   return res.data;
 };
 
@@ -54,6 +66,9 @@ export const toggleHideAdminComment = async (id) => {
  * Xóa vĩnh viễn bình luận khỏi database
  */
 export const permanentDeleteAdminComment = async (id) => {
-  const res = await axios.delete(`${API_BASE}/${id}/permanent`, getAuthHeaders());
+  const res = await axios.delete(
+    `${API_BASE}/${id}/permanent`,
+    getAuthHeaders(),
+  );
   return res.data;
 };

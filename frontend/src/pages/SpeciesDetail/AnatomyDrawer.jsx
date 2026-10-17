@@ -42,7 +42,7 @@ function MedRow({ icon: Icon, label, value, highlight }) {
         <Icon size={13} className="text-slate-400" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mb-0.5">
+        <p className="text-[10px] text-slate-400 tracking-normal font-semibold mb-0.5">
           {label}
         </p>
         <p className="text-sm text-slate-200 leading-relaxed">{value}</p>
@@ -159,8 +159,8 @@ export function AnatomyDrawer({
           <div className="p-5 grid md:grid-cols-2 gap-5">
             {/* Biological description */}
             <div>
-              <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold mb-2">
-                {language === "vi" ? "Mô Tả Sinh Học" : "Biological Description"}
+              <p className="text-[11px] text-slate-400 font-semibold mb-2">
+                {language === "vi" ? "Mô tả sinh học" : "Biological Description"}
               </p>
               <p className="text-sm text-slate-300 leading-relaxed">
                 {language === "en" ? organ.descEn || organ.descVi : organ.descVi}
@@ -170,9 +170,9 @@ export function AnatomyDrawer({
             {/* Medical data */}
             {organ.medicalData && (
               <div>
-                <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold mb-2">
+                <p className="text-[11px] text-slate-400 font-semibold mb-2">
                   {language === "vi"
-                    ? "Dữ Liệu Y Khoa"
+                    ? "Dữ liệu y khoa"
                     : "Medical & Research Data"}
                 </p>
                 <div>

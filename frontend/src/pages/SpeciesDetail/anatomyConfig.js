@@ -1,4 +1,4 @@
-import { FlaskConical, Activity, Bone, Brain, Zap } from "lucide-react";
+import { FlaskConical, Activity, Bone, Brain, Zap, Wind } from "lucide-react";
 
 /**
  * System configuration for organ classification.
@@ -23,6 +23,12 @@ export const SYSTEM_CONFIG = {
     labelEn: "Circulatory",
     Icon: Activity,
   },
+  respiratory: {
+    color: "#38BDF8",
+    labelVi: "Hô hấp",
+    labelEn: "Respiratory",
+    Icon: Wind,
+  },
   digestive: {
     color: "#10B981",
     labelVi: "Tiêu hóa",
@@ -42,3 +48,4 @@ export const SYSTEM_CONFIG = {
     Icon: Zap,
   },
 };
+
