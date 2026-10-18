@@ -5,6 +5,7 @@ import BanDo5DaiDuong from "./BanDo5DaiDuong.png";
 import FishHidden from "./FishHidden.png";
 import Zalo from "./Icon_of_Zalo.svg.webp";
 import PacificOceanMap from "./PacificOceanMap.jpg";
+import BienDongMap from "./BienDongMap.jpg";
 import NoFound from "./NoFound.png";
 import Ocean3DBg from "./Ocean3DBg.jpg";
 import SharkAnatomy from "./SharkAnatomy.jpg";
@@ -21,6 +22,7 @@ export {
   FishHidden,
   Zalo,
   PacificOceanMap,
+  BienDongMap,
   NoFound,
   Ocean3DBg,
   SharkAnatomy,
