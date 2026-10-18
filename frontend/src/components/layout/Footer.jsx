@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaFacebookF, FaYoutube, FaInstagram } from "react-icons/fa";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -6,6 +7,25 @@ import * as Images from "../../assets/Images";
 export default function Footer() {
   const { t } = useLanguage();
 
+  const [systemSettings, setSystemSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem("pacific_system_settings");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const handleSettingsUpdate = (e) => {
+      if (e.detail) setSystemSettings(e.detail);
+    };
+    window.addEventListener("pacific_settings_update", handleSettingsUpdate);
+    return () => window.removeEventListener("pacific_settings_update", handleSettingsUpdate);
+  }, []);
+
+  const brandName = systemSettings?.general?.websiteName || "Pacific";
+
   return (
     <footer className="bg-pacific-figma-dark border-t border-white/10 pt-16 pb-8 relative overflow-hidden text-white/70 text-sm">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12 relative z-10">
@@ -13,12 +33,12 @@ export default function Footer() {
         <div className="lg:col-span-2">
           <Link to="/" className="flex items-center gap-3 mb-4">
             <img
-              src={Images.Logo}
+              src={systemSettings?.general?.logoUrl || Images.Logo}
               alt="Pacific Logo"
               className="w-8 h-8 object-contain"
             />
             <span className="font-heading text-2xl font-black text-white tracking-tight">
-              Pacific
+              {brandName}
             </span>
           </Link>
           <p className="text-white/60 text-xs md:text-sm leading-relaxed mb-6 max-w-sm">

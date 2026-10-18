@@ -7,11 +7,49 @@ import { OCEAN_ZONES, DEPTH_LANDMARKS, CREATURES_BY_DEPTH } from "./depthData";
 import "./OceanDepth.css";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-const MAX_DEPTH = 11034;
+const MAX_DEPTH = 5016; // Rãnh Manila — điểm sâu nhất Biển Đông
 const DEPTH_SCALE = 2; // 1 meter = 2 pixels cuộn
-const PAGE_HEIGHT = MAX_DEPTH * DEPTH_SCALE + window.innerHeight;
+const SEABED_BUFFER = 1600; // Đệm đáy biển 1,600px để cuộn thoải mái chạm và vượt mốc 5,016m mà không bị Footer cản
+const PAGE_HEIGHT = MAX_DEPTH * DEPTH_SCALE + (typeof window !== "undefined" ? window.innerHeight : 900) + SEABED_BUFFER;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
+function getRealisticOceanColor(depth) {
+  // Mô phỏng quang phổ tán xạ và hấp thụ ánh sáng thực tế của nước biển Biển Đông:
+  // 0 - 30m: Xanh ngọc lam nhiệt đới rực rỡ, ánh nắng xuyên thấu
+  // 30 - 100m: Xanh đại dương sâu thẳm, tia đỏ/vàng bị hấp thụ hoàn toàn
+  // 100 - 200m: Xanh lam đậm - ranh giới tầng quang hợp
+  // 200 - 500m: Vùng chạng vạng xanh chàm huyền bí
+  // 500 - 1000m: Nước xanh đen - ánh sáng mặt trời dưới 1%
+  // 1000 - 3000m: Vùng nửa đêm - đen tuyền ánh lam sẫm
+  // 3000 - 5016m: Vực thẳm Rãnh Manila - tối đen tuyệt đối
+  if (depth <= 30) {
+    const f = depth / 30;
+    return `color-mix(in srgb, #0776ad ${(1 - f) * 100}%, #04527d)`;
+  }
+  if (depth <= 100) {
+    const f = (depth - 30) / 70;
+    return `color-mix(in srgb, #04527d ${(1 - f) * 100}%, #033254)`;
+  }
+  if (depth <= 200) {
+    const f = (depth - 100) / 100;
+    return `color-mix(in srgb, #033254 ${(1 - f) * 100}%, #021a32)`;
+  }
+  if (depth <= 500) {
+    const f = (depth - 200) / 300;
+    return `color-mix(in srgb, #021a32 ${(1 - f) * 100}%, #020f21)`;
+  }
+  if (depth <= 1000) {
+    const f = (depth - 500) / 500;
+    return `color-mix(in srgb, #020f21 ${(1 - f) * 100}%, #010815)`;
+  }
+  if (depth <= 2500) {
+    const f = (depth - 1000) / 1500;
+    return `color-mix(in srgb, #010815 ${(1 - f) * 100}%, #01040c)`;
+  }
+  const f = Math.min(1, (depth - 2500) / 2516);
+  return `color-mix(in srgb, #01040c ${(1 - f) * 100}%, #000104)`;
+}
+
 function getZoneAtDepth(depth) {
   return (
     OCEAN_ZONES.find((z) => depth >= z.depthStart && depth < z.depthEnd) ||
@@ -24,11 +62,12 @@ function getPressure(depth) {
 }
 
 function getTemperature(depth) {
-  if (depth <= 50) return "26–30°C";
-  if (depth <= 200) return "15–25°C";
-  if (depth <= 500) return "8–15°C";
-  if (depth <= 1000) return "4–8°C";
-  return "1–4°C";
+  if (depth <= 30) return "27–30°C";
+  if (depth <= 100) return "24–27°C";
+  if (depth <= 200) return "18–24°C";
+  if (depth <= 500) return "8–18°C";
+  if (depth <= 1000) return "5–8°C";
+  return "2–5°C";
 }
 
 function getLightPercent(depth) {
@@ -42,59 +81,133 @@ function getSeededRandom(seedStr) {
   for (let i = 0; i < seedStr.length; i++) {
     hash = Math.imul(31, hash) + seedStr.charCodeAt(i) | 0;
   }
-  const x = Math.sin(hash++) * 10000;
+  const x = Math.sin(hash) * 10000;
   return x - Math.floor(x);
 }
 
-// ─── Thước đo dọc cố định bên trái ──────────────────────────────────────────
-const RULER_TICKS = [
-  { d: 0,     label: "0m"   },
-  { d: 200,   label: "200m" },
-  { d: 1000,  label: "1km"  },
-  { d: 2000,  label: "2km"  },
-  { d: 4000,  label: "4km"  },
-  { d: 6000,  label: "6km"  },
-  { d: 8000,  label: "8km"  },
-  { d: 10000, label: "10km" },
-  { d: 11034, label: "11km" },
+// ─── Thước đo độ sâu khoa học dọc Biển Đông (0–5,016m) ───────────────────
+const RULER_MAJOR_TICKS = [
+  { d: 0,    label: "0m",     sub: "Mực nước biển" },
+  { d: 200,  label: "200m",   sub: "Ranh giới ánh sáng" },
+  { d: 500,  label: "500m",   sub: "" },
+  { d: 1000, label: "1,000m", sub: "Vùng nửa đêm" },
+  { d: 1500, label: "1,500m", sub: "" },
+  { d: 2000, label: "2,000m", sub: "" },
+  { d: 3000, label: "3,000m", sub: "" },
+  { d: 4000, label: "4,000m", sub: "Vực thẳm" },
+  { d: 5016, label: "5,016m", sub: "Rãnh Manila", isMax: true },
 ];
 
 function FixedRuler({ depth }) {
-  const pointerPct = Math.min(99, (depth / MAX_DEPTH) * 100);
+  const pointerPct = Math.min(99.5, Math.max(0.5, (depth / MAX_DEPTH) * 100));
   const currentZone = getZoneAtDepth(depth);
 
+  const scrollToDepth = (targetDepth) => {
+    const targetScrollY = window.innerHeight + targetDepth * DEPTH_SCALE;
+    window.scrollTo({ top: targetScrollY, behavior: "smooth" });
+  };
+
+  // Tạo các vạch chia chi tiết (mỗi 100m)
+  const minorTicks = useMemo(() => {
+    const ticks = [];
+    for (let d = 0; d <= 5000; d += 100) {
+      const isMajor = RULER_MAJOR_TICKS.some((m) => m.d === d);
+      if (!isMajor) {
+        ticks.push({
+          d,
+          isMedium: d % 500 === 0,
+        });
+      }
+    }
+    return ticks;
+  }, []);
+
   return (
-    <div className="od-ruler" aria-hidden="true">
-      <div className="od-ruler-zones">
-        {OCEAN_ZONES.map((z) => (
-          <div
-            key={z.id}
-            className="od-ruler-zone"
-            style={{
-              top: `${(z.depthStart / MAX_DEPTH) * 100}%`,
-              height: `${((z.depthEnd - z.depthStart) / MAX_DEPTH) * 100}%`,
-              backgroundColor: z.colorFrom,
-            }}
-          />
-        ))}
+    <aside className="od-ruler" aria-label="Thước đo độ sâu Biển Đông">
+      {/* Tiêu đề thước đo */}
+      <div className="od-ruler-header">
+        <span className="od-ruler-header-tag">ĐỘ SÂU</span>
+        <span className="od-ruler-header-unit">METERS</span>
       </div>
 
-      {RULER_TICKS.map(({ d, label }) => (
-        <div
-          key={`rt-${d}`}
-          className="od-ruler-tick"
-          style={{ top: `${(d / MAX_DEPTH) * 100}%` }}
-        >
-          <span className="od-ruler-tick-label">{label}</span>
-          <div className="od-ruler-tick-line" />
-        </div>
-      ))}
+      {/* Thân thước đo với dải phân tầng và vạch chia */}
+      <div className="od-ruler-body">
+        {/* Dải gradient màu các tầng nước Biển Đông */}
+        <div className="od-ruler-track">
+          {OCEAN_ZONES.map((z) => (
+            <div
+              key={z.id}
+              className="od-ruler-zone-segment"
+              title={`${z.nameVi} (${z.depthStart}m - ${z.depthEnd}m)`}
+              onClick={() => scrollToDepth(z.depthStart)}
+              style={{
+                top: `${(z.depthStart / MAX_DEPTH) * 100}%`,
+                height: `${((z.depthEnd - z.depthStart) / MAX_DEPTH) * 100}%`,
+                background: `linear-gradient(to bottom, ${z.colorFrom}, ${z.colorTo})`,
+              }}
+            />
+          ))}
 
-      <div
-        className="od-ruler-pointer"
-        style={{ top: `${pointerPct}%`, "--pointer-color": currentZone.colorFrom }}
-      />
-    </div>
+          {/* Trục kẻ kim loại trung tâm */}
+          <div className="od-ruler-axis" />
+        </div>
+
+        {/* Vạch chia nhỏ (minor & medium ticks) */}
+        <div className="od-ruler-subticks" aria-hidden="true">
+          {minorTicks.map(({ d, isMedium }) => (
+            <div
+              key={`st-${d}`}
+              className={`od-ruler-subtick ${isMedium ? "is-medium" : "is-minor"}`}
+              style={{ top: `${(d / MAX_DEPTH) * 100}%` }}
+            />
+          ))}
+        </div>
+
+        {/* Vạch chia chính (Major ticks có nhãn số và có thể bấm để cuộn đến) */}
+        <div className="od-ruler-major-ticks">
+          {RULER_MAJOR_TICKS.map(({ d, label, sub, isMax }) => {
+            const isPassed = depth >= d;
+            return (
+              <button
+                key={`rt-${d}`}
+                type="button"
+                className={`od-ruler-tick-btn ${isPassed ? "is-passed" : ""} ${isMax ? "is-max" : ""}`}
+                style={{ top: `${(d / MAX_DEPTH) * 100}%` }}
+                onClick={() => scrollToDepth(d)}
+                title={`Nhảy tới độ sâu ${label}${sub ? ` (${sub})` : ""}`}
+              >
+                <span className="od-ruler-tick-line" />
+                <span className="od-ruler-tick-text">{label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Con trỏ định vị độ sâu trực tiếp (Live Cursor) */}
+        <div
+          className="od-ruler-cursor"
+          style={{
+            top: `${pointerPct}%`,
+            "--cursor-color": currentZone.colorFrom,
+          }}
+        >
+          {/* Mũi tên chỉ vạch */}
+          <div className="od-ruler-cursor-needle" />
+          {/* Huy hiệu hiển thị độ sâu tức thời */}
+          <div className="od-ruler-cursor-badge">
+            <span className="od-ruler-cursor-dot" />
+            <span className="od-ruler-cursor-val">{depth.toLocaleString()}m</span>
+          </div>
+          {/* Tia laser quét độ sâu sang ngang */}
+          <div className="od-ruler-cursor-beam" />
+        </div>
+      </div>
+
+      {/* Chân thước đo: Tên vùng sâu nhất */}
+      <div className="od-ruler-footer" onClick={() => scrollToDepth(5016)} title="Đáy sâu nhất Biển Đông: Rãnh Manila (5,016m)">
+        <span className="od-ruler-footer-label">5,016m MAX</span>
+      </div>
+    </aside>
   );
 }
 
@@ -227,25 +340,56 @@ function DraggableHUD({ depth, currentZone }) {
 // ─── Components ──────────────────────────────────────────────────────────────
 function EnvironmentParticles({ depth }) {
   const isDeep = depth > 200;
-  const count = isDeep ? 20 : 15;
-  const type = isDeep ? "snow" : "bubble";
+  const isAbyssal = depth > 700;
 
+  // Hạt mô phỏng đại dương:
+  // < 250m: Bọt khí li ti nổi lên
+  // > 150m: Tuyết biển (marine snow) chìm chậm
+  // > 600m: Đốm lân tinh phát quang sinh học nhấp nháy
   const particles = useMemo(() => {
-    return Array.from({ length: count }, (_, i) => ({
-      id: i,
-      size: type === "snow" ? Math.random() * 3 + 2 : Math.random() * 8 + 4,
-      left: Math.random() * 100,
-      delay: Math.random() * 5,
-      duration: type === "snow" ? Math.random() * 10 + 10 : Math.random() * 4 + 4,
-    }));
-  }, [count, type]);
+    const list = [];
+    const count = 32;
+    for (let i = 0; i < count; i++) {
+      const r1 = getSeededRandom(`p-type-${i}-${isDeep ? 1 : 0}-${isAbyssal ? 1 : 0}`);
+      const r2 = getSeededRandom(`p-size-${i}`);
+      const r3 = getSeededRandom(`p-left-${i}`);
+      const r4 = getSeededRandom(`p-delay-${i}`);
+      const r5 = getSeededRandom(`p-duration-${i}`);
+
+      let type = "snow";
+      if (!isDeep && r1 < 0.6) {
+        type = "bubble";
+      } else if (isAbyssal && r1 < 0.45) {
+        type = "biolum";
+      }
+      list.push({
+        id: i,
+        type,
+        size:
+          type === "bubble"
+            ? r2 * 8 + 4
+            : type === "biolum"
+            ? r2 * 4 + 2
+            : r2 * 3 + 1.5,
+        left: r3 * 100,
+        delay: r4 * 6,
+        duration:
+          type === "bubble"
+            ? r5 * 5 + 4
+            : type === "biolum"
+            ? r5 * 8 + 6
+            : r5 * 12 + 10,
+      });
+    }
+    return list;
+  }, [isDeep, isAbyssal]);
 
   return (
     <div className="od-particles" aria-hidden="true">
       {particles.map((p) => (
         <div
-          key={`${type}-${p.id}`}
-          className={`od-particle ${type}`}
+          key={`${p.type}-${p.id}`}
+          className={`od-particle ${p.type}`}
           style={{
             width: p.size,
             height: p.size,
@@ -268,8 +412,7 @@ export default function OceanDepth() {
   const loc = (vi, en) => language === "en" ? en : vi;
 
   const currentZone = getZoneAtDepth(depth);
-  const bgOpacity = Math.min(1, depth / 2000);
-  const bgColor = `color-mix(in srgb, ${currentZone.colorFrom} ${Math.max(10, 100 - depth / 50)}%, #000000)`;
+  const realisticOceanColor = getRealisticOceanColor(depth);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -385,22 +528,59 @@ export default function OceanDepth() {
     <>
       <Navbar />
 
-      {/* Thước đo dọc cố định */}
+      {/* Thước đo dọc khoa học cố định bên trái */}
       <FixedRuler depth={depth} />
 
-      {/* HUD kéo thả */}
+      {/* HUD kéo thả hiển thị thông số */}
       <DraggableHUD depth={depth} currentZone={currentZone} />
 
-      <div className="od-darkness-overlay" style={{ opacity: bgOpacity }} />
+      {/* Nền nước biển chân thật cố định (Realistic Dynamic Ocean Viewport) */}
+      <div
+        className="od-ocean-viewport-bg"
+        style={{ backgroundColor: realisticOceanColor }}
+        aria-hidden="true"
+      >
+        {/* Tia nắng mặt trời khúc xạ qua mặt nước (Sun Rays / God Rays) */}
+        <div
+          className="od-sun-rays"
+          style={{ opacity: Math.max(0, (220 - depth) / 220) }}
+        />
+
+        {/* Gợn sóng lấp lánh tầng nông (Water Caustics) */}
+        <div
+          className="od-water-caustics"
+          style={{ opacity: Math.max(0, (140 - depth) / 140) }}
+        />
+
+        {/* Sương mờ quang học đại dương (Underwater Depth Fog) */}
+        <div
+          className="od-water-depth-fog"
+          style={{ opacity: Math.min(0.85, depth / 400) }}
+        />
+
+        {/* Bóng tối thực tế tăng dần theo độ sâu (Physical Darkness Attenuation) */}
+        <div
+          className="od-depth-darkness"
+          style={{ opacity: Math.min(0.96, Math.max(0, (depth - 40) / 1400)) }}
+        />
+
+        {/* Đèn pha tàu thám hiểm ROV khi xuống tầng tối (> 500m) */}
+        {depth >= 500 && (
+          <div
+            className="od-subsea-spotlight"
+            style={{ opacity: Math.min(0.7, (depth - 500) / 800) }}
+          />
+        )}
+      </div>
+
       <EnvironmentParticles depth={depth} />
 
-      {/* Container Cuộn */}
+      {/* Container Cuộn Toàn Phần */}
       <div
         ref={containerRef}
         className="od-scroll-container"
         style={{
           height: `${PAGE_HEIGHT}px`,
-          backgroundColor: bgColor,
         }}
       >
         {/* Hero */}
@@ -423,12 +603,85 @@ export default function OceanDepth() {
         {/* Đường phân chia cột */}
         {renderDividerLine()}
 
-        {/* Nội dung */}
+        {/* Nội dung các tầng */}
         {renderZoneLabels()}
         {renderLandmarks()}
         {renderCreatures()}
+
+        {/* Vùng Đáy Biển Rãnh Manila (5,016m) — Điểm sâu nhất Biển Đông */}
+        <div
+          className="od-seabed-zone"
+          style={{
+            top: `${window.innerHeight + MAX_DEPTH * DEPTH_SCALE}px`,
+            minHeight: `${SEABED_BUFFER}px`,
+          }}
+        >
+          {/* Địa hình kiến tạo vách đá rãnh Manila & miệng phun thủy nhiệt */}
+          <div className="od-seabed-terrain" aria-hidden="true">
+            <div className="od-seabed-ridge od-seabed-ridge-left" />
+            <div className="od-seabed-ridge od-seabed-ridge-right" />
+            <div className="od-seabed-floor" />
+            <div className="od-hydrothermal-vent">
+              <div className="od-vent-smoke" />
+              <div className="od-vent-smoke s2" />
+              <div className="od-vent-chimney" />
+              <span className="od-vent-tag">🌋 Miệng thủy nhiệt đáy biển (5,016m)</span>
+            </div>
+          </div>
+
+          {/* Thẻ vinh danh hoàn thành thám hiểm Rãnh Manila */}
+          <div className="od-seabed-badge-card">
+            <div className="od-seabed-badge-header">
+              <span className="od-seabed-badge-trophy">🔱</span>
+              <div>
+                <h2 className="od-seabed-badge-title">
+                  {language === "en" ? "MANILA TRENCH SEABED REACHED" : "CHẠM ĐÁY BIỂN ĐÔNG — RÃNH MANILA"}
+                </h2>
+                <p className="od-seabed-badge-subtitle">
+                  {language === "en"
+                    ? "You have completed the full vertical descent of the South East Sea to 5,016 meters"
+                    : "Bạn đã hoàn thành chuyến thám hiểm trọn vẹn toàn bộ cột nước Biển Đông tới độ sâu 5,016 mét"}
+                </p>
+              </div>
+            </div>
+
+            <div className="od-seabed-stats-grid">
+              <div className="od-seabed-stat-box">
+                <span className="od-seabed-stat-k">ĐỘ SÂU TỐI ĐA</span>
+                <span className="od-seabed-stat-v">5,016 m</span>
+              </div>
+              <div className="od-seabed-stat-box">
+                <span className="od-seabed-stat-k">ÁP SUẤT ĐÁY</span>
+                <span className="od-seabed-stat-v">502 atm</span>
+              </div>
+              <div className="od-seabed-stat-box">
+                <span className="od-seabed-stat-k">NHIỆT ĐỘ ĐÁY</span>
+                <span className="od-seabed-stat-v">1.4°C</span>
+              </div>
+              <div className="od-seabed-stat-box">
+                <span className="od-seabed-stat-k">TỌA ĐỘ RÃNH</span>
+                <span className="od-seabed-stat-v">15°N 119°E</span>
+              </div>
+            </div>
+
+            <p className="od-seabed-badge-desc">
+              {language === "en"
+                ? "The Manila Trench was formed by the subduction of the South China Sea plate beneath the Philippine Mobile Belt. It is the only true deep oceanic trench in this semi-enclosed sea."
+                : "Rãnh Manila hình thành do sự hút chìm của mảng kiến tạo đáy Biển Đông. Đây là rãnh hút chìm sâu duy nhất và là ranh giới kiến tạo quan trọng bậc nhất tạo nên điểm sâu nhất của vùng biển này."}
+            </p>
+
+            <button
+              type="button"
+              className="od-seabed-back-btn"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
+              🌊 {language === "en" ? "Return to Sea Surface" : "Trở về mặt biển"}
+            </button>
+          </div>
+        </div>
       </div>
 
+      {/* Footer nằm trọn vẹn bên dưới vùng đáy biển, không bao giờ che khuất điểm 5,016m */}
       <Footer />
     </>
   );
