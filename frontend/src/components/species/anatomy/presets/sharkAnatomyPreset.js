@@ -204,18 +204,6 @@ export const SHARK_PARTS_METADATA = [
     vector: [1.05, -0.85, -0.25],
   },
   {
-    id: "part_lateral_line",
-    nameVi: "Đường bên thụ cảm cơ học",
-    nameEn: "Lateral Line Mechanoreceptive Canals",
-    system: "nervous",
-    pinAnchor: [-0.5, 0.14, 0.42],
-    descVi:
-      "Hệ thống ống ngầm chứa tế bào lông chạy dọc hai bên mạn sườn, cảm nhận những dao động sóng nước và áp lực rung chấn từ con mồi đang quẫy",
-    descEn:
-      "Fluid-filled subdermal canals with hair cells registering water vibrations and hydrodynamic wake",
-    vector: [0.0, 0.35, 1.8],
-  },
-  {
     id: "part_skin",
     nameVi: "Lớp da vảy nhám Placoid & Thân ngoài",
     nameEn: "Dermal Denticles & Hydrodynamic Skin",
@@ -930,39 +918,6 @@ export function createOrganicInternalOrgans() {
   organGroup.add(rectalGroup);
   parts.push(rectalGroup);
 
-  // ── 14. HỆ THỐNG ĐƯỜNG BÊN (Lateral Line System) ──
-  const lateralLineGroup = new THREE.Group();
-  lateralLineGroup.name = "part_lateral_line";
-  lateralLineGroup.userData = SHARK_PARTS_METADATA.find(
-    (p) => p.id === "part_lateral_line",
-  );
-
-  const latMat = new THREE.MeshStandardMaterial({
-    color: 0x38bdf8,
-    emissive: 0x0284c7,
-    emissiveIntensity: 0.45,
-    roughness: 0.2,
-  });
-
-  const createLateralCanal = (isLeft) => {
-    const zSign = isLeft ? 1 : -1;
-    const lPoints = [];
-    for (let i = 0; i < 20; i++) {
-      const t = i / 19;
-      const x = -1.35 + t * 3.3;
-      const y = 0.06 - 0.08 * t - 0.16 * t * t;
-      const z = zSign * (0.34 * (1 - Math.pow(t - 0.35, 2)) + 0.04);
-      lPoints.push(new THREE.Vector3(x, y, z));
-    }
-    const latCurve = new THREE.CatmullRomCurve3(lPoints);
-    const latGeo = new THREE.TubeGeometry(latCurve, 32, 0.008, 6, false);
-    return new THREE.Mesh(latGeo, latMat);
-  };
-
-  lateralLineGroup.add(createLateralCanal(true));
-  lateralLineGroup.add(createLateralCanal(false));
-  organGroup.add(lateralLineGroup);
-  parts.push(lateralLineGroup);
 
   return {
     organGroup,

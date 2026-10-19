@@ -12,8 +12,6 @@ import {
   ZoomOut,
   Tag,
   Crosshair,
-  Copy,
-  Check,
   X,
 } from "lucide-react";
 import { ORGAN_SYSTEMS } from "./anatomy/organSystems";
@@ -69,6 +67,8 @@ export function Interactive3DAnatomyViewer({
   const raycasterRef = useRef(new THREE.Raycaster());
   const mouseRef = useRef(new THREE.Vector2());
   const isOrbitingRef = useRef(false);
+  const didDragRef = useRef(false);
+  const pointerDownPosRef = useRef({ x: 0, y: 0, time: 0 });
   const pinsContainerRef = useRef(null);
 
   // Focus mode camera lerp (Idea 1)
@@ -87,25 +87,12 @@ export function Interactive3DAnatomyViewer({
   const hoveredPartRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
   const isHoveringModalRef = useRef(false);
-  const [copied, setCopied] = useState(false);
   const [internalActivePart, setInternalActivePart] = useState(null);
   const [isLoading3D, setIsLoading3D] = useState(true);
 
   useEffect(() => {
     hoveredPartRef.current = hoveredPart;
   }, [hoveredPart]);
-
-  const handleCopyText = useCallback((e) => {
-    e?.stopPropagation();
-    const currentPart = hoveredPartRef.current;
-    if (!currentPart) return;
-    const title = language === "vi" ? currentPart.nameVi : currentPart.nameEn;
-    const desc = language === "vi" ? currentPart.descVi : currentPart.descEn;
-    const textToCopy = `${title}: ${desc}`;
-    navigator.clipboard?.writeText(textToCopy);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }, [language]);
 
   // Đồng bộ props & state cho ref
   useEffect(() => {
@@ -145,8 +132,12 @@ export function Interactive3DAnatomyViewer({
       if (!partMeta) {
         setInternalActivePart(null);
         onSelectPart?.(null);
-        // KHÔNG tự động quay về vị trí ban đầu! Giữ nguyên góc nhìn người dùng đang chọn!
-        isFocusLerpingRef.current = false;
+        // Bay camera mượt mà quay về toàn cảnh ban đầu
+        if (cameraRef.current && controlsRef.current) {
+          targetCameraPosRef.current.set(0, 0.8, 6.0);
+          targetLookAtRef.current.set(0, 0, 0);
+          isFocusLerpingRef.current = true;
+        }
         return;
       }
 
@@ -171,9 +162,7 @@ export function Interactive3DAnatomyViewer({
           .clone()
           .sub(controlsRef.current.target)
           .normalize();
-        targetCameraPosRef.current
-          .copy(worldPos)
-          .addScaledVector(camDir, 1.85);
+        targetCameraPosRef.current.copy(worldPos).addScaledVector(camDir, 1.85);
         isFocusLerpingRef.current = true;
       }
     },
@@ -258,6 +247,7 @@ export function Interactive3DAnatomyViewer({
     };
     const onOrbitEnd = () => {
       isOrbitingRef.current = false;
+      didDragRef.current = false;
       container.style.cursor = "grab";
     };
     controls.addEventListener("start", onOrbitStart);
@@ -312,7 +302,9 @@ export function Interactive3DAnatomyViewer({
     ampMatRef.current = ampMat;
 
     // Idea 4: Dòng chảy hạt máu sinh học dọc động mạch chủ
-    const bloodSim = anatomyPreset.buildBloodSim ? anatomyPreset.buildBloodSim(aortaCurve) : null;
+    const bloodSim = anatomyPreset.buildBloodSim
+      ? anatomyPreset.buildBloodSim(aortaCurve)
+      : null;
     if (bloodSim) {
       organGroup.add(bloodSim.instMesh);
       bloodSimRef.current = bloodSim;
@@ -444,8 +436,12 @@ export function Interactive3DAnatomyViewer({
 
       // Idea 4: Dòng chảy hạt máu dọc động mạch chủ (Physiological Blood Flow)
       if (bloodSimRef.current) {
-        const { instMesh, count, aortaCurve: curve, dummy } =
-          bloodSimRef.current;
+        const {
+          instMesh,
+          count,
+          aortaCurve: curve,
+          dummy,
+        } = bloodSimRef.current;
         for (let i = 0; i < count; i++) {
           const t = (elapsedTime * 0.35 + i / count) % 1.0;
           const pt = curve.getPointAt(t);
@@ -790,8 +786,6 @@ export function Interactive3DAnatomyViewer({
   }, [isWireframe]);
 
   // ── Raycasting Hover & Phân biệt Kéo xoay và Click ──
-  const pointerDownPosRef = useRef({ x: 0, y: 0, time: 0 });
-  const didDragRef = useRef(false);
 
   const handlePointerDown = useCallback((e) => {
     pointerDownPosRef.current = {
@@ -802,41 +796,33 @@ export function Interactive3DAnatomyViewer({
     didDragRef.current = false;
   }, []);
 
+  const handlePointerUp = useCallback(() => {
+    // Đợi một khoảng thời gian microtask để handleClick phân biệt click hay drag rồi reset
+    setTimeout(() => {
+      didDragRef.current = false;
+    }, 60);
+  }, []);
+
   const handlePointerMove = useCallback((e) => {
-    const dist = Math.hypot(
-      e.clientX - pointerDownPosRef.current.x,
-      e.clientY - pointerDownPosRef.current.y,
-    );
-    if (dist > 6) {
-      didDragRef.current = true;
+    // Chỉ tính drag khi người dùng thực sự đang nhấn giữ nút chuột
+    if (e.buttons > 0) {
+      const dist = Math.hypot(
+        e.clientX - pointerDownPosRef.current.x,
+        e.clientY - pointerDownPosRef.current.y,
+      );
+      if (dist > 5) {
+        didDragRef.current = true;
+      }
     }
 
-    if (isOrbitingRef.current || didDragRef.current) {
+    // Nếu người dùng đang thực sự xoay camera (Orbiting hoặc đang kéo chuột)
+    if (isOrbitingRef.current || (e.buttons > 0 && didDragRef.current)) {
       if (!isHoveringModalRef.current) {
         if (hoverTimeoutRef.current) {
           clearTimeout(hoverTimeoutRef.current);
           hoverTimeoutRef.current = null;
         }
         setHoveredPart(null);
-      }
-      return;
-    }
-
-    // Nếu da cá đang liền khối (không X-Ray, không bóc tách, xem tất cả), không kích hoạt hover cơ quan ẩn bên trong
-    if (
-      !isXRayRef.current &&
-      explodePercentRef.current === 0 &&
-      activeSystemRef.current === "all"
-    ) {
-      if (!isHoveringModalRef.current && hoveredPartRef.current) {
-        if (!hoverTimeoutRef.current) {
-          hoverTimeoutRef.current = setTimeout(() => {
-            if (!isHoveringModalRef.current) {
-              setHoveredPart(null);
-            }
-            hoverTimeoutRef.current = null;
-          }, 800);
-        }
       }
       return;
     }
@@ -855,22 +841,27 @@ export function Interactive3DAnatomyViewer({
     );
 
     if (intersects.length > 0) {
-      let targetGroup = intersects[0].object;
-      while (
-        targetGroup &&
-        targetGroup.parent &&
-        !interactivePartsRef.current.includes(targetGroup)
-      ) {
-        targetGroup = targetGroup.parent;
-      }
-      if (targetGroup && targetGroup.userData?.nameVi) {
-        if (hoverTimeoutRef.current) {
-          clearTimeout(hoverTimeoutRef.current);
-          hoverTimeoutRef.current = null;
+      for (let i = 0; i < Math.min(intersects.length, 6); i++) {
+        let targetGroup = intersects[i].object;
+        while (
+          targetGroup &&
+          targetGroup.parent &&
+          !interactivePartsRef.current.includes(targetGroup)
+        ) {
+          targetGroup = targetGroup.parent;
         }
-        setHoveredPart(targetGroup.userData);
-        container.style.cursor = "pointer";
-        return;
+        if (targetGroup && targetGroup.userData?.nameVi) {
+          if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+            hoverTimeoutRef.current = null;
+          }
+          // CHỈ cập nhật state khi đổi sang cơ quan khác, triệt tiêu hoàn toàn re-render 60fps gây chập chờn
+          if (hoveredPartRef.current?.id !== targetGroup.userData.id) {
+            setHoveredPart(targetGroup.userData);
+          }
+          container.style.cursor = "pointer";
+          return;
+        }
       }
     }
 
@@ -915,8 +906,11 @@ export function Interactive3DAnatomyViewer({
 
     if (hoveredPart) {
       handleSelectPartDirectly(hoveredPart);
+    } else if (activePart) {
+      // Nhấp vào vùng trống đại dương: Tự động thoát lấy nét và bay camera mượt mà về lại toàn cảnh!
+      handleSelectPartDirectly(null);
     }
-  }, [hoveredPart, handleSelectPartDirectly]);
+  }, [hoveredPart, activePart, handleSelectPartDirectly]);
 
   const handleResetCamera = () => {
     handleSelectPartDirectly(null);
@@ -952,9 +946,11 @@ export function Interactive3DAnatomyViewer({
         <div
           ref={mountRef}
           onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
           onClick={handleClick}
+          onDoubleClick={handleResetCamera}
           className="w-full h-[520px] md:h-[560px] cursor-grab active:cursor-grabbing"
         />
 
@@ -964,58 +960,80 @@ export function Interactive3DAnatomyViewer({
             ref={pinsContainerRef}
             className="absolute inset-0 pointer-events-none overflow-hidden z-10"
           >
-            {partsMetadata.filter(
-              (part) => part.id !== "part_skin" && part.pinAnchor !== null,
-            ).map((part) => {
-              const isMajorPart = [
-                "part_heart",
-                "part_brain",
-                "part_liver",
-                "part_stomach",
-                "part_gills",
-                "part_ampullae",
-                "part_spiral_valve",
-                "part_chassis",
-              ].includes(part.id);
-              const isCurrentSystem =
-                activeSystem === "all"
-                  ? isMajorPart
-                  : part.system === activeSystem;
+            {partsMetadata
+              .filter(
+                (part) => part.id !== "part_skin" && part.pinAnchor !== null,
+              )
+              .map((part) => {
+                const isMajorPart = [
+                  "part_heart",
+                  "part_brain",
+                  "part_liver",
+                  "part_stomach",
+                  "part_gills",
+                  "part_ampullae",
+                  "part_spiral_valve",
+                  "part_chassis",
+                ].includes(part.id);
+                const isCurrentSystem =
+                  activeSystem === "all"
+                    ? isMajorPart
+                    : part.system === activeSystem;
 
-              if (!isCurrentSystem) return null;
-              const isActive = activePart?.id === part.id;
-              return (
-                <div
-                  key={part.id}
-                  data-part-id={part.id}
-                  style={{ display: "none" }}
-                  className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-auto cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSelectPartDirectly(part);
-                  }}
-                >
+                if (!isCurrentSystem) return null;
+                const isActive = activePart?.id === part.id;
+                return (
                   <div
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border shadow-xl backdrop-blur-md transition-all ${
-                      isActive
-                        ? "bg-cyan-500 text-slate-950 font-bold border-white ring-2 ring-cyan-400/70 scale-110"
-                        : "bg-slate-950/80 text-cyan-200 border-cyan-500/40 hover:bg-cyan-900/90 hover:border-cyan-300 hover:scale-105"
-                    }`}
+                    key={part.id}
+                    data-part-id={part.id}
+                    style={{ display: "none" }}
+                    className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-auto cursor-pointer"
+                    onPointerEnter={() => {
+                      if (hoverTimeoutRef.current) {
+                        clearTimeout(hoverTimeoutRef.current);
+                        hoverTimeoutRef.current = null;
+                      }
+                      if (hoveredPartRef.current?.id !== part.id) {
+                        setHoveredPart(part);
+                      }
+                    }}
+                    onPointerLeave={() => {
+                      if (isHoveringModalRef.current) return;
+                      if (hoveredPartRef.current && !hoverTimeoutRef.current) {
+                        hoverTimeoutRef.current = setTimeout(() => {
+                          if (!isHoveringModalRef.current) {
+                            setHoveredPart(null);
+                          }
+                          hoverTimeoutRef.current = null;
+                        }, 1200);
+                      }
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelectPartDirectly(part);
+                    }}
                   >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${
+                    <div
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border shadow-xl backdrop-blur-md transition-all ${
                         isActive
-                          ? "bg-slate-950 animate-ping"
-                          : "bg-cyan-400 animate-pulse"
+                          ? "bg-cyan-500 text-slate-950 font-bold border-white ring-2 ring-cyan-400/70 scale-110"
+                          : "bg-slate-950/80 text-cyan-200 border-cyan-500/40 hover:bg-cyan-900/90 hover:border-cyan-300 hover:scale-105"
                       }`}
-                    />
-                    <span className="text-[11px] font-semibold whitespace-nowrap">
-                      {language === "vi" ? part.nameVi : part.nameEn}
-                    </span>
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          isActive
+                            ? "bg-slate-950 animate-ping"
+                            : "bg-cyan-400 animate-pulse"
+                        }`}
+                      />
+                      <span className="text-[11px] font-semibold whitespace-nowrap">
+                        {language === "vi" ? part.nameVi : part.nameEn}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         )}
 
@@ -1029,6 +1047,20 @@ export function Interactive3DAnatomyViewer({
                 : "Loading 3D Anatomy Model..."}
             </span>
           </div>
+        )}
+
+        {/* Nút thoát zoom nhanh về toàn cảnh sinh vật */}
+        {activePart && (
+          <button
+            onClick={handleResetCamera}
+            className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full bg-slate-950/90 hover:bg-cyan-950/95 border border-cyan-400/60 text-cyan-200 hover:text-white text-xs font-semibold shadow-2xl backdrop-blur-md transition-all cursor-pointer z-10 hover:scale-105"
+            title="Quay lại góc nhìn toàn cảnh sinh vật"
+          >
+            <RotateCcw size={13} className="text-cyan-400" />
+            <span>
+              {language === "vi" ? "Quay lại toàn cảnh" : "Reset Overview"}
+            </span>
+          </button>
         )}
 
         {/* ── Floating 3D Control Action Bar (Góc trên bên phải) ── */}
@@ -1054,7 +1086,16 @@ export function Interactive3DAnatomyViewer({
 
           {/* Idea 3: Bật/Tắt Ghim Nhãn 3D */}
           <button
-            onClick={() => setShowPins((prev) => !prev)}
+            onClick={() => {
+              setShowPins((prev) => {
+                const next = !prev;
+                // Nếu người dùng tắt nhãn trong khi đang zoom lấy nét 1 cơ quan, tự động đưa camera và trạng thái về lại toàn cảnh!
+                if (!next && activePart) {
+                  handleSelectPartDirectly(null);
+                }
+                return next;
+              });
+            }}
             className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
               showPins
                 ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 font-semibold"
@@ -1114,20 +1155,24 @@ export function Interactive3DAnatomyViewer({
           {/* Reset Camera */}
           <button
             onClick={handleResetCamera}
-            className="p-2 rounded-lg text-xs bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all"
-            title="Đặt lại góc nhìn camera"
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+              activePart
+                ? "bg-cyan-500 text-slate-950 font-bold border border-cyan-300 shadow-md shadow-cyan-500/30"
+                : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-transparent"
+            }`}
+            title="Đặt lại góc nhìn camera toàn cảnh"
           >
             <RotateCcw size={14} />
+            <span>{language === "vi" ? "Đặt lại" : "Reset"}</span>
           </button>
         </div>
 
         {/* ── IDEA 2: Organ Systems Filter Dock (Thanh phân loại hệ cơ quan dưới đáy) ── */}
         <div
           onPointerEnter={handlePointerLeave}
-          className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-slate-950/85 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-cyan-500/25 shadow-2xl z-10 max-w-[94%] overflow-x-auto scrollbar-none"
+          className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-slate-950/70 backdrop-blur-md px-2 py-1 rounded-full border border-white/10 shadow-sm z-10 max-w-[94%] overflow-x-auto scrollbar-none"
         >
           {ORGAN_SYSTEMS.map((sys) => {
-            const IconComp = sys.icon;
             const isSelected = activeSystem === sys.id;
             return (
               <button
@@ -1142,17 +1187,13 @@ export function Interactive3DAnatomyViewer({
                     handleSelectPartDirectly(null);
                   }
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+                className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
                   isSelected
-                    ? "bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/40 scale-105"
-                    : "text-slate-300 hover:text-white hover:bg-white/10"
+                    ? "bg-white/15 text-cyan-300 font-semibold border border-cyan-400/30"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent"
                 }`}
                 title={`Lọc: ${sys.nameVi}`}
               >
-                <IconComp
-                  size={13}
-                  className={isSelected ? "text-slate-950" : "text-cyan-400"}
-                />
                 <span>{language === "vi" ? sys.nameVi : sys.nameEn}</span>
               </button>
             );
@@ -1177,7 +1218,7 @@ export function Interactive3DAnatomyViewer({
         )}
 
         {/* ── Hovered Part Floating Modal (Không biến mất ngay, cho phép bôi đen & copy thủ công) ── */}
-        {hoveredPart && !activePart && (
+        {hoveredPart && hoveredPart.id !== activePart?.id && (
           <div
             onPointerEnter={() => {
               isHoveringModalRef.current = true;
@@ -1188,7 +1229,8 @@ export function Interactive3DAnatomyViewer({
             }}
             onPointerLeave={() => {
               isHoveringModalRef.current = false;
-              if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+              if (hoverTimeoutRef.current)
+                clearTimeout(hoverTimeoutRef.current);
               hoverTimeoutRef.current = setTimeout(() => {
                 if (!isHoveringModalRef.current) {
                   setHoveredPart(null);
@@ -1199,7 +1241,7 @@ export function Interactive3DAnatomyViewer({
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
             style={{ userSelect: "text", WebkitUserSelect: "text" }}
-            className="absolute top-4 left-4 max-w-sm bg-slate-950/95 border border-cyan-400/50 p-4 rounded-2xl backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] pointer-events-auto select-text z-20 transition-all animate-fadeIn"
+            className="absolute top-4 left-4 max-w-sm bg-slate-950/95 border border-cyan-400/50 p-4 rounded-2xl backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] pointer-events-auto select-text z-20 transition-all duration-200 ease-out"
           >
             {/* Header: Tiêu đề & Nút thao tác copy / đóng */}
             <div className="flex items-start justify-between gap-3 mb-2 border-b border-white/10 pb-2.5">
@@ -1211,48 +1253,26 @@ export function Interactive3DAnatomyViewer({
                   <span className="inline-block text-[10px] text-cyan-300 font-medium mt-0.5">
                     {ORGAN_SYSTEMS.find((s) => s.id === hoveredPart.system)
                       ? language === "vi"
-                        ? ORGAN_SYSTEMS.find((s) => s.id === hoveredPart.system).nameVi
-                        : ORGAN_SYSTEMS.find((s) => s.id === hoveredPart.system).nameEn
+                        ? ORGAN_SYSTEMS.find((s) => s.id === hoveredPart.system)
+                            .nameVi
+                        : ORGAN_SYSTEMS.find((s) => s.id === hoveredPart.system)
+                            .nameEn
                       : ""}
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                {/* Nút Sao chép nhanh */}
-                <button
-                  type="button"
-                  onClick={handleCopyText}
-                  title={language === "vi" ? "Sao chép mô tả cơ quan" : "Copy organ info"}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/30 text-cyan-300 hover:text-white text-xs font-medium transition-all cursor-pointer"
-                >
-                  {copied ? (
-                    <>
-                      <Check size={13} className="text-emerald-400" />
-                      <span className="text-emerald-300">
-                        {language === "vi" ? "Đã chép" : "Copied"}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={13} />
-                      <span>{language === "vi" ? "Sao chép" : "Copy"}</span>
-                    </>
-                  )}
-                </button>
-                {/* Nút đóng modal */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    isHoveringModalRef.current = false;
-                    setHoveredPart(null);
-                  }}
-                  title={language === "vi" ? "Đóng" : "Close"}
-                  className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer"
-                >
-                  <X size={15} />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  isHoveringModalRef.current = false;
+                  setHoveredPart(null);
+                }}
+                title={language === "vi" ? "Đóng" : "Close"}
+                className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer shrink-0"
+              >
+                <X size={15} />
+              </button>
             </div>
 
             {/* Nội dung mô tả cho phép người dùng bôi đen và copy thủ công bằng chuột */}
@@ -1260,13 +1280,8 @@ export function Interactive3DAnatomyViewer({
               {language === "vi" ? hoveredPart.descVi : hoveredPart.descEn}
             </p>
 
-            {/* Footer chỉ dẫn & Lấy nét */}
-            <div className="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px]">
-              <span className="text-[10px] text-slate-400 select-none">
-                {language === "vi"
-                  ? "Dùng chuột bôi đen để copy thủ công"
-                  : "Highlight text with mouse to copy"}
-              </span>
+            {/* Footer Xem chi tiết */}
+            <div className="mt-2.5 pt-2 border-t border-white/5 flex items-center justify-end text-[11px]">
               <button
                 type="button"
                 onClick={(e) => {
@@ -1275,7 +1290,7 @@ export function Interactive3DAnatomyViewer({
                 }}
                 className="text-[11px] text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2 cursor-pointer"
               >
-                {language === "vi" ? "Lấy nét 3D →" : "Focus 3D →"}
+                {language === "vi" ? "Xem chi tiết →" : "View Details →"}
               </button>
             </div>
           </div>
@@ -1297,8 +1312,8 @@ export function Interactive3DAnatomyViewer({
                 <span className="text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium flex items-center gap-1">
                   <Crosshair size={11} className="text-cyan-400 animate-spin" />
                   {language === "vi"
-                    ? "Đang lấy nét & cô lập"
-                    : "Solo Focus Active"}
+                    ? "Đang xem chi tiết"
+                    : "Viewing Details"}
                 </span>
                 {species?.nameVi && (
                   <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-white/10 font-medium">
@@ -1315,9 +1330,9 @@ export function Interactive3DAnatomyViewer({
           </div>
           <button
             onClick={() => handleSelectPartDirectly(null)}
-            className="text-xs px-3 py-1.5 rounded-lg bg-white/5 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-200 border border-white/10 hover:border-cyan-400/40 transition-all shrink-0 font-medium"
+            className="text-xs px-3 py-1.5 rounded-lg bg-white/5 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-200 border border-white/10 hover:border-cyan-400/40 transition-all shrink-0 font-medium cursor-pointer"
           >
-            {language === "vi" ? "Thoát lấy nét" : "Exit Focus"}
+            {language === "vi" ? "Đóng chi tiết" : "Close Details"}
           </button>
         </div>
       )}
