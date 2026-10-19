@@ -19,7 +19,7 @@ export function RelatedSpecies({ currentSpeciesId }) {
           return (
             <button
               key={s.id}
-              onClick={() => navigate(`/species/${s.id}`)}
+              onClick={() => navigate(`/species/${s.slug || s.id}`)}
               className="group flex flex-col items-center gap-3 transition-all cursor-pointer"
             >
               {/* Circular Avatar Backdrop */}

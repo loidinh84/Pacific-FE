@@ -79,7 +79,7 @@ export function SearchGridList({ speciesList }) {
                 <div
                   key={s.id}
                   className="bg-[#0d1f35] border border-white/10 rounded-2xl p-4 flex flex-col justify-between hover:border-sky-500/40 hover:bg-[#0f2540] transition-all duration-300 group cursor-pointer"
-                  onClick={() => navigate(`/species/${s.id}`)}
+                  onClick={() => navigate(`/species/${s.slug || s.id}`)}
                 >
                   <div>
                     {/* Header Tags */}

@@ -64,6 +64,7 @@ export const HABITATS_DATA = [
 export const SEARCH_SPECIES_CATALOG = [
   {
     id: "great-white-shark-1",
+    slug: "great-white-shark-1",
     category: "cartilage-fish",
     categoryVi: "Cá sụn",
     categoryEn: "Cartilaginous Fish",
@@ -397,6 +398,7 @@ export const SEARCH_SPECIES_CATALOG = [
   },
   {
     id: "bluefin-tuna-1",
+    slug: "ca-ngu-vay-vang-dai-duong",
     category: "bony-fish",
     categoryVi: "Cá xương",
     categoryEn: "Bony Fish",
@@ -472,6 +474,7 @@ export const SEARCH_SPECIES_CATALOG = [
   },
   {
     id: "whale-shark-2",
+    slug: "ca-map-voi-nham-voi",
     category: "cartilage-fish",
     categoryVi: "Cá sụn",
     categoryEn: "Cartilaginous Fish",
@@ -673,6 +676,7 @@ export const SEARCH_SPECIES_CATALOG = [
   },
   {
     id: "giant-octopus-3",
+    slug: "bach-tuoc-khong-lo",
     category: "mollusk",
     categoryVi: "Động vật thân mềm",
     categoryEn: "Mollusk",

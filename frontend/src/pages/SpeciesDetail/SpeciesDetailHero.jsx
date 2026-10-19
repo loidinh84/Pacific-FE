@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Volume2,
@@ -40,18 +40,148 @@ export function SpeciesDetailHero({ species }) {
       : species.introHeaderVi ||
         `Tên khoa học: ${species.sciName} là loài cá săn mồi lớn nhất thế giới hiện nay, được mệnh danh là một trong những "hung thần" đỉnh cao của đại dương.`;
 
-  const taxonomy = species.taxonomy || {
-    kingdom: language === "en" ? "Animalia" : "Animalia (Động vật)",
-    phylum: language === "en" ? "Chordata" : "Chordata (Dây sống)",
-    class:
-      language === "en"
-        ? species.categoryEn || "Chondrichthyes"
-        : species.categoryVi || "Chondrichthyes (Cá sụn)",
-    order: language === "en" ? "Lamniformes" : "Lamniformes (Cá mập chuột)",
-    family: "Lamnidae",
-    genus: "Carcharodon",
-    species: species.sciName || "C. carcharias",
-  };
+  const taxonomy = useMemo(() => {
+    if (species.taxonomy) return species.taxonomy;
+
+    const slug = (species?.slug || "").toLowerCase();
+    const id = (species?.id || "").toString().toLowerCase();
+    const nameVi = (species?.nameVi || species?.commonName || "").toLowerCase();
+    const cat = (species?.category || species?.categoryVi || "").toLowerCase();
+    const sciName = species?.sciName || species?.scientificName || "";
+    const isEn = language === "en";
+
+    // Bạch tuộc khổng lồ
+    if (
+      slug.includes("octopus") ||
+      slug.includes("bach-tuoc") ||
+      id === "giant-octopus-3" ||
+      nameVi.includes("bạch tuộc") ||
+      sciName.toLowerCase().includes("octopus")
+    ) {
+      return {
+        kingdom: isEn ? "Animalia" : "Động vật",
+        phylum: isEn ? "Mollusca" : "Thân mềm",
+        class: isEn ? "Cephalopoda" : "Chân đầu",
+        order: isEn ? "Octopoda" : "Bạch tuộc",
+        family: "Enteroctopodidae",
+        genus: "Enteroctopus",
+        species: sciName || "Enteroctopus dofleini",
+      };
+    }
+
+    // Cá voi lưng gù
+    if (
+      slug.includes("ca-voi-lung-gu") ||
+      nameVi.includes("lưng gù") ||
+      sciName.toLowerCase().includes("megaptera")
+    ) {
+      return {
+        kingdom: isEn ? "Animalia" : "Động vật",
+        phylum: isEn ? "Chordata" : "Dây sống",
+        class: isEn ? "Mammalia" : "Động vật có vú",
+        order: isEn ? "Cetacea" : "Bộ Cá voi",
+        family: "Balaenopteridae",
+        genus: "Megaptera",
+        species: sciName || "Megaptera novaeangliae",
+      };
+    }
+
+    // Rùa xanh / Vích
+    if (
+      slug.includes("rua") ||
+      slug.includes("vich") ||
+      nameVi.includes("rùa") ||
+      sciName.toLowerCase().includes("chelonia")
+    ) {
+      return {
+        kingdom: isEn ? "Animalia" : "Động vật",
+        phylum: isEn ? "Chordata" : "Dây sống",
+        class: isEn ? "Reptilia" : "Bò sát",
+        order: isEn ? "Testudines" : "Bộ Rùa",
+        family: "Cheloniidae",
+        genus: "Chelonia",
+        species: sciName || "Chelonia mydas",
+      };
+    }
+
+    // Cá ngừ vây vàng
+    if (
+      slug.includes("ca-ngu") ||
+      nameVi.includes("cá ngừ") ||
+      sciName.toLowerCase().includes("thunnus")
+    ) {
+      return {
+        kingdom: isEn ? "Animalia" : "Động vật",
+        phylum: isEn ? "Chordata" : "Dây sống",
+        class: isEn ? "Actinopterygii" : "Cá vây tia",
+        order: isEn ? "Scombriformes" : "Bộ Cá bạc má",
+        family: "Scombridae",
+        genus: "Thunnus",
+        species: sciName || "Thunnus albacares",
+      };
+    }
+
+    // Cá mập voi
+    if (
+      slug.includes("ca-map-voi") ||
+      nameVi.includes("cá mập voi") ||
+      nameVi.includes("nhám voi") ||
+      sciName.toLowerCase().includes("rhincodon")
+    ) {
+      return {
+        kingdom: isEn ? "Animalia" : "Động vật",
+        phylum: isEn ? "Chordata" : "Dây sống",
+        class: isEn ? "Chondrichthyes" : "Cá sụn",
+        order: isEn ? "Orectolobiformes" : "Bộ Cá nhám râu",
+        family: "Rhincodontidae",
+        genus: "Rhincodon",
+        species: sciName || "Rhincodon typus",
+      };
+    }
+
+    // Cá mập trắng lớn
+    if (
+      slug.includes("shark") ||
+      slug.includes("ca-map-trang") ||
+      id === "great-white-shark-1" ||
+      nameVi.includes("cá mập trắng") ||
+      sciName.toLowerCase().includes("carcharodon")
+    ) {
+      return {
+        kingdom: isEn ? "Animalia" : "Động vật",
+        phylum: isEn ? "Chordata" : "Dây sống",
+        class: isEn ? "Chondrichthyes" : "Cá sụn",
+        order: isEn ? "Lamniformes" : "Bộ Cá mập chuột",
+        family: "Lamnidae",
+        genus: "Carcharodon",
+        species: sciName || "Carcharodon carcharias",
+      };
+    }
+
+    // Suy luận theo phân loại học
+    const genusGuess = sciName ? sciName.split(" ")[0] : "Chưa xác định";
+    let phylumName = isEn ? "Chordata" : "Dây sống";
+    let className = isEn ? "Actinopterygii" : "Cá vây tia";
+
+    if (cat.includes("mollusk") || cat.includes("thân mềm")) {
+      phylumName = isEn ? "Mollusca" : "Thân mềm";
+      className = isEn ? "Cephalopoda" : "Chân đầu";
+    } else if (cat.includes("mammal") || cat.includes("vú")) {
+      className = isEn ? "Mammalia" : "Động vật có vú";
+    } else if (cat.includes("reptile") || cat.includes("bò sát")) {
+      className = isEn ? "Reptilia" : "Bò sát";
+    }
+
+    return {
+      kingdom: isEn ? "Animalia" : "Động vật",
+      phylum: phylumName,
+      class: className,
+      order: isEn ? "Marine Fauna" : "Sinh vật biển",
+      family: genusGuess ? `${genusGuess}idae` : "Chưa xác định",
+      genus: genusGuess,
+      species: sciName || (isEn ? "Marine Specimen" : "Mẫu vật biển"),
+    };
+  }, [species, language]);
 
   const scientificDossier =
     language === "en"
@@ -240,7 +370,7 @@ export function SpeciesDetailHero({ species }) {
       <div className="flex items-center justify-between my-6 w-full">
         {/* Nút bên trái: Xem dưới dạng 3D */}
         <button
-          onClick={() => navigate(`/species/${species.id}/3d`)}
+          onClick={() => navigate(`/species/${species.slug || species.id}/3d`)}
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-900/70 to-indigo-900/70 hover:from-blue-800 hover:to-indigo-800 border border-indigo-400/30 text-white text-xs font-semibold tracking-wide transition-all cursor-pointer backdrop-blur-md"
         >
           <Box size={15} className="text-cyan-400" />

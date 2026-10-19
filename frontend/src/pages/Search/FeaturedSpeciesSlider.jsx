@@ -29,7 +29,7 @@ export function FeaturedSpeciesSlider() {
             <div
               key={s.id}
               className="flex-shrink-0 w-56 bg-[#0d1f35] border border-white/10 rounded-2xl p-4 flex flex-col justify-between hover:border-sky-500/50 hover:bg-[#0f2540] transition-all duration-300 group cursor-pointer"
-              onClick={() => navigate(`/species/${s.id}`)}
+              onClick={() => navigate(`/species/${s.slug || s.id}`)}
             >
               {/* Header Tags */}
               <div className="flex items-center justify-between gap-1.5 mb-3">

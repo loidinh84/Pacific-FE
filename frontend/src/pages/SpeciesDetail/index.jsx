@@ -13,29 +13,49 @@ import { useLanguage } from "../../hooks/useLanguage";
 import { recordSpeciesView } from "../../services/speciesCommentsApi";
 import { fetchSpeciesDetail } from "../../services/speciesApi";
 
+const MOCK_SLUG_MAP = {
+  "giant-octopus-3": "bach-tuoc-khong-lo",
+  octopus: "bach-tuoc-khong-lo",
+  "whale-shark": "ca-map-voi-nham-voi",
+  "whale-shark-2": "ca-map-voi-nham-voi",
+  "bluefin-tuna-1": "ca-ngu-vay-vang-dai-duong",
+  "great-white-shark-1": "great-white-shark-1",
+};
+
 export default function SpeciesDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { language } = useLanguage();
 
+  const resolvedId = MOCK_SLUG_MAP[id] || id;
+
+  // Tự động chuyển hướng từ mock ID cũ sang slug chuẩn trong CSDL để đảm bảo URL đồng bộ & không lỗi 404
+  useEffect(() => {
+    if (MOCK_SLUG_MAP[id] && MOCK_SLUG_MAP[id] !== id) {
+      navigate(`/species/${MOCK_SLUG_MAP[id]}`, { replace: true });
+    }
+  }, [id, navigate]);
+
   const [species, setSpecies] = useState(() => {
     return (
-      SEARCH_SPECIES_CATALOG.find((s) => s.id === id || s.slug === id) ||
-      SEARCH_SPECIES_CATALOG[0]
+      SEARCH_SPECIES_CATALOG.find(
+        (s) => s.id === id || s.slug === id || s.slug === resolvedId
+      ) || SEARCH_SPECIES_CATALOG[0]
     );
   });
 
   // Tải thông tin loài từ API cơ sở dữ liệu nếu có, hỗ trợ đầy đủ các loài Biển Đông
   useEffect(() => {
     let isMounted = true;
-    if (id) {
-      recordSpeciesView(id);
+    const targetId = resolvedId || id;
+    if (targetId) {
+      recordSpeciesView(targetId);
 
-      fetchSpeciesDetail(id).then((apiData) => {
+      fetchSpeciesDetail(targetId).then((apiData) => {
         if (!isMounted || !apiData) return;
 
         const localSpecies = SEARCH_SPECIES_CATALOG.find(
-          (s) => s.id === id || s.slug === id
+          (s) => s.id === id || s.slug === id || s.slug === resolvedId
         );
 
         // Ưu tiên ảnh chất lượng cao có sẵn trong assets cục bộ, sau đó đến API media
@@ -87,7 +107,7 @@ export default function SpeciesDetail() {
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [id, resolvedId]);
 
   if (!species) {
     return (
@@ -126,7 +146,7 @@ export default function SpeciesDetail() {
         <RelatedSpecies currentSpeciesId={species.id} language={language} />
 
         {/* 5. Species community opinions and comments */}
-        <SpeciesComments speciesId={id || species?.id} species={species} />
+        <SpeciesComments speciesId={resolvedId || id || species?.id} species={species} />
       </main>
 
       <Footer />

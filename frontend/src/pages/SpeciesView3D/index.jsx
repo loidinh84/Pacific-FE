@@ -6,24 +6,36 @@ import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { Ocean3DBg } from "../../assets/Images";
 import { fetchSpeciesDetail } from "../../services/speciesApi";
 
+const MOCK_SLUG_MAP = {
+  "giant-octopus-3": "bach-tuoc-khong-lo",
+  octopus: "bach-tuoc-khong-lo",
+  "whale-shark": "ca-map-voi-nham-voi",
+  "whale-shark-2": "ca-map-voi-nham-voi",
+  "bluefin-tuna-1": "ca-ngu-vay-vang-dai-duong",
+  "great-white-shark-1": "great-white-shark-1",
+};
+
 export default function SpeciesView3D() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { language, t } = useLanguage();
+
+  const resolvedId = MOCK_SLUG_MAP[id] || id;
 
   const [showInfo, setShowInfo] = useState(true);
   const [expandFacts, setExpandFacts] = useState(false);
 
   const [species, setSpecies] = useState(() => {
     return (
-      SEARCH_SPECIES_CATALOG.find((s) => s.id === id || s.slug === id) ||
+      SEARCH_SPECIES_CATALOG.find((s) => s.id === id || s.slug === id || s.slug === resolvedId) ||
       SEARCH_SPECIES_CATALOG[0]
     );
   });
 
   useEffect(() => {
-    if (id) {
-      fetchSpeciesDetail(id).then((apiData) => {
+    const targetId = resolvedId || id;
+    if (targetId) {
+      fetchSpeciesDetail(targetId).then((apiData) => {
         if (!apiData) return;
         setSpecies((prev) => ({
           ...prev,
@@ -37,7 +49,7 @@ export default function SpeciesView3D() {
         }));
       });
     }
-  }, [id]);
+  }, [id, resolvedId]);
 
   if (!species) {
     return (

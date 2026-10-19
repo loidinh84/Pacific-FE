@@ -127,7 +127,17 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
   const [loading, setLoading] = useState(true);
   const [ecoData, setEcoData] = useState(null);
 
-  const targetIdentifier = species?.slug || species?.id || species?.code;
+  const MOCK_SLUG_MAP = {
+    "giant-octopus-3": "bach-tuoc-khong-lo",
+    octopus: "bach-tuoc-khong-lo",
+    "whale-shark": "ca-map-voi-nham-voi",
+    "whale-shark-2": "ca-map-voi-nham-voi",
+    "bluefin-tuna-1": "ca-ngu-vay-vang-dai-duong",
+    "great-white-shark-1": "great-white-shark-1",
+  };
+
+  const rawIdentifier = species?.slug || species?.id || species?.code;
+  const targetIdentifier = MOCK_SLUG_MAP[rawIdentifier] || rawIdentifier;
 
   useEffect(() => {
     let isMounted = true;
