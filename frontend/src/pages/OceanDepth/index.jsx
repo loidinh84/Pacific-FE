@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { useLanguageStore } from "../../stores/useLanguageStore";
 import { OCEAN_ZONES, DEPTH_LANDMARKS, CREATURES_BY_DEPTH } from "./depthData";
+import { ArrowDown, FlashlightIcon, SunIcon, MapPinIcon, Anchor, WaveIcon } from "../../assets/Icons";
 import "./OceanDepth.css";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -101,6 +103,7 @@ const RULER_MAJOR_TICKS = [
 function FixedRuler({ depth }) {
   const pointerPct = Math.min(99.5, Math.max(0.5, (depth / MAX_DEPTH) * 100));
   const currentZone = getZoneAtDepth(depth);
+  const { language } = useLanguageStore();
 
   const scrollToDepth = (targetDepth) => {
     const targetScrollY = window.innerHeight + targetDepth * DEPTH_SCALE;
@@ -126,8 +129,8 @@ function FixedRuler({ depth }) {
     <aside className="od-ruler" aria-label="Thước đo độ sâu Biển Đông">
       {/* Tiêu đề thước đo */}
       <div className="od-ruler-header">
-        <span className="od-ruler-header-tag">ĐỘ SÂU</span>
-        <span className="od-ruler-header-unit">METERS</span>
+        <span className="od-ruler-header-tag">{language === "en" ? "Depth" : "Độ sâu"}</span>
+        <span className="od-ruler-header-unit">{language === "en" ? "Meters" : "Mét"}</span>
       </div>
 
       {/* Thân thước đo với dải phân tầng và vạch chia */}
@@ -292,9 +295,17 @@ function DraggableHUD({ depth, currentZone }) {
         <button
           className="od-hud-collapse-btn"
           onClick={() => setCollapsed((c) => !c)}
-          title={collapsed ? "▲" : "▼"}
+          title={
+            collapsed
+              ? (language === "en" ? "Expand" : "Mở rộng")
+              : (language === "en" ? "Collapse" : "Thu gọn")
+          }
+          aria-label={collapsed ? "Expand" : "Collapse"}
         >
-          {collapsed ? "▲" : "▼"}
+          <ChevronDown
+            size={13}
+            className={`od-hud-collapse-icon ${collapsed ? "" : "rotate-180"}`}
+          />
         </button>
       </div>
 
@@ -625,21 +636,23 @@ export default function OceanDepth() {
               <div className="od-vent-smoke" />
               <div className="od-vent-smoke s2" />
               <div className="od-vent-chimney" />
-              <span className="od-vent-tag">🌋 Miệng thủy nhiệt đáy biển (5,016m)</span>
+              <span className="od-vent-tag">{language === "en" ? "Deep-sea Hydrothermal Vent (5,016m)" : "Miệng thủy nhiệt đáy biển (5,016m)"}</span>
             </div>
           </div>
 
           {/* Thẻ vinh danh hoàn thành thám hiểm Rãnh Manila */}
           <div className="od-seabed-badge-card">
             <div className="od-seabed-badge-header">
-              <span className="od-seabed-badge-trophy">🔱</span>
+              <span className="od-seabed-badge-trophy">
+                <Anchor className="od-seabed-badge-trophy-icon" />
+              </span>
               <div>
                 <h2 className="od-seabed-badge-title">
                   {language === "en" ? "MANILA TRENCH SEABED REACHED" : "CHẠM ĐÁY BIỂN ĐÔNG — RÃNH MANILA"}
                 </h2>
                 <p className="od-seabed-badge-subtitle">
                   {language === "en"
-                    ? "You have completed the full vertical descent of the South East Sea to 5,016 meters"
+                    ? "You have completed the full vertical descent of the East Sea to 5,016 meters"
                     : "Bạn đã hoàn thành chuyến thám hiểm trọn vẹn toàn bộ cột nước Biển Đông tới độ sâu 5,016 mét"}
                 </p>
               </div>
@@ -647,26 +660,38 @@ export default function OceanDepth() {
 
             <div className="od-seabed-stats-grid">
               <div className="od-seabed-stat-box">
-                <span className="od-seabed-stat-k">ĐỘ SÂU TỐI ĐA</span>
+                <span className="od-seabed-stat-k">
+                  <ArrowDown className="od-seabed-stat-icon" />
+                  {language === "en" ? "Max depth" : "Độ sâu tối đa"}
+                </span>
                 <span className="od-seabed-stat-v">5,016 m</span>
               </div>
               <div className="od-seabed-stat-box">
-                <span className="od-seabed-stat-k">ÁP SUẤT ĐÁY</span>
+                <span className="od-seabed-stat-k">
+                  <FlashlightIcon className="od-seabed-stat-icon" />
+                  {language === "en" ? "Seabed pressure" : "Áp suất đáy"}
+                </span>
                 <span className="od-seabed-stat-v">502 atm</span>
               </div>
               <div className="od-seabed-stat-box">
-                <span className="od-seabed-stat-k">NHIỆT ĐỘ ĐÁY</span>
+                <span className="od-seabed-stat-k">
+                  <SunIcon className="od-seabed-stat-icon" />
+                  {language === "en" ? "Seabed temp." : "Nhiệt độ đáy"}
+                </span>
                 <span className="od-seabed-stat-v">1.4°C</span>
               </div>
               <div className="od-seabed-stat-box">
-                <span className="od-seabed-stat-k">TỌA ĐỘ RÃNH</span>
+                <span className="od-seabed-stat-k">
+                  <MapPinIcon className="od-seabed-stat-icon" />
+                  {language === "en" ? "Trench coords." : "Tọa độ rãnh"}
+                </span>
                 <span className="od-seabed-stat-v">15°N 119°E</span>
               </div>
             </div>
 
             <p className="od-seabed-badge-desc">
               {language === "en"
-                ? "The Manila Trench was formed by the subduction of the South China Sea plate beneath the Philippine Mobile Belt. It is the only true deep oceanic trench in this semi-enclosed sea."
+                ? "The Manila Trench was formed by the subduction of the East Sea plate beneath the Philippine Mobile Belt. It is the only true deep oceanic trench in this semi-enclosed sea."
                 : "Rãnh Manila hình thành do sự hút chìm của mảng kiến tạo đáy Biển Đông. Đây là rãnh hút chìm sâu duy nhất và là ranh giới kiến tạo quan trọng bậc nhất tạo nên điểm sâu nhất của vùng biển này."}
             </p>
 
@@ -675,7 +700,8 @@ export default function OceanDepth() {
               className="od-seabed-back-btn"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              🌊 {language === "en" ? "Return to Sea Surface" : "Trở về mặt biển"}
+              <WaveIcon className="od-seabed-back-icon" />
+              {language === "en" ? "Return to Sea Surface" : "Trở về mặt biển"}
             </button>
           </div>
         </div>

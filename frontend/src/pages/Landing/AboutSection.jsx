@@ -4,7 +4,10 @@ export default function AboutSection() {
   const { t } = useLanguage();
 
   return (
-    <section id="about" className="bg-pacific-figma-dark py-24 relative overflow-hidden">
+    <section id="about" className="bg-pacific-figma-dark pt-16 pb-24 relative overflow-hidden z-20">
+      {/* Lớp ánh sáng hải lưu ngầm kết nối liền mạch từ bản đồ Hero */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 max-w-4xl h-36 bg-gradient-to-b from-pacific-cyan/15 via-pacific-teal/5 to-transparent blur-3xl pointer-events-none" />
+
       {/* Decorative ocean path backdrop blur */}
       <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-pacific-teal/5 blur-3xl pointer-events-none" />
       

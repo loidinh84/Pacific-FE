@@ -21,7 +21,7 @@ export const OCEAN_ZONES = [
     descVi:
       "Ánh sáng mặt trời xuyên qua hoàn toàn. Nước nhiệt đới ấm áp 27–30°C, nơi san hô Biển Đông phát triển rực rỡ và đa dạng sinh học cao nhất.",
     descEn:
-      "Full sunlight penetrates this zone. Tropical warm water 27–30°C, home to South China Sea's vibrant coral reefs and highest biodiversity.",
+      "Full sunlight penetrates this zone. Tropical warm water 27–30°C, home to East Sea's vibrant coral reefs and highest biodiversity.",
     icon: SunIcon,
     pressure: "1–20 atm",
     temp: "26–30°C",
@@ -43,7 +43,7 @@ export const OCEAN_ZONES = [
     descVi:
       "Ánh sáng mờ dần, nhiệt độ giảm nhanh xuống 5–15°C. Tầng vực trung gian Biển Đông — nơi cá ngừ, cá mực và sinh vật phát quang sinh học di cư hàng đêm.",
     descEn:
-      "Faint light, temperature drops rapidly to 5–15°C. South China Sea mid-water zone where tuna, squid and bioluminescent creatures migrate nightly.",
+      "Faint light, temperature drops rapidly to 5–15°C. East Sea mid-water zone where tuna, squid and bioluminescent creatures migrate nightly.",
     icon: MoonIcon,
     pressure: "20–100 atm",
     temp: "5–15°C",
@@ -65,7 +65,7 @@ export const OCEAN_ZONES = [
     descVi:
       "Bóng tối tuyệt đối. Bồn trũng trung tâm Biển Đông sâu tới 3,500–4,000m. Áp suất nghiền nát, nhiệt độ gần 2°C, chỉ sinh vật chuyên biệt tồn tại được.",
     descEn:
-      "Absolute darkness. Central South China Sea basin reaches 3,500–4,000m. Crushing pressure, near 2°C, only specialized organisms survive.",
+      "Absolute darkness. Central East Sea basin reaches 3,500–4,000m. Crushing pressure, near 2°C, only specialized organisms survive.",
     icon: FlashlightIcon,
     pressure: "100–400 atm",
     temp: "2–5°C",
@@ -87,7 +87,7 @@ export const OCEAN_ZONES = [
     descVi:
       "Đáy sâu nhất Biển Đông — Rãnh Manila (5,016m). Nền đáy lạnh giá, áp suất 500+ atm. Vi khuẩn, giun ống và tôm Amphipod là những cư dân cuối cùng nơi đây.",
     descEn:
-      "The deepest floor of the South China Sea — Manila Trench (5,016m). Cold seafloor, 500+ atm pressure. Bacteria, tube worms and Amphipod shrimp are the last residents here.",
+      "The deepest floor of the East Sea — Manila Trench (5,016m). Cold seafloor, 500+ atm pressure. Bacteria, tube worms and Amphipod shrimp are the last residents here.",
     icon: CircleDotIcon,
     pressure: "400–502 atm",
     temp: "1–2°C",
@@ -103,9 +103,9 @@ export const DEPTH_LANDMARKS = [
     depth: 0,
     icon: WaveIcon,
     labelVi: "Mực nước biển Biển Đông",
-    labelEn: "South China Sea Surface",
+    labelEn: "East Sea Surface",
     descVi: "Bề mặt Biển Đông — vùng biển nhiệt đới nửa kín rộng 3.447 triệu km²",
-    descEn: "Surface of the South China Sea — a semi-enclosed tropical sea spanning 3.447 million km²",
+    descEn: "Surface of the East Sea — a semi-enclosed tropical sea spanning 3.447 million km²",
     color: "#38bdf8",
   },
   {
@@ -132,7 +132,7 @@ export const DEPTH_LANDMARKS = [
     labelVi: "Cá heo Irrawaddy",
     labelEn: "Irrawaddy Dolphin",
     descVi: "Loài cá heo đặc hữu quý hiếm của Biển Đông và vùng Đông Nam Á — đang nguy cơ tuyệt chủng",
-    descEn: "Rare endemic dolphin species of the South China Sea and Southeast Asia — endangered",
+    descEn: "Rare endemic dolphin species of the East Sea and Southeast Asia — endangered",
     color: "#60a5fa",
   },
   {
@@ -141,7 +141,7 @@ export const DEPTH_LANDMARKS = [
     labelVi: "Cá voi lưng gù di cư",
     labelEn: "Humpback Whale Migration",
     descVi: "Cá voi lưng gù di cư qua Biển Đông theo hành lang đại dương mỗi năm",
-    descEn: "Humpback whales migrate through the South China Sea along annual oceanic corridors",
+    descEn: "Humpback whales migrate through the East Sea along annual oceanic corridors",
     color: "#818cf8",
   },
   {
@@ -150,16 +150,16 @@ export const DEPTH_LANDMARKS = [
     labelVi: "Cá mập đầu búa",
     labelEn: "Hammerhead Shark",
     descVi: "Cá mập đầu búa — loài đang bị đe dọa nghiêm trọng tại Biển Đông do đánh bắt quá mức",
-    descEn: "Hammerhead shark — critically threatened in the South China Sea due to overfishing",
+    descEn: "Hammerhead shark — critically threatened in the East Sea due to overfishing",
     color: "#f87171",
   },
   {
     depth: 1140,
     icon: GlobeIcon,
     labelVi: "Độ sâu trung bình Biển Đông",
-    labelEn: "Average South China Sea Depth",
+    labelEn: "Average East Sea Depth",
     descVi: "Độ sâu trung bình của Biển Đông là khoảng 1,140m — nông hơn nhiều đại dương khác",
-    descEn: "Average depth of the South China Sea is ~1,140m — much shallower than major oceans",
+    descEn: "Average depth of the East Sea is ~1,140m — much shallower than major oceans",
     color: "#64748b",
   },
   {
@@ -168,7 +168,7 @@ export const DEPTH_LANDMARKS = [
     labelVi: "Đỉnh của Rãnh Manila",
     labelEn: "Manila Trench Upper Edge",
     descVi: "Ranh giới trên của Rãnh Manila — rãnh hút chìm duy nhất tạo nên điểm sâu nhất Biển Đông",
-    descEn: "Upper boundary of Manila Trench — the only subduction trench creating the deepest point in the South China Sea",
+    descEn: "Upper boundary of Manila Trench — the only subduction trench creating the deepest point in the East Sea",
     color: "#a78bfa",
   },
   {
@@ -177,14 +177,14 @@ export const DEPTH_LANDMARKS = [
     labelVi: "Cá đèn lồng phát quang",
     labelEn: "Bioluminescent Lanternfish",
     descVi: "Sinh vật phát quang sinh học phổ biến nhất vùng nước sâu Biển Đông",
-    descEn: "The most abundant bioluminescent organisms in the deep waters of the South China Sea",
+    descEn: "The most abundant bioluminescent organisms in the deep waters of the East Sea",
     color: "#34d399",
   },
   {
     depth: 2500,
     icon: CoralIcon,
     labelVi: "Bồn trũng Nam Biển Đông",
-    labelEn: "Southern South China Sea Basin",
+    labelEn: "Southern East Sea Basin",
     descVi: "Bồn trũng đại dương trung tâm — nơi trầm tích từ sông Mekong và sông Hồng tích tụ qua hàng triệu năm",
     descEn: "Central ocean basin — where sediments from the Mekong and Red rivers have accumulated over millions of years",
     color: "#fb923c",
@@ -193,18 +193,18 @@ export const DEPTH_LANDMARKS = [
     depth: 3800,
     icon: MapPinIcon,
     labelVi: "Vực thẳm trung tâm Biển Đông",
-    labelEn: "Central South China Sea Abyss",
+    labelEn: "Central East Sea Abyss",
     descVi: "Vực thẳm tối tăm — nền đáy đại dương Biển Đông với lớp trầm tích dày và vi khuẩn cổ đại",
-    descEn: "Deep dark abyss — South China Sea seafloor with thick sediment layers and ancient bacteria",
+    descEn: "Deep dark abyss — East Sea seafloor with thick sediment layers and ancient bacteria",
     color: "#94a3b8",
   },
   {
     depth: 5016,
     icon: MapPinIcon,
     labelVi: "Rãnh Manila — Điểm Sâu Nhất Biển Đông",
-    labelEn: "Manila Trench — Deepest Point of South China Sea",
+    labelEn: "Manila Trench — Deepest Point of East Sea",
     descVi: "Điểm sâu nhất Biển Đông: 5,016m — Rãnh Manila nằm ở phía đông Philippines, hình thành do va chạm mảng kiến tạo",
-    descEn: "Deepest point of the South China Sea: 5,016m — Manila Trench east of Philippines, formed by tectonic plate collision",
+    descEn: "Deepest point of the East Sea: 5,016m — Manila Trench east of Philippines, formed by tectonic plate collision",
     color: "#a855f7",
   },
 ];
@@ -219,7 +219,7 @@ export const CREATURES_BY_DEPTH = [
     nameEn: "Whale Shark",
     emoji: WhaleIcon,
     descVi: "Loài cá lớn nhất hành tinh, thường xuất hiện ở Biển Đông quanh năm",
-    descEn: "The world's largest fish, commonly found in South China Sea year-round",
+    descEn: "The world's largest fish, commonly found in East Sea year-round",
     tagColor: "#3b82f6",
   },
   {
@@ -241,7 +241,7 @@ export const CREATURES_BY_DEPTH = [
     nameEn: "Hawksbill Sea Turtle",
     emoji: TurtleIcon,
     descVi: "Loài rùa biển quý hiếm đang nguy cơ tuyệt chủng, đẻ trứng trên các đảo Biển Đông",
-    descEn: "Critically endangered sea turtle nesting on South China Sea islands",
+    descEn: "Critically endangered sea turtle nesting on East Sea islands",
     tagColor: "#f59e0b",
   },
   {
@@ -252,7 +252,7 @@ export const CREATURES_BY_DEPTH = [
     nameEn: "Irrawaddy Dolphin",
     emoji: DolphinIcon,
     descVi: "Loài cá heo đặc hữu Đông Nam Á, cư trú ven bờ và cửa sông Biển Đông",
-    descEn: "Endangered dolphin endemic to Southeast Asia, inhabiting coastal and estuarine South China Sea waters",
+    descEn: "Endangered dolphin endemic to Southeast Asia, inhabiting coastal and estuarine East Sea waters",
     tagColor: "#06b6d4",
   },
   {
@@ -263,7 +263,7 @@ export const CREATURES_BY_DEPTH = [
     nameEn: "Bluefin Tuna",
     emoji: FishIcon,
     descVi: "Loài cá di cư kinh tế quan trọng nhất Biển Đông, bơi với tốc độ 70km/h",
-    descEn: "The most economically important migratory fish in South China Sea, swimming at 70km/h",
+    descEn: "The most economically important migratory fish in East Sea, swimming at 70km/h",
     tagColor: "#0ea5e9",
   },
   {
@@ -274,7 +274,7 @@ export const CREATURES_BY_DEPTH = [
     nameEn: "Bigfin Reef Squid",
     emoji: SquidIcon,
     descVi: "Loài mực phổ biến nhất Biển Đông, phát sáng sinh học để săn mồi ban đêm",
-    descEn: "Most common squid in South China Sea, uses bioluminescence to hunt at night",
+    descEn: "Most common squid in East Sea, uses bioluminescence to hunt at night",
     tagColor: "#e879f9",
   },
   {
@@ -285,7 +285,7 @@ export const CREATURES_BY_DEPTH = [
     nameEn: "Giant Grouper",
     emoji: FishIcon,
     descVi: "Vua cá mú của Biển Đông, có thể nặng đến 400kg, bảo vệ lãnh thổ rạn san hô",
-    descEn: "King of South China Sea groupers, weighing up to 400kg, protecting coral reef territories",
+    descEn: "King of East Sea groupers, weighing up to 400kg, protecting coral reef territories",
     tagColor: "#ef4444",
   },
   {
@@ -304,10 +304,10 @@ export const CREATURES_BY_DEPTH = [
     depthMin: 0,
     depthMax: 1500,
     nameVi: "Bạch Tuộc Biển Đông",
-    nameEn: "South China Sea Octopus",
+    nameEn: "East Sea Octopus",
     emoji: SquidIcon,
     descVi: "Sinh vật thông minh bậc nhất Biển Đông, đổi màu nguỵ trang hoàn hảo",
-    descEn: "Most intelligent creature in South China Sea, camouflage masters",
+    descEn: "Most intelligent creature in East Sea, camouflage masters",
     tagColor: "#f43f5e",
   },
   {
@@ -318,7 +318,7 @@ export const CREATURES_BY_DEPTH = [
     nameEn: "Oceanic Manta Ray",
     emoji: FishIcon,
     descVi: "Cá đuối khổng lồ của Biển Đông — sải cánh lên đến 7m, ăn lọc sinh vật phù du",
-    descEn: "Giant manta ray of South China Sea — wingspan up to 7m, filter-feeds on plankton",
+    descEn: "Giant manta ray of East Sea — wingspan up to 7m, filter-feeds on plankton",
     tagColor: "#84cc16",
   },
 ];

@@ -20,7 +20,7 @@ export default function SearchSection() {
   return (
     <section
       id="search-section"
-      className="bg-pacific-figma-dark pt-4 pb-16 relative overflow-hidden"
+      className="bg-pacific-figma-dark/85 backdrop-blur-md pt-4 pb-16 relative overflow-hidden border-t border-white/5"
     >
       <div className="max-w-5xl mx-auto px-6">
         <div

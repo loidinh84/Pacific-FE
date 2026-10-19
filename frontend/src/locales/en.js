@@ -14,7 +14,7 @@ const en = {
   // Hero Section
   hero: {
     titleLine1: "Explore The",
-    titleLine2: "South China Sea",
+    titleLine2: "East Sea",
     description: "Embark on a journey through the mysterious beauty and diverse ecosystems of the most strategically important sea in Southeast Asia.",
     btnExplore: "Explore Now",
     btnSearch: "Search Species",
@@ -28,13 +28,13 @@ const en = {
   // Search Section
   search: {
     title: "Which marine creature do you want to discover?",
-    subtitle: "Fast and comprehensive search across South China Sea marine species",
+    subtitle: "Fast and comprehensive search across East Sea marine species",
     placeholder: "Enter species name (Shark, Octopus, Coral...)",
     btnSearch: "Search",
   },
   // Search Page
   searchPage: {
-    heroTitle: "South China Sea Marine Life",
+    heroTitle: "East Sea Marine Life",
     heroDesc: "Discover thousands of wondrous marine species inhabiting the strategically important waters of Southeast Asia",
     searchPlaceholder: "Search species name, scientific name, family...",
     btnSearch: "Search",
@@ -53,7 +53,7 @@ const en = {
     sortDepth: "Depth",
     sortStatus: "Conservation Status",
     featuredTitle: "Most Searched Marine Species",
-    mainCatalogTitle: "Species of the South China Sea",
+    mainCatalogTitle: "Species of the East Sea",
     btnDetail: "View Details →",
     btnFavorite: "Favorite Species",
     funFactsTitle: "Did you know!",
@@ -62,15 +62,15 @@ const en = {
   // Species Section
   species: {
     title: "Featured Marine Life",
-    subtitle: "Iconic representatives of the South China Sea ecosystem",
+    subtitle: "Iconic representatives of the East Sea ecosystem",
     btnViewAll: "View All Species",
   },
   // About Section
   about: {
-    badge: "About The South China Sea",
+    badge: "About The East Sea",
     title: "The Most Strategic Sea in Southeast Asia",
-    desc1: "The South China Sea spans over 3.447 million km², a semi-enclosed sea rich in biodiversity from the Paracel and Spratly coral reefs to its mysterious deep basins.",
-    desc2: "Our mission is to connect nature lovers, spread South China Sea marine conservation awareness, and foster ocean environmental stewardship.",
+    desc1: "The East Sea spans over 3.447 million km², a semi-enclosed sea rich in biodiversity from the Paracel and Spratly coral reefs to its mysterious deep basins.",
+    desc2: "Our mission is to connect nature lovers, spread East Sea marine conservation awareness, and foster ocean environmental stewardship.",
     stat1Title: "Surface Area",
     stat1Value: "3.447M km²",
     stat2Title: "Marine Species",

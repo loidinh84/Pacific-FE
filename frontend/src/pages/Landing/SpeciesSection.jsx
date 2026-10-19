@@ -7,7 +7,7 @@ export default function SpeciesSection() {
   return (
     <section
       id="species"
-      className="bg-pacific-figma-dark pt-12 pb-6 relative overflow-hidden"
+      className="bg-pacific-figma-dark/80 backdrop-blur-md pt-12 pb-6 relative overflow-hidden border-t border-white/5"
     >
       <div className="absolute top-1/3 right-0 w-80 h-80 rounded-full bg-pacific-cyan/5 blur-3xl pointer-events-none" />
 

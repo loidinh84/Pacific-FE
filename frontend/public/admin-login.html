@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pacific - Tao tai khoan Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0b1329 0%, #0f1b38 50%, #0c1a2e 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', system-ui, sans-serif; color: white;
+  }
+  .card {
+    background: rgba(24,32,64,0.85);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 40px 48px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 32px 64px rgba(0,0,0,0.4);
+  }
+  .logo { font-size: 32px; font-weight: 900; color: #22d3ee; margin-bottom: 6px; letter-spacing: -1px; }
+  .subtitle { font-size: 13px; color: rgba(148,163,184,0.8); margin-bottom: 32px; }
+  .info-box {
+    background: rgba(34,211,238,0.06);
+    border: 1px solid rgba(34,211,238,0.15);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+  .info-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
+  .info-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .info-label { font-size: 12px; color: rgba(148,163,184,0.7); }
+  .info-value { font-size: 12px; font-weight: 600; color: #22d3ee; }
+  .btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, #22d3ee, #818cf8);
+    border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 700; color: #0b1329;
+    cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(34,211,238,0.35); }
+  .btn:active { transform: scale(0.98); }
+  .status { margin-top: 16px; font-size: 12px; min-height: 20px; }
+  .status.success { color: #34d399; }
+  .status.error { color: #f43f5e; }
+  .warning {
+    background: rgba(251,146,60,0.08);
+    border: 1px solid rgba(251,146,60,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 11px;
+    color: rgba(251,146,60,0.9);
+    margin-top: 20px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Pacific</div>
+  <p class="subtitle">Tao tai khoan Admin demo</p>
+
+  <div class="info-box">
+    <div class="info-row">
+      <span class="info-label">Username</span>
+      <span class="info-value">Admin1</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Email</span>
+      <span class="info-value">admin@pacific.org</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Role</span>
+      <span class="info-value">admin</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Phan quyen</span>
+      <span class="info-value">Toan quyen</span>
+    </div>
+  </div>
+
+  <button class="btn" onclick="createAdmin()">Tao tai khoan Admin &amp; Vao Dashboard</button>
+  <div id="status" class="status"></div>
+
+  <div class="warning">
+    Day la tai khoan demo dung mock data, khong ket noi backend.<br>
+    Du lieu tren Dashboard la gia lap de xem giao dien.
+  </div>
+</div>
+
+<script>
+function createAdmin() {
+  try {
+    const adminUser = {
+      id: "admin-demo-001",
+      username: "Admin1",
+      email: "admin@pacific.org",
+      role: "admin",
+      fullName: "Quan tri vien Pacific",
+      createdAt: new Date().toISOString(),
+      isAdmin: true,
+    };
+    const adminToken = "demo-admin-token-" + Date.now();
+    localStorage.setItem("pacific_token", adminToken);
+    localStorage.setItem("pacific_user", JSON.stringify(adminUser));
+    localStorage.setItem("token", adminToken);
+    localStorage.setItem("user", JSON.stringify(adminUser));
+    window.dispatchEvent(new Event("pacific_auth_change"));
+
+    const st = document.getElementById("status");
+    st.className = "status success";
+    st.textContent = "Tai khoan tao thanh cong! Dang chuyen huong...";
+
+    setTimeout(() => {
+      window.location.href = "/admin/stats";
+    }, 800);
+  } catch(e) {
+    const st = document.getElementById("status");
+    st.className = "status error";
+    st.textContent = "Loi: " + e.message;
+  }
+}
+</script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import HeroSection from "./HeroSection";
 import AboutSection from "./AboutSection";
 import SpeciesSection from "./SpeciesSection";
 import SearchSection from "./SearchSection";
+import PacificHotspotMap from "../../components/common/PacificHotspotMap";
 
 // Import AOS styles and script
 import AOS from "aos";
@@ -21,15 +22,25 @@ export default function Landing() {
   }, []);
 
   return (
-    <>
+    <div className="relative min-h-screen bg-pacific-figma-dark text-white selection:bg-pacific-cyan/30">
+      {/* Bản đồ Biển Đông tương tác làm nền cho cả trang Landing */}
+      <PacificHotspotMap asBackground />
+
+      {/* Thanh điều hướng */}
       <Navbar />
-      <main className="overflow-x-hidden">
+
+      {/* Nội dung các phần của trang Landing */}
+      <main className="relative z-10 overflow-x-hidden">
         <HeroSection />
         <AboutSection />
         <SpeciesSection />
         <SearchSection />
       </main>
-      <Footer />
-    </>
+
+      {/* Chân trang */}
+      <div className="relative z-10">
+        <Footer />
+      </div>
+    </div>
   );
 }
