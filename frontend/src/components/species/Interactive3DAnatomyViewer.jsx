@@ -71,7 +71,7 @@ export function Interactive3DAnatomyViewer({
   const pointerDownPosRef = useRef({ x: 0, y: 0, time: 0 });
   const pinsContainerRef = useRef(null);
 
-  // Focus mode camera lerp (Idea 1)
+  // Focus mode camera lerp
   const targetCameraPosRef = useRef(new THREE.Vector3(0, 0.8, 6.0));
   const targetLookAtRef = useRef(new THREE.Vector3(0, 0, 0));
   const isFocusLerpingRef = useRef(false);
