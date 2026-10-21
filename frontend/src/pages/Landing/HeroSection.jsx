@@ -109,27 +109,8 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Cột phải: Để trống để bản đồ nền và các nút hotspot nổi bật, kèm huy hiệu chỉ dẫn */}
-        <div
-          className="lg:col-span-5 flex justify-end items-end min-h-[160px] pointer-events-none"
-          data-aos="fade-left"
-          data-aos-delay="350"
-        >
-          <div className="hidden lg:flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-pacific-figma-dark/80 backdrop-blur-md border border-pacific-cyan/40 shadow-xl pointer-events-auto">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pacific-cyan opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-pacific-cyan"></span>
-            </span>
-            <div className="text-left">
-              <p className="text-xs font-bold text-white font-heading">
-                {language === "en" ? "Interactive East Sea Map" : "Bản đồ Biển Đông tương tác"}
-              </p>
-              <p className="text-[10px] text-pacific-blue-pale">
-                {language === "en" ? "Click any hotspot pin to explore" : "Nhấp vào các điểm tròn để xem chi tiết"}
-              </p>
-            </div>
-          </div>
-        </div>
+        {/* Cột phải: Để trống để bản đồ nền và các nút hotspot nổi bật */}
+        <div className="hidden lg:block lg:col-span-5 pointer-events-none" />
       </div>
 
       {/* Lớp gradient chuyển tiếp đại dương nối liền mượt mà giữa Hero và AboutSection (xóa bỏ hoàn toàn vết cắt ngang) */}

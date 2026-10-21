@@ -110,6 +110,10 @@ export default function AdminLayout() {
       path: "/admin/comments",
       badge: notifications.pendingReports,
     },
+    {
+      label: "Ý kiến đóng góp",
+      path: "/admin/feedback",
+    },
   ];
 
   return (

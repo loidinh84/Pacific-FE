@@ -19,6 +19,7 @@ import SpeciesGroupsManagement from "./pages/Admin/SpeciesGroups";
 import LocationsManagement from "./pages/Admin/Locations";
 import UsersManagement from "./pages/Admin/Users";
 import CommentsManagement from "./pages/Admin/Comments";
+import FeedbackManagement from "./pages/Admin/Feedback";
 import SystemSettings from "./pages/Admin/Settings";
 import AdminProfile from "./pages/Admin/Profile";
 import RelationshipsManagement from "./pages/Admin/Relationships";
@@ -134,6 +135,7 @@ function App() {
           <Route path="locations" element={<LocationsManagement />} />
           <Route path="users" element={<UsersManagement />} />
           <Route path="comments" element={<CommentsManagement />} />
+          <Route path="feedback" element={<FeedbackManagement />} />
           <Route path="settings" element={<SystemSettings />} />
           <Route path="profile" element={<AdminProfile />} />
         </Route>
