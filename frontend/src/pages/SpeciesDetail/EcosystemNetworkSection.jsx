@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Network,
@@ -14,7 +14,6 @@ import {
   ArrowUpRight,
   RotateCcw,
   AlertTriangle,
-  Info,
 } from "lucide-react";
 import { fetchSpeciesEcosystem } from "../../services/ecosystemApi";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -139,20 +138,31 @@ const RED_LIST_STANDARDS = {
   },
 };
 
-const STAGE = { w: 640, h: 480 };
+const STAGE = { w: 720, h: 540 };
+
+const MOCK_SLUG_MAP = {
+  "giant-octopus-3": "bach-tuoc-khong-lo",
+  octopus: "bach-tuoc-khong-lo",
+  "whale-shark": "ca-map-voi-nham-voi",
+  "whale-shark-2": "ca-map-voi-nham-voi",
+  "bluefin-tuna-1": "ca-ngu-vay-vang-dai-duong",
+};
 
 export function EcosystemNetworkSection({ species, language: propLang }) {
-  const navigate = useNavigate();
   const { language: storeLang } = useLanguage();
   const lang = propLang || storeLang || "vi";
   const isEn = lang === "en";
 
-  const [loading, setLoading] = useState(true);
+  const rawIdentifier = species?.slug || species?.id || species?.code;
+  const targetIdentifier = MOCK_SLUG_MAP[rawIdentifier] || rawIdentifier;
+
+  const [loading, setLoading] = useState(() => Boolean(targetIdentifier));
   const [error, setError] = useState(null);
   const [ecoData, setEcoData] = useState(null);
   const [viewMode, setViewMode] = useState("orbit"); // "orbit" | "pyramid"
   const [hoveredNodeId, setHoveredNodeId] = useState(null);
   const [activeNodeId, setActiveNodeId] = useState(null);
+  const [selectedRelationFilter, setSelectedRelationFilter] = useState("all"); // "all" | "prey" | "competitor" | "symbiosis" | "habitat"
 
   // Responsive scale của khung SVG STAGE
   const containerRef = useRef(null);
@@ -170,29 +180,32 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
     return () => observer.disconnect();
   }, []);
 
-  const MOCK_SLUG_MAP = {
-    "giant-octopus-3": "bach-tuoc-khong-lo",
-    octopus: "bach-tuoc-khong-lo",
-    "whale-shark": "ca-map-voi-nham-voi",
-    "whale-shark-2": "ca-map-voi-nham-voi",
-    "bluefin-tuna-1": "ca-ngu-vay-vang-dai-duong",
-  };
-
-  const rawIdentifier = species?.slug || species?.id || species?.code;
-  const targetIdentifier = MOCK_SLUG_MAP[rawIdentifier] || rawIdentifier;
-
-  const loadEcosystem = () => {
-    if (!targetIdentifier) {
-      setLoading(false);
-      return;
-    }
-    let cancelled = false;
+  const handleRetry = useCallback(() => {
+    if (!targetIdentifier) return;
     setLoading(true);
     setError(null);
+    fetchSpeciesEcosystem(targetIdentifier)
+      .then((data) => {
+        setEcoData(data);
+      })
+      .catch((err) => {
+        setError(err.message || "Không thể tải dữ liệu mạng lưới sinh thái");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [targetIdentifier]);
+
+  useEffect(() => {
+    if (!targetIdentifier) return;
+    let cancelled = false;
 
     fetchSpeciesEcosystem(targetIdentifier)
       .then((data) => {
-        if (!cancelled) setEcoData(data);
+        if (!cancelled) {
+          setEcoData(data);
+          setError(null);
+        }
       })
       .catch((err) => {
         if (!cancelled) setError(err.message || "Không thể tải dữ liệu mạng lưới sinh thái");
@@ -204,10 +217,6 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
     return () => {
       cancelled = true;
     };
-  };
-
-  useEffect(() => {
-    return loadEcosystem();
   }, [targetIdentifier]);
 
   // Phân tách các nhóm vai trò sinh thái học thuật
@@ -289,32 +298,45 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
       // Xác định quan hệ: Con mồi vs Thiên địch vs Cạnh tranh
       const isOutgoing = relatedLink ? relatedLink.source === centerNode.id : true;
-      let relationSpecificLabel = meta.labelVi;
+      let relationCategoryLabel = meta.labelVi;
+      let relationDescription = `Có quan hệ sinh thái với ${centerNode.name}`;
       let flow = "none"; // "toCenter" | "fromCenter" | "none"
 
       if (relType === "predator_prey" || relType === "herbivory") {
         if (isOutgoing) {
           // Center săn bắt n -> n là con mồi
-          relationSpecificLabel = `Con mồi của ${centerNode.name}`;
+          relationCategoryLabel = "Con mồi";
+          relationDescription = `Con mồi trong chuỗi thức ăn của ${centerNode.name}`;
           flow = "toCenter"; // Dòng năng lượng từ con mồi vào kẻ săn mồi
         } else {
           // n săn bắt Center -> n là thiên địch
-          relationSpecificLabel = `Thiên địch của ${centerNode.name}`;
+          relationCategoryLabel = "Thiên địch";
+          relationDescription = `Thiên địch săn bắt ${centerNode.name}`;
           flow = "fromCenter"; // Dòng năng lượng từ Center sang thiên địch
         }
       } else if (relType === "competitor") {
-        relationSpecificLabel = `Cạnh tranh với ${centerNode.name}`;
-      } else if (relType === "symbiosis" || relType === "commensalism") {
-        relationSpecificLabel = `Cộng sinh cùng ${centerNode.name}`;
+        relationCategoryLabel = "Cạnh tranh";
+        relationDescription = `Cạnh tranh thức ăn & sinh cảnh với ${centerNode.name}`;
+      } else if (relType === "symbiosis") {
+        relationCategoryLabel = "Cộng sinh";
+        relationDescription = `Cộng sinh tương hỗ cùng ${centerNode.name}`;
+      } else if (relType === "commensalism") {
+        relationCategoryLabel = "Hội sinh";
+        relationDescription = `Hội sinh cùng ${centerNode.name}`;
       } else if (relType === "habitat_provider") {
-        relationSpecificLabel = `Sinh cảnh của ${centerNode.name}`;
+        relationCategoryLabel = "Sinh cảnh";
+        relationDescription = `Cung cấp sinh cảnh cho ${centerNode.name}`;
+      } else if (relType === "parasitism") {
+        relationCategoryLabel = "Ký sinh";
+        relationDescription = `Ký sinh trên ${centerNode.name}`;
       }
 
       return {
         ...n,
         index: idx,
         relationshipType: relType,
-        relationSpecificLabel,
+        relationCategoryLabel,
+        relationDescription,
         flow,
         meta,
         strength: relatedLink?.strength ?? 1,
@@ -324,7 +346,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
     });
   }, [ecoData, centerNode]);
 
-  // Tọa độ hình tròn cho các node vệ tinh (Orbital Coordinates)
+  // Tọa độ hình tròn cho các node vệ tinh (Orbital Coordinates) với bán kính mở rộng tránh đè nhãn
   const orbitalNodes = useMemo(() => {
     const count = satelliteNodes.length;
     if (count === 0) return [];
@@ -332,8 +354,8 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
     return satelliteNodes.map((node, i) => {
       // Phân bổ đều theo hình tròn (bắt đầu từ góc -90 độ / 12h)
       const angle = (2 * Math.PI * i) / count - Math.PI / 2;
-      const radiusX = 195;
-      const radiusY = 145;
+      const radiusX = 230;
+      const radiusY = 165;
       const x = Math.round(Math.cos(angle) * radiusX);
       const y = Math.round(Math.sin(angle) * radiusY);
 
@@ -345,6 +367,258 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
       };
     });
   }, [satelliteNodes]);
+
+  // Bộ đếm cho thanh lọc chú giải tương tác
+  const filterCounts = useMemo(() => {
+    let prey = 0;
+    let competitor = 0;
+    let symbiosis = 0;
+    let habitat = 0;
+
+    satelliteNodes.forEach((n) => {
+      if (
+        n.flow === "toCenter" ||
+        n.relationshipType === "predator_prey" ||
+        n.relationshipType === "herbivory"
+      ) {
+        prey++;
+      } else if (n.relationshipType === "competitor") {
+        competitor++;
+      } else if (
+        n.relationshipType === "symbiosis" ||
+        n.relationshipType === "commensalism"
+      ) {
+        symbiosis++;
+      } else if (n.relationshipType === "habitat_provider") {
+        habitat++;
+      }
+    });
+
+    return { prey, competitor, symbiosis, habitat };
+  }, [satelliteNodes]);
+
+  // Kiểm tra node có thỏa mãn bộ lọc chú giải đang chọn hay không
+  const isNodeMatchingFilter = useCallback(
+    (node) => {
+      if (selectedRelationFilter === "all") return true;
+      if (selectedRelationFilter === "prey") {
+        return (
+          node.flow === "toCenter" ||
+          node.relationshipType === "predator_prey" ||
+          node.relationshipType === "herbivory"
+        );
+      }
+      if (selectedRelationFilter === "competitor") {
+        return node.relationshipType === "competitor";
+      }
+      if (selectedRelationFilter === "symbiosis") {
+        return (
+          node.relationshipType === "symbiosis" ||
+          node.relationshipType === "commensalism"
+        );
+      }
+      if (selectedRelationFilter === "habitat") {
+        return node.relationshipType === "habitat_provider";
+      }
+      return true;
+    },
+    [selectedRelationFilter]
+  );
+
+  // Phân tầng Tháp Dinh Dưỡng tự động theo sinh thái học thực thụ (Dynamic Trophic Hierarchy)
+  const pyramidTiers = useMemo(() => {
+    const hasPredators = roles.predators && roles.predators.length > 0;
+    const hasPrey = roles.prey && roles.prey.length > 0;
+
+    const formatCardItem = (item, roleBadge, borderColor) => ({
+      id: item.speciesId || item.id,
+      slug: item.slug || item.speciesId || item.id,
+      name: (item.name || item.commonName || "").replace(/\s*\([^)]*\)/g, "").trim(),
+      scientificName: item.scientificName || item.cleanScientificName || "",
+      image: item.image || item.species_media?.[0]?.url || "",
+      redList: item.redList || item.vietnamRedListStatus || "NE",
+      roleBadge,
+      borderColor,
+    });
+
+    if (hasPredators) {
+      // Trường hợp 1: Loài khảo sát có thiên địch săn bắt nó (Mesopredator hoặc Con mồi)
+      return {
+        apex: {
+          level: isEn ? "Rank III / IV" : "Bậc III / IV",
+          titleVi: "Kẻ săn mồi đỉnh bảng & Thiên địch",
+          titleEn: "Apex Predators & Trophic Threats",
+          subVi: "Kiểm soát quần thể sinh vật từ đỉnh chuỗi thức ăn",
+          subEn: "Top-down trophic regulators",
+          color: "#f43f5e",
+          bgGradient: "from-rose-950/40 via-[#0a1829] to-[#040c17]",
+          borderColor: "border-rose-500/40",
+          badgeStyle: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+          items: roles.predators.map((p) =>
+            formatCardItem(p, isEn ? "Apex Threat" : "Thiên địch đỉnh", "#f43f5e")
+          ),
+        },
+        middle: {
+          level: isEn ? "Rank II" : "Bậc II",
+          titleVi: "Sinh vật khảo sát & Đối thủ cạnh tranh",
+          titleEn: "Focal Species & Ecological Competitors",
+          subVi: "Động vật tiêu thụ bậc trung trong mạng lưới sinh thái",
+          subEn: "Mesopredators transferring kinetic biomass",
+          color: "#f59e0b",
+          bgGradient: "from-amber-950/40 via-[#0a1829] to-[#040c17]",
+          borderColor: "border-amber-500/40",
+          badgeStyle: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+          items: [
+            {
+              ...centerNode,
+              roleBadge: isEn ? "Focal Species" : "Sinh vật khảo sát",
+              borderColor: "#38bdf8",
+              isCenter: true,
+            },
+            ...(roles.competitors || []).map((c) =>
+              formatCardItem(c, isEn ? "Competitor" : "Cạnh tranh", "#f59e0b")
+            ),
+          ],
+        },
+        bottom: {
+          level: isEn ? "Rank I" : "Bậc I",
+          titleVi: "Nguồn thức ăn & Sinh cảnh cơ sở",
+          titleEn: "Primary Food Sources & Biogenic Habitat",
+          subVi: "Năng lượng nuôi dưỡng quần thể từ tầng dưới",
+          subEn: "Energy foundation sustaining the trophic chain",
+          color: "#10b981",
+          bgGradient: "from-emerald-950/40 via-[#0a1829] to-[#040c17]",
+          borderColor: "border-emerald-500/40",
+          badgeStyle: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+          items: (hasPrey ? roles.prey : roles.habitats || []).map((p) =>
+            formatCardItem(
+              p,
+              hasPrey
+                ? isEn
+                  ? "Food Source"
+                  : "Nguồn thức ăn"
+                : isEn
+                ? "Habitat"
+                : "Sinh cảnh",
+              "#10b981"
+            )
+          ),
+        },
+      };
+    } else {
+      // Trường hợp 2: Loài khảo sát là Kẻ săn mồi đỉnh bảng (Apex Predator)
+      const mesopredators = [];
+      const primaryPrey = [];
+
+      satelliteNodes.forEach((node) => {
+        if (node.relationshipType === "competitor") {
+          mesopredators.push(
+            formatCardItem(node, isEn ? "Competitor" : "Cạnh tranh", "#f59e0b")
+          );
+        } else if (node.relationshipType === "predator_prey") {
+          const name = node.cleanName.toLowerCase();
+          const isMeso =
+            name.includes("ngừ") ||
+            name.includes("bạch tuộc") ||
+            name.includes("nhám") ||
+            name.includes("mực") ||
+            name.includes("heo") ||
+            node.groupName?.includes("Cá sụn") ||
+            node.groupName?.includes("Thân mềm");
+
+          if (isMeso) {
+            mesopredators.push(
+              formatCardItem(node, isEn ? "Mesopredator" : "Săn mồi bậc II", "#f59e0b")
+            );
+          } else {
+            primaryPrey.push(
+              formatCardItem(node, isEn ? "Forage Prey" : "Con mồi đàn / Sơ cấp", "#10b981")
+            );
+          }
+        } else if (node.relationshipType === "herbivory") {
+          primaryPrey.push(
+            formatCardItem(node, isEn ? "Herbivore" : "Ăn thực vật", "#10b981")
+          );
+        } else if (
+          node.relationshipType === "symbiosis" ||
+          node.relationshipType === "commensalism"
+        ) {
+          primaryPrey.push(
+            formatCardItem(node, isEn ? "Symbiont" : "Cộng sinh / Hội sinh", "#38bdf8")
+          );
+        }
+      });
+
+      if (mesopredators.length === 0 && primaryPrey.length > 2) {
+        mesopredators.push(
+          ...primaryPrey.splice(0, Math.ceil(primaryPrey.length / 2))
+        );
+      }
+
+      return {
+        apex: {
+          level: isEn ? "Rank III / IV" : "Bậc III / IV",
+          titleVi: "Kẻ săn mồi đỉnh bảng (Apex Predator)",
+          titleEn: "Apex Predator (Top Trophic Rank)",
+          subVi: "Đỉnh chóp chuỗi thức ăn, không có thiên địch tự nhiên trong đại dương",
+          subEn: "Top trophic rank with zero natural apex predators",
+          color: "#f43f5e",
+          bgGradient: "from-rose-950/40 via-[#0a1829] to-[#040c17]",
+          borderColor: "border-rose-500/40",
+          badgeStyle: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+          items: [
+            {
+              ...centerNode,
+              roleBadge: isEn ? "Apex Predator" : "Kẻ săn mồi đỉnh bảng",
+              borderColor: "#f43f5e",
+              isCenter: true,
+            },
+          ],
+        },
+        middle: {
+          level: isEn ? "Rank II" : "Bậc II",
+          titleVi: "Động vật săn mồi bậc trung & Cạnh tranh sinh thái",
+          titleEn: "Mesopredators & Trophic Competitors",
+          subVi: "Động vật ăn thịt thứ cấp, điều phối sinh khối và cạnh tranh thức ăn",
+          subEn: "Secondary carnivores transferring kinetic biomass",
+          color: "#f59e0b",
+          bgGradient: "from-amber-950/40 via-[#0a1829] to-[#040c17]",
+          borderColor: "border-amber-500/40",
+          badgeStyle: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+          items: mesopredators,
+        },
+        bottom: {
+          level: isEn ? "Rank I" : "Bậc I",
+          titleVi: "Động vật tiêu thụ sơ cấp & Con mồi sinh khối",
+          titleEn: "Primary Consumers & Forage Biomass",
+          subVi: "Nguồn thức ăn cơ sở dồi dào, hấp thụ năng lượng quang hợp & thực vật",
+          subEn: "Foundational forage prey sustaining higher trophic ranks",
+          color: "#10b981",
+          bgGradient: "from-emerald-950/40 via-[#0a1829] to-[#040c17]",
+          borderColor: "border-emerald-500/40",
+          badgeStyle: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+          items: primaryPrey,
+        },
+      };
+    }
+  }, [roles, centerNode, satelliteNodes, isEn]);
+
+  // Định vị tooltip/modal thông minh luôn hướng vào khoảng trống trung tâm, tránh bị che khuất
+  const getTooltipPositionClass = (x, y) => {
+    // Nếu node ở nửa trên đồ thị (y < -30) -> mở xuống dưới để không tràn viền trên
+    const verticalClass = y < -30 ? "top-full mt-3" : "bottom-full mb-3";
+
+    // Nếu node ở bên trái (x < -50) -> mở lệch sang phải (vào tâm)
+    // Nếu node ở bên phải (x > 50) -> mở lệch sang trái (vào tâm)
+    let horizontalClass = "left-1/2 -translate-x-1/2";
+    if (x < -50) {
+      horizontalClass = "left-0";
+    } else if (x > 50) {
+      horizontalClass = "right-0";
+    }
+
+    return `${verticalClass} ${horizontalClass}`;
+  };
 
   // Render card thông tin sinh thái
   const renderAcademicRelationCard = (item, typeKey) => {
@@ -364,13 +638,8 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
       <Link
         key={item.relationshipId || item.speciesId}
         to={`/species/${item.slug || item.speciesId}`}
-        className="group relative p-4 rounded-2xl bg-gradient-to-b from-[#0b1f38]/80 to-[#071526]/90 border border-white/10 hover:border-cyan-400/60 hover:shadow-xl hover:shadow-cyan-950/50 transition-all duration-300 flex flex-col justify-between cursor-pointer block overflow-hidden"
+        className="group relative p-4 rounded-2xl bg-[#081729]/80 hover:bg-[#0c2038]/90 border border-white/10 hover:border-cyan-400/50 transition-all duration-300 flex flex-col justify-between cursor-pointer block"
       >
-        <div
-          className="absolute -top-10 -right-10 w-28 h-28 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none"
-          style={{ backgroundColor: meta.color }}
-        />
-
         <div>
           {/* Header Card: Vai trò sinh thái học & Bậc đe dọa Sách Đỏ */}
           <div className="flex items-center justify-between gap-2 mb-3 relative z-10">
@@ -389,13 +658,12 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             </span>
           </div>
 
-          {/* Ảnh avatar tròn phát sáng & Tên loài */}
+          {/* Ảnh avatar tròn & Tên loài */}
           <div className="flex items-center gap-3.5 mb-3 relative z-10">
             <div
-              className="w-14 h-14 rounded-full overflow-hidden shrink-0 border-2 transition-all duration-300 group-hover:scale-105 shadow-md bg-slate-900"
+              className="w-13 h-13 rounded-full overflow-hidden shrink-0 border transition-all duration-300 group-hover:scale-105 bg-slate-900"
               style={{
-                borderColor: meta.color,
-                boxShadow: `0 0 14px ${meta.glowColor}`,
+                borderColor: `${meta.color}99`,
               }}
             >
               {item.image ? (
@@ -455,7 +723,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           </h2>
           <p className="text-xs md:text-sm text-slate-400 mt-1">
             {isEn
-              ? "Interactive marine trophic linkages & energy flow in the East Sea (Western Pacific margin)"
+              ? "Interactive marine trophic linkages & energy flow in the East Sea"
               : "Khám phá mối tương tác chuỗi thức ăn và dòng truyền năng lượng sinh khối giữa các loài tại Biển Đông"}
           </p>
         </div>
@@ -466,7 +734,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             onClick={() => setViewMode("orbit")}
             className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
               viewMode === "orbit"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/20"
+                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -477,7 +745,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             onClick={() => setViewMode("pyramid")}
             className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
               viewMode === "pyramid"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/20"
+                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -488,11 +756,11 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
       </div>
 
       {/* ─── 2. BIỂU ĐỒ MẠNG LƯỚI SINH THÁI ĐẠI DƯƠNG ───────── */}
-      <div className="relative rounded-3xl bg-gradient-to-b from-[#061528] via-[#040e1b] to-[#02070f] border border-cyan-500/25 overflow-hidden shadow-2xl shadow-cyan-950/60 mb-12">
+      <div className="relative rounded-3xl bg-gradient-to-b from-[#061528] via-[#040e1b] to-[#02070f] border border-cyan-500/25 overflow-hidden mb-12 shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
         {/* Thanh công cụ khoa học phía trên đồ thị */}
         <div className="px-5 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02] backdrop-blur-md">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#38bdf8]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
             <span className="text-xs font-bold text-white tracking-wider">
               {viewMode === "orbit"
                 ? isEn
@@ -507,33 +775,116 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             </span>
           </div>
 
-          {/* Chú giải dòng năng lượng & liên kết */}
-          <div className="flex flex-wrap items-center gap-3.5 text-[11px]">
-            <div className="flex items-center gap-1.5 text-slate-300">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#f43f5e] shadow-[0_0_6px_#f43f5e]" />
-              <span>Con mồi (Prey)</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-slate-300">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#f59e0b] shadow-[0_0_6px_#f59e0b]" />
-              <span>Cạnh tranh</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-slate-300">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8] shadow-[0_0_6px_#38bdf8]" />
-              <span>Cộng sinh</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-slate-300">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] shadow-[0_0_6px_#10b981]" />
-              <span>Sinh cảnh</span>
-            </div>
+          {/* Chú giải & Bộ lọc tương tác (Interactive Filter Chips) */}
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <button
+              onClick={() => setSelectedRelationFilter("all")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                selectedRelationFilter === "all"
+                  ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 shadow-sm"
+                  : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+              }`}
+            >
+              <span>{isEn ? "All" : "Tất cả"}</span>
+              <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-white/10 font-mono font-bold">
+                {satelliteNodes.length}
+              </span>
+            </button>
+
+            {filterCounts.prey > 0 && (
+              <button
+                onClick={() =>
+                  setSelectedRelationFilter(
+                    selectedRelationFilter === "prey" ? "all" : "prey"
+                  )
+                }
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  selectedRelationFilter === "prey"
+                    ? "bg-rose-500/25 text-rose-200 border border-rose-400/50 shadow-sm"
+                    : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+                }`}
+              >
+                <span className="w-2.5 h-2.5 rounded-full bg-[#f43f5e]" />
+                <span>{isEn ? "Prey" : "Con mồi"}</span>
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-mono font-bold">
+                  {filterCounts.prey}
+                </span>
+              </button>
+            )}
+
+            {filterCounts.competitor > 0 && (
+              <button
+                onClick={() =>
+                  setSelectedRelationFilter(
+                    selectedRelationFilter === "competitor" ? "all" : "competitor"
+                  )
+                }
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  selectedRelationFilter === "competitor"
+                    ? "bg-amber-500/25 text-amber-200 border border-amber-400/50 shadow-sm"
+                    : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+                }`}
+              >
+                <span className="w-2.5 h-2.5 rounded-full bg-[#f59e0b]" />
+                <span>{isEn ? "Competitors" : "Cạnh tranh"}</span>
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold">
+                  {filterCounts.competitor}
+                </span>
+              </button>
+            )}
+
+            {filterCounts.symbiosis > 0 && (
+              <button
+                onClick={() =>
+                  setSelectedRelationFilter(
+                    selectedRelationFilter === "symbiosis" ? "all" : "symbiosis"
+                  )
+                }
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  selectedRelationFilter === "symbiosis"
+                    ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 shadow-sm"
+                    : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+                }`}
+              >
+                <span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8]" />
+                <span>{isEn ? "Symbiosis" : "Cộng sinh"}</span>
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono font-bold">
+                  {filterCounts.symbiosis}
+                </span>
+              </button>
+            )}
+
+            {filterCounts.habitat > 0 && (
+              <button
+                onClick={() =>
+                  setSelectedRelationFilter(
+                    selectedRelationFilter === "habitat" ? "all" : "habitat"
+                  )
+                }
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  selectedRelationFilter === "habitat"
+                    ? "bg-emerald-500/25 text-emerald-200 border border-emerald-400/50 shadow-sm"
+                    : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+                }`}
+              >
+                <span className="w-2.5 h-2.5 rounded-full bg-[#10b981]" />
+                <span>{isEn ? "Habitat" : "Sinh cảnh"}</span>
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-bold">
+                  {filterCounts.habitat}
+                </span>
+              </button>
+            )}
           </div>
         </div>
 
         {/* Khung tương tác chính */}
         {loading ? (
-          <div className="h-[460px] flex flex-col items-center justify-center gap-3 text-cyan-400">
+          <div className="h-[480px] flex flex-col items-center justify-center gap-3 text-cyan-400">
             <div className="w-9 h-9 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
             <span className="text-xs text-slate-400">
-              Đang mô phỏng ma trận sinh thái Biển Đông...
+              {isEn
+                ? "Simulating East Sea marine ecological matrix..."
+                : "Đang mô phỏng ma trận sinh thái Biển Đông..."}
             </span>
           </div>
         ) : error ? (
@@ -541,29 +892,31 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             <AlertTriangle size={36} className="text-rose-500/80" />
             <p className="text-sm font-medium text-slate-200">{error}</p>
             <button
-              onClick={loadEcosystem}
+              onClick={handleRetry}
               className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-bold border border-cyan-500/40 flex items-center gap-2 cursor-pointer transition-colors"
             >
               <RotateCcw size={13} />
-              <span>Thử lại</span>
+              <span>{isEn ? "Retry" : "Thử lại"}</span>
             </button>
           </div>
         ) : totalRelations === 0 ? (
           <div className="h-[360px] flex flex-col items-center justify-center p-6 text-center text-slate-400 gap-2">
             <Compass size={36} className="text-cyan-500/50" />
             <p className="text-sm font-medium text-slate-300">
-              Chưa có dữ liệu mạng lưới cụ thể cho loài này
+              {isEn
+                ? "No specific trophic network data recorded for this species"
+                : "Chưa có dữ liệu mạng lưới cụ thể cho loài này"}
             </p>
           </div>
         ) : viewMode === "orbit" ? (
           /* ─── VIEW 1: BIOLUMINESCENT ORBITAL UNIVERSE (RESIZED SVG STAGE) ─── */
           <div
             ref={containerRef}
-            className="relative h-[480px] md:h-[530px] w-full flex items-center justify-center overflow-hidden select-none"
+            className="relative h-[500px] md:h-[550px] w-full flex items-center justify-center overflow-hidden select-none"
             onClick={() => setActiveNodeId(null)}
           >
-            {/* Lớp nền chiều sâu đại dương */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,40,78,0.45)_0%,transparent_70%)] pointer-events-none" />
+            {/* Lớp nền chiều sâu đại dương với lưới tọa độ trắc đạc */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,40,78,0.55)_0%,transparent_75%)] pointer-events-none" />
 
             {/* STAGE CONTAINER ĐƯỢC CO GIÃN THEO RESIZEOBSERVER */}
             <div
@@ -575,10 +928,19 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 transformOrigin: "center center",
               }}
             >
-              {/* Sóng xung kích sonar từ tâm (Bioluminescent Sonar Waves) */}
-              <div className="absolute w-[270px] h-[270px] rounded-full border border-cyan-500/15 pointer-events-none animate-[ping_6s_cubic-bezier(0,0,0.2,1)_infinite]" />
-              <div className="absolute w-[370px] h-[370px] rounded-full border border-cyan-500/10 pointer-events-none" />
-              <div className="absolute w-[450px] h-[450px] rounded-full border border-dashed border-cyan-400/10 pointer-events-none" />
+              {/* Quét Radar Sonar đại dương xoay tròn dịu nhẹ (Oceanic Sonar Sweep) */}
+              <div className="absolute w-[460px] h-[460px] rounded-full pointer-events-none overflow-hidden opacity-25 animate-[spin_12s_linear_infinite]">
+                <div className="w-full h-full bg-[conic-gradient(from_0deg,transparent_0_310deg,rgba(56,189,248,0.22)_360deg)]" />
+              </div>
+
+              {/* Sóng xung kích sonar đồng tâm từ tâm */}
+              <div className="absolute w-[280px] h-[280px] rounded-full border border-cyan-500/15 pointer-events-none animate-[ping_7s_cubic-bezier(0,0,0.2,1)_infinite]" />
+              <div className="absolute w-[390px] h-[390px] rounded-full border border-cyan-500/10 pointer-events-none" />
+              <div className="absolute w-[490px] h-[490px] rounded-full border border-dashed border-cyan-400/15 pointer-events-none" />
+
+              {/* Trục tọa độ hải dương học vi mô */}
+              <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent pointer-events-none" />
+              <div className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-cyan-500/10 to-transparent pointer-events-none" />
 
               {/* SVG CHUẨN TỌA ĐỘ SỐ (0,0 LÀ TÂM ĐỒ THỊ) */}
               <svg
@@ -599,8 +961,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
                 {orbitalNodes.map((n) => {
                   const isHovered = hoveredNodeId === n.id || activeNodeId === n.id;
+                  const isMatch = isNodeMatchingFilter(n);
                   const strokeColor = n.meta.color;
-                  const strokeWidth = isHovered ? 3.5 : 1.8 + (n.strength ?? 1) * 1.2;
+                  const strokeWidth = isHovered ? 3.5 : 1.8 + (n.strength ?? 1) * 1.1;
 
                   // Tọa độ số học chuẩn (gốc 0,0 là tâm)
                   const d = `M 0 0 Q ${n.x * 0.45} ${n.y * 0.55} ${n.x} ${n.y}`;
@@ -617,10 +980,12 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                         strokeWidth={strokeWidth}
                         strokeDasharray={isHovered ? "none" : "6 4"}
                         strokeOpacity={
-                          hoveredNodeId || activeNodeId
+                          !isMatch
+                            ? 0.05
+                            : hoveredNodeId || activeNodeId
                             ? isHovered
                               ? 1
-                              : 0.18
+                              : 0.12
                             : 0.65
                         }
                         filter={isHovered ? "url(#glowLine)" : undefined}
@@ -628,7 +993,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                       />
 
                       {/* Hạt năng lượng phát sáng chuyển động */}
-                      {n.flow !== "none" && (
+                      {n.flow !== "none" && isMatch && (
                         <circle
                           r={isHovered ? 4 : 2.8}
                           fill={strokeColor}
@@ -662,18 +1027,19 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 }}
               >
                 <motion.div
-                  whileHover={{ scale: 1.08 }}
-                  className="relative cursor-pointer group"
+                  whileHover={{ scale: 1.04 }}
+                  className="relative cursor-pointer group flex flex-col items-center"
                   onClick={(e) => {
                     e.stopPropagation();
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
-                  {/* Hào quang dạ quang */}
-                  <div className="absolute -inset-3 rounded-full bg-cyan-400/30 blur-xl animate-pulse" />
+                  {/* Vành xoay radar khoa học quanh quả cầu trung tâm */}
+                  <div className="absolute -inset-2.5 rounded-full border border-cyan-400/30 border-dashed animate-[spin_24s_linear_infinite] pointer-events-none" />
+                  <div className="absolute -inset-1 rounded-full bg-cyan-400/10 blur-md pointer-events-none" />
 
-                  {/* Quả cầu avatar tròn phát sáng */}
-                  <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-cyan-400 shadow-[0_0_35px_rgba(56,189,248,0.7)] bg-[#091b30]">
+                  {/* Quả cầu avatar tròn tinh tế */}
+                  <div className="relative w-24 h-24 md:w-26 md:h-26 rounded-full overflow-hidden border-2 border-cyan-400/90 bg-[#091b30] shadow-[0_0_25px_rgba(56,189,248,0.35)]">
                     {centerNode.image ? (
                       <img
                         src={centerNode.image}
@@ -687,14 +1053,14 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                     )}
                   </div>
 
-                  {/* Nhãn loài trung tâm kèm huy hiệu Sách Đỏ */}
-                  <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full bg-[#030d1a]/95 border border-cyan-400/60 shadow-lg shadow-cyan-950 flex items-center gap-1.5">
+                  {/* Nhãn loài trung tâm kèm huy hiệu Sách Đỏ - Đặt ngay sát đáy quả cầu */}
+                  <div className="mt-2.5 whitespace-nowrap px-3.5 py-1.5 rounded-full bg-[#030d1a]/95 border border-cyan-400/50 shadow-lg flex items-center gap-2 backdrop-blur-md">
                     <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-                    <span className="text-xs font-bold text-white tracking-wide">
+                    <span className="text-xs sm:text-sm font-bold text-white tracking-wide">
                       {centerNode.name}
                     </span>
                     <span
-                      className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${centerRedListMeta.style}`}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${centerRedListMeta.style}`}
                     >
                       {centerNode.redList || "NE"}
                     </span>
@@ -705,18 +1071,24 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
               {/* CÁC NODE VỆ TINH TRÒN QUANH QUỸ ĐẠO */}
               {orbitalNodes.map((node) => {
                 const isHovered = hoveredNodeId === node.id || activeNodeId === node.id;
+                const isMatch = isNodeMatchingFilter(node);
                 const meta = node.meta;
+                const RoleIcon = meta.Icon || Target;
                 const redListMeta =
                   RED_LIST_STANDARDS[node.redList] || RED_LIST_STANDARDS.NE;
 
                 return (
                   <div
                     key={node.id}
-                    className="absolute z-20"
+                    className={`absolute transition-all duration-300 ${
+                      isHovered ? "z-50" : "z-15"
+                    }`}
                     style={{
                       left: STAGE.w / 2 + node.x,
                       top: STAGE.h / 2 + node.y,
                       transform: "translate(-50%, -50%)",
+                      opacity: isMatch ? 1 : 0.22,
+                      filter: isMatch ? "none" : "grayscale(0.85) contrast(0.85)",
                     }}
                     onMouseEnter={() => setHoveredNodeId(node.id)}
                     onMouseLeave={() => setHoveredNodeId(null)}
@@ -726,33 +1098,23 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                     }}
                   >
                     <motion.div
-                      whileHover={{ scale: 1.15 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="relative cursor-pointer group flex flex-col items-center"
+                      whileHover={{ scale: isMatch ? 1.08 : 1 }}
+                      whileTap={{ scale: 0.96 }}
+                      className="relative cursor-pointer flex flex-col items-center"
                     >
-                      {/* Hào quang khi hover */}
+                      {/* Quả cầu avatar tròn tinh tế */}
                       <div
-                        className={`absolute -inset-1.5 rounded-full blur-md transition-opacity duration-300 ${
-                          isHovered ? "opacity-100" : "opacity-30"
-                        }`}
-                        style={{ backgroundColor: meta.color }}
-                      />
-
-                      {/* Quả cầu avatar tròn phát sáng */}
-                      <div
-                        className="relative w-15 h-15 md:w-17 md:h-17 rounded-full overflow-hidden border-2 bg-[#091b30] shadow-lg transition-all duration-300"
+                        className="relative w-15 h-15 md:w-16 md:h-16 rounded-full overflow-hidden border-2 bg-[#091b30] transition-all duration-300 shadow-md"
                         style={{
-                          borderColor: meta.color,
-                          boxShadow: isHovered
-                            ? `0 0 24px ${meta.glowColor}`
-                            : `0 0 10px ${meta.glowColor}`,
+                          borderColor: isHovered ? meta.color : `${meta.color}bb`,
+                          boxShadow: isHovered ? `0 0 16px ${meta.color}66` : undefined,
                         }}
                       >
                         {node.image ? (
                           <img
                             src={node.image}
                             alt={node.cleanName}
-                            className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                             onError={(e) => {
                               e.target.style.display = "none";
                             }}
@@ -764,215 +1126,409 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                         )}
                       </div>
 
-                      {/* Huy hiệu Sách Đỏ ở góc quả cầu */}
+                      {/* Micro-badge vai trò sinh thái góc trên bên trái */}
                       <span
-                        className={`absolute -top-1 -right-1 text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${redListMeta.style} shadow-md`}
+                        className="absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full flex items-center justify-center border shadow-md"
+                        style={{
+                          backgroundColor: "#051323",
+                          borderColor: meta.color,
+                        }}
+                        title={node.relationCategoryLabel}
+                      >
+                        <RoleIcon size={11} style={{ color: meta.color }} />
+                      </span>
+
+                      {/* Huy hiệu Sách Đỏ ở góc trên bên phải */}
+                      <span
+                        className={`absolute -top-1.5 -right-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full border ${redListMeta.style}`}
                       >
                         {node.redList || "NE"}
                       </span>
 
-                      {/* Nhãn tên sinh vật bên dưới */}
+                      {/* Nhãn tên sinh vật và vai trò bên dưới */}
                       <div
-                        className={`mt-2 whitespace-nowrap px-2.5 py-0.5 rounded-full text-[11px] font-semibold transition-all duration-300 border ${
+                        className={`mt-2 whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300 border flex items-center gap-1.5 shadow-md ${
                           isHovered
-                            ? "bg-cyan-500/20 text-cyan-200 border-cyan-400 shadow-md"
-                            : "bg-[#061426]/90 text-slate-200 border-white/10"
+                            ? "bg-cyan-500/20 text-cyan-200 border-cyan-400/80 scale-105"
+                            : "bg-[#061426]/95 text-slate-200 border-white/10"
                         }`}
                       >
-                        {node.cleanName}
+                        <span
+                          className="w-1.5 h-1.5 rounded-full shrink-0"
+                          style={{ backgroundColor: meta.color }}
+                        />
+                        <span className="text-[11px] font-medium text-slate-300">
+                          {node.relationCategoryLabel}:
+                        </span>
+                        <span className="font-bold text-white">
+                          {node.cleanName}
+                        </span>
                       </div>
+                    </motion.div>
 
-                      {/* Tooltip nổi khi Hover hoặc Click chạm */}
-                      <AnimatePresence>
-                        {isHovered && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 4, scale: 0.95 }}
-                            className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-60 p-3.5 rounded-2xl bg-[#081b33]/95 backdrop-blur-xl border border-cyan-400/50 shadow-2xl shadow-black/80 text-left z-50 cursor-default"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <div className="flex items-center justify-between mb-1.5">
-                              <span
-                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${meta.badgeColor}`}
-                              >
-                                {node.relationSpecificLabel}
-                              </span>
-                              <span className="text-[10px] text-cyan-300 font-mono">
-                                Sách Đỏ {node.redList || "NE"}
-                              </span>
-                            </div>
+                    {/* Tooltip nổi khi Hover hoặc Click chạm */}
+                    <AnimatePresence>
+                      {isHovered && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                          className={`absolute ${getTooltipPositionClass(
+                            node.x,
+                            node.y
+                          )} w-64 p-3.5 rounded-2xl bg-[#07172b]/95 backdrop-blur-xl border border-cyan-400/40 shadow-xl shadow-black/40 text-left z-50 cursor-default pointer-events-auto select-text`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <span
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 ${meta.badgeColor}`}
+                            >
+                              <RoleIcon size={11} />
+                              <span>{node.relationCategoryLabel}</span>
+                            </span>
+                            <span className="text-[10px] text-cyan-300 font-mono">
+                              Sách Đỏ {node.redList || "NE"}
+                            </span>
+                          </div>
 
-                            <h5 className="font-bold text-xs text-white">
-                              {node.cleanName}
-                            </h5>
-                            <p className="text-[10px] text-slate-400 italic font-serif mb-2">
+                          <h5 className="font-bold text-xs text-white">
+                            {node.cleanName}
+                          </h5>
+                          {node.cleanScientificName && (
+                            <p className="text-[10px] text-slate-400 italic font-serif mb-1.5">
                               {node.cleanScientificName}
                             </p>
+                          )}
+                          <p className="text-[11px] text-slate-300 leading-relaxed mb-2.5">
+                            {node.relationDescription}
+                          </p>
 
-                            <Link
-                              to={`/species/${node.slug || node.id}`}
-                              className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-cyan-400 hover:text-cyan-200 transition-colors cursor-pointer"
-                            >
-                              <span>Xem hồ sơ loài chi tiết</span>
-                              <ArrowUpRight size={13} />
-                            </Link>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
+                          <Link
+                            to={`/species/${node.slug || node.id}`}
+                            className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-cyan-400 hover:text-cyan-200 transition-colors cursor-pointer group/link"
+                          >
+                            <span className="group-hover/link:underline">
+                              {isEn ? "View species profile" : "Xem hồ sơ loài chi tiết"}
+                            </span>
+                            <ArrowUpRight
+                              size={13}
+                              className="group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform"
+                            />
+                          </Link>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 );
               })}
             </div>
 
             {/* Hướng dẫn thao tác góc dưới */}
-            <div className="absolute bottom-3 left-4 text-[11px] text-slate-400 flex items-center gap-2 bg-[#04101e]/80 px-3 py-1 rounded-full border border-white/5 backdrop-blur-sm">
+            <div className="absolute bottom-3 left-4 text-[11px] text-slate-400 flex items-center gap-2 bg-[#04101e]/85 px-3 py-1 rounded-full border border-white/10 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-              <span>Nhấp vào bất kỳ quả cầu nào để xem quan hệ và hồ sơ chi tiết</span>
+              <span>
+                {isEn
+                  ? "Click any orb or filter tag to inspect trophic relationships"
+                  : "Nhấp vào quả cầu hoặc thẻ lọc để xem tương tác sinh thái chi tiết"}
+              </span>
             </div>
           </div>
         ) : (
           /* ─── VIEW 2: THÁP DINH DƯỠNG ĐẠI DƯƠNG (TROPHIC HIERARCHY PYRAMID) ─── */
           <div className="p-6 md:p-8 space-y-6">
-            <div className="text-center max-w-xl mx-auto mb-6">
+            <div className="text-center max-w-xl mx-auto mb-4">
               <span className="text-xs px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 font-mono">
                 Trophic Level Pyramid • Biển Đông
               </span>
               <h3 className="text-lg font-bold text-white mt-2">
-                Dòng truyền năng lượng & Bậc dinh dưỡng đại dương
+                {isEn
+                  ? "Oceanic Biomass Flow & Trophic Energy Hierarchy"
+                  : "Dòng truyền năng lượng & Bậc dinh dưỡng đại dương"}
               </h3>
-              <p className="text-xs text-slate-400 mt-1">
-                Theo quy luật sinh thái học đại dương, năng lượng sinh khối được truyền qua các bậc dinh dưỡng từ nguồn sơ cấp lên động vật ăn thịt bậc cao.
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                {isEn
+                  ? "According to Lindeman's 10% ecological efficiency law, biomass energy attenuates as it moves up from primary producers to apex marine carnivores."
+                  : "Theo quy luật sinh thái học đại dương của Lindeman, năng lượng sinh khối được chuyển đổi khoảng 10% qua mỗi bậc dinh dưỡng từ con mồi cơ sở lên động vật ăn thịt bậc cao."}
               </p>
             </div>
 
-            {/* Tầng 3: Săn mồi đỉnh bảng (Apex Predator) */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-rose-950/30 via-rose-900/15 to-transparent border border-rose-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-rose-400 shadow-[0_0_12px_#f43f5e] shrink-0 bg-slate-900">
-                  <img
-                    src={centerNode.image}
-                    alt={centerNode.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
-                    Bậc III: Kẻ săn mồi đỉnh bảng (Apex Predator)
-                  </span>
-                  <h4 className="text-sm font-bold text-white mt-1">
-                    {centerNode.name}
-                  </h4>
-                  <p className="text-[11px] text-slate-400 italic">
-                    {centerNode.scientificName}
+            {/* KIẾN TRÚC KIM TỰ THÁP BẬC THANG (STEPPED TRAPEZOID PYRAMID) */}
+            <div className="flex flex-col items-center space-y-3">
+              {/* TẦNG ĐỈNH: Kẻ săn mồi đỉnh bảng (Apex Predator) - Max-Width Hẹp nhất */}
+              {pyramidTiers.apex.items.length > 0 && (
+                <div
+                  className={`max-w-xl w-full mx-auto p-4 md:p-5 rounded-2xl bg-gradient-to-b ${pyramidTiers.apex.bgGradient} border ${pyramidTiers.apex.borderColor} shadow-[0_8px_30px_rgba(244,63,94,0.12)] transition-all relative overflow-hidden`}
+                >
+                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${pyramidTiers.apex.badgeStyle}`}
+                      >
+                        {pyramidTiers.apex.level}
+                      </span>
+                      <h4 className="text-xs md:text-sm font-bold text-white">
+                        {isEn ? pyramidTiers.apex.titleEn : pyramidTiers.apex.titleVi}
+                      </h4>
+                    </div>
+                    <span className="text-[10px] text-rose-300 font-mono">
+                      {isEn ? "Apex Predator" : "Đỉnh chuỗi thức ăn"}
+                    </span>
+                  </div>
+
+                  <p className="text-[11px] text-slate-400 mb-3 italic">
+                    {isEn ? pyramidTiers.apex.subEn : pyramidTiers.apex.subVi}
                   </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {pyramidTiers.apex.items.map((item) => (
+                      <Link
+                        key={item.id}
+                        to={`/species/${item.slug || item.id}`}
+                        className="p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-rose-400/50 flex items-center gap-3 transition-all cursor-pointer group hover:scale-[1.02] shadow-sm backdrop-blur-sm"
+                      >
+                        <div
+                          className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 border-2"
+                          style={{ borderColor: item.borderColor }}
+                        >
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                            }}
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-xs sm:text-sm text-white group-hover:text-rose-300 line-clamp-1 transition-colors">
+                              {item.name}
+                            </span>
+                            {item.isCenter && (
+                              <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-400/40">
+                                {isEn ? "Focal" : "Loài này"}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-400 italic line-clamp-1 font-serif">
+                            {item.scientificName}
+                          </div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] font-medium text-slate-300">
+                              {item.roleBadge}
+                            </span>
+                            <span className="text-[10px] font-mono text-cyan-300 font-semibold">
+                              Sách Đỏ {item.redList || "NE"}
+                            </span>
+                          </div>
+                        </div>
+                        <ArrowUpRight
+                          size={13}
+                          className="text-slate-500 group-hover:text-rose-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0"
+                        />
+                      </Link>
+                    ))}
+                  </div>
                 </div>
+              )}
+
+              {/* ĐẦU NỐI DÒNG NĂNG LƯỢNG TRUYỀN LÊN: LINDEMAN 10% RULE */}
+              <div className="flex flex-col items-center justify-center py-1">
+                <div className="flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-900/90 border border-rose-500/30 text-rose-300 shadow-md">
+                  <span className="inline-block animate-bounce text-xs">▲</span>
+                  <span className="font-mono text-[11px] font-bold">
+                    {isEn
+                      ? "~10% Biomass Transfer (Lindeman's 10% Rule)"
+                      : "~10% Hiệu suất truyền sinh khối (Quy luật 10% Lindeman)"}
+                  </span>
+                  <span className="text-[10px] text-slate-400 border-l border-white/10 pl-2 hidden sm:inline">
+                    {isEn
+                      ? "90% energy lost to respiration & motion"
+                      : "90% tiêu hao trao đổi chất & vận động"}
+                  </span>
+                </div>
+                <div className="w-0.5 h-4 bg-gradient-to-t from-amber-400 to-rose-400 my-0.5" />
               </div>
 
-              <div className="text-right text-xs text-rose-300 font-mono">
-                Sách Đỏ: {centerNode.redList || "NE"}
-              </div>
-            </div>
+              {/* TẦNG GIỮA: Săn mồi bậc trung & Cạnh tranh - Max-Width Trung Bình */}
+              {pyramidTiers.middle.items.length > 0 && (
+                <div
+                  className={`max-w-3xl w-full mx-auto p-4 md:p-5 rounded-2xl bg-gradient-to-b ${pyramidTiers.middle.bgGradient} border ${pyramidTiers.middle.borderColor} shadow-[0_8px_30px_rgba(245,158,11,0.12)] transition-all relative overflow-hidden`}
+                >
+                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${pyramidTiers.middle.badgeStyle}`}
+                      >
+                        {pyramidTiers.middle.level}
+                      </span>
+                      <h4 className="text-xs md:text-sm font-bold text-white">
+                        {isEn ? pyramidTiers.middle.titleEn : pyramidTiers.middle.titleVi}
+                      </h4>
+                    </div>
+                    <span className="text-[10px] text-amber-300 font-mono">
+                      {isEn ? "Mesopredators & Competitors" : "Săn mồi bậc trung & Cạnh tranh"}
+                    </span>
+                  </div>
 
-            {/* Mũi tên năng lượng */}
-            <div className="flex justify-center text-slate-500 text-xs font-mono">
-              ▲ Dòng năng lượng nuôi dưỡng sinh khối ▲
-            </div>
+                  <p className="text-[11px] text-slate-400 mb-3 italic">
+                    {isEn ? pyramidTiers.middle.subEn : pyramidTiers.middle.subVi}
+                  </p>
 
-            {/* Tầng 2: Săn mồi bậc trung & Cạnh tranh */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-950/30 via-amber-900/15 to-transparent border border-amber-500/30 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                  Bậc II: Động vật săn mồi bậc trung & Cạnh tranh sinh thái
-                </span>
-                <span className="text-xs text-amber-300 font-mono">
-                  Mesopredators & Competitors
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {satelliteNodes
-                  .filter(
-                    (n) =>
-                      n.relationshipType === "competitor" ||
-                      n.cleanName.includes("Bạch Tuộc") ||
-                      n.cleanName.includes("Cá Ngừ")
-                  )
-                  .map((item) => (
-                    <Link
-                      key={item.id}
-                      to={`/species/${item.slug || item.id}`}
-                      className="p-3 rounded-xl bg-white/[0.03] border border-white/10 hover:border-amber-400/50 flex items-center gap-3 transition-colors cursor-pointer group"
-                    >
-                      <img
-                        src={item.image}
-                        alt={item.cleanName}
-                        className="w-10 h-10 rounded-full object-cover border border-amber-400 shrink-0 bg-slate-900"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="font-bold text-xs text-white group-hover:text-amber-300 line-clamp-1">
-                          {item.cleanName}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {pyramidTiers.middle.items.map((item) => (
+                      <Link
+                        key={item.id}
+                        to={`/species/${item.slug || item.id}`}
+                        className="p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-amber-400/50 flex items-center gap-3 transition-all cursor-pointer group hover:scale-[1.02] shadow-sm backdrop-blur-sm"
+                      >
+                        <div
+                          className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 border-2"
+                          style={{ borderColor: item.borderColor }}
+                        >
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                            }}
+                          />
                         </div>
-                        <div className="text-[10px] text-slate-400 italic line-clamp-1">
-                          {item.scientificName}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-xs sm:text-sm text-white group-hover:text-amber-300 line-clamp-1 transition-colors">
+                              {item.name}
+                            </span>
+                            {item.isCenter && (
+                              <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-400/40">
+                                {isEn ? "Focal" : "Loài này"}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-400 italic line-clamp-1 font-serif">
+                            {item.scientificName}
+                          </div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] font-medium text-slate-300">
+                              {item.roleBadge}
+                            </span>
+                            <span className="text-[10px] font-mono text-cyan-300 font-semibold">
+                              Sách Đỏ {item.redList || "NE"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  ))}
+                        <ArrowUpRight
+                          size={13}
+                          className="text-slate-500 group-hover:text-amber-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0"
+                        />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ĐẦU NỐI DÒNG NĂNG LƯỢNG TRUYỀN LÊN: CON MỒI -> BẬC TRUNG */}
+              <div className="flex flex-col items-center justify-center py-1">
+                <div className="flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-900/90 border border-amber-500/30 text-amber-300 shadow-md">
+                  <span className="inline-block animate-bounce text-xs">▲</span>
+                  <span className="font-mono text-[11px] font-bold">
+                    {isEn
+                      ? "Primary Trophic Fuel & Forage Abundance"
+                      : "Nguồn cung cấp sơ cấp & Sinh khối nuôi dưỡng cơ sở"}
+                  </span>
+                  <span className="text-[10px] text-slate-400 border-l border-white/10 pl-2 hidden sm:inline">
+                    {isEn
+                      ? "Benthic & pelagic energy foundation"
+                      : "Dòng dinh dưỡng gốc đại dương"}
+                  </span>
+                </div>
+                <div className="w-0.5 h-4 bg-gradient-to-t from-emerald-400 to-amber-400 my-0.5" />
               </div>
-            </div>
 
-            {/* Mũi tên năng lượng */}
-            <div className="flex justify-center text-slate-500 text-xs font-mono">
-              ▲ Nguồn cung cấp sơ cấp & con mồi cơ sở ▲
-            </div>
+              {/* TẦNG ĐÁY: Tiêu thụ sơ cấp, Ăn thực vật & Con mồi đàn - Rộng nhất (100% Max-Width) */}
+              {pyramidTiers.bottom.items.length > 0 && (
+                <div
+                  className={`max-w-5xl w-full mx-auto p-4 md:p-5 rounded-2xl bg-gradient-to-b ${pyramidTiers.bottom.bgGradient} border ${pyramidTiers.bottom.borderColor} shadow-[0_8px_30px_rgba(16,185,129,0.12)] transition-all relative overflow-hidden`}
+                >
+                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${pyramidTiers.bottom.badgeStyle}`}
+                      >
+                        {pyramidTiers.bottom.level}
+                      </span>
+                      <h4 className="text-xs md:text-sm font-bold text-white">
+                        {isEn ? pyramidTiers.bottom.titleEn : pyramidTiers.bottom.titleVi}
+                      </h4>
+                    </div>
+                    <span className="text-[10px] text-emerald-300 font-mono">
+                      {isEn ? "Primary Consumers & Forage Biomass" : "Tiêu thụ sơ cấp & Con mồi đàn"}
+                    </span>
+                  </div>
 
-            {/* Tầng 1: Động vật ăn thực vật & Con mồi đàn */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/30 via-emerald-900/15 to-transparent border border-emerald-500/30 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                  Bậc I: Động vật tiêu thụ sơ cấp & Con mồi đàn
-                </span>
-                <span className="text-xs text-emerald-300 font-mono">
-                  Primary Consumers & Prey
-                </span>
-              </div>
+                  <p className="text-[11px] text-slate-400 mb-3 italic">
+                    {isEn ? pyramidTiers.bottom.subEn : pyramidTiers.bottom.subVi}
+                  </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {satelliteNodes
-                  .filter(
-                    (n) =>
-                      n.cleanName.includes("Rùa Xanh") ||
-                      n.cleanName.includes("Cá Trích") ||
-                      n.relationshipType === "herbivory"
-                  )
-                  .map((item) => (
-                    <Link
-                      key={item.id}
-                      to={`/species/${item.slug || item.id}`}
-                      className="p-3 rounded-xl bg-white/[0.03] border border-white/10 hover:border-emerald-400/50 flex items-center gap-3 transition-colors cursor-pointer group"
-                    >
-                      <img
-                        src={item.image}
-                        alt={item.cleanName}
-                        className="w-10 h-10 rounded-full object-cover border border-emerald-400 shrink-0 bg-slate-900"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="font-bold text-xs text-white group-hover:text-emerald-300 line-clamp-1">
-                          {item.cleanName}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {pyramidTiers.bottom.items.map((item) => (
+                      <Link
+                        key={item.id}
+                        to={`/species/${item.slug || item.id}`}
+                        className="p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-emerald-400/50 flex items-center gap-3 transition-all cursor-pointer group hover:scale-[1.02] shadow-sm backdrop-blur-sm"
+                      >
+                        <div
+                          className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 border-2"
+                          style={{ borderColor: item.borderColor }}
+                        >
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                            }}
+                          />
                         </div>
-                        <div className="text-[10px] text-slate-400 italic line-clamp-1">
-                          {item.scientificName}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-xs sm:text-sm text-white group-hover:text-emerald-300 line-clamp-1 transition-colors">
+                              {item.name}
+                            </span>
+                            {item.isCenter && (
+                              <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-400/40">
+                                 {isEn ? "Focal" : "Loài này"}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-400 italic line-clamp-1 font-serif">
+                            {item.scientificName}
+                          </div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] font-medium text-slate-300">
+                              {item.roleBadge}
+                            </span>
+                            <span className="text-[10px] font-mono text-cyan-300 font-semibold">
+                              Sách Đỏ {item.redList || "NE"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  ))}
-              </div>
+                        <ArrowUpRight
+                          size={13}
+                          className="text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0"
+                        />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
+
 
       {/* ─── 3. CÁC NHÓM THẺ THÔNG TIN SINH THÁI HỌC THUẬT ─────────────── */}
       <div className="space-y-8">

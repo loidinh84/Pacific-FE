@@ -32,8 +32,8 @@ export const SPECIES_DATA = [
       { val: "15kg", labelVi: "Cân nặng", labelEn: "Weight" },
       { val: "3–5", labelVi: "Tuổi thọ", labelEn: "Lifespan" },
     ],
-    descVi: `Bạch tuộc khổng lồ (loài Enteroctopus dofleini, hay bạch tuộc khổng lồ Thái Bình Dương) là một trong những loài bạch tuộc lớn nhất thế giới. Chúng sống chủ yếu ở vùng biển lạnh của Thái Bình Dương, nổi tiếng với trí thông minh cao, khả năng giải quyết vấn đề và ngụy trang vi diệu.`,
-    descEn: `The giant Pacific octopus (Enteroctopus dofleini) is one of the largest octopus species in the world. Inhabiting the cold waters of the Pacific, they are renowned for high intelligence, problem-solving skills, and remarkable camouflage abilities.`,
+    descVi: `Bạch tuộc khổng lồ (loài Enteroctopus dofleini) là một trong những loài bạch tuộc lớn nhất thế giới. Chúng sống chủ yếu ở vùng biển sâu, nổi tiếng với trí thông minh cao, khả năng giải quyết vấn đề và ngụy trang vi diệu.`,
+    descEn: `The giant octopus (Enteroctopus dofleini) is one of the largest octopus species in the world. Inhabiting deep ocean waters, they are renowned for high intelligence, problem-solving skills, and remarkable camouflage abilities.`,
     reverse: true,
     aos: "fade-left",
   },
@@ -409,13 +409,13 @@ export const SEARCH_SPECIES_CATALOG = [
     nameEn: "Pacific Bluefin Tuna",
     sciName: "Thunnus orientalis",
     introHeaderVi:
-      "Tên khoa học: Thunnus orientalis là loài cá ngừ lớn nhất thế giới, một trong những tay bơi cự phách và bền bỉ nhất của Thái Bình Dương.",
+      "Tên khoa học: Thunnus orientalis là loài cá ngừ lớn nhất thế giới, một trong những tay bơi cự phách và bền bỉ nhất đại dương.",
     introHeaderEn:
-      "Scientific name: Thunnus orientalis is the largest tuna species in the world, one of the Pacific's fastest and most enduring swimmers.",
+      "Scientific name: Thunnus orientalis is the largest tuna species in the world, one of the ocean's fastest and most enduring swimmers.",
     descVi:
-      "Loài cá ngừ lớn nhất, di cư xuyên Thái Bình Dương và có giá trị kinh tế cao.",
+      "Loài cá ngừ lớn nhất, có khả năng di cư đường dài qua các vùng biển sâu và có giá trị kinh tế cao.",
     descEn:
-      "Largest tuna species migrating across the Pacific with high economic value.",
+      "Largest tuna species migrating across deep ocean waters with high economic value.",
     image: Images.CaMapVoi,
     gallery: [Images.SharkGallery1, Images.SharkGallery2, Images.SharkGallery3],
     anatomyImage: Images.SharkAnatomy,
@@ -428,7 +428,7 @@ export const SEARCH_SPECIES_CATALOG = [
       {
         title: "Hành trình di cư nghìn dặm",
         content:
-          "Di cư quãng đường dài hàng ngàn km qua Thái Bình Dương mỗi năm từ Nhật Bản đến bờ biển Bắc Mỹ.",
+          "Di cư quãng đường dài hàng ngàn km mỗi năm qua các dòng hải lưu đại dương phong phú dinh dưỡng.",
       },
       {
         title: "Cơ chế máu nóng từng phần",
@@ -481,7 +481,7 @@ export const SEARCH_SPECIES_CATALOG = [
     statusVi: "Nguy cấp",
     statusEn: "Endangered",
     statusType: "danger",
-    nameVi: "Cá Mập Voi Thái Bình Dương",
+    nameVi: "Cá Mập Voi",
     nameEn: "Whale Shark",
     sciName: "Rhincodon typus",
     introHeaderVi:
@@ -687,9 +687,9 @@ export const SEARCH_SPECIES_CATALOG = [
     nameEn: "Giant Pacific Octopus",
     sciName: "Enteroctopus dofleini",
     introHeaderVi:
-      "Tên khoa học: Enteroctopus dofleini là loài bạch tuộc lớn và thông minh nhất thế giới, bậc thầy ngụy trang dưới đáy biển Thái Bình Dương.",
+      "Tên khoa học: Enteroctopus dofleini là loài bạch tuộc lớn và thông minh nhất thế giới, bậc thầy ngụy trang dưới đáy biển sâu.",
     introHeaderEn:
-      "Scientific name: Enteroctopus dofleini is the largest and most intelligent octopus species, the master of camouflage in the Pacific abyss.",
+      "Scientific name: Enteroctopus dofleini is the largest and most intelligent octopus species, the master of camouflage in the deep abyss.",
     descVi: "Loài bạch tuộc thông minh bậc nhất với sải tay dài tới 6 mét.",
     descEn:
       "Highly intelligent octopus species with arm spans reaching up to 6 meters.",
@@ -781,9 +781,9 @@ export const SEARCH_SPECIES_CATALOG = [
     nameEn: "Green Sea Turtle",
     sciName: "Chelonia mydas",
     descVi:
-      "Biểu tượng may mắn của biển Thái Bình Dương, di cư hàng ngàn dặm để đẻ trứng.",
+      "Biểu tượng may mắn của biển cả, di cư hàng ngàn dặm để trở về bãi cát đẻ trứng.",
     descEn:
-      "Symbol of good luck in the Pacific, migrating thousands of miles to nest.",
+      "Symbol of ocean longevity and navigation, migrating thousands of miles to nest.",
     depth: "0 - 100m",
     size: "Kích thước: 1.5m",
     sizeEn: "Size: 1.5m",
@@ -798,8 +798,8 @@ export const SEARCH_SPECIES_CATALOG = [
     statusVi: "Ít quan tâm",
     statusEn: "Least Concern",
     statusType: "safe",
-    nameVi: "Cá Heo Mỏ Vịt Thái Bình Dương",
-    nameEn: "Pacific Bottlenose Dolphin",
+    nameVi: "Cá Heo Mỏ Vịt",
+    nameEn: "Bottlenose Dolphin",
     sciName: "Tursiops gilli",
     descVi:
       "Loài động vật biển thông minh và thân thiện với khả năng định vị bằng siêu âm.",
@@ -880,15 +880,15 @@ export const SEARCH_SPECIES_CATALOG = [
 export const OCEAN_FUN_FACTS = [
   {
     id: "fact-1",
-    titleVi: "Thái Bình Dương lớn hơn tổng diện tích đất liền",
-    titleEn: "Pacific is larger than all landmass combined",
+    titleVi: "Biển Đông – Vùng biển đa dạng sinh học hàng đầu thế giới",
+    titleEn: "East Sea – A global marine biodiversity hotspot",
     descVi:
-      "Thái Bình Dương có diện tích khoảng 165.2 triệu km² — lớn hơn tổng diện tích tất cả lục địa trên Trái Đất cộng lại. Có thể chứa toàn bộ lục địa mà vẫn còn thừa không gian!",
+      "Biển Đông có diện tích khoảng 3.5 triệu km², là một trong những vùng biển nửa kín lớn nhất hành tinh, nuôi dưỡng hơn 3.000 loài sinh vật biển và hệ sinh thái rạn san hô vô cùng phong phú.",
     descEn:
-      "The Pacific Ocean covers about 165.2 million km² — larger than all Earth's landmasses combined. It could easily contain all continents with space to spare!",
-    statVal: "165 triệu km²",
-    statTitleVi: "DIỆN TÍCH THÁI BÌNH DƯƠNG",
-    statTitleEn: "PACIFIC OCEAN AREA",
+      "The East Sea spans approximately 3.5 million km² as one of the world's largest semi-enclosed seas, nurturing over 3,000 marine species and vibrant coral ecosystems.",
+    statVal: "3.5 triệu km²",
+    statTitleVi: "DIỆN TÍCH BIỂN ĐÔNG",
+    statTitleEn: "EAST SEA AREA",
     badgeVi: "Địa lý",
     badgeEn: "Geography",
     image: Images.BanDo5DaiDuong,
@@ -915,9 +915,9 @@ export const OCEAN_FUN_FACTS = [
     titleVi: "Vành đai Lửa chứa 75% núi lửa toàn thế giới",
     titleEn: "Ring of Fire contains 75% of world's volcanoes",
     descVi:
-      "Bao quanh Thái Bình Dương là một vòng cung núi lửa dài 40,000 km gọi là Vành đai Lửa, tập trung 75% núi lửa đang hoạt động và 90% các trận động đất mạnh nhất thế giới đều xảy ra tại đây.",
+      "Bao quanh lòng chảo đại dương là một vòng cung núi lửa dài 40,000 km gọi là Vành đai Lửa, tập trung 75% núi lửa đang hoạt động và 90% các trận động đất mạnh nhất thế giới đều xảy ra tại đây.",
     descEn:
-      "Surrounding the Pacific is a 40,000 km volcanic arc called the Ring of Fire, hosting 75% of Earth's active volcanoes and 90% of all major earthquakes.",
+      "Surrounding the ocean basin is a 40,000 km volcanic arc called the Ring of Fire, hosting 75% of Earth's active volcanoes and 90% of all major earthquakes.",
     statVal: "90%",
     statTitleVi: "ĐỘNG ĐẤT MẠNH XẢY RA TẠI ĐÂY",
     statTitleEn: "MAJOR EARTHQUAKES OCCUR HERE",

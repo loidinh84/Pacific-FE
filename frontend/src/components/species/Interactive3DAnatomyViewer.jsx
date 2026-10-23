@@ -13,6 +13,8 @@ import {
   Tag,
   Crosshair,
   X,
+  Copy,
+  Check,
 } from "lucide-react";
 import { ORGAN_SYSTEMS } from "./anatomy/organSystems";
 import {
@@ -89,6 +91,7 @@ export function Interactive3DAnatomyViewer({
   const isHoveringModalRef = useRef(false);
   const [internalActivePart, setInternalActivePart] = useState(null);
   const [isLoading3D, setIsLoading3D] = useState(true);
+  const [copiedPartId, setCopiedPartId] = useState(null);
 
   useEffect(() => {
     hoveredPartRef.current = hoveredPart;
@@ -119,6 +122,11 @@ export function Interactive3DAnatomyViewer({
   useEffect(() => {
     activePartRef.current = activePart;
   }, [activePart]);
+
+  // Kiểm tra xem viewer có đang ở chế độ giải phẫu (X-Ray, Bóc tách, Lọc hệ cơ quan, Chọn bộ phận, hoặc Ghim nhãn)
+  const isAnatomyActive =
+    isXRay || explodePercent > 2 || activeSystem !== "all" || Boolean(activePart);
+  const isAnatomyInspectable = isAnatomyActive || showPins;
 
   // Mặt cắt 3D
   const clipPlaneRef = useRef(
@@ -301,11 +309,17 @@ export function Interactive3DAnatomyViewer({
     heartBeatingRef.current = { ventricle, atrium };
     ampMatRef.current = ampMat;
 
+    // Trạng thái ban đầu: Ẩn nội tạng bên trong khi chưa kích hoạt X-Ray / bóc tách
+    parts.forEach((p) => {
+      p.visible = false;
+    });
+
     // Idea 4: Dòng chảy hạt máu sinh học dọc động mạch chủ
     const bloodSim = anatomyPreset.buildBloodSim
       ? anatomyPreset.buildBloodSim(aortaCurve)
       : null;
     if (bloodSim) {
+      bloodSim.instMesh.visible = false;
       organGroup.add(bloodSim.instMesh);
       bloodSimRef.current = bloodSim;
     }
@@ -359,7 +373,7 @@ export function Interactive3DAnatomyViewer({
             child.frustumCulled = true;
             if (child.material) {
               child.material.transparent = false;
-              child.material.opacity = 0.92; // Da cá mập dày, đặc thực tế ở trạng thái mặc định
+              child.material.opacity = 1.0; // Da cá mập dày, đặc thực tế 100% ở trạng thái mặc định
               child.material.roughness = 0.35;
               child.material.metalness = 0.2;
               child.material.color = new THREE.Color(0x38bdf8);
@@ -435,7 +449,7 @@ export function Interactive3DAnatomyViewer({
       }
 
       // Idea 4: Dòng chảy hạt máu dọc động mạch chủ (Physiological Blood Flow)
-      if (bloodSimRef.current) {
+      if (bloodSimRef.current?.instMesh?.visible) {
         const {
           instMesh,
           count,
@@ -649,10 +663,19 @@ export function Interactive3DAnatomyViewer({
   // ── IDEA 1 (Focus/Solo Mode) & IDEA 2 (Organ Systems Filter) & X-Ray Opacities ──
   useEffect(() => {
     const f = explodePercent / 100;
+    const isAnatomyActive = isXRay || f > 0.02 || activeSystem !== "all" || Boolean(activePart);
+
+    // Bật / tắt dòng hạt máu dọc động mạch chủ
+    if (bloodSimRef.current?.instMesh) {
+      bloodSimRef.current.instMesh.visible = isAnatomyActive;
+    }
 
     // 1. Nếu đang có cơ quan được chọn (Solo Focus Mode - Idea 1)
     if (activePart) {
       partsRef.current.forEach((group) => {
+        if (group.name !== "part_skin") {
+          group.visible = true;
+        }
         const isSelected = group.name === activePart.id;
         group.traverse((child) => {
           if (child.isMesh && child.material) {
@@ -671,6 +694,7 @@ export function Interactive3DAnatomyViewer({
           if (child.isMesh && child.material) {
             child.material.transparent = true;
             child.material.opacity = 0.04;
+            child.material.depthWrite = false;
             child.material.needsUpdate = true;
           }
         });
@@ -683,6 +707,9 @@ export function Interactive3DAnatomyViewer({
       partsRef.current.forEach((group) => {
         const pData = group.userData;
         const isMatch = pData?.system === activeSystem;
+        if (group.name !== "part_skin") {
+          group.visible = true;
+        }
         group.traverse((child) => {
           if (child.isMesh && child.material) {
             child.material.transparent = true;
@@ -701,6 +728,7 @@ export function Interactive3DAnatomyViewer({
           if (child.isMesh && child.material) {
             child.material.transparent = true;
             child.material.opacity = isSkinSystem ? 0.45 : 0.08;
+            child.material.depthWrite = false;
             child.material.needsUpdate = true;
           }
         });
@@ -708,8 +736,12 @@ export function Interactive3DAnatomyViewer({
       return;
     }
 
-    // 3. Chế độ mặc định (Hiển thị đầy đủ hoặc X-Ray)
+    // 3. Chế độ mặc định (Hiển thị đầy đủ hoặc X-Ray hoặc Bóc tách)
     partsRef.current.forEach((group) => {
+      if (group.name !== "part_skin") {
+        // Chỉ hiển thị nội tạng khi X-Ray bật HOẶC đang bóc tách f > 0.02
+        group.visible = isXRay || f > 0.02;
+      }
       group.traverse((child) => {
         if (child.isMesh && child.material) {
           if (group.name !== "part_skin") {
@@ -737,9 +769,9 @@ export function Interactive3DAnatomyViewer({
           } else {
             // Chế độ giải phẫu thông thường (không X-Ray):
             if (f <= 0.02) {
-              // Mức 0% bóc tách: Da cá nguyên vẹn, dày dặn, che phủ tự nhiên như cá thật
+              // Mức 0% bóc tách: Da cá nguyên vẹn, dày dặn, che phủ tự nhiên 100% như cá thật
               child.material.transparent = false;
-              child.material.opacity = 0.92;
+              child.material.opacity = 1.0;
               child.material.color = new THREE.Color(0x38bdf8);
               child.material.emissive = new THREE.Color(0x0284c7);
               child.material.emissiveIntensity = 0.06;
@@ -747,7 +779,7 @@ export function Interactive3DAnatomyViewer({
             } else {
               // Khi tăng thanh trượt bóc tách: Da cá tách ra và mờ dần để lộ rõ cơ quan bên trong
               child.material.transparent = true;
-              child.material.opacity = Math.max(0.18, 0.92 - f * 0.74);
+              child.material.opacity = Math.max(0.18, 1.0 - f * 0.74);
               child.material.color = new THREE.Color(0x38bdf8);
               child.material.emissive = new THREE.Color(0x0284c7);
               child.material.emissiveIntensity = 0.12;
@@ -830,6 +862,26 @@ export function Interactive3DAnatomyViewer({
     const container = mountRef.current;
     if (!container || !cameraRef.current || !sceneRef.current) return;
 
+    // Chỉ kích hoạt Raycast bắt nội tạng khi đang ở chế độ giải phẫu (X-Ray, Bóc tách > 2%, Lọc hệ cơ quan, hoặc Đang chọn bộ phận, hoặc Bật nhãn)
+    const isAnatomyInspectable =
+      isXRayRef.current ||
+      explodePercentRef.current > 2 ||
+      activeSystemRef.current !== "all" ||
+      Boolean(activePartRef.current) ||
+      showPinsRef.current;
+
+    if (!isAnatomyInspectable) {
+      if (hoveredPartRef.current && !isHoveringModalRef.current) {
+        if (hoverTimeoutRef.current) {
+          clearTimeout(hoverTimeoutRef.current);
+          hoverTimeoutRef.current = null;
+        }
+        setHoveredPart(null);
+      }
+      container.style.cursor = "grab";
+      return;
+    }
+
     const rect = container.getBoundingClientRect();
     mouseRef.current.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     mouseRef.current.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
@@ -904,6 +956,17 @@ export function Interactive3DAnatomyViewer({
       return;
     }
 
+    const isAnatomyInspectable =
+      isXRayRef.current ||
+      explodePercentRef.current > 2 ||
+      activeSystemRef.current !== "all" ||
+      Boolean(activePartRef.current) ||
+      showPinsRef.current;
+
+    if (!isAnatomyInspectable) {
+      return;
+    }
+
     if (hoveredPart) {
       handleSelectPartDirectly(hoveredPart);
     } else if (activePart) {
@@ -914,6 +977,13 @@ export function Interactive3DAnatomyViewer({
 
   const handleResetCamera = () => {
     handleSelectPartDirectly(null);
+    setHoveredPart(null);
+    setIsXRay(false);
+    setExplodePercent(0);
+    setActiveSystem("all");
+    setShowPins(false);
+    setIsClipping(false);
+    setIsWireframe(false);
     if (cameraRef.current && controlsRef.current) {
       targetCameraPosRef.current.set(0, 0.8, 6.0);
       targetLookAtRef.current.set(0, 0, 0);
@@ -1014,19 +1084,12 @@ export function Interactive3DAnatomyViewer({
                     }}
                   >
                     <div
-                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border shadow-xl backdrop-blur-md transition-all ${
+                      className={`flex items-center px-2.5 py-1 rounded-full border shadow-xl backdrop-blur-md transition-all ${
                         isActive
                           ? "bg-cyan-500 text-slate-950 font-bold border-white ring-2 ring-cyan-400/70 scale-110"
                           : "bg-slate-950/80 text-cyan-200 border-cyan-500/40 hover:bg-cyan-900/90 hover:border-cyan-300 hover:scale-105"
                       }`}
                     >
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          isActive
-                            ? "bg-slate-950 animate-ping"
-                            : "bg-cyan-400 animate-pulse"
-                        }`}
-                      />
                       <span className="text-[11px] font-semibold whitespace-nowrap">
                         {language === "vi" ? part.nameVi : part.nameEn}
                       </span>
@@ -1218,7 +1281,7 @@ export function Interactive3DAnatomyViewer({
         )}
 
         {/* ── Hovered Part Floating Modal (Không biến mất ngay, cho phép bôi đen & copy thủ công) ── */}
-        {hoveredPart && hoveredPart.id !== activePart?.id && (
+        {isAnatomyInspectable && hoveredPart && hoveredPart.id !== activePart?.id && (
           <div
             onPointerEnter={() => {
               isHoveringModalRef.current = true;
@@ -1261,18 +1324,38 @@ export function Interactive3DAnatomyViewer({
                   </span>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  isHoveringModalRef.current = false;
-                  setHoveredPart(null);
-                }}
-                title={language === "vi" ? "Đóng" : "Close"}
-                className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer shrink-0"
-              >
-                <X size={15} />
-              </button>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const textToCopy = `${language === "vi" ? hoveredPart.nameVi : hoveredPart.nameEn}\n${language === "vi" ? hoveredPart.descVi : hoveredPart.descEn}`;
+                    navigator.clipboard.writeText(textToCopy);
+                    setCopiedPartId(hoveredPart.id);
+                    setTimeout(() => setCopiedPartId(null), 1500);
+                  }}
+                  title={copiedPartId === hoveredPart.id ? (language === "vi" ? "Đã sao chép!" : "Copied!") : (language === "vi" ? "Sao chép nhanh" : "Copy text")}
+                  className="p-1 rounded-lg hover:bg-white/10 text-cyan-400 hover:text-cyan-200 transition-all cursor-pointer"
+                >
+                  {copiedPartId === hoveredPart.id ? (
+                    <Check size={14} className="text-emerald-400" />
+                  ) : (
+                    <Copy size={14} />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    isHoveringModalRef.current = false;
+                    setHoveredPart(null);
+                  }}
+                  title={language === "vi" ? "Đóng" : "Close"}
+                  className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer"
+                >
+                  <X size={15} />
+                </button>
+              </div>
             </div>
 
             {/* Nội dung mô tả cho phép người dùng bôi đen và copy thủ công bằng chuột */}

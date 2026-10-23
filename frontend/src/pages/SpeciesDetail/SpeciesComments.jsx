@@ -153,7 +153,7 @@ export function SpeciesComments({ speciesId }) {
         onClose={() => setDeleteModal({ isOpen: false, commentId: null })}
       />
 
-      <div className="bg-[#0e1f38] border border-white/10 rounded-2xl p-6 md:p-8 space-y-6 shadow-xl shadow-cyan-950/20">
+      <div className="bg-[#0e1f38] border border-white/10 rounded-2xl p-6 md:p-8 space-y-6">
         {/* Header với icon và số lượng bình luận */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -194,7 +194,7 @@ export function SpeciesComments({ speciesId }) {
               <button
                 type="submit"
                 disabled={isSubmitting || !commentText.trim()}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs md:text-sm font-bold transition-all cursor-pointer shrink-0 shadow-md shadow-cyan-900/30 active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs md:text-sm font-bold transition-all cursor-pointer shrink-0 active:scale-95"
               >
                 {isSubmitting ? (
                   <>
@@ -211,7 +211,7 @@ export function SpeciesComments({ speciesId }) {
             ) : (
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs md:text-sm font-bold transition-all cursor-pointer shrink-0 shadow-md active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs md:text-sm font-bold transition-all cursor-pointer shrink-0 active:scale-95"
               >
                 <span>Đăng nhập</span>
               </Link>
@@ -253,7 +253,7 @@ export function SpeciesComments({ speciesId }) {
                     {/* Header bình luận: Avatar + Tên + Badge + Thời gian + Xóa */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-tr from-cyan-600 to-blue-500 border border-white/20 flex items-center justify-center font-bold text-xs text-white shadow-sm shrink-0">
+                        <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-tr from-cyan-600 to-blue-500 border border-white/20 flex items-center justify-center font-bold text-xs text-white shrink-0">
                           {c.user?.avatarUrl ? (
                             <img
                               src={c.user.avatarUrl}

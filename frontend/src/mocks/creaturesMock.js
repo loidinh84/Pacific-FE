@@ -18,8 +18,8 @@ export const RANDOM_CREATURES_DATA = [
     tagEn: "Highly Intelligent",
   },
   {
-    nameVi: "Cá heo Thái Bình Dương",
-    nameEn: "Pacific Dolphin",
+    nameVi: "Cá heo mỏ chai",
+    nameEn: "Bottlenose Dolphin",
     sciName: "Delphinidae",
     image: Images.FishHidden,
     tagVi: "Thân thiện & Nhanh nhẹn",

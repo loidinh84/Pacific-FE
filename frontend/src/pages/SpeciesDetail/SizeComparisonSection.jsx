@@ -141,7 +141,7 @@ export function SizeComparisonSection({ species }) {
                 onClick={() => setSelectedRefKey(ref.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
-                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.25)]"
+                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
                     : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
                 }`}
                 title={isEn ? ref.descEn : ref.descVi}
@@ -155,7 +155,7 @@ export function SizeComparisonSection({ species }) {
       </div>
 
       {/* ── VISUAL COMPARISON STAGE ── */}
-      <div className="relative rounded-2xl bg-gradient-to-b from-[#0b1b33] to-[#061224] border border-white/15 p-6 md:p-8 overflow-hidden shadow-2xl">
+      <div className="relative rounded-2xl bg-gradient-to-b from-[#0b1b33] to-[#061224] border border-white/15 p-6 md:p-8 overflow-hidden">
         {/* Lưới tọa độ thước đo nền */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
@@ -181,9 +181,9 @@ export function SizeComparisonSection({ species }) {
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs font-semibold">
               <span className="text-cyan-300 flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block shadow-[0_0_8px_#38bdf8]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block" />
                 {speciesName}
-                {species?.sciName && <span className="text-slate-400 italic font-normal">({species.sciName})</span>}
+                {species?.sciName && <span className="text-slate-400 italic font-normal">· {species.sciName}</span>}
               </span>
               <span className="font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">
                 {speciesLengthM.toFixed(2)}m
@@ -192,18 +192,18 @@ export function SizeComparisonSection({ species }) {
 
             <div className="w-full bg-white/5 h-12 rounded-xl p-1 relative flex items-center overflow-hidden border border-white/10">
               <div
-                className="h-full rounded-lg bg-gradient-to-r from-cyan-600 via-sky-500 to-teal-400 flex items-center px-3 relative transition-all duration-700 ease-out shadow-[0_0_15px_rgba(56,189,248,0.3)]"
+                className="h-full rounded-lg bg-gradient-to-r from-cyan-600 via-sky-500 to-teal-400 flex items-center px-3 relative transition-all duration-700 ease-out"
                 style={{ width: `${speciesPercent}%` }}
               >
                 {species?.image && (
                   <img
                     src={species.image}
                     alt={speciesName}
-                    className="w-8 h-8 rounded-full object-cover mr-2 border border-white/40 shadow-sm shrink-0"
+                    className="w-8 h-8 rounded-full object-cover mr-2 border border-white/40 shrink-0"
                   />
                 )}
                 <span className="text-[11px] font-bold text-white tracking-wide truncate">
-                  {speciesName} ({speciesLengthM.toFixed(1)}m)
+                  {speciesName} · {speciesLengthM.toFixed(1)}m
                 </span>
               </div>
             </div>
@@ -215,7 +215,7 @@ export function SizeComparisonSection({ species }) {
               <span className="text-slate-300 flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block" />
                 {isEn ? currentRef.nameEn : currentRef.nameVi}
-                <span className="text-slate-500 font-normal">({isEn ? currentRef.descEn : currentRef.descVi})</span>
+                <span className="text-slate-500 font-normal">· {isEn ? currentRef.descEn : currentRef.descVi}</span>
               </span>
               <span className="font-mono text-slate-300 bg-white/10 px-2 py-0.5 rounded border border-white/10">
                 {currentRef.lengthM.toFixed(2)}m
@@ -229,7 +229,7 @@ export function SizeComparisonSection({ species }) {
               >
                 <CurrentRefIcon className="w-4 h-4 text-white/90 mr-2 shrink-0 stroke-current" />
                 <span className="text-[11px] font-bold text-white tracking-wide truncate">
-                  {isEn ? currentRef.nameEn : currentRef.nameVi} ({currentRef.lengthM}m)
+                  {isEn ? currentRef.nameEn : currentRef.nameVi} · {currentRef.lengthM}m
                 </span>
               </div>
             </div>

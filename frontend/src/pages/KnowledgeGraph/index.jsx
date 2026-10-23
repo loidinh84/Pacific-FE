@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import * as echarts from "echarts";
 import {
@@ -18,10 +18,6 @@ import {
   Sprout,
   Zap,
   Layers,
-  ArrowRight,
-  Info,
-  MapPin,
-  Anchor,
 } from "lucide-react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
@@ -31,10 +27,10 @@ import { useLanguage } from "../../hooks/useLanguage";
 // Bảng màu & danh mục quan hệ sinh thái chuẩn học thuật
 const RELATION_TYPES = {
   all: { labelVi: "Tất cả mối liên kết", labelEn: "All Ecological Links", color: "#38bdf8" },
-  predator_prey: { labelVi: "Vật dữ - Con mồi (Ăn thịt)", labelEn: "Predator - Prey", color: "#ef4444", Icon: Target },
+  predator_prey: { labelVi: "Vật dữ - Con mồi", labelEn: "Predator - Prey", color: "#ef4444", Icon: Target },
   herbivory: { labelVi: "Ăn thực vật / Tiêu thụ sơ cấp", labelEn: "Herbivory / Consumer", color: "#84cc16", Icon: Sprout },
-  symbiosis: { labelVi: "Cộng sinh tương hỗ (Mutualism)", labelEn: "Symbiosis / Mutualism", color: "#38bdf8", Icon: Handshake },
-  commensalism: { labelVi: "Hội sinh (Commensalism)", labelEn: "Commensalism", color: "#06b6d4", Icon: Layers },
+  symbiosis: { labelVi: "Cộng sinh tương hỗ", labelEn: "Symbiosis / Mutualism", color: "#38bdf8", Icon: Handshake },
+  commensalism: { labelVi: "Hội sinh", labelEn: "Commensalism", color: "#06b6d4", Icon: Layers },
   habitat_provider: { labelVi: "Kiến tạo nơi ở / Sinh cảnh", labelEn: "Biogenic Habitat", color: "#10b981", Icon: Home },
   competitor: { labelVi: "Cạnh tranh sinh thái", labelEn: "Niche Competition", color: "#f97316", Icon: Zap },
 };
@@ -100,23 +96,36 @@ export default function KnowledgeGraph() {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Tải dữ liệu đồ thị tri thức theo bộ lọc API
-  const loadGraph = useCallback(async () => {
-    setLoading(true);
-    const params = {};
-    if (selectedZone) params.zone = selectedZone;
-    if (selectedRedList) params.redList = selectedRedList;
-    if (selectedType && selectedType !== "all") params.type = selectedType;
-
-    const res = await fetchKnowledgeGraph(params);
-    if (res) {
-      setGraphData(res);
-    }
-    setLoading(false);
-  }, [selectedZone, selectedRedList, selectedType]);
-
   useEffect(() => {
-    loadGraph();
-  }, [loadGraph]);
+    let ignore = false;
+
+    const fetchGraph = async () => {
+      try {
+        const params = {};
+        if (selectedZone) params.zone = selectedZone;
+        if (selectedRedList) params.redList = selectedRedList;
+        if (selectedType && selectedType !== "all") params.type = selectedType;
+
+        const res = await fetchKnowledgeGraph(params);
+        if (!ignore) {
+          if (res) {
+            setGraphData(res);
+          }
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Failed to load knowledge graph:", err);
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchGraph();
+    return () => {
+      ignore = true;
+    };
+  }, [selectedZone, selectedRedList, selectedType]);
 
   // Bộ lọc tìm kiếm tên loài thời gian thực
   const filteredGraph = useMemo(() => {
@@ -251,14 +260,14 @@ export default function KnowledgeGraph() {
         label: {
           show: true,
           position: "bottom",
-          distance: 8,
+          distance: 9,
           color: "#f1f5f9",
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: "600",
-          backgroundColor: "rgba(7, 19, 36, 0.85)",
-          padding: [3, 7],
-          borderRadius: 4,
-          borderColor: "rgba(56, 189, 248, 0.25)",
+          backgroundColor: "rgba(7, 19, 36, 0.88)",
+          padding: [4, 8],
+          borderRadius: 6,
+          borderColor: "rgba(56, 189, 248, 0.3)",
           borderWidth: 1,
           formatter: "{b}",
         },
@@ -297,22 +306,22 @@ export default function KnowledgeGraph() {
           if (params.dataType === "node") {
             const raw = params.data.raw;
             return `
-              <div style="font-family: inherit; font-size: 12px; line-height: 1.5; min-width: 240px; max-width: 300px;">
-                <div style="font-size: 14px; font-weight: 700; color: #38bdf8; margin-bottom: 2px;">
+              <div style="font-family: inherit; font-size: 13px; line-height: 1.5; min-width: 240px; max-width: 320px;">
+                <div style="font-size: 15px; font-weight: 700; color: #38bdf8; margin-bottom: 3px;">
                   ${raw?.name || params.name}
                 </div>
-                <div style="font-style: italic; color: #94a3b8; font-size: 11px; margin-bottom: 6px;">
+                <div style="font-style: italic; color: #94a3b8; font-size: 12px; margin-bottom: 8px;">
                   ${raw?.scientificName || ""}
                 </div>
-                <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
-                  <span style="background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: #7dd3fc; padding: 2px 6px; border-radius: 4px; font-size: 10px;">
+                <div style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
+                  <span style="background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: #7dd3fc; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
                     ${raw?.eastSeaZone || "Biển Đông"}
                   </span>
-                  <span style="background: rgba(244,63,94,0.15); border: 1px solid rgba(244,63,94,0.3); color: #fda4af; padding: 2px 6px; border-radius: 4px; font-size: 10px;">
+                  <span style="background: rgba(244,63,94,0.15); border: 1px solid rgba(244,63,94,0.3); color: #fda4af; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
                     Sách Đỏ: ${raw?.redList || "LC"}
                   </span>
                 </div>
-                <div style="color: #64748b; font-size: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px;">
+                <div style="color: #64748b; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px;">
                   ${isEn ? "Click node to inspect ecological profile" : "Click để mở hồ sơ quan hệ sinh thái chi tiết"}
                 </div>
               </div>
@@ -321,12 +330,12 @@ export default function KnowledgeGraph() {
             const raw = params.data.raw;
             const meta = RELATION_TYPES[raw?.type] || {};
             return `
-              <div style="font-family: inherit; font-size: 12px; line-height: 1.4; max-width: 290px;">
-                <div style="font-weight: 700; color: ${meta.color || "#38bdf8"}; margin-bottom: 4px; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">
+              <div style="font-family: inherit; font-size: 13px; line-height: 1.45; max-width: 300px;">
+                <div style="font-weight: 700; color: ${meta.color || "#38bdf8"}; margin-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
                   ${isEn ? meta.labelEn : meta.labelVi}
                 </div>
-                ${raw?.description ? `<div style="color: #cbd5e1; font-size: 11px; margin-bottom: 4px; line-height: 1.45;">${raw.description}</div>` : ""}
-                ${raw?.ecologicalImpact ? `<div style="color: #94a3b8; font-size: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px;"><strong>Ý nghĩa sinh thái:</strong> ${raw.ecologicalImpact}</div>` : ""}
+                ${raw?.description ? `<div style="color: #cbd5e1; font-size: 12px; margin-bottom: 4px; line-height: 1.45;">${raw.description}</div>` : ""}
+                ${raw?.ecologicalImpact ? `<div style="color: #94a3b8; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px;"><strong>Ý nghĩa sinh thái:</strong> ${raw.ecologicalImpact}</div>` : ""}
               </div>
             `;
           }
@@ -411,10 +420,10 @@ export default function KnowledgeGraph() {
               <Network size={14} />
               <span>{isEn ? "East Sea marine knowledge platform" : "Hệ thống tri thức sinh thái Biển Đông"}</span>
             </div>
-            <h1 className="text-2xl md:text-4xl font-extrabold text-white font-heading tracking-tight">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-heading tracking-tight leading-snug">
               {isEn ? "East Sea marine ecosystem knowledge graph" : "Đồ thị tri thức đa dạng sinh thái Biển Đông"}
             </h1>
-            <p className="text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 mt-1.5 max-w-2xl leading-relaxed">
               {isEn
                 ? "Trophic energy flows, biogenic habitat matrices, and symbiotic networks across 8 Marine Protected Areas (MPAs) of Vietnam."
                 : "Mô hình hóa chuỗi thức ăn, quan hệ cộng sinh tương hỗ và cấu trúc sinh cảnh của 25 loài sinh vật đặc trưng tại 8 Khu bảo tồn biển (MPAs) Việt Nam."}
@@ -423,22 +432,22 @@ export default function KnowledgeGraph() {
 
           {/* Bảng số liệu thống kê nhanh */}
           <div className="flex items-center gap-3">
-            <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-cyan-500/20 text-center">
-              <div className="text-xl font-bold font-mono text-cyan-300">{stats.totalSpecies}</div>
-              <div className="text-[10px] text-slate-400 tracking-wider">
-                {isEn ? "Species nodes" : "Loài sinh vật"}
+            <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-cyan-500/20 text-center min-w-[90px]">
+              <div className="text-xl sm:text-2xl font-bold font-mono text-cyan-300">{stats.totalSpecies}</div>
+              <div className="text-xs font-medium text-slate-400 tracking-wide mt-0.5">
+                {isEn ? "Species" : "Loài"}
               </div>
             </div>
-            <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-cyan-500/20 text-center">
-              <div className="text-xl font-bold font-mono text-white">{stats.totalLinks}</div>
-              <div className="text-[10px] text-slate-400 tracking-wider">
-                {isEn ? "Trophic links" : "Mối liên kết"}
+            <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-cyan-500/20 text-center min-w-[90px]">
+              <div className="text-xl sm:text-2xl font-bold font-mono text-white">{stats.totalLinks}</div>
+              <div className="text-xs font-medium text-slate-400 tracking-wide mt-0.5">
+                {isEn ? "Links" : "Liên kết"}
               </div>
             </div>
-            <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-rose-500/30 text-center">
-              <div className="text-xl font-bold font-mono text-rose-400">{stats.threatenedCount}</div>
-              <div className="text-[10px] text-rose-300 tracking-wider">
-                {isEn ? "Threatened" : "Sách Đỏ VN"}
+            <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-rose-500/30 text-center min-w-[90px]">
+              <div className="text-xl sm:text-2xl font-bold font-mono text-rose-400">{stats.threatenedCount}</div>
+              <div className="text-xs font-medium text-rose-300 tracking-wide mt-0.5">
+                {isEn ? "Threatened" : "Nguy cấp"}
               </div>
             </div>
           </div>
@@ -449,20 +458,20 @@ export default function KnowledgeGraph() {
           <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
             {/* Ô tìm kiếm tức thời */}
             <div className="relative min-w-[210px] flex-1 sm:max-w-xs">
-              <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={isEn ? "Search species, scientific name, MPA..." : "Tìm loài, tên khoa học, vùng biển..."}
-                className="w-full bg-[#152a4a] border border-white/10 rounded-xl pl-9 pr-3.5 py-2 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 transition-colors"
+                className="w-full bg-[#152a4a] border border-white/10 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 transition-colors"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
                 >
-                  <X size={12} />
+                  <X size={14} />
                 </button>
               )}
             </div>
@@ -472,7 +481,7 @@ export default function KnowledgeGraph() {
               <select
                 value={selectedZone}
                 onChange={(e) => setSelectedZone(e.target.value)}
-                className="w-full bg-[#152a4a] border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
+                className="w-full bg-[#152a4a] border border-white/10 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
               >
                 {EAST_SEA_ZONES.map((z) => (
                   <option key={z.id} value={z.id} className="bg-[#0b1c33] text-white">
@@ -487,7 +496,7 @@ export default function KnowledgeGraph() {
               <select
                 value={selectedRedList}
                 onChange={(e) => setSelectedRedList(e.target.value)}
-                className="w-full bg-[#152a4a] border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
+                className="w-full bg-[#152a4a] border border-white/10 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
               >
                 {RED_LIST_OPTIONS.map((r) => (
                   <option key={r.id} value={r.id} className="bg-[#0b1c33] text-white">
@@ -502,7 +511,7 @@ export default function KnowledgeGraph() {
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
-                className="w-full bg-[#152a4a] border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
+                className="w-full bg-[#152a4a] border border-white/10 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
               >
                 {Object.entries(RELATION_TYPES).map(([key, meta]) => (
                   <option key={key} value={key} className="bg-[#0b1c33] text-white">
@@ -516,10 +525,10 @@ export default function KnowledgeGraph() {
           {/* Nút đặt lại bộ lọc */}
           <button
             onClick={handleResetFilters}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs font-semibold transition-all border border-white/10 cursor-pointer shrink-0"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs sm:text-sm font-semibold transition-all border border-white/10 cursor-pointer shrink-0"
             title={isEn ? "Reset all filters" : "Đặt lại tất cả bộ lọc"}
           >
-            <RotateCcw size={13} />
+            <RotateCcw size={14} />
             <span>{isEn ? "Reset" : "Đặt lại"}</span>
           </button>
         </div>
@@ -532,17 +541,17 @@ export default function KnowledgeGraph() {
         >
           {/* Thanh trạng thái phía trên canvas */}
           <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2 pointer-events-auto">
-            <span className="px-3 py-1 rounded-full bg-cyan-950/85 border border-cyan-500/40 text-cyan-300 text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-lg">
+            <span className="px-3 py-1.5 rounded-full bg-cyan-950/85 border border-cyan-500/40 text-cyan-300 text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-lg">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
               <span>{isEn ? "Force-directed simulation" : "Mô phỏng trọng lực sinh thái"}</span>
             </span>
 
             {/* Chú giải liên kết */}
-            <div className="hidden sm:flex items-center gap-3 px-3 py-1 rounded-full bg-[#051120]/80 border border-white/10 backdrop-blur-md text-[11px] text-slate-300">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#ef4444]" /> Ăn thịt</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#84cc16]" /> Ăn cỏ</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#38bdf8]" /> Cộng sinh</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#10b981]" /> Sinh cảnh</span>
+            <div className="hidden sm:flex items-center gap-3.5 px-3.5 py-1.5 rounded-full bg-[#051120]/85 border border-white/10 backdrop-blur-md text-xs font-medium text-slate-300 shadow-md">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" /> Ăn thịt</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#84cc16]" /> Ăn cỏ</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8]" /> Cộng sinh</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#10b981]" /> Sinh cảnh</span>
             </div>
           </div>
 
@@ -599,7 +608,7 @@ export default function KnowledgeGraph() {
           <div ref={chartRef} className="w-full h-full" />
 
           {/* Hướng dẫn thao tác góc dưới */}
-          <div className="absolute bottom-3 left-4 pointer-events-none text-[11px] text-slate-400 bg-[#040e1b]/75 px-3 py-1.5 rounded-lg border border-white/5">
+          <div className="absolute bottom-3 left-4 pointer-events-none text-xs text-slate-300 bg-[#040e1b]/85 px-3.5 py-1.5 rounded-lg border border-white/10 shadow-md">
             * Kéo chuột để di chuyển • Cuộn để Zoom • <strong className="text-cyan-400">Click vào sinh vật</strong> để mở bảng phân tích sinh thái
           </div>
 
@@ -609,8 +618,8 @@ export default function KnowledgeGraph() {
               <div>
                 {/* Header Drawer */}
                 <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
-                  <span className="text-[11px] font-bold tracking-wider text-cyan-400 flex items-center gap-1.5">
-                    <Sparkles size={13} />
+                  <span className="text-xs font-bold tracking-wider uppercase text-cyan-400 flex items-center gap-1.5">
+                    <Sparkles size={14} />
                     <span>{isEn ? "Ecological dossier" : "Hồ sơ quan hệ sinh thái"}</span>
                   </span>
                   <button
@@ -641,18 +650,18 @@ export default function KnowledgeGraph() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold text-white font-heading leading-tight mb-1">
+                    <h3 className="text-xl font-bold text-white font-heading leading-snug mb-1">
                       {selectedNode.name}
                     </h3>
-                    <p className="text-xs text-slate-400 italic font-serif mb-2.5">
+                    <p className="text-xs sm:text-sm text-slate-300 italic font-serif mb-2.5">
                       {selectedNode.scientificName}
                     </p>
 
                     <div className="flex flex-wrap gap-1.5">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                      <span className="px-2.5 py-1 rounded text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40">
                         Sách Đỏ: {selectedNode.redList || "LC"}
                       </span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                      <span className="px-2.5 py-1 rounded text-xs font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
                         {selectedNode.eastSeaZone || "Biển Đông"}
                       </span>
                     </div>
@@ -660,14 +669,14 @@ export default function KnowledgeGraph() {
                 </div>
 
                 {/* Bảng thông số sinh thái học chi tiết */}
-                <div className="grid grid-cols-2 gap-2 text-xs mb-5 bg-white/[0.02] p-3 rounded-xl border border-white/5">
+                <div className="grid grid-cols-2 gap-3 text-xs mb-5 bg-white/[0.03] p-3.5 rounded-xl border border-white/5">
                   <div>
-                    <span className="text-slate-400 block text-[10px] tracking-wider">Mã định danh:</span>
-                    <span className="font-mono font-bold text-white text-[11px]">{selectedNode.code || "N/A"}</span>
+                    <span className="text-slate-400 block text-xs tracking-wider mb-0.5">Mã định danh:</span>
+                    <span className="font-mono font-bold text-white text-xs sm:text-sm">{selectedNode.code || "N/A"}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[10px] tracking-wider">Độ sâu sinh sống:</span>
-                    <span className="font-mono text-cyan-300 text-[11px]">
+                    <span className="text-slate-400 block text-xs tracking-wider mb-0.5">Độ sâu sinh sống:</span>
+                    <span className="font-mono text-cyan-300 text-xs sm:text-sm font-semibold">
                       {selectedNode.depthMin || 0}m - {selectedNode.depthMax || 50}m
                     </span>
                   </div>
@@ -675,11 +684,11 @@ export default function KnowledgeGraph() {
 
                 {/* Danh sách các mối liên kết sinh thái trong mạng lưới */}
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-1 border-b border-white/10">
-                    <span className="text-xs font-bold tracking-wider text-slate-300">
+                  <div className="flex items-center justify-between pb-1.5 border-b border-white/10">
+                    <span className="text-xs sm:text-sm font-bold tracking-wider text-slate-200">
                       Mối liên kết trong mạng lưới
                     </span>
-                    <span className="text-cyan-400 font-mono text-xs font-bold">
+                    <span className="text-cyan-400 font-mono text-xs sm:text-sm font-bold">
                       {nodeConnections.prey.length +
                         nodeConnections.predators.length +
                         nodeConnections.symbionts.length +
@@ -692,17 +701,17 @@ export default function KnowledgeGraph() {
                   {/* 1. Con mồi */}
                   {nodeConnections.prey.length > 0 && (
                     <div className="space-y-1.5">
-                      <div className="text-[11px] font-bold text-rose-300 flex items-center gap-1.5">
-                        <Target size={13} className="text-rose-400" />
+                      <div className="text-xs font-bold text-rose-300 flex items-center gap-1.5">
+                        <Target size={14} className="text-rose-400" />
                         <span>Săn bắt / Nguồn thức ăn ({nodeConnections.prey.length}):</span>
                       </div>
                       {nodeConnections.prey.map(({ node, link }) => (
                         <div
                           key={link.id}
-                          className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-500/20 text-xs flex items-center justify-between"
+                          className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-500/20 text-xs sm:text-sm flex items-center justify-between"
                         >
                           <span className="font-semibold text-white">{node.name}</span>
-                          <span className="text-[10px] text-slate-400 italic line-clamp-1 max-w-[160px]">
+                          <span className="text-xs text-slate-400 italic line-clamp-1 max-w-[160px]">
                             {link.description || "Con mồi"}
                           </span>
                         </div>
@@ -713,17 +722,17 @@ export default function KnowledgeGraph() {
                   {/* 2. Kẻ săn mồi */}
                   {nodeConnections.predators.length > 0 && (
                     <div className="space-y-1.5">
-                      <div className="text-[11px] font-bold text-red-400 flex items-center gap-1.5">
-                        <ShieldAlert size={13} className="text-red-400" />
+                      <div className="text-xs font-bold text-red-400 flex items-center gap-1.5">
+                        <ShieldAlert size={14} className="text-red-400" />
                         <span>Động vật ăn thịt đe dọa ({nodeConnections.predators.length}):</span>
                       </div>
                       {nodeConnections.predators.map(({ node, link }) => (
                         <div
                           key={link.id}
-                          className="p-2.5 rounded-lg bg-red-950/20 border border-red-500/20 text-xs flex items-center justify-between"
+                          className="p-2.5 rounded-lg bg-red-950/20 border border-red-500/20 text-xs sm:text-sm flex items-center justify-between"
                         >
                           <span className="font-semibold text-white">{node.name}</span>
-                          <span className="text-[10px] text-slate-400 italic line-clamp-1 max-w-[160px]">
+                          <span className="text-xs text-slate-400 italic line-clamp-1 max-w-[160px]">
                             {link.description || "Thiên địch"}
                           </span>
                         </div>
@@ -734,17 +743,17 @@ export default function KnowledgeGraph() {
                   {/* 3. Cộng sinh */}
                   {nodeConnections.symbionts.length > 0 && (
                     <div className="space-y-1.5">
-                      <div className="text-[11px] font-bold text-sky-300 flex items-center gap-1.5">
-                        <Handshake size={13} className="text-sky-400" />
+                      <div className="text-xs font-bold text-sky-300 flex items-center gap-1.5">
+                        <Handshake size={14} className="text-sky-400" />
                         <span>Cộng sinh & Tương hỗ ({nodeConnections.symbionts.length}):</span>
                       </div>
                       {nodeConnections.symbionts.map(({ node, link }) => (
                         <div
                           key={link.id}
-                          className="p-2.5 rounded-lg bg-sky-950/20 border border-sky-500/20 text-xs flex items-center justify-between"
+                          className="p-2.5 rounded-lg bg-sky-950/20 border border-sky-500/20 text-xs sm:text-sm flex items-center justify-between"
                         >
                           <span className="font-semibold text-white">{node.name}</span>
-                          <span className="text-[10px] text-sky-300/80 italic line-clamp-1 max-w-[160px]">
+                          <span className="text-xs text-sky-300/80 italic line-clamp-1 max-w-[160px]">
                             {link.description || "Cộng sinh"}
                           </span>
                         </div>
@@ -755,17 +764,17 @@ export default function KnowledgeGraph() {
                   {/* 4. Sinh cảnh */}
                   {nodeConnections.habitats.length > 0 && (
                     <div className="space-y-1.5">
-                      <div className="text-[11px] font-bold text-emerald-300 flex items-center gap-1.5">
-                        <Home size={13} className="text-emerald-400" />
+                      <div className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                        <Home size={14} className="text-emerald-400" />
                         <span>Sinh cảnh cư trú & Bãi ươm ({nodeConnections.habitats.length}):</span>
                       </div>
                       {nodeConnections.habitats.map(({ node, link }) => (
                         <div
                           key={link.id}
-                          className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-500/20 text-xs flex items-center justify-between"
+                          className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-500/20 text-xs sm:text-sm flex items-center justify-between"
                         >
                           <span className="font-semibold text-white">{node.name}</span>
-                          <span className="text-[10px] text-emerald-300/80 italic line-clamp-1 max-w-[160px]">
+                          <span className="text-xs text-emerald-300/80 italic line-clamp-1 max-w-[160px]">
                             {link.description || "Sinh cảnh"}
                           </span>
                         </div>
@@ -779,10 +788,10 @@ export default function KnowledgeGraph() {
               <div className="pt-4 border-t border-white/10 mt-6">
                 <Link
                   to={`/species/${selectedNode.slug || selectedNode.id}`}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-950/50 cursor-pointer"
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-950/50 cursor-pointer"
                 >
                   <span>Xem Hồ Sơ Sinh Học Chi Tiết</span>
-                  <ExternalLink size={14} />
+                  <ExternalLink size={15} />
                 </Link>
               </div>
             </div>

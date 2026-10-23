@@ -243,7 +243,7 @@ export default function SystemSettings() {
       general: {
         websiteName: "Pacific Ocean - Bách khoa toàn thư sinh vật biển",
         seoDescription:
-          "Hệ thống số hóa sinh vật biển toàn diện, cung cấp dữ liệu tương tác 3D và bảo tồn hệ sinh thái biển Thái Bình Dương.",
+          "Hệ thống số hóa sinh vật biển toàn diện, cung cấp dữ liệu tương tác 3D và bảo tồn hệ sinh thái Biển Đông.",
         contactEmail: "admin@pacific.org",
         logoUrl: "",
         socialLinks: [

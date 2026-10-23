@@ -526,7 +526,7 @@ export function AnatomySection({ species }) {
               onClick={() => setActiveSystemTab(idx)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                 isActive
-                  ? "bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 shadow-sm shadow-cyan-500/10"
+                  ? "bg-cyan-500/20 border border-cyan-400/50 text-cyan-300"
                   : "bg-slate-900/40 hover:bg-slate-800/60 border border-white/5 text-slate-400 hover:text-white"
               }`}
             >

@@ -29,6 +29,11 @@ export default function SpeciesDetail() {
 
   const resolvedId = MOCK_SLUG_MAP[id] || id;
 
+  // Tự động cuộn lên đầu trang khi đổi loài
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [id, resolvedId]);
+
   // Tự động chuyển hướng từ mock ID cũ sang slug chuẩn trong CSDL để đảm bảo URL đồng bộ & không lỗi 404
   useEffect(() => {
     if (MOCK_SLUG_MAP[id] && MOCK_SLUG_MAP[id] !== id) {

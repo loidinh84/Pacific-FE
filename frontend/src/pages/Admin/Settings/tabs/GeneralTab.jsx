@@ -113,7 +113,7 @@ export default function GeneralTab({
                     ? "bg-[#0b1329] border-white/15 text-white focus:border-cyan-400"
                     : "bg-white border-slate-300 text-slate-900 focus:border-blue-500"
                 }`}
-                placeholder="Cổng thông tin & tra cứu sinh vật biển Thái Bình Dương chuẩn khoa học..."
+                placeholder="Cổng thông tin & tra cứu sinh vật biển Biển Đông chuẩn khoa học..."
               />
               <p className="text-[11px] text-slate-400 mt-1">
                 Khuyến nghị từ 120 đến 160 ký tự để tối ưu hóa hiển thị khi tìm
@@ -241,13 +241,13 @@ export default function GeneralTab({
             {/* Title row */}
             <h4 className="text-sm md:text-base font-semibold text-blue-400 hover:underline cursor-pointer truncate">
               {formData.general.websiteName || "Pacific Ocean Portal"} | Tra
-              cứu sinh vật biển Thái Bình Dương
+              cứu sinh vật biển Biển Đông
             </h4>
 
             {/* Description snippet */}
             <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
               {formData.general.seoDescription ||
-                "Cổng thông tin & tra cứu sinh vật biển Thái Bình Dương chuẩn khoa học với mô hình 3D xoay 360 độ và dữ liệu đa dạng sinh học đại dương."}
+                "Cổng thông tin & tra cứu sinh vật biển Biển Đông chuẩn khoa học với mô hình 3D xoay 360 độ và dữ liệu đa dạng sinh học đại dương."}
             </p>
           </div>
         </div>

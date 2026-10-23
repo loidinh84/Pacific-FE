@@ -127,7 +127,7 @@ function mapSpeciesFromApi(item) {
           ? `${item.temperature_min_c} - ${item.temperature_max_c}°C`
           : `${item.temperature_min_c}°C`
         : "Chưa cập nhật",
-    geoZone: item.ocean_zones?.name || "Thái Bình Dương",
+    geoZone: item.east_sea_zone || item.ocean_zones?.name || "Biển Đông",
     diet: item.diet || "Chưa cập nhật",
     lifespan: item.lifespan_years
       ? `${item.lifespan_years} năm`
