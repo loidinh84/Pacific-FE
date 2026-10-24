@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Network,
   Target,
   ShieldAlert,
   Handshake,
@@ -717,15 +716,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
       {/* ─── 1. HEADER SECTION ──────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white font-heading tracking-tight flex items-center gap-2.5">
-            <Network size={22} className="text-cyan-400" />
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white font-heading tracking-tight">
             {isEn ? "Ecosystem dynamics & trophic web" : "Mạng lưới sinh thái & chuỗi thức ăn"}
           </h2>
-          <p className="text-xs md:text-sm text-slate-400 mt-1">
-            {isEn
-              ? "Interactive marine trophic linkages & energy flow in the East Sea"
-              : "Khám phá mối tương tác chuỗi thức ăn và dòng truyền năng lượng sinh khối giữa các loài tại Biển Đông"}
-          </p>
         </div>
 
         {/* View Switcher: Mạng lưới đại dương vs Tháp Dinh Dưỡng */}
@@ -1536,19 +1529,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {roles.prey?.length > 0 && (
           <div>
             <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-rose-500/10 border border-rose-500/25 flex items-center justify-center text-rose-400">
-                  <Target size={15} />
-                </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Prey & dietary base" : "Con mồi & nguồn dinh dưỡng"}
-                  </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Các loài sinh vật là thức ăn trực tiếp, cung cấp dòng năng lượng nuôi dưỡng loài này
-                  </p>
-                </div>
-              </div>
+              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+                {isEn ? "Prey & dietary base" : "Con mồi & nguồn dinh dưỡng"}
+              </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {roles.prey.map((item) => renderAcademicRelationCard(item, "predator_prey"))}
@@ -1560,19 +1543,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {roles.predators?.length > 0 && (
           <div>
             <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/25 flex items-center justify-center text-red-400">
-                  <ShieldAlert size={15} />
-                </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Trophic predators & apex threats" : "Động vật ăn thịt & thiên địch"}
-                  </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Các loài săn bắt loài này, giữ vai trò kiểm soát kích thước quần thể trong chuỗi thức ăn
-                  </p>
-                </div>
-              </div>
+              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+                {isEn ? "Trophic predators & apex threats" : "Động vật ăn thịt & thiên địch"}
+              </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {roles.predators.map((item) => renderAcademicRelationCard(item, "predator_prey"))}
@@ -1584,19 +1557,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {roles.symbionts?.length > 0 && (
           <div>
             <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/25 flex items-center justify-center text-sky-400">
-                  <Handshake size={15} />
-                </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Symbiotic & mutualistic network" : "Cộng sinh tương hỗ & hội sinh"}
-                  </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Mối liên kết hai bên cùng có lợi hoặc nương tựa sinh thái giúp tăng khả năng sinh tồn
-                  </p>
-                </div>
-              </div>
+              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+                {isEn ? "Symbiotic & mutualistic network" : "Cộng sinh tương hỗ & hội sinh"}
+              </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {roles.symbionts.map((item) => renderAcademicRelationCard(item, "symbiosis"))}
@@ -1608,19 +1571,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {roles.habitats?.length > 0 && (
           <div>
             <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400">
-                  <Home size={15} />
-                </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Biogenic habitat & nursery foundation" : "Sinh cảnh kiến tạo & nơi nương tựa"}
-                  </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Rạn san hô, thảm cỏ biển và rừng ngập mặn cung cấp bãi đẻ, bãi ươm và nơi ẩn náu
-                  </p>
-                </div>
-              </div>
+              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+                {isEn ? "Biogenic habitat & nursery foundation" : "Sinh cảnh kiến tạo & nơi nương tựa"}
+              </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {roles.habitats.map((item) => renderAcademicRelationCard(item, "habitat_provider"))}
@@ -1632,19 +1585,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {roles.competitors?.length > 0 && (
           <div>
             <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400">
-                  <Zap size={15} />
-                </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-white font-heading">
-                    {isEn ? "Niche competition" : "Cạnh tranh ổ sinh thái"}
-                  </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Cạnh tranh nguồn thức ăn và không gian sống trong cùng phân vùng sinh thái
-                  </p>
-                </div>
-              </div>
+              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+                {isEn ? "Niche competition" : "Cạnh tranh ổ sinh thái"}
+              </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {roles.competitors.map((item) => renderAcademicRelationCard(item, "competitor"))}

@@ -7,7 +7,6 @@ import {
   Box,
   ChevronLeft,
   ChevronRight,
-  Dna,
   Compass,
   Gauge,
   ShieldAlert,
@@ -590,7 +589,7 @@ export function SpeciesDetailHero({ species }) {
       {/* ── 3. QUICK SPECS BAR (ĐƯỢC ĐƯA LÊN ĐẦU TRANG, NGAY DƯỚI HEADER) ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6">
         {/* Kích thước */}
-        <div className="bg-[#0b172a]/90 border border-white/10 hover:border-cyan-500/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all">
+        <div className="bg-[#0b172a]/90 border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
           <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/25 text-cyan-400 shrink-0">
             <Gauge size={18} />
           </div>
@@ -605,7 +604,7 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Độ sâu */}
-        <div className="bg-[#0b172a]/90 border border-white/10 hover:border-indigo-500/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all">
+        <div className="bg-[#0b172a]/90 border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
           <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 shrink-0">
             <Compass size={18} />
           </div>
@@ -620,7 +619,7 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Khối lượng */}
-        <div className="bg-[#0b172a]/90 border border-white/10 hover:border-emerald-500/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all">
+        <div className="bg-[#0b172a]/90 border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
           <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 shrink-0">
             <Scale size={18} />
           </div>
@@ -635,7 +634,7 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Tình trạng bảo tồn */}
-        <div className="bg-[#0b172a]/90 border border-white/10 hover:border-rose-500/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all">
+        <div className="bg-[#0b172a]/90 border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
           <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 shrink-0">
             <ShieldAlert size={18} />
           </div>
@@ -873,8 +872,7 @@ export function SpeciesDetailHero({ species }) {
       {/* ── 5. HỒ SƠ SINH HỌC & PHÂN LOẠI HỌC KHOA HỌC ── */}
       <div className="mt-10 pt-8 border-t border-white/10 space-y-6">
         {/* Tiêu đề mục */}
-        <div className="flex items-center gap-2.5">
-          <Dna size={22} className="text-cyan-400" />
+        <div>
           <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
             {t("speciesDetail.profileTitle") ||
               "Hồ sơ sinh học & Phân loại học"}
@@ -883,13 +881,6 @@ export function SpeciesDetailHero({ species }) {
 
         {/* Bảng phân loại khoa học (Bố cục 4 cột rộng rãi) */}
         <div className="bg-[#0b172a] border border-white/10 rounded-2xl p-5">
-          <p className="text-slate-400 text-xs font-semibold tracking-wider mb-4 flex items-center gap-2">
-            <Compass size={14} className="text-cyan-400" />
-            <span>
-              {t("speciesDetail.taxonomyTitle") ||
-                "Hệ thống phân loại khoa học"}
-            </span>
-          </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
             {/* Giới & Ngành */}
@@ -978,7 +969,7 @@ export function SpeciesDetailHero({ species }) {
               {scientificDossier.map((dossier, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#0b172a] border border-white/10 hover:border-cyan-500/30 rounded-2xl p-5 space-y-2.5 transition-all"
+                  className="bg-[#0b172a] border border-white/10 rounded-2xl p-5 space-y-2.5"
                 >
                   <div className="flex items-center gap-2">
                     {dossierIcons[idx % dossierIcons.length]}

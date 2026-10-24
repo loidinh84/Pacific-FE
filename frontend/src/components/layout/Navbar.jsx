@@ -1,6 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronDown, Check, LogOut, User, HelpCircle, Shield, Eye } from "lucide-react";
+import {
+  ChevronDown,
+  Check,
+  LogOut,
+  User,
+  HelpCircle,
+  Shield,
+  Eye,
+} from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useScroll } from "../../hooks/useScroll";
 import { useClickOutside } from "../../hooks/useClickOutside";
@@ -72,7 +80,11 @@ export default function Navbar() {
       if (e.detail) setSystemSettings(e.detail);
     };
     window.addEventListener("pacific_settings_update", handleSettingsUpdate);
-    return () => window.removeEventListener("pacific_settings_update", handleSettingsUpdate);
+    return () =>
+      window.removeEventListener(
+        "pacific_settings_update",
+        handleSettingsUpdate,
+      );
   }, []);
 
   useClickOutside(langDropdownRef, () => setIsLangOpen(false));
@@ -81,7 +93,11 @@ export default function Navbar() {
   const navLinks = [
     { label: t("nav.explore"), href: "/", hasDropdown: true },
     { label: t("nav.species"), href: "/search", hasDropdown: true },
-    { label: language === "vi" ? "Độ Sâu Biển Đông" : "East Sea Depth", href: "/ocean-depth", hasDropdown: false },
+    {
+      label: language === "vi" ? "Độ Sâu Biển Đông" : "East Sea Depth",
+      href: "/ocean-depth",
+      hasDropdown: false,
+    },
     { label: t("nav.about"), href: "/#about", hasDropdown: true },
   ];
 
@@ -137,7 +153,9 @@ export default function Navbar() {
               onClick={() => setIsLangOpen(!isLangOpen)}
               className="flex items-center gap-2 px-3.5 py-2 text-white/90 hover:text-white bg-white/5 hover:bg-white/10 border border-white/15 rounded-full text-xs font-semibold cursor-pointer transition-all active:scale-95"
             >
-              <span className="text-sm leading-none">{currentLangObj.flag}</span>
+              <span className="text-sm leading-none">
+                {currentLangObj.flag}
+              </span>
               <span>{currentLangObj.label}</span>
               <ChevronDown
                 size={13}
@@ -204,7 +222,9 @@ export default function Navbar() {
                 <ChevronDown
                   size={13}
                   className={`transition-transform duration-200 ${
-                    isUserOpen ? "rotate-180 text-pacific-blue-bright" : "text-white/60"
+                    isUserOpen
+                      ? "rotate-180 text-pacific-blue-bright"
+                      : "text-white/60"
                   }`}
                 />
               </button>
@@ -387,7 +407,8 @@ export default function Navbar() {
           const rawAdminUser = getStoredUser();
           const isActualAdmin =
             rawAdminUser &&
-            (rawAdminUser.role === "admin" || rawAdminUser.role === "super_admin");
+            (rawAdminUser.role === "admin" ||
+              rawAdminUser.role === "super_admin");
           if (!isActualAdmin) return null;
 
           return (

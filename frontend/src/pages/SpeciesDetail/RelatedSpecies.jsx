@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Compass, Gauge, Sparkles } from "lucide-react";
+import { ArrowRight, Compass, Gauge } from "lucide-react";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { useLanguage } from "../../hooks/useLanguage";
 
@@ -10,7 +10,7 @@ export function RelatedSpecies({ currentSpeciesId }) {
 
   // Lấy các loài liên quan khác loài hiện tại
   const related = SEARCH_SPECIES_CATALOG.filter(
-    (s) => s.id !== currentSpeciesId && s.slug !== currentSpeciesId
+    (s) => s.id !== currentSpeciesId && s.slug !== currentSpeciesId,
   ).slice(0, 4);
 
   return (
@@ -19,16 +19,10 @@ export function RelatedSpecies({ currentSpeciesId }) {
       <div className="flex items-center justify-between mb-8">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <Sparkles size={18} className="text-cyan-400" />
             <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
               {t("speciesDetail.relatedTitle") || "Sinh vật tương tự"}
             </h2>
           </div>
-          <p className="text-xs md:text-sm text-slate-400">
-            {isEn
-              ? "Discover other fascinating marine life sharing the East Sea ecosystem"
-              : "Khám phá thêm các sinh vật kỳ thú cùng sinh sống trong hệ sinh thái Biển Đông"}
-          </p>
         </div>
 
         <button
@@ -80,7 +74,8 @@ export function RelatedSpecies({ currentSpeciesId }) {
                 {/* Huy hiệu trạng thái */}
                 {status && (
                   <span className="absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 backdrop-blur-md text-rose-300 border border-rose-500/40">
-                    {status.split("(")[1]?.replace(")", "") || status.substring(0, 2)}
+                    {status.split("(")[1]?.replace(")", "") ||
+                      status.substring(0, 2)}
                   </span>
                 )}
               </div>
@@ -111,7 +106,10 @@ export function RelatedSpecies({ currentSpeciesId }) {
                 {/* Nút khám phá */}
                 <div className="pt-2 flex items-center justify-between text-xs font-semibold text-cyan-400 group-hover:text-cyan-300">
                   <span>{isEn ? "Learn more" : "Khám phá"}</span>
-                  <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight
+                    size={13}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
                 </div>
               </div>
             </div>

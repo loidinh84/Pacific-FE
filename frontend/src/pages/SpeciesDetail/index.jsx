@@ -4,8 +4,10 @@ import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { SpeciesDetailHero } from "./SpeciesDetailHero";
 import { AnatomySection } from "./AnatomySection";
-import { SizeComparisonSection } from "./SizeComparisonSection";
 import { EcosystemNetworkSection } from "./EcosystemNetworkSection";
+import { HabitatAndBehaviorSection } from "./HabitatAndBehaviorSection";
+import { ConservationAndThreatsSection } from "./ConservationAndThreatsSection";
+import { SpeciesFacts } from "./SpeciesFacts";
 import { RelatedSpecies } from "./RelatedSpecies";
 import { SpeciesComments } from "./SpeciesComments";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
@@ -105,6 +107,11 @@ export default function SpeciesDetail() {
           diet: apiData.diet,
           categoryVi: apiData.group?.name || prev?.categoryVi,
           categoryEn: apiData.group?.name || prev?.categoryEn,
+          fullBioHighlightsVi: localSpecies?.fullBioHighlightsVi || prev?.fullBioHighlightsVi,
+          fullBioHighlightsEn: localSpecies?.fullBioHighlightsEn || prev?.fullBioHighlightsEn,
+          bioFactsVi: localSpecies?.bioFactsVi || prev?.bioFactsVi,
+          bioFactsEn: localSpecies?.bioFactsEn || prev?.bioFactsEn,
+          facts: apiData.facts || localSpecies?.facts || [],
         }));
       });
     }
@@ -144,13 +151,19 @@ export default function SpeciesDetail() {
         {/* 3. Mạng lưới sinh thái & Chuỗi thức ăn Biển Đông (Ecosystem Knowledge Graph) */}
         <EcosystemNetworkSection species={species} language={language} />
 
-        {/* 4. Size comparison infographic section */}
-        <SizeComparisonSection species={species} language={language} />
+        {/* 4. Sinh cảnh sống, Tầng nước & Tập tính sinh học Biển Đông */}
+        <HabitatAndBehaviorSection species={species} language={language} />
 
-        {/* 4. Similar species recommendation cards */}
+        {/* 5. Tình trạng bảo tồn Sách Đỏ, Khung pháp lý & Các mối đe dọa */}
+        <ConservationAndThreatsSection species={species} language={language} />
+
+        {/* 6. Những sự thật sinh học kỳ thú ("Bạn có biết?") */}
+        <SpeciesFacts species={species} language={language} />
+
+        {/* 7. Sinh vật tương tự cùng hệ sinh thái Biển Đông */}
         <RelatedSpecies currentSpeciesId={species.id} language={language} />
 
-        {/* 5. Species community opinions and comments */}
+        {/* 8. Đóng góp ý kiến & Thảo luận cộng đồng */}
         <SpeciesComments speciesId={resolvedId || id || species?.id} species={species} />
       </main>
 

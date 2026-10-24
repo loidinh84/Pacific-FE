@@ -125,7 +125,10 @@ export function Interactive3DAnatomyViewer({
 
   // Kiểm tra xem viewer có đang ở chế độ giải phẫu (X-Ray, Bóc tách, Lọc hệ cơ quan, Chọn bộ phận, hoặc Ghim nhãn)
   const isAnatomyActive =
-    isXRay || explodePercent > 2 || activeSystem !== "all" || Boolean(activePart);
+    isXRay ||
+    explodePercent > 2 ||
+    activeSystem !== "all" ||
+    Boolean(activePart);
   const isAnatomyInspectable = isAnatomyActive || showPins;
 
   // Mặt cắt 3D
@@ -663,7 +666,8 @@ export function Interactive3DAnatomyViewer({
   // ── IDEA 1 (Focus/Solo Mode) & IDEA 2 (Organ Systems Filter) & X-Ray Opacities ──
   useEffect(() => {
     const f = explodePercent / 100;
-    const isAnatomyActive = isXRay || f > 0.02 || activeSystem !== "all" || Boolean(activePart);
+    const isAnatomyActive =
+      isXRay || f > 0.02 || activeSystem !== "all" || Boolean(activePart);
 
     // Bật / tắt dòng hạt máu dọc động mạch chủ
     if (bloodSimRef.current?.instMesh) {
@@ -1281,103 +1285,117 @@ export function Interactive3DAnatomyViewer({
         )}
 
         {/* ── Hovered Part Floating Modal (Không biến mất ngay, cho phép bôi đen & copy thủ công) ── */}
-        {isAnatomyInspectable && hoveredPart && hoveredPart.id !== activePart?.id && (
-          <div
-            onPointerEnter={() => {
-              isHoveringModalRef.current = true;
-              if (hoverTimeoutRef.current) {
-                clearTimeout(hoverTimeoutRef.current);
-                hoverTimeoutRef.current = null;
-              }
-            }}
-            onPointerLeave={() => {
-              isHoveringModalRef.current = false;
-              if (hoverTimeoutRef.current)
-                clearTimeout(hoverTimeoutRef.current);
-              hoverTimeoutRef.current = setTimeout(() => {
-                if (!isHoveringModalRef.current) {
-                  setHoveredPart(null);
+        {isAnatomyInspectable &&
+          hoveredPart &&
+          hoveredPart.id !== activePart?.id && (
+            <div
+              onPointerEnter={() => {
+                isHoveringModalRef.current = true;
+                if (hoverTimeoutRef.current) {
+                  clearTimeout(hoverTimeoutRef.current);
+                  hoverTimeoutRef.current = null;
                 }
-                hoverTimeoutRef.current = null;
-              }, 800);
-            }}
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => e.stopPropagation()}
-            style={{ userSelect: "text", WebkitUserSelect: "text" }}
-            className="absolute top-4 left-4 max-w-sm bg-slate-950/95 border border-cyan-400/50 p-4 rounded-2xl backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] pointer-events-auto select-text z-20 transition-all duration-200 ease-out"
-          >
-            {/* Header: Tiêu đề & Nút thao tác copy / đóng */}
-            <div className="flex items-start justify-between gap-3 mb-2 border-b border-white/10 pb-2.5">
-              <div className="flex-1 pr-2">
-                <h4 className="text-sm font-bold text-white select-text cursor-text selection:bg-cyan-500/40 selection:text-white leading-snug">
-                  {language === "vi" ? hoveredPart.nameVi : hoveredPart.nameEn}
-                </h4>
-                {hoveredPart.system && (
-                  <span className="inline-block text-[10px] text-cyan-300 font-medium mt-0.5">
-                    {ORGAN_SYSTEMS.find((s) => s.id === hoveredPart.system)
-                      ? language === "vi"
-                        ? ORGAN_SYSTEMS.find((s) => s.id === hoveredPart.system)
-                            .nameVi
-                        : ORGAN_SYSTEMS.find((s) => s.id === hoveredPart.system)
-                            .nameEn
-                      : ""}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const textToCopy = `${language === "vi" ? hoveredPart.nameVi : hoveredPart.nameEn}\n${language === "vi" ? hoveredPart.descVi : hoveredPart.descEn}`;
-                    navigator.clipboard.writeText(textToCopy);
-                    setCopiedPartId(hoveredPart.id);
-                    setTimeout(() => setCopiedPartId(null), 1500);
-                  }}
-                  title={copiedPartId === hoveredPart.id ? (language === "vi" ? "Đã sao chép!" : "Copied!") : (language === "vi" ? "Sao chép nhanh" : "Copy text")}
-                  className="p-1 rounded-lg hover:bg-white/10 text-cyan-400 hover:text-cyan-200 transition-all cursor-pointer"
-                >
-                  {copiedPartId === hoveredPart.id ? (
-                    <Check size={14} className="text-emerald-400" />
-                  ) : (
-                    <Copy size={14} />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    isHoveringModalRef.current = false;
+              }}
+              onPointerLeave={() => {
+                isHoveringModalRef.current = false;
+                if (hoverTimeoutRef.current)
+                  clearTimeout(hoverTimeoutRef.current);
+                hoverTimeoutRef.current = setTimeout(() => {
+                  if (!isHoveringModalRef.current) {
                     setHoveredPart(null);
+                  }
+                  hoverTimeoutRef.current = null;
+                }, 800);
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              style={{ userSelect: "text", WebkitUserSelect: "text" }}
+              className="absolute top-4 left-4 max-w-sm bg-slate-950/95 border border-cyan-400/50 p-4 rounded-2xl backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] pointer-events-auto select-text z-20 transition-all duration-200 ease-out"
+            >
+              {/* Header: Tiêu đề & Nút thao tác copy / đóng */}
+              <div className="flex items-start justify-between gap-3 mb-2 border-b border-white/10 pb-2.5">
+                <div className="flex-1 pr-2">
+                  <h4 className="text-sm font-bold text-white select-text cursor-text selection:bg-cyan-500/40 selection:text-white leading-snug">
+                    {language === "vi"
+                      ? hoveredPart.nameVi
+                      : hoveredPart.nameEn}
+                  </h4>
+                  {hoveredPart.system && (
+                    <span className="inline-block text-[10px] text-cyan-300 font-medium mt-0.5">
+                      {ORGAN_SYSTEMS.find((s) => s.id === hoveredPart.system)
+                        ? language === "vi"
+                          ? ORGAN_SYSTEMS.find(
+                              (s) => s.id === hoveredPart.system,
+                            ).nameVi
+                          : ORGAN_SYSTEMS.find(
+                              (s) => s.id === hoveredPart.system,
+                            ).nameEn
+                        : ""}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const textToCopy = `${language === "vi" ? hoveredPart.nameVi : hoveredPart.nameEn}\n${language === "vi" ? hoveredPart.descVi : hoveredPart.descEn}`;
+                      navigator.clipboard.writeText(textToCopy);
+                      setCopiedPartId(hoveredPart.id);
+                      setTimeout(() => setCopiedPartId(null), 1500);
+                    }}
+                    title={
+                      copiedPartId === hoveredPart.id
+                        ? language === "vi"
+                          ? "Đã sao chép!"
+                          : "Copied!"
+                        : language === "vi"
+                          ? "Sao chép nhanh"
+                          : "Copy text"
+                    }
+                    className="p-1 rounded-lg hover:bg-white/10 text-cyan-400 hover:text-cyan-200 transition-all cursor-pointer"
+                  >
+                    {copiedPartId === hoveredPart.id ? (
+                      <Check size={14} className="text-emerald-400" />
+                    ) : (
+                      <Copy size={14} />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      isHoveringModalRef.current = false;
+                      setHoveredPart(null);
+                    }}
+                    title={language === "vi" ? "Đóng" : "Close"}
+                    className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer"
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Nội dung mô tả cho phép người dùng bôi đen và copy thủ công bằng chuột */}
+              <p className="text-xs text-slate-200 leading-relaxed select-text cursor-text selection:bg-cyan-500/40 selection:text-white">
+                {language === "vi" ? hoveredPart.descVi : hoveredPart.descEn}
+              </p>
+
+              {/* Footer Xem chi tiết */}
+              <div className="mt-2.5 pt-2 border-t border-white/5 flex items-center justify-end text-[11px]">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelectPartDirectly(hoveredPart);
                   }}
-                  title={language === "vi" ? "Đóng" : "Close"}
-                  className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer"
+                  className="text-[11px] text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2 cursor-pointer"
                 >
-                  <X size={15} />
+                  {language === "vi" ? "Xem chi tiết →" : "View Details →"}
                 </button>
               </div>
             </div>
-
-            {/* Nội dung mô tả cho phép người dùng bôi đen và copy thủ công bằng chuột */}
-            <p className="text-xs text-slate-200 leading-relaxed select-text cursor-text selection:bg-cyan-500/40 selection:text-white">
-              {language === "vi" ? hoveredPart.descVi : hoveredPart.descEn}
-            </p>
-
-            {/* Footer Xem chi tiết */}
-            <div className="mt-2.5 pt-2 border-t border-white/5 flex items-center justify-end text-[11px]">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSelectPartDirectly(hoveredPart);
-                }}
-                className="text-[11px] text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2 cursor-pointer"
-              >
-                {language === "vi" ? "Xem chi tiết →" : "View Details →"}
-              </button>
-            </div>
-          </div>
-        )}
+          )}
       </div>
 
       {/* ── IDEA 1: Active Part Detail Card with Solo Focus Exit ── */}
@@ -1394,9 +1412,7 @@ export function Interactive3DAnatomyViewer({
                 </h3>
                 <span className="text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium flex items-center gap-1">
                   <Crosshair size={11} className="text-cyan-400 animate-spin" />
-                  {language === "vi"
-                    ? "Đang xem chi tiết"
-                    : "Viewing Details"}
+                  {language === "vi" ? "Đang xem chi tiết" : "Viewing Details"}
                 </span>
                 {species?.nameVi && (
                   <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-white/10 font-medium">

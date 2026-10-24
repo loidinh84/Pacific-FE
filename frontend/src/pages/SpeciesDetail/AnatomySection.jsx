@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
-  Zap,
   Heart,
   Brain,
   Activity,
@@ -432,17 +431,9 @@ export function AnatomySection({ species }) {
       <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 font-sans">
         {/* Top Header */}
         <div className="mb-6">
-          <div className="flex items-center gap-2.5 mb-1.5">
-            <Zap size={22} className="text-cyan-400" />
-            <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
-              {t("speciesDetail.anatomyTitle") || "Phân tích và giải phẫu"}
-            </h2>
-          </div>
-          <p className="text-xs md:text-sm text-slate-400">
-            {language === "en"
-              ? "Interactive 3D biological anatomical model and physiological analysis"
-              : "Mô hình giải phẫu 3D tương tác và phân tích sinh lý học biển sâu"}
-          </p>
+          <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
+            {t("speciesDetail.anatomyTitle") || "Phân tích và giải phẫu"}
+          </h2>
         </div>
 
         {/* 3D INTERACTIVE ANATOMY VIEWER */}
@@ -468,8 +459,7 @@ export function AnatomySection({ species }) {
       {/* ── Tiêu đề & Điều hướng mô hình 3D mẫu ── */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5 mb-1 flex-wrap">
-            <Zap size={22} className="text-cyan-400" />
+          <div className="flex items-center gap-2.5 flex-wrap">
             <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
               {t("speciesDetail.anatomyTitle") || "Cấu trúc giải phẫu & sinh lý học"}
             </h2>
@@ -477,11 +467,6 @@ export function AnatomySection({ species }) {
               {anatomyProfile.groupLabel}
             </span>
           </div>
-          <p className="text-xs md:text-sm text-slate-400">
-            {language === "en"
-              ? `Key physiological traits and anatomical adaptations of ${species.nameEn || species.nameVi}`
-              : `Khám phá các cơ chế sinh học và hệ cơ quan chuyên biệt của ${species.nameVi || "loài"}`}
-          </p>
         </div>
 
         {/* Nút nhỏ gọn dẫn tới mô hình 3D mẫu */}
@@ -500,7 +485,7 @@ export function AnatomySection({ species }) {
         {anatomyProfile.metrics.map((m, idx) => (
           <div
             key={idx}
-            className="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 backdrop-blur-md hover:border-cyan-500/30 transition-all"
+            className="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 backdrop-blur-md"
           >
             <p className="text-xs text-slate-400">
               {m.label}
@@ -554,7 +539,7 @@ export function AnatomySection({ species }) {
           {currentSystem.details.map((detail, idx) => (
             <div
               key={idx}
-              className="p-4 md:p-5 rounded-xl bg-slate-900/50 border border-white/10 hover:border-cyan-500/30 transition-all backdrop-blur-md flex flex-col"
+              className="p-4 md:p-5 rounded-xl bg-slate-900/50 border border-white/10 backdrop-blur-md flex flex-col"
             >
               <div className="flex items-center gap-2.5 mb-2">
                 <span className="w-5 h-5 rounded-md bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 flex items-center justify-center text-xs font-mono font-bold shrink-0">
