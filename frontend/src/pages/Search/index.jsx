@@ -6,7 +6,6 @@ import { SearchFilterBar } from "./SearchFilterBar";
 import { FeaturedSpeciesSlider } from "./FeaturedSpeciesSlider";
 import { SearchGridList } from "./SearchGridList";
 import { OceanFunFacts } from "./OceanFunFacts";
-import { SemanticKnowledgeSection } from "./SemanticKnowledgeSection";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { useLanguage } from "../../hooks/useLanguage";
 import { searchSemantic } from "../../services/ecosystemApi";
@@ -55,10 +54,89 @@ export default function Search() {
     });
   }, [searchTerm, selectedCategory, sortBy, language]);
 
+  // Khi có kết quả tìm kiếm ngữ nghĩa, chuyển hóa trực tiếp vào danh sách sinh vật chính
+  const displayedSpecies = useMemo(() => {
+    if (
+      semanticResults &&
+      semanticResults.data &&
+      semanticResults.data.length > 0
+    ) {
+      const statusMap = {
+        CR: { vi: "Cực kỳ nguy cấp", en: "Critically Endangered", type: "danger" },
+        EN: { vi: "Nguy cấp", en: "Endangered", type: "danger" },
+        VU: { vi: "Sắp nguy cấp", en: "Vulnerable", type: "warning" },
+        NT: { vi: "Gần bị đe dọa", en: "Near Threatened", type: "warning" },
+        LC: { vi: "Ít quan tâm", en: "Least Concern", type: "safe" },
+        DD: { vi: "Thiếu dữ liệu", en: "Data Deficient", type: "safe" },
+        NE: { vi: "Chưa đánh giá", en: "Not Evaluated", type: "safe" },
+      };
+
+      return semanticResults.data.map((item) => {
+        // Đối chiếu với catalog bằng ID, slug, tên khoa học hoặc tên tiếng Việt (khớp mờ)
+        const itemClean = (item.commonName || "").toLowerCase().trim();
+        const sciClean = (item.scientificName || "").toLowerCase().trim();
+
+        const matchedCatalog = SEARCH_SPECIES_CATALOG.find((c) => {
+          if (c.id === item.id || c.slug === item.slug) return true;
+          const cSci = (c.sciName || "").toLowerCase();
+          if (sciClean && cSci && (cSci.includes(sciClean) || sciClean.includes(cSci))) return true;
+          const cName = (c.nameVi || "").toLowerCase();
+          if (itemClean && cName && (cName.includes(itemClean) || itemClean.includes(cName))) return true;
+          return false;
+        });
+
+        const statusInfo = statusMap[item.redList] || {
+          vi: matchedCatalog?.statusVi || "Ít quan tâm",
+          en: matchedCatalog?.statusEn || "Least Concern",
+          type: matchedCatalog?.statusType || "safe",
+        };
+
+        const categoryVi =
+          matchedCatalog?.categoryVi ||
+          item.groupName?.replace(/\(.*?\)/g, "").trim() ||
+          "Cá biển";
+
+        const categoryEn =
+          matchedCatalog?.categoryEn ||
+          categoryVi;
+
+        const realDescVi =
+          matchedCatalog?.descVi ||
+          item.description ||
+          (item.diet ? `Tập tính ăn: ${item.diet}.` : "") ||
+          `Phân bố tự nhiên tại vùng biển ${item.zone || "Biển Đông"}.`;
+
+        const realDescEn =
+          matchedCatalog?.descEn ||
+          item.description ||
+          `Naturally distributed in ${item.zone || "East Sea"}.`;
+
+        return {
+          id: matchedCatalog?.id || item.id,
+          slug: item.slug || matchedCatalog?.slug || item.id,
+          nameVi: matchedCatalog?.nameVi || item.commonName,
+          nameEn: matchedCatalog?.nameEn || item.commonName,
+          sciName: matchedCatalog?.sciName || item.scientificName,
+          categoryVi,
+          categoryEn,
+          statusVi: statusInfo.vi,
+          statusEn: statusInfo.en,
+          statusType: statusInfo.type,
+          descVi: realDescVi,
+          descEn: realDescEn,
+          image: matchedCatalog?.image || item.image,
+          depth: matchedCatalog?.depth || item.depth || "0 - 200m",
+        };
+      });
+    }
+    return filteredSpecies;
+  }, [semanticResults, filteredSpecies]);
+
   const executeSemanticSearch = async (queryText) => {
     const q = (queryText || searchTerm || "").trim();
-    if (!q || q.length < 3) {
+    if (!q || q.length < 2) {
       setSemanticResults(null);
+      setSemanticQuery("");
       return;
     }
 
@@ -70,7 +148,7 @@ export default function Search() {
         setSemanticResults(res);
         setTimeout(() => {
           document
-            .getElementById("semantic-results")
+            .getElementById("search-results")
             ?.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 100);
       } else {
@@ -93,14 +171,16 @@ export default function Search() {
   const handleSearchTermChange = (val) => {
     setSearchTerm(val);
 
-    if (val.length < searchTerm.length && val.length < 3) {
+    if (val.length < searchTerm.length && val.length < 2) {
       setSemanticResults(null);
-      setTimeout(() => {
-        document
-          .getElementById("search-hero")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 50);
+      setSemanticQuery("");
     }
+  };
+
+  const handleClearSemantic = () => {
+    setSemanticResults(null);
+    setSemanticQuery("");
+    setSearchTerm("");
   };
 
   return (
@@ -118,15 +198,6 @@ export default function Search() {
           onSearchSubmit={handleSearchSubmit}
         />
 
-        {/* ── KẾT QUẢ PHÂN GIẢI TRI THỨC NGỮ NGHĨA (SEMANTIC KNOWLEDGE GRAPH RESULTS) ── */}
-        <SemanticKnowledgeSection
-          loading={semanticLoading}
-          data={semanticResults?.data}
-          detectedIntent={semanticResults?.detectedIntent}
-          query={semanticQuery}
-          onClear={() => setSemanticResults(null)}
-        />
-
         <SearchFilterBar
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
@@ -136,9 +207,13 @@ export default function Search() {
 
         <FeaturedSpeciesSlider />
 
+        {/* ── DANH SÁCH SINH VẬT ĐÃ HỢP NHẤT TÌM KIẾM NGỮ NGHĨA ── */}
         <SearchGridList
-          key={`${selectedCategory}|${sortBy}`}
-          speciesList={filteredSpecies}
+          key={`${selectedCategory}|${sortBy}|${semanticQuery}`}
+          speciesList={displayedSpecies}
+          semanticQuery={semanticQuery}
+          onClearSemantic={handleClearSemantic}
+          loading={semanticLoading}
         />
 
         <OceanFunFacts />

@@ -8,9 +8,14 @@ import {
 } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { Favorite, Favorited, Anchor } from "../../assets/Icons";
-import { NoFound } from "../../assets/Images";
+import { NoFound, FishHidden } from "../../assets/Images";
 
-export function SearchGridList({ speciesList }) {
+export function SearchGridList({
+  speciesList,
+  semanticQuery,
+  onClearSemantic,
+  loading = false,
+}) {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,11 +52,42 @@ export function SearchGridList({ speciesList }) {
 
   return (
     <div id="search-results" className="max-w-6xl mx-auto px-4 mb-20 scroll-mt-4">
-      <h2 className="text-xl md:text-2xl font-black text-white font-heading mb-6">
-        {t("searchPage.mainCatalogTitle")}
-      </h2>
+      {semanticQuery ? (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-white/10">
+          <div>
+            <h2 className="text-xl md:text-2xl font-black text-white font-heading">
+              Kết quả cho:{" "}
+              <span className="text-cyan-300 italic font-medium">
+                "{semanticQuery}"
+              </span>
+              <span className="text-slate-400 text-sm font-normal ml-2">
+                ({speciesList.length} loài)
+              </span>
+            </h2>
+          </div>
+          {onClearSemantic && (
+            <button
+              onClick={onClearSemantic}
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 hover:text-white text-xs font-medium transition-all self-start sm:self-auto cursor-pointer"
+            >
+              Xem tất cả loài
+            </button>
+          )}
+        </div>
+      ) : (
+        <h2 className="text-xl md:text-2xl font-black text-white font-heading mb-6">
+          {t("searchPage.mainCatalogTitle")}
+        </h2>
+      )}
 
-      {currentItems.length === 0 ? (
+      {loading ? (
+        <div className="py-16 flex flex-col items-center justify-center text-center">
+          <div className="w-10 h-10 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin mb-3" />
+          <p className="text-sm text-cyan-200">
+            Đang tìm kiếm dữ liệu sinh thái Biển Đông...
+          </p>
+        </div>
+      ) : currentItems.length === 0 ? (
         <div className="text-center py-12 flex flex-col items-center gap-4">
           <img
             src={NoFound}
@@ -104,8 +140,13 @@ export function SearchGridList({ speciesList }) {
                     <div className="w-full h-36 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-white/[0.03]">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(56,189,248,0.07)_0%,transparent_70%)]" />
                       <img
-                        src={s.image}
+                        src={s.image || FishHidden}
                         alt={name}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = FishHidden;
+                        }}
                         className="w-full h-full object-contain drop-shadow-[0_8px_18px_rgba(0,0,0,0.55)] group-hover:scale-105 transition-transform duration-400 relative z-10"
                       />
                     </div>
