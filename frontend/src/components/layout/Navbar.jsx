@@ -91,7 +91,7 @@ export default function Navbar() {
   useClickOutside(userDropdownRef, () => setIsUserOpen(false));
 
   const navLinks = [
-    { label: t("nav.explore"), href: "/", hasDropdown: true },
+    { label: t("nav.news"), href: "/news", hasDropdown: false },
     { label: t("nav.species"), href: "/search", hasDropdown: true },
     {
       label: language === "vi" ? "Độ Sâu Biển Đông" : "East Sea Depth",

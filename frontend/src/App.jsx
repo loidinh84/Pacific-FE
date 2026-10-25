@@ -8,6 +8,8 @@ import SpeciesDetail from "./pages/SpeciesDetail";
 import OceanDepth from "./pages/OceanDepth";
 import SpeciesView3D from "./pages/SpeciesView3D";
 import KnowledgeGraph from "./pages/KnowledgeGraph";
+import News from "./pages/News";
+import NewsDetail from "./pages/NewsDetail";
 import { AdminRoute, ClientRoute, GuestRoute, UserProtectedRoute } from "./components/ProtectedRoute";
 import ProfileLayout from "./pages/Profile";
 
@@ -79,6 +81,24 @@ function App() {
             </ClientRoute>
           }
         />
+        <Route
+          path="/news"
+          element={
+            <ClientRoute>
+              <News />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/news/:slug"
+          element={
+            <ClientRoute>
+              <NewsDetail />
+            </ClientRoute>
+          }
+        />
+        <Route path="/pages/news" element={<Navigate to="/news" replace />} />
+        <Route path="/pages/News" element={<Navigate to="/news" replace />} />
 
         {/* Auth Routes (Redirect to / or /admin/species if already authenticated) */}
         <Route
