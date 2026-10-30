@@ -438,56 +438,7 @@ export default function OceanDepth() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-<<<<<<< HEAD
   // ── Sinh vật biển: Thả tự do trực tiếp trong nước theo phong cách Neal.fun ───
-=======
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            entry.target.classList.remove("hidden");
-          }
-        });
-      },
-      { rootMargin: "-50px 0px -50px 0px" }
-    );
-    const nodes = document.querySelectorAll(".od-node");
-    nodes.forEach((n) => observer.observe(n));
-    return () => observer.disconnect();
-  }, []);
-
-  // Cột mốc cố định bên phải
-  const renderLandmarks = () => {
-    return DEPTH_LANDMARKS.map((lm) => {
-      // Bắt đầu vị trí sau phần hero
-      const top = window.innerHeight + lm.depth * DEPTH_SCALE;
-      // Phân bố trong dải 68%-89% theo hàm seed
-      const left = 68 + getSeededRandom(lm.labelVi) * 21;
-      const label = loc(lm.labelVi, lm.labelEn);
-      const desc  = loc(lm.descVi,  lm.descEn);
-
-      return (
-        <div
-          key={`lm-${lm.depth}`}
-          className="od-node od-landmark-node hidden"
-          style={{ top: `${top}px`, left: `${left}%`, "--lm-color": lm.color }}
-        >
-          <div className="od-landmark-connector" />
-          <div className="od-landmark-header">
-            <span className="od-landmark-icon"><lm.icon /></span>
-            <span className="od-landmark-title">{label}</span>
-          </div>
-          <p className="od-landmark-desc">{desc}</p>
-          <div className="od-landmark-depth-badge">{lm.depth.toLocaleString()}m</div>
-        </div>
-      );
-    });
-  };
-
-  // Vị trí sinh vật ở cột giữa
->>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
   const renderCreatures = () => {
     // Thuật toán phân bổ tự nhiên 4 làn rộng khắp toàn màn hình (16% → 84%):
     // Làn 0: Trái (16% - 32%)
@@ -498,7 +449,6 @@ export default function OceanDepth() {
     let lastGlobalTop = -9999;
 
     return CREATURES_BY_DEPTH.map((c) => {
-<<<<<<< HEAD
       const left = c.left || 40;
       const lane = left < 33 ? 0 : left < 50 ? 1 : left < 67 ? 2 : 3;
 
@@ -510,14 +460,6 @@ export default function OceanDepth() {
       const top = Math.max(naturalTop, lastTopInLane[lane] + 260, lastGlobalTop + 110);
       lastTopInLane[lane] = top;
       lastGlobalTop = top;
-
-=======
-      const avgDepth = (c.depthMin + c.depthMax) / 2;
-      // Bắt đầu vị trí sau phần hero
-      const top = window.innerHeight + avgDepth * DEPTH_SCALE;
-      // Phân bố trong dải 18%-62% theo hàm seed
-      const left = 18 + getSeededRandom(c.id) * 44;
->>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
       const name = loc(c.nameVi, c.nameEn);
       // Hiển thị tên tự nhiên / Title Case
       const displayName = language === "en" ? (c.nameEn || name) : (c.nameVi || name);

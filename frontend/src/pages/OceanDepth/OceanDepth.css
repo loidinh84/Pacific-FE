@@ -325,11 +325,7 @@ body {
   box-shadow: 0 0 3px rgba(56, 189, 248, 0.2);
 }
 
-<<<<<<< HEAD
 /* Vạch chia chính (Major ticks) */
-=======
-/* Vạch chia chính */
->>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
 .od-ruler-major-ticks {
   position: absolute;
   left: 24px;
@@ -406,11 +402,7 @@ body {
   text-shadow: 0 0 8px rgba(251, 113, 133, 0.5);
 }
 
-<<<<<<< HEAD
 /* ── Live Cursor ── */
-=======
-/* Con trỏ độ sâu */
->>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
 .od-ruler-cursor {
   position: absolute;
   left: 13px;
@@ -949,23 +941,8 @@ body {
   will-change: transform;
 }
 
-<<<<<<< HEAD
 /* ── Sinh vật biển tự do (Neal.fun style — không dùng khung bảng) ── */
 .od-creature-item {
-=======
-.od-node.hidden {
-  opacity: 0;
-  transform: translate(-50%, -38%);
-}
-
-.od-node.visible {
-  opacity: 1;
-  transform: translate(-50%, -50%);
-}
-
-/* Sinh vật cột giữa */
-.od-creature-node {
->>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1055,72 +1032,7 @@ body {
   100% { transform: translateY(5px) rotate(-0.8deg); }
 }
 
-<<<<<<< HEAD
 
-=======
-/* Cột mốc */
-.od-landmark-node {
-  position: relative;
-  background: rgba(10, 18, 35, 0.88);
-  backdrop-filter: blur(10px);
-  border-left: 3px solid var(--lm-color, #38bdf8);
-  border-radius: 0 10px 10px 0;
-  padding: 12px 16px 12px 14px;
-  max-width: 280px;
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-/* Đường nối cột mốc */
-.od-landmark-connector {
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 1px;
-  width: 20px;
-  background: linear-gradient(to left, var(--lm-color, #38bdf8), transparent);
-  opacity: 0.5;
-}
-
-.od-landmark-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.od-landmark-icon { font-size: 1.1rem; }
-
-.od-landmark-title {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.3;
-}
-
-.od-landmark-desc {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.55;
-  margin: 0;
-}
-
-.od-landmark-depth-badge {
-  align-self: flex-start;
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--lm-color, #38bdf8);
-  background: color-mix(in srgb, var(--lm-color, #38bdf8) 12%, transparent);
-  padding: 2px 8px;
-  border-radius: 4px;
-  margin-top: 3px;
-  border: 1px solid color-mix(in srgb, var(--lm-color, #38bdf8) 25%, transparent);
-}
->>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
