@@ -113,7 +113,7 @@ export default function HeroSection() {
         <div className="hidden lg:block lg:col-span-5 pointer-events-none" />
       </div>
 
-      {/* Lớp gradient chuyển tiếp đại dương nối liền mượt mà giữa Hero và AboutSection (xóa bỏ hoàn toàn vết cắt ngang) */}
+      {/* Gradient chuyển tiếp giữa hero và nội dung */}
       <div className="absolute -bottom-1 left-0 right-0 h-64 bg-gradient-to-t from-pacific-figma-dark via-pacific-figma-dark/85 via-pacific-figma-dark/40 to-transparent pointer-events-none z-10" />
     </section>
   );

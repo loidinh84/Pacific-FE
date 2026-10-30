@@ -31,7 +31,7 @@ export default function SpeciesGroupsManagement() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Pagination state (Client-side / Server-side)
+  // Trạng thái phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
@@ -208,7 +208,7 @@ export default function SpeciesGroupsManagement() {
         </div>
       )}
 
-      {/* ── 1. HEADER SECTION (TITLE + SEARCH + BUTTONS) ── */}
+      {/* Header danh sách nhóm */}
       <div className="space-y-4">
         {/* Title & Top Right Actions */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -270,7 +270,7 @@ export default function SpeciesGroupsManagement() {
         </div>
       </div>
 
-      {/* ── 2. MAIN CONTAINER (2-COLUMN GRID) ── */}
+      {/* Danh sách nhóm sinh vật */}
       <div
         className={`rounded-2xl border p-5 sm:p-7 shadow-xl space-y-6 transition-all ${
           isDark

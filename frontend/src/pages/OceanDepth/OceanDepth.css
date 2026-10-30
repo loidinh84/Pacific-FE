@@ -32,7 +32,7 @@ body {
   transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ── 1. Tia nắng khúc xạ mặt nước (Sun Shafts / God Rays) ── */
+/* Tia nắng khúc xạ mặt nước */
 .od-sun-rays {
   position: absolute;
   top: -25%;
@@ -62,7 +62,7 @@ body {
   100% { transform: rotate(-2deg) scale(1.02); opacity: 0.9; }
 }
 
-/* ── 2. Gợn sóng phản quang tầng nông (Water Caustics) ── */
+/* Gợn sóng phản quang tầng nông */
 .od-water-caustics {
   position: absolute;
   top: 0;
@@ -87,7 +87,7 @@ body {
   100% { transform: scale(0.95) translateY(6px); filter: blur(20px); opacity: 0.9; }
 }
 
-/* ── 3. Sương mù quang học đại dương (Underwater Depth Fog) ── */
+/* Sương mù đại dương */
 .od-water-depth-fog {
   position: absolute;
   inset: 0;
@@ -96,7 +96,7 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* ── 4. Bóng tối tự nhiên tăng dần (Physical Darkness Attenuation) ── */
+/* Hiệu ứng bóng tối theo độ sâu */
 .od-depth-darkness {
   position: absolute;
   inset: 0;
@@ -105,7 +105,7 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* ── 5. Đèn pha tàu thám hiểm ROV (Subsea Expedition Spotlight) ── */
+/* Đèn pha tàu thám hiểm */
 .od-subsea-spotlight {
   position: absolute;
   inset: 0;
@@ -126,7 +126,7 @@ body {
   50% { transform: scale(1.05) translate(-15px, 12px); }
 }
 
-/* ── 6. Hạt lơ lửng: Bọt khí, Tuyết biển, Lân tinh phát quang ── */
+/* Hạt lơ lửng */
 .od-particles {
   position: fixed;
   inset: 0;
@@ -140,7 +140,7 @@ body {
   border-radius: 50%;
 }
 
-/* Bọt khí nước biển (nổi lên) */
+/* Bọt khí nước biển */
 .od-particle.bubble {
   background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.7) 0%, rgba(56, 189, 248, 0.35) 60%, rgba(14, 165, 233, 0.6) 100%);
   box-shadow: 0 0 6px rgba(56, 189, 248, 0.4), inset 0 0 4px rgba(255, 255, 255, 0.6);
@@ -148,7 +148,7 @@ body {
   opacity: 0.75;
 }
 
-/* Tuyết biển hữu cơ (chìm xuống nhẹ nhàng) */
+/* Tuyết biển */
 .od-particle.snow {
   background: rgba(224, 242, 254, 0.55);
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
@@ -325,7 +325,11 @@ body {
   box-shadow: 0 0 3px rgba(56, 189, 248, 0.2);
 }
 
+<<<<<<< HEAD
 /* Vạch chia chính (Major ticks) */
+=======
+/* Vạch chia chính */
+>>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
 .od-ruler-major-ticks {
   position: absolute;
   left: 24px;
@@ -402,7 +406,11 @@ body {
   text-shadow: 0 0 8px rgba(251, 113, 133, 0.5);
 }
 
+<<<<<<< HEAD
 /* ── Live Cursor ── */
+=======
+/* Con trỏ độ sâu */
+>>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
 .od-ruler-cursor {
   position: absolute;
   left: 13px;
@@ -573,7 +581,7 @@ body {
   transition: none;
 }
 
-/* ── Thanh tiêu đề (drag handle) ── */
+/* Thanh tiêu đề */
 .od-hud-titlebar {
   display: flex;
   align-items: center;
@@ -941,8 +949,23 @@ body {
   will-change: transform;
 }
 
+<<<<<<< HEAD
 /* ── Sinh vật biển tự do (Neal.fun style — không dùng khung bảng) ── */
 .od-creature-item {
+=======
+.od-node.hidden {
+  opacity: 0;
+  transform: translate(-50%, -38%);
+}
+
+.od-node.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+/* Sinh vật cột giữa */
+.od-creature-node {
+>>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1032,7 +1055,72 @@ body {
   100% { transform: translateY(5px) rotate(-0.8deg); }
 }
 
+<<<<<<< HEAD
 
+=======
+/* Cột mốc */
+.od-landmark-node {
+  position: relative;
+  background: rgba(10, 18, 35, 0.88);
+  backdrop-filter: blur(10px);
+  border-left: 3px solid var(--lm-color, #38bdf8);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px 12px 14px;
+  max-width: 280px;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Đường nối cột mốc */
+.od-landmark-connector {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1px;
+  width: 20px;
+  background: linear-gradient(to left, var(--lm-color, #38bdf8), transparent);
+  opacity: 0.5;
+}
+
+.od-landmark-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.od-landmark-icon { font-size: 1.1rem; }
+
+.od-landmark-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.od-landmark-desc {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.od-landmark-depth-badge {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--lm-color, #38bdf8);
+  background: color-mix(in srgb, var(--lm-color, #38bdf8) 12%, transparent);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 3px;
+  border: 1px solid color-mix(in srgb, var(--lm-color, #38bdf8) 25%, transparent);
+}
+>>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {

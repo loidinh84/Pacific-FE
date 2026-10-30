@@ -15,7 +15,7 @@ const getAuthHeaders = () => {
 };
 
 /**
- * 1. Lấy danh sách tất cả các nhóm sinh vật (kèm số lượng sinh vật)
+ * Lấy danh sách các nhóm sinh vật
  */
 export const fetchAdminSpeciesGroups = async (params = {}) => {
   const res = await axios.get(API_BASE_URL, {
@@ -42,7 +42,7 @@ export const updateAdminSpeciesGroup = async (id, groupData) => {
 };
 
 /**
- * 4. Xóa nhóm sinh vật (Tự động gỡ liên kết sinh vật)
+ * Xóa nhóm sinh vật
  */
 export const deleteAdminSpeciesGroup = async (id) => {
   const res = await axios.delete(`${API_BASE_URL}/${id}`, getAuthHeaders());
@@ -84,7 +84,7 @@ export const fetchGroupSpecies = async (groupId, params = { page: 1, limit: 12 }
 };
 
 /**
- * 8. Lấy tất cả sinh vật trong hệ thống (dùng cho modal Gán sinh vật)
+ * Lấy tất cả sinh vật trong hệ thống
  */
 export const fetchAllSpeciesForAssign = async (params = { page: 1, limit: 100 }) => {
   const res = await axios.get(SPECIES_BASE_URL, {

@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 
 /**
  * Custom Hook for copying text to clipboard with feedback state.
- * @param {number} resetDelay - Time in ms before copiedId resets to null (default 2000ms)
+ * @param {number} resetDelay - Thời gian đặt lại trạng thái sao chép
  * @returns {object} { copiedId, copy }
  */
 export function useCopyToClipboard(resetDelay = 2000) {

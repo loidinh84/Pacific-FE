@@ -86,7 +86,7 @@ export default function PacificHotspotMap({ asBackground = false }) {
     if (!asBackground) return;
 
     const handleScroll = () => {
-      // Mờ dần mượt mà các điểm hotspot khi bắt đầu cuộn khỏi đầu trang Hero (từ 0px đến 120px)
+      // Làm mờ hotspot khi cuộn qua hero
       const currentScroll = window.scrollY;
       const opacity = Math.max(0, Math.min(1, 1 - currentScroll / 120));
       setScrollOpacity(opacity);
@@ -166,7 +166,7 @@ export default function PacificHotspotMap({ asBackground = false }) {
     );
   };
 
-  // ─── CHẾ ĐỘ 1: LÀM NỀN CHO CẢ TRANG LANDING (Full-page background ban đầu) ───
+  // Nền trang chủ
   if (asBackground) {
     return (
       <>
@@ -188,7 +188,7 @@ export default function PacificHotspotMap({ asBackground = false }) {
           </div>
         </div>
 
-        {/* LỚP 2: CÁC NÚT HOTSPOT TƯƠNG TÁC (TỰ ĐỘNG MỜ MƯỢT MÀ KHI CUỘN QUA HERO) */}
+        {/* Các điểm tương tác */}
         <div className="fixed inset-0 z-10 overflow-hidden pointer-events-none select-none">
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative aspect-[1200/896] min-w-full min-h-full flex-shrink-0">

@@ -52,7 +52,7 @@ export default function SystemSettings() {
   const { toasts, showToast, removeToast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Đọc tab ban đầu từ URL (?tab=...) hoặc localStorage, mặc định là "general"
+  // Đọc tab ban đầu từ URL hoặc localStorage
   const getInitialTab = () => {
     const urlTab = searchParams.get("tab");
     if (urlTab && VALID_TABS.includes(urlTab)) return urlTab;
@@ -65,7 +65,7 @@ export default function SystemSettings() {
 
   const [activeTab, setActiveTab] = useState(getInitialTab);
 
-  // Đồng bộ tab khi người dùng tải lại trang (F5), Back/Forward lịch sử duyệt
+  // Đồng bộ tab theo lịch sử duyệt trình duyệt
   useEffect(() => {
     const urlTab = searchParams.get("tab");
     if (urlTab && VALID_TABS.includes(urlTab)) {

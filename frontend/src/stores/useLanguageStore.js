@@ -35,7 +35,7 @@ export const useLanguageStore = create((set, get) => ({
     if (!pathOrText) return fallback || "";
     const { language, dynamicTranslations, translateDynamic } = get();
 
-    // 1. Try finding in fixed dictionary by path key (e.g. "nav.explore")
+    // Tìm kiếm theo khóa trong từ điển ngôn ngữ
     const keys = pathOrText.split(".");
     let current = translations[language];
 

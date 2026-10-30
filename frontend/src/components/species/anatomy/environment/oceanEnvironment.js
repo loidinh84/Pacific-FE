@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 /**
- * Mô phỏng Phù du / Bụi biển lơ lửng trong nước biển sâu (Marine Snow)
+ * Mô phỏng bụi biển lơ lửng trong nước biển sâu
  * Rất nhẹ nhàng, hữu cơ, không làm phân tâm mắt người xem
  */
 export function createMarineSnow() {
@@ -33,7 +33,7 @@ export function createMarineSnow() {
 }
 
 /**
- * Tạo 2 chú cá nhỏ hoa tiêu bơi lượn uốn lượn ở nền xa (Pilot Fish)
+ * Hiệu ứng cá hoa tiêu bơi lượn nền xa
  */
 export function createPilotFishSchool() {
   const schoolGroup = new THREE.Group();
@@ -82,7 +82,7 @@ export function createPilotFishSchool() {
     eyeR.position.set(-0.1, 0.015, -0.024);
     singleFish.add(eyeR);
 
-    // 3. Vây lưng (Dorsal Fin)
+    // Vây lưng
     const dFinGeo = new THREE.BufferGeometry();
     const dVertices = new Float32Array([
       0.03, 0.045, 0,
@@ -94,7 +94,7 @@ export function createPilotFishSchool() {
     const dFin = new THREE.Mesh(dFinGeo, finMat);
     singleFish.add(dFin);
 
-    // 4. Vây đuôi vẫy sóng sin độc lập (Caudal Tail Fin)
+    // Vây đuôi
     const tailGroup = new THREE.Group();
     tailGroup.position.set(0.13, 0, 0);
 

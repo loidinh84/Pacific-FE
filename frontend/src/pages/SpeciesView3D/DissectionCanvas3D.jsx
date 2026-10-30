@@ -200,7 +200,7 @@ export function DissectionScene3D({
           <RealisticSharkModel xrayMode={xrayMode} />
         </Suspense>
 
-        {/* Clean Hotspot Pins (Labels display ONLY on Hover/Click) */}
+        {/* Điểm đánh dấu bộ phận */}
         {filteredSpots.map((spot) => (
           <SleekHotspotPin
             key={spot.id}

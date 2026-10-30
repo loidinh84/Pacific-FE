@@ -183,7 +183,7 @@ export default function SpeciesDetailModal({
           })}
         </div>
 
-        {/* ── MODAL BODY (SCROLLABLE) ── */}
+        {/* Nội dung modal */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
           {/* TAB 1: THÔNG TIN SINH VẬT */}
           {activeTab === "info" && (

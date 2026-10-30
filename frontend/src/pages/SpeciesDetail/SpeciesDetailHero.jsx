@@ -74,7 +74,7 @@ export function SpeciesDetailHero({ species }) {
       ? species.gallery
       : [species.image].filter(Boolean);
 
-  // Lắng nghe phím bấm khi mở Lightbox (Esc: đóng, Mũi tên trái/phải: chuyển ảnh)
+  // Lắng nghe phím tắt điều hướng lightbox
   useEffect(() => {
     if (!isLightboxOpen) return;
 
@@ -351,7 +351,7 @@ export function SpeciesDetailHero({ species }) {
   const redListCode = species.vietnamRedListStatus || species.redList || "VU";
   const redListMeta = RED_LIST_BADGES[redListCode] || RED_LIST_BADGES.VU;
 
-  // Lọc phân vùng chi tiết: Nếu là "Biển Đông" chung chung hay chứa Thái Bình Dương thì ẩn, chỉ hiển thị nếu là phân vùng/khu bảo tồn cụ thể (Hoàng Sa, Trường Sa, Côn Đảo...)
+  // Lọc phân vùng chi tiết
   const specificZone = useMemo(() => {
     if (!species?.eastSeaZone) return null;
     const raw = String(species.eastSeaZone).trim();
@@ -470,7 +470,7 @@ export function SpeciesDetailHero({ species }) {
             </span>
           </div>
 
-          {/* TIÊU ĐỀ CẤP 1 (H1) ĐƯỢC GIẢM KÍCH CỠ CÂN ĐỐI, THANH THOÁT */}
+          {/* Tiêu đề chính */}
           <div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white font-heading tracking-tight leading-tight">
               {speciesName}
@@ -488,7 +488,7 @@ export function SpeciesDetailHero({ species }) {
           </p>
         </div>
 
-        {/* ── ACTION BAR (CTA BUTTONS): XEM 3D, ÂM THANH, YÊU THÍCH, CHIA SẺ ── */}
+        {/* Thanh thao tác */}
         <div className="flex flex-wrap items-center gap-2.5 shrink-0 pt-2 lg:pt-0">
           {/* Nút 1: Xem dưới dạng 3D */}
           <button
@@ -586,7 +586,7 @@ export function SpeciesDetailHero({ species }) {
         </div>
       </div>
 
-      {/* ── 3. QUICK SPECS BAR (ĐƯỢC ĐƯA LÊN ĐẦU TRANG, NGAY DƯỚI HEADER) ── */}
+      {/* Thông số nhanh */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6">
         {/* Kích thước */}
         <div className="bg-[#0b172a]/90 border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
@@ -649,9 +649,9 @@ export function SpeciesDetailHero({ species }) {
         </div>
       </div>
 
-      {/* ── 4. 3D COVERFLOW GALLERY SHOWCASE (NỀN TRONG SUỐT, KHÔNG KHUNG BAO) ── */}
+      {/* Bộ sưu tập hình ảnh */}
       <div className="relative py-4 my-2 flex items-center justify-center min-h-[340px] md:min-h-[440px] overflow-hidden bg-transparent">
-        {/* Navigation Arrows (Thủy tinh mờ tinh tế, không bị quá đậm) */}
+        {/* Nút chuyển ảnh */}
         {images.length > 1 && (
           <>
             <button
@@ -752,7 +752,7 @@ export function SpeciesDetailHero({ species }) {
         )}
       </div>
 
-      {/* ── 4.1 LIGHTBOX MODAL (XEM ẢNH PHÓNG TO TOÀN MÀN HÌNH) ── */}
+      {/* Modal xem ảnh phóng to */}
       <AnimatePresence>
         {isLightboxOpen && (
           <motion.div
@@ -879,7 +879,7 @@ export function SpeciesDetailHero({ species }) {
           </h2>
         </div>
 
-        {/* Bảng phân loại khoa học (Bố cục 4 cột rộng rãi) */}
+        {/* Bảng phân loại khoa học */}
         <div className="bg-[#0b172a] border border-white/10 rounded-2xl p-5">
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
@@ -943,7 +943,7 @@ export function SpeciesDetailHero({ species }) {
               </div>
             </div>
 
-            {/* Loài (Species) */}
+            {/* Loài */}
             <div className="bg-cyan-500/10 rounded-xl p-3.5 border border-cyan-500/25 flex flex-col justify-center">
               <span className="text-cyan-400/80 text-[11px] block font-semibold">
                 {t("speciesDetail.species") || "Loài"}

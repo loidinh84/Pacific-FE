@@ -14,6 +14,12 @@ import SharkGallery2 from "./SharkGallery2.jpg";
 import SharkGallery3 from "./SharkGallery3.jpg";
 import SharkGallery4 from "./SharkGallery4.jpg";
 
+// News cover images
+import CoralRestoration from "./news/CoralRestoration.jpg";
+import TurtleHatchlings from "./news/TurtleHatchlings.jpg";
+import DeepSeaROV from "./news/DeepSeaROV.jpg";
+import BeachCleanup from "./news/BeachCleanup.jpg";
+
 export {
   Logo,
   CaMapVoi,
@@ -30,6 +36,8 @@ export {
   SharkGallery2,
   SharkGallery3,
   SharkGallery4,
+  CoralRestoration,
+  TurtleHatchlings,
+  DeepSeaROV,
+  BeachCleanup,
 };
-
-

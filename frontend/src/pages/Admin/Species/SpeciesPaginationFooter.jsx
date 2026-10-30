@@ -27,6 +27,9 @@ export default function SpeciesPaginationFooter({
       : "bg-white hover:bg-slate-200 border border-slate-200 text-slate-700"
   }`;
 
+  const startItem = totalCount === 0 ? 0 : (page - 1) * perPage + 1;
+  const endItem = Math.min(page * perPage, totalCount);
+
   return (
     <div
       className={`px-4 py-3 border-t flex flex-wrap items-center justify-between gap-3 text-sm mt-auto transition-colors duration-300 ${
@@ -41,14 +44,20 @@ export default function SpeciesPaginationFooter({
         <select
           value={perPage}
           onChange={(e) => onPerPageChange(Number(e.target.value))}
-          className={`px-2 py-1 rounded border text-xs font-semibold cursor-pointer focus:outline-none ${
+          className={`px-2.5 py-1 rounded-lg border text-xs font-semibold cursor-pointer focus:outline-none transition-colors ${
             isDark
-              ? "bg-[#142144] border-white/20 text-white"
-              : "bg-white border-slate-200 text-slate-700"
+              ? "bg-[#142144] border-white/20 text-white hover:border-sky-400"
+              : "bg-white border-slate-200 text-slate-700 hover:border-sky-500"
           }`}
         >
           {PER_PAGE_OPTIONS.map((n) => (
-            <option key={n} value={n}>{n}</option>
+            <option
+              key={n}
+              value={n}
+              className={isDark ? "bg-[#142144] text-white" : "bg-white text-slate-900"}
+            >
+              {n}
+            </option>
           ))}
         </select>
         <span className="opacity-70">/ trang</span>
@@ -67,9 +76,9 @@ export default function SpeciesPaginationFooter({
           <button
             key={p}
             onClick={() => onPageChange(p)}
-            className={`px-2.5 py-1 rounded font-bold cursor-pointer transition-colors text-xs ${
+            className={`px-2.5 py-1 rounded font-semibold cursor-pointer transition-colors text-xs ${
               p === page
-                ? "bg-cyan-500 text-white shadow-sm shadow-cyan-500/30"
+                ? "bg-sky-600 text-white shadow-xs"
                 : isDark
                   ? "bg-white/10 hover:bg-white/20 text-white/70"
                   : "bg-white hover:bg-slate-200 border border-slate-200 text-slate-600"
@@ -89,8 +98,8 @@ export default function SpeciesPaginationFooter({
 
       {/* Count info */}
       <div className="text-xs">
-        <span className={`font-mono font-bold ${isDark ? "text-cyan-400" : "text-cyan-600"}`}>
-          {filteredCount}
+        <span className={`font-mono font-bold ${isDark ? "text-sky-300" : "text-sky-700"}`}>
+          {totalCount === 0 ? "0" : `${startItem} - ${endItem}`}
         </span>
         <span className="opacity-70"> / tổng </span>
         <span className={`font-mono font-bold ${isDark ? "text-white" : "text-slate-900"}`}>

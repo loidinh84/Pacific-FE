@@ -57,7 +57,7 @@ function MedRow({ icon: Icon, label, value, highlight }) {
  * @param {object}   organ      - The active organ object from anatomy data
  * @param {string}   language   - "vi" | "en"
  * @param {string}   copiedId   - ID of organ whose Latin name was just copied
- * @param {Function} onCopy     - (organ, event) => void
+ * @param {Function} onCopy     - Hàm sao chép thông tin
  * @param {Function} onClose    - () => void
  * @param {object}   ref        - forwarded ref for click-outside detection
  */

@@ -11,7 +11,7 @@ import "./OceanDepth.css";
 // ─── Constants ───────────────────────────────────────────────────────────────
 const MAX_DEPTH = 5016; // Rãnh Manila — điểm sâu nhất Biển Đông
 const DEPTH_SCALE = 2; // 1 meter = 2 pixels cuộn
-const SEABED_BUFFER = 1600; // Đệm đáy biển 1,600px để cuộn thoải mái chạm và vượt mốc 5,016m mà không bị Footer cản
+const SEABED_BUFFER = 1600; // Đệm đáy biển tránh bị footer che
 const PAGE_HEIGHT = MAX_DEPTH * DEPTH_SCALE + (typeof window !== "undefined" ? window.innerHeight : 900) + SEABED_BUFFER;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -86,7 +86,7 @@ function getSeededRandom(seedStr) {
   return x - Math.floor(x);
 }
 
-// ─── Thước đo độ sâu khoa học dọc Biển Đông (0–5,016m) ───────────────────
+// Thước đo độ sâu Biển Đông
 const RULER_MAJOR_TICKS = [
   { d: 0,    label: "0m",     sub: "Mực nước biển" },
   { d: 200,  label: "200m",   sub: "Ranh giới ánh sáng" },
@@ -109,7 +109,7 @@ function FixedRuler({ depth }) {
     window.scrollTo({ top: targetScrollY, behavior: "smooth" });
   };
 
-  // Tạo các vạch chia chi tiết (mỗi 100m)
+  // Tạo các vạch chia chi tiết
   const minorTicks = useMemo(() => {
     const ticks = [];
     for (let d = 0; d <= 5000; d += 100) {
@@ -154,7 +154,7 @@ function FixedRuler({ depth }) {
           <div className="od-ruler-axis" />
         </div>
 
-        {/* Vạch chia nhỏ (minor & medium ticks) */}
+        {/* Vạch chia nhỏ */}
         <div className="od-ruler-subticks" aria-hidden="true">
           {minorTicks.map(({ d, isMedium }) => (
             <div
@@ -165,7 +165,7 @@ function FixedRuler({ depth }) {
           ))}
         </div>
 
-        {/* Vạch chia chính (Major ticks có nhãn số và có thể bấm để cuộn đến) */}
+        {/* Vạch chia chính */}
         <div className="od-ruler-major-ticks">
           {RULER_MAJOR_TICKS.map(({ d, label, sub, isMax }) => {
             const isPassed = depth >= d;
@@ -185,7 +185,7 @@ function FixedRuler({ depth }) {
           })}
         </div>
 
-        {/* Con trỏ định vị độ sâu trực tiếp (Live Cursor) */}
+        {/* Con trỏ độ sâu */}
         <div
           className="od-ruler-cursor"
           style={{
@@ -356,7 +356,7 @@ function EnvironmentParticles({ depth }) {
 
   // Hạt mô phỏng đại dương:
   // < 250m: Bọt khí li ti nổi lên
-  // > 150m: Tuyết biển (marine snow) chìm chậm
+  // Tuyết biển chìm chậm ở tầng sâu
   // > 600m: Đốm lân tinh phát quang sinh học nhấp nháy
   const particles = useMemo(() => {
     const list = [];
@@ -428,7 +428,7 @@ export default function OceanDepth() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Trừ đi chiều cao hero (window.innerHeight) để depth=0 bắt đầu từ vạch mực nước
+      // Trừ chiều cao hero để mốc độ sâu bắt đầu từ mực nước
       const scrollY = Math.max(0, window.scrollY - window.innerHeight);
       const calculatedDepth = Math.max(0, Math.min(MAX_DEPTH, Math.round(scrollY / DEPTH_SCALE)));
       setDepth(calculatedDepth);
@@ -438,7 +438,56 @@ export default function OceanDepth() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+<<<<<<< HEAD
   // ── Sinh vật biển: Thả tự do trực tiếp trong nước theo phong cách Neal.fun ───
+=======
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            entry.target.classList.remove("hidden");
+          }
+        });
+      },
+      { rootMargin: "-50px 0px -50px 0px" }
+    );
+    const nodes = document.querySelectorAll(".od-node");
+    nodes.forEach((n) => observer.observe(n));
+    return () => observer.disconnect();
+  }, []);
+
+  // Cột mốc cố định bên phải
+  const renderLandmarks = () => {
+    return DEPTH_LANDMARKS.map((lm) => {
+      // Bắt đầu vị trí sau phần hero
+      const top = window.innerHeight + lm.depth * DEPTH_SCALE;
+      // Phân bố trong dải 68%-89% theo hàm seed
+      const left = 68 + getSeededRandom(lm.labelVi) * 21;
+      const label = loc(lm.labelVi, lm.labelEn);
+      const desc  = loc(lm.descVi,  lm.descEn);
+
+      return (
+        <div
+          key={`lm-${lm.depth}`}
+          className="od-node od-landmark-node hidden"
+          style={{ top: `${top}px`, left: `${left}%`, "--lm-color": lm.color }}
+        >
+          <div className="od-landmark-connector" />
+          <div className="od-landmark-header">
+            <span className="od-landmark-icon"><lm.icon /></span>
+            <span className="od-landmark-title">{label}</span>
+          </div>
+          <p className="od-landmark-desc">{desc}</p>
+          <div className="od-landmark-depth-badge">{lm.depth.toLocaleString()}m</div>
+        </div>
+      );
+    });
+  };
+
+  // Vị trí sinh vật ở cột giữa
+>>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
   const renderCreatures = () => {
     // Thuật toán phân bổ tự nhiên 4 làn rộng khắp toàn màn hình (16% → 84%):
     // Làn 0: Trái (16% - 32%)
@@ -449,6 +498,7 @@ export default function OceanDepth() {
     let lastGlobalTop = -9999;
 
     return CREATURES_BY_DEPTH.map((c) => {
+<<<<<<< HEAD
       const left = c.left || 40;
       const lane = left < 33 ? 0 : left < 50 ? 1 : left < 67 ? 2 : 3;
 
@@ -461,6 +511,13 @@ export default function OceanDepth() {
       lastTopInLane[lane] = top;
       lastGlobalTop = top;
 
+=======
+      const avgDepth = (c.depthMin + c.depthMax) / 2;
+      // Bắt đầu vị trí sau phần hero
+      const top = window.innerHeight + avgDepth * DEPTH_SCALE;
+      // Phân bố trong dải 18%-62% theo hàm seed
+      const left = 18 + getSeededRandom(c.id) * 44;
+>>>>>>> 688e6e433c9fe2cce2c329bf1f7a2c6ddc30cf37
       const name = loc(c.nameVi, c.nameEn);
       // Hiển thị tên tự nhiên / Title Case
       const displayName = language === "en" ? (c.nameEn || name) : (c.nameVi || name);
@@ -492,7 +549,7 @@ export default function OceanDepth() {
     });
   };
 
-  // ── Zone labels (watermark) ───────────────────────────────────────────────
+  // Nhãn tên tầng nước
   const renderZoneLabels = () => {
     return OCEAN_ZONES.map((z) => (
       <div key={`zone-${z.id}`}>
@@ -522,37 +579,37 @@ export default function OceanDepth() {
       {/* HUD kéo thả hiển thị thông số */}
       <DraggableHUD depth={depth} currentZone={currentZone} />
 
-      {/* Nền nước biển chân thật cố định (Realistic Dynamic Ocean Viewport) */}
+      {/* Nền nước biển */}
       <div
         className="od-ocean-viewport-bg"
         style={{ backgroundColor: realisticOceanColor }}
         aria-hidden="true"
       >
-        {/* Tia nắng mặt trời khúc xạ qua mặt nước (Sun Rays / God Rays) */}
+        {/* Tia nắng mặt trời */}
         <div
           className="od-sun-rays"
           style={{ opacity: Math.max(0, (220 - depth) / 220) }}
         />
 
-        {/* Gợn sóng lấp lánh tầng nông (Water Caustics) */}
+        {/* Gợn sóng tầng nông */}
         <div
           className="od-water-caustics"
           style={{ opacity: Math.max(0, (140 - depth) / 140) }}
         />
 
-        {/* Sương mờ quang học đại dương (Underwater Depth Fog) */}
+        {/* Sương mờ đại dương */}
         <div
           className="od-water-depth-fog"
           style={{ opacity: Math.min(0.85, depth / 400) }}
         />
 
-        {/* Bóng tối thực tế tăng dần theo độ sâu (Physical Darkness Attenuation) */}
+        {/* Hiệu ứng bóng tối theo độ sâu */}
         <div
           className="od-depth-darkness"
           style={{ opacity: Math.min(0.96, Math.max(0, (depth - 40) / 1400)) }}
         />
 
-        {/* Đèn pha tàu thám hiểm ROV khi xuống tầng tối (> 500m) */}
+        {/* Đèn pha tàu thám hiểm */}
         {depth >= 500 && (
           <div
             className="od-subsea-spotlight"
@@ -616,7 +673,7 @@ export default function OceanDepth() {
         {renderZoneLabels()}
         {renderCreatures()}
 
-        {/* Vùng Đáy Biển Rãnh Manila (5,016m) — Điểm sâu nhất Biển Đông */}
+        {/* Vùng đáy biển Rãnh Manila */}
         <div
           className="od-seabed-zone"
           style={{
@@ -704,7 +761,7 @@ export default function OceanDepth() {
         </div>
       </div>
 
-      {/* Footer nằm trọn vẹn bên dưới vùng đáy biển, không bao giờ che khuất điểm 5,016m */}
+      {/* Footer trang */}
       <Footer />
     </>
   );

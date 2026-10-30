@@ -55,7 +55,7 @@ const formatCoord = (v, type) => {
   return `${abs.toFixed(4)}° ${dir}`;
 };
 
-// ── Ocean zones list (static from DB enum) ───────────────
+// Danh sách tầng nước
 const OCEAN_ZONES = [
   { id: 1, name: "Sunlight / Epipelagic" },
   { id: 2, name: "Twilight / Mesopelagic" },
@@ -66,7 +66,7 @@ const OCEAN_ZONES = [
 
 const cleanZoneName = (name) => name?.split("/")?.[0]?.trim() || name || "";
 
-// ── Custom Dropdown (synchronized with Species module) ───
+// Dropdown lựa chọn
 function CustomSelect({
   options = [],
   value,
@@ -187,7 +187,7 @@ const FeaturedBadge = ({ isFeatured }) =>
     </span>
   );
 
-// ── Location Card (grid view) ─────────────────────────────
+// Card địa điểm
 const LocationCard = ({
   loc,
   isDark,
@@ -681,7 +681,7 @@ const ConfirmDelete = ({
   );
 };
 
-// ── Location Detail Drawer (Slide-over) ───────────────────
+// Chi tiết địa điểm
 const LocationDetailDrawer = ({
   locationId,
   isDark,
@@ -718,7 +718,7 @@ const LocationDetailDrawer = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Backdrop (Dark overlay, click outside to close, NO blur) */}
+      {/* Lớp nền overlay */}
       <div
         className="fixed inset-0 bg-black/50 transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
@@ -1588,7 +1588,7 @@ export default function LocationsManagement() {
         </span>
       </div>
 
-      {/* ── CARD GRID (Always clean & responsive 4-columns) ── */}
+      {/* Lưới danh sách địa điểm */}
       <div>
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

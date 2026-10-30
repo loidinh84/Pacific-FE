@@ -11,7 +11,7 @@ const getAuthHeaders = () => {
 };
 
 /**
- * Lấy danh sách địa điểm (phân trang, tìm kiếm, lọc)
+ * Lấy danh sách địa điểm
  */
 export const fetchAdminLocationList = async (params = {}) => {
   const res = await axios.get(API_BASE, { params, ...getAuthHeaders() });

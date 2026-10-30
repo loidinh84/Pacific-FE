@@ -202,7 +202,7 @@ export default function CommentsManagement() {
     }
   };
 
-  // Tabs cấu hình bám sát mockup Figma
+  // Cấu hình tabs
   const tabs = [
     { id: "all", label: "Tất cả", count: counts.all },
     { id: "reported", label: "Bị báo cáo", count: counts.reported, isDanger: true },
@@ -237,7 +237,7 @@ export default function CommentsManagement() {
         </button>
       </div>
 
-      {/* Thanh tìm kiếm & Các nút bộ lọc dạng Pill Chips (Chuẩn Figma) */}
+      {/* Thanh tìm kiếm và bộ lọc */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Input Tìm kiếm */}
         <div
@@ -379,7 +379,7 @@ export default function CommentsManagement() {
             )}
           </div>
         ) : (
-          // Render danh sách bình luận (Bám sát mockup Figma)
+          // Danh sách bình luận
           comments.map((comment) => {
             const isDeleted = comment.status === "deleted" || Boolean(comment.deletedAt) || activeTab === "deleted";
             const isReported = !isDeleted && Boolean(comment.hasPendingReports);
@@ -479,10 +479,10 @@ export default function CommentsManagement() {
                     </div>
                   </div>
 
-                  {/* Nút hành động bên phải (Chuẩn Figma) */}
+                  {/* Nút thao tác */}
                   <div className="flex items-center gap-2 self-end sm:self-start shrink-0">
                     {isDeleted ? (
-                      /* Chế độ ĐÃ XÓA (Image 3): Có nhãn thời gian xóa + nút Khôi phục */
+                      /* Tab đã xóa */
                       <div className="flex flex-col sm:items-end gap-1.5">
                         <span className={`text-[11px] flex items-center gap-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                           <Clock size={11} />
@@ -501,7 +501,7 @@ export default function CommentsManagement() {
                         </button>
                       </div>
                     ) : isReported ? (
-                      /* Chế độ BỊ BÁO CÁO (Image 2): Nút Xóa và Nút Giữ */
+                      /* Tab bị báo cáo */
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleDeleteComment(comment)}
@@ -525,7 +525,7 @@ export default function CommentsManagement() {
                         </button>
                       </div>
                     ) : (
-                      /* Chế độ BÌNH THƯỜNG / TẤT CẢ (Image 1): Nút Ẩn và Nút Xóa */
+                      /* Tab tất cả */
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => handleToggleHide(comment)}
@@ -555,7 +555,7 @@ export default function CommentsManagement() {
                   </div>
                 </div>
 
-                {/* Nội dung bình luận (trong ngoặc kép như Figma) */}
+                {/* Nội dung bình luận */}
                 <p
                   className={`text-xs sm:text-sm leading-relaxed pl-1 ${
                     isDeleted
@@ -568,7 +568,7 @@ export default function CommentsManagement() {
                   “{comment.content}”
                 </p>
 
-                {/* Khung Lý do Báo cáo Vi phạm (Hiển thị nổi bật theo Figma Image 2 khi có báo cáo chưa xử lý) */}
+                {/* Lý do báo cáo vi phạm */}
                 {!isDeleted && isReported && comment.reportSummaries && comment.reportSummaries.length > 0 && (
                   <div
                     className={`rounded-xl p-3.5 border transition-all space-y-1.5 ${
@@ -612,7 +612,7 @@ export default function CommentsManagement() {
         )}
       </div>
 
-      {/* Phân trang dưới cùng (Chuẩn Figma: << < 1 2 3 > >>) */}
+      {/* Phân trang */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-1.5 pt-4">
           <button

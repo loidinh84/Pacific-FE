@@ -24,7 +24,7 @@ export function playSpeciesSound(speciesId) {
     masterGain.gain.exponentialRampToValueAtTime(0.001, now + 3.2);
     masterGain.connect(audioCtx.destination);
 
-    // Deep sub-bass frequency rumble (shark / whale hydroacoustic roar)
+    // Âm thanh trầm mô phỏng sóng âm đại dương
     const osc1 = audioCtx.createOscillator();
     osc1.type = "sawtooth";
     osc1.frequency.setValueAtTime(42, now);

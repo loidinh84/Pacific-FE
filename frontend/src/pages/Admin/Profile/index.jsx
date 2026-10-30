@@ -127,7 +127,7 @@ export default function AdminProfile() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6 animate-in fade-in duration-200">
-      {/* 1. 2-Tab Navigation (Thông tin hồ sơ & Nhật ký thao tác) */}
+      {/* Điều hướng tab hồ sơ và nhật ký */}
       <TabNavigation
         activeTab={activeTab}
         onTabChange={setActiveTab}

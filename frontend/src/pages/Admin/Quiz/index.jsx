@@ -153,7 +153,7 @@ export default function QuizManagement() {
     setIsModalOpen(true);
   };
 
-  // Save (Create or Update)
+  // Lưu câu hỏi
   const handleSaveQuestion = async (e) => {
     e.preventDefault();
     if (!formData.question.trim()) {

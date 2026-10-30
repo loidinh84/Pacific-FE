@@ -74,7 +74,7 @@ export default function ProfileLayout() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* LEFT SIDEBAR (Sidebar bên trái theo đúng mockup) */}
+            {/* Sidebar bên trái */}
             <aside className="lg:col-span-3 space-y-6">
               {/* Back button */}
               <Link

@@ -127,7 +127,7 @@ export default function AdminLayout() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.22)_0%,rgba(6,182,212,0.08)_40%,transparent_70%)] pointer-events-none z-0" />
       )}
 
-      {/* ── 1. TOP HEADER (LOGO + RIGHT CONTROLS) ── */}
+      {/* Header chính */}
       <header
         className={`w-full border-b transition-colors duration-300 relative z-10 ${
           isDark

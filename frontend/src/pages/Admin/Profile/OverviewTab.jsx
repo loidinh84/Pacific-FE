@@ -121,7 +121,7 @@ export default function OverviewTab({
         className="hidden"
       />
 
-      {/* ─── LEFT COLUMN (4 cols on lg) ─── */}
+      {/* Cột trái */}
       <div className="lg:col-span-4 space-y-6">
         {/* 1. Profile Avatar & Identity Card */}
         <div
@@ -260,7 +260,7 @@ export default function OverviewTab({
         </div>
       </div>
 
-      {/* ─── RIGHT COLUMN (8 cols on lg) ─── */}
+      {/* Cột phải */}
       <div className="lg:col-span-8">
         <div
           className={`rounded-3xl border p-6 sm:p-8 space-y-6 ${
@@ -284,7 +284,7 @@ export default function OverviewTab({
             </button>
           </div>
 
-          {/* 6 Grid Fields (2 cols) */}
+          {/* Thông tin chi tiết */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
             {/* Field 1: Username */}
             <div className="space-y-2">

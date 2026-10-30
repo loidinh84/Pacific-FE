@@ -23,7 +23,7 @@ export default function OceanSoundPickerModal({
   const { isDark } = useTheme();
   useLockBodyScroll(isOpen);
 
-  // allSounds: full list loaded from API (source of truth, never mutated)
+  // Danh sách âm thanh đầy đủ tải từ API
   const [allSounds, setAllSounds] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -115,7 +115,7 @@ export default function OceanSoundPickerModal({
     try {
       const res = await searchOceanAudioAdvanced(q);
       if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
-        // Merge new results into allSounds (dedup by pageid/id)
+        // Gộp kết quả âm thanh mới
         setAllSounds((prev) => {
           const existingIds = new Set(prev.map((s) => s.id));
           const newItems = res.data.filter((s) => !existingIds.has(s.id));

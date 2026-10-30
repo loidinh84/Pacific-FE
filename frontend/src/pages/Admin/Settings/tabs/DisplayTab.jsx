@@ -30,7 +30,7 @@ export default function DisplayTab({
         </p>
       </div>
 
-      {/* 2.1 Khối Giao diện hệ thống (Theme Mode) */}
+      {/* Giao diện hệ thống */}
       <div
         className={`rounded-2xl border p-5 md:p-6 space-y-4 ${
           isDark

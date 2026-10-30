@@ -9,7 +9,7 @@ import { CREATURE_PNGS } from "../../assets/creatures";
 // ─── Hình ảnh thực tế từ iNaturalist (CC BY-NC / open data) ─────────────────
 export const CREATURE_IMAGES = CREATURE_PNGS;
 
-// ─── Dữ liệu các vùng Biển Đông (max depth: 5,016m) ────────────────────────
+// Dữ liệu các vùng Biển Đông
 export const OCEAN_ZONES = [
   {
     id: "sunlight",

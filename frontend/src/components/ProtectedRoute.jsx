@@ -2,7 +2,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { getStoredUser } from "../utils/auth";
 
 /**
- * Route chỉ dành riêng cho Quản trị viên (Admin & Super Admin)
+ * Route dành cho quản trị viên
  * Nếu chưa đăng nhập -> chuyển về /login
  * Nếu đã đăng nhập nhưng không phải admin -> chuyển về trang chủ /
  */
@@ -22,7 +22,7 @@ export function AdminRoute({ children }) {
 }
 
 /**
- * Route dành riêng cho khách chưa đăng nhập (Auth: Login, Register, Forgot Password).
+ * Route dành cho khách chưa đăng nhập
  * Nếu đã đăng nhập:
  * - Admin/Super Admin -> chuyển hướng vào /admin/species
  * - Người dùng thông thường -> chuyển về trang chủ /
@@ -41,7 +41,7 @@ export function GuestRoute({ children }) {
 }
 
 /**
- * Route cho Giao diện Khách & Người dùng (Client Pages: Trang chủ, Khám phá, Chi tiết sinh vật...)
+ * Route cho người dùng
  * Cho phép cả khách vãng lai, người dùng lẫn Admin xem công khai một cách liền mạch, không bị chặn.
  */
 export function ClientRoute({ children }) {
@@ -49,7 +49,7 @@ export function ClientRoute({ children }) {
 }
 
 /**
- * Route yêu cầu đăng nhập với tư cách Người dùng thông thường (VD: /profile)
+ * Route yêu cầu người dùng đăng nhập
  * Nếu chưa đăng nhập -> /login. Nếu là Admin -> chuyển vào /admin/profile.
  */
 export function UserProtectedRoute({ children }) {

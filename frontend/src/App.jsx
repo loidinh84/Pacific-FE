@@ -8,6 +8,8 @@ import SpeciesDetail from "./pages/SpeciesDetail";
 import OceanDepth from "./pages/OceanDepth";
 import SpeciesView3D from "./pages/SpeciesView3D";
 import KnowledgeGraph from "./pages/KnowledgeGraph";
+import News from "./pages/News";
+import NewsDetail from "./pages/NewsDetail";
 import { AdminRoute, ClientRoute, GuestRoute, UserProtectedRoute } from "./components/ProtectedRoute";
 import ProfileLayout from "./pages/Profile";
 
@@ -30,7 +32,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Client Routes (Open for all visitors, users, and admins) */}
+        {/* Tuyến đường công khai */}
         <Route
           path="/"
           element={
@@ -79,8 +81,26 @@ function App() {
             </ClientRoute>
           }
         />
+        <Route
+          path="/news"
+          element={
+            <ClientRoute>
+              <News />
+            </ClientRoute>
+          }
+        />
+        <Route
+          path="/news/:slug"
+          element={
+            <ClientRoute>
+              <NewsDetail />
+            </ClientRoute>
+          }
+        />
+        <Route path="/pages/news" element={<Navigate to="/news" replace />} />
+        <Route path="/pages/News" element={<Navigate to="/news" replace />} />
 
-        {/* Auth Routes (Redirect to / or /admin/species if already authenticated) */}
+        {/* Tuyến đường xác thực */}
         <Route
           path="/login"
           element={
@@ -106,7 +126,7 @@ function App() {
           }
         />
 
-        {/* User Profile Routes (Protected for regular user, Admin redirected to /admin/species) */}
+        {/* Tuyến đường hồ sơ người dùng */}
         <Route
           path="/profile"
           element={
@@ -117,7 +137,7 @@ function App() {
         />
         <Route path="/profile/me" element={<Navigate to="/profile" replace />} />
 
-        {/* Admin Portal Nested Routes (Strictly for Admin & Super Admin) */}
+        {/* Tuyến đường quản trị */}
         <Route
           path="/admin"
           element={

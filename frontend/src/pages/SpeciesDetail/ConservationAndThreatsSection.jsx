@@ -131,7 +131,7 @@ const RED_LIST_DETAILED_INFO = {
 export function ConservationAndThreatsSection({ species, language = "vi" }) {
   const isEn = language === "en";
 
-  // Lấy mã tình trạng Sách Đỏ (Hỗ trợ đầy đủ 9 bậc IUCN)
+  // Lấy mã tình trạng bảo tồn
   const statusCode = useMemo(() => {
     const raw = (
       species.vietnamRedListStatus ||

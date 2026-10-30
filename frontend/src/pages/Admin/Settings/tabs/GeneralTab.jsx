@@ -204,7 +204,7 @@ export default function GeneralTab({
           </div>
         </div>
 
-        {/* 1.2 Mô phỏng kết quả tìm kiếm Google (Google Search Snippet Preview) */}
+        {/* Mô phỏng kết quả tìm kiếm */}
         <div
           className={`rounded-xl p-4 border transition-colors ${
             isDark

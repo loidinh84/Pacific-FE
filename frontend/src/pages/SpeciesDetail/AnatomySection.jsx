@@ -20,7 +20,7 @@ function getSpeciesAnatomyProfile(species) {
   const cat = (species?.category || species?.categoryVi || "").toLowerCase();
   const sciName = (species?.sciName || species?.scientificName || "").toLowerCase();
 
-  // 1. Phân loại Thân mềm (Bạch tuộc, Mực, Ốc, Trai)
+  // Phân loại thân mềm
   if (
     cat.includes("mollusk") ||
     cat.includes("thân mềm") ||
@@ -132,7 +132,7 @@ function getSpeciesAnatomyProfile(species) {
     };
   }
 
-  // 2. Phân loại Động vật có vú biển (Cá voi, Cá heo, Bò biển)
+  // Phân loại động vật có vú biển
   if (
     cat.includes("mammal") ||
     cat.includes("vú") ||
@@ -212,7 +212,7 @@ function getSpeciesAnatomyProfile(species) {
     };
   }
 
-  // 3. Phân loại Cá có xương (Cá ngừ, Cá hề Nemo, Cá vẹt...)
+  // Phân loại cá có xương
   if (
     cat.includes("fish") ||
     cat.includes("cá") ||
@@ -288,7 +288,7 @@ function getSpeciesAnatomyProfile(species) {
     };
   }
 
-  // 4. Phân loại Bò sát biển (Rùa, Đồi mồi, Rắn biển)
+  // Phân loại bò sát biển
   if (
     cat.includes("reptile") ||
     cat.includes("bò sát") ||
@@ -342,7 +342,7 @@ function getSpeciesAnatomyProfile(species) {
     };
   }
 
-  // 5. Mặc định cho San hô, Giáp xác, Hải sâm, Sinh vật phù du...
+  // Phân loại các nhóm sinh vật biển khác
   return {
     groupLabel: "Cấu trúc sinh học biển sâu",
     metrics: [
@@ -393,7 +393,7 @@ export function AnatomySection({ species }) {
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [activeSystemTab, setActiveSystemTab] = useState(0);
 
-  // Kiểm tra xem loài này có mô hình 3D bóc tách hay không (hiện có shark.glb cho Cá Mập Trắng)
+  // Kiểm tra mô hình 3D bóc tách của loài
   const isShark = useMemo(() => {
     if (!species) return false;
     const slug = (species?.slug || "").toLowerCase();
@@ -425,7 +425,7 @@ export function AnatomySection({ species }) {
     return null;
   }
 
-  // ── TRƯỜNG HỢP 1: CÓ MÔ HÌNH 3D (CÁ MẬP TRẮNG LỚN HOẶC MODEL ĐƯỢC UPLOAD) ──
+  // Hiển thị mô hình 3D tương tác
   if (hasDedicated3D && resolvedModel3dUrl) {
     return (
       <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 font-sans">
@@ -450,7 +450,7 @@ export function AnatomySection({ species }) {
     );
   }
 
-  // ── TRƯỜNG HỢP 2: CÁC LOÀI SINH VẬT KHÁC (BẠCH TUỘC, CÁ VOI, RÙA, CÁ HỀ...) ──
+  // Hiển thị sơ đồ giải phẫu minh họa
   const currentSystem = anatomyProfile.systems[activeSystemTab] || anatomyProfile.systems[0];
   const SystemIcon = currentSystem?.icon || Activity;
 
@@ -556,7 +556,7 @@ export function AnatomySection({ species }) {
           ))}
         </div>
 
-        {/* Ghi chú đặc trưng sinh học (nếu có) */}
+        {/* Ghi chú đặc trưng sinh học */}
         {species?.fullBioHighlightsVi && species.fullBioHighlightsVi.length > 0 && (
           <div className="p-3.5 rounded-xl bg-blue-950/20 border border-blue-500/20 flex items-start gap-2.5 text-xs text-slate-300">
             <Info size={15} className="text-cyan-400 shrink-0 mt-0.5" />

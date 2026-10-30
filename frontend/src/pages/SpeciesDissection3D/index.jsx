@@ -189,7 +189,7 @@ export default function SpeciesDissection3D() {
         })}
       </div>
 
-      {/* ── RIGHT MEDICAL DATA PANEL (when organ is clicked) ── */}
+      {/* Bảng thông tin chi tiết cơ quan */}
       {selectedOrgan && (
         <div className="absolute top-20 right-6 z-20 w-80 max-h-[calc(100vh-140px)] overflow-y-auto rounded-2xl border border-white/15 bg-slate-950/90 backdrop-blur-2xl p-5 shadow-2xl space-y-4 animate-in fade-in slide-in-from-right-4 pointer-events-auto">
           {/* Header */}

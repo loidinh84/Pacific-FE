@@ -103,7 +103,7 @@ export const updateAdminSpecies = async (id, speciesData) => {
 };
 
 /**
- * Admin: Toggle species visibility (Hidden / Displayed)
+ * Admin: Thay đổi trạng thái hiển thị sinh vật
  */
 export const toggleSpeciesVisibility = async (id, isVisible) => {
   try {
@@ -173,7 +173,7 @@ export const bulkToggleSpeciesVisibility = async (ids = [], isVisible) => {
 };
 
 /**
- * Admin: Sync species from external API (GBIF/iNaturalist/OBIS)
+ * Admin: Đồng bộ sinh vật từ API ngoài
  */
 export const syncSpeciesFromApi = async (syncData) => {
   try {
@@ -225,7 +225,7 @@ export const syncAllIncompleteSpecies = async () => {
 };
 
 /**
- * Tra cứu phân loại học đại dương qua Backend Proxy Gateway (Hỗ trợ Provider: auto, gbif, inaturalist, worms)
+ * Tra cứu phân loại học sinh vật qua API
  */
 export const searchSpeciesTaxonomy = async (query, provider = "auto") => {
   try {
@@ -240,7 +240,7 @@ export const searchSpeciesTaxonomy = async (query, provider = "auto") => {
 };
 
 /**
- * Upload file từ máy tính (ảnh, video, 3d model .glb, audio .mp3) lên Backend Storage
+ * Tải tệp lên hệ thống lưu trữ
  * @param {File} file Tệp từ máy tính
  * @returns {Promise<{url: string, filename: string}>}
  */
@@ -267,7 +267,7 @@ export const uploadMediaFile = async (file) => {
 };
 
 /**
- * Tra cứu Kho âm thanh Đại dương từ Backend API (default catalog — Wikimedia parallel queries)
+ * Tra cứu danh sách âm thanh đại dương
  * @param {string} category Phân loại tab
  */
 export const getOceanAudioLibrary = async (category = "Tất cả") => {
@@ -284,7 +284,7 @@ export const getOceanAudioLibrary = async (category = "Tất cả") => {
 
 /**
  * Tìm kiếm nâng cao âm thanh đại dương trực tiếp từ Freesound.org API
- * @param {string} query Từ khóa cụ thể (tiếng Việt hoặc tiếng Anh)
+ * @param {string} query Từ khóa tìm kiếm
  */
 export const searchOceanAudioAdvanced = async (query = "") => {
   try {
@@ -299,7 +299,7 @@ export const searchOceanAudioAdvanced = async (query = "") => {
 };
 
 /**
- * Lấy danh sách nhóm sinh vật biển (Cá, Động vật có vú, Thân mềm...)
+ * Lấy danh sách nhóm sinh vật biển
  */
 export const fetchSpeciesGroups = async () => {
   try {
@@ -312,7 +312,7 @@ export const fetchSpeciesGroups = async () => {
 };
 
 /**
- * Lấy danh sách 5 tầng nước đại dương (Sunlight, Twilight, Midnight, Abyssal, Hadal)
+ * Lấy danh sách tầng nước đại dương
  */
 export const fetchOceanZones = async () => {
   try {
@@ -351,7 +351,7 @@ export const fetchOceanLocations = async () => {
 };
 
 /**
- * ── API PROVIDERS MANAGEMENT (ADMIN) ──
+ * Quản lý nguồn API
  */
 
 /**
@@ -372,7 +372,7 @@ export const fetchAdminApiProviders = async (includePing = false) => {
 };
 
 /**
- * Thêm nguồn API mới (Preset Catalog hoặc Custom REST Endpoint)
+ * Thêm nguồn API mới
  */
 export const createAdminApiProvider = async (providerData) => {
   try {
@@ -389,7 +389,7 @@ export const createAdminApiProvider = async (providerData) => {
 };
 
 /**
- * Cập nhật nguồn API (Bật/Tắt, sửa endpoint, API Key, v.v.)
+ * Cập nhật nguồn API
  */
 export const updateAdminApiProvider = async (id, providerData) => {
   try {

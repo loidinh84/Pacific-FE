@@ -23,13 +23,13 @@
 
   const adminToken = "demo-admin-token-" + Date.now();
 
-  // Luu vao localStorage (ca hai key de tuong thich)
+  // Lưu vào localStorage
   localStorage.setItem("pacific_token", adminToken);
   localStorage.setItem("pacific_user", JSON.stringify(adminUser));
   localStorage.setItem("token", adminToken);
   localStorage.setItem("user", JSON.stringify(adminUser));
 
-  // Phat su kien xac thuc de app React cap nhat
+  // Phát sự kiện xác thực
   window.dispatchEvent(new Event("pacific_auth_change"));
 
   console.log("%c PACIFIC ADMIN DEMO ", "background:#22d3ee;color:#0b1329;font-weight:bold;font-size:14px;padding:4px 8px;border-radius:4px;");
@@ -39,7 +39,7 @@
   console.log("Role:", adminUser.role);
   console.log("%cChuyen den /admin/stats de xem dashboard.", "color:#818cf8;font-size:11px;");
 
-  // Chuyen huong
+  // Chuyển hướng trang
   if (window.location) {
     setTimeout(() => { window.location.href = "/admin/stats"; }, 300);
   }
