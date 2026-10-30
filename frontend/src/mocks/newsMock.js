@@ -29,7 +29,7 @@ const category = (slug) => NEWS_CATEGORIES.find((c) => c.slug === slug);
 const PACIFIC_EDITORIAL = { id: 1, full_name: "Ban biên tập Pacific" };
 
 export const NEWS_ARTICLES = [
-  // ── 1. Bài nội bộ (internal) — nổi bật ──
+  // Bài viết nội bộ nổi bật
   {
     id: 1,
     slug: "mua-rua-no-con-dao-2026",
@@ -138,7 +138,7 @@ export const NEWS_ARTICLES = [
     published_at: "2026-10-20T10:15:00+07:00",
   },
 
-  // ── 4. Tin ngoài (external) — tiếng Việt ──
+  // Tin tức tổng hợp
   {
     id: 4,
     slug: "bien-dong-da-dang-sinh-hoc-vnexpress",

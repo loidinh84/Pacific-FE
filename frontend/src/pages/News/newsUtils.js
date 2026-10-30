@@ -2,7 +2,7 @@
  * newsUtils.js — Các hàm tiện ích dùng chung cho trang Tin tức & Chi tiết tin
  */
 
-/** Màu sắc riêng cho từng chuyên mục (dùng cho nhãn/chip) */
+/** Màu sắc theo chuyên mục */
 export const CATEGORY_STYLES = {
   conservation: "bg-emerald-500/15 border-emerald-400/30 text-emerald-300",
   discovery: "bg-sky-500/15 border-sky-400/30 text-sky-300",
@@ -54,7 +54,7 @@ export function formatFullDate(dateString, language = "vi") {
   );
 }
 
-/** Ước tính thời gian đọc (phút) dựa trên số từ, ~200 từ/phút */
+/** Ước tính thời gian đọc theo số từ */
 export function estimateReadingMinutes(article) {
   const raw = article?.content || article?.excerpt || "";
   const text = raw.replace(/<[^>]+>/g, " ");
@@ -76,7 +76,7 @@ export const getArticleByline = (article) =>
     ? article?.source?.name
     : article?.author?.full_name || "Pacific";
 
-/** Đặt tiêu đề trang & thẻ meta description (SEO cơ bản cho SPA) */
+/** Cập nhật tiêu đề trang và thẻ meta */
 export function setPageMeta(title, description) {
   if (title) document.title = title;
   if (description === undefined) return;

@@ -35,7 +35,7 @@ const RELATION_TYPES = {
   competitor: { labelVi: "Cạnh tranh sinh thái", labelEn: "Niche Competition", color: "#f97316", Icon: Zap },
 };
 
-// 8 Khu bảo tồn biển (MPAs) đặc thù Biển Đông
+// Khu bảo tồn biển đặc thù Biển Đông
 const EAST_SEA_ZONES = [
   { id: "", labelVi: "Tất cả vùng biển", labelEn: "All Marine Protected Areas" },
   { id: "Hoàng Sa - Trường Sa", labelVi: "Quần đảo Hoàng Sa - Trường Sa", labelEn: "Paracel & Spratly Archipelago" },
@@ -57,7 +57,7 @@ const RED_LIST_OPTIONS = [
   { id: "LC", labelVi: "LC - Ít quan tâm (Least Concern)", labelEn: "LC - Least Concern", color: "#10b981" },
 ];
 
-// Phân loại học thuật (Taxonomic Groups)
+// Phân loại nhóm sinh vật
 const TAXONOMIC_GROUPS = [
   { id: 1, nameVi: "Cá biển (Teleostei & Chondrichthyes)", nameEn: "Marine Fishes", color: "#38bdf8" },
   { id: 2, nameVi: "Thú biển (Cetacea & Sirenia)", nameEn: "Marine Mammals", color: "#a855f7" },
@@ -453,7 +453,7 @@ export default function KnowledgeGraph() {
           </div>
         </div>
 
-        {/* ─── 2. THANH BỘ LỌC ĐA TIÊU CHÍ (FILTER TOOLBAR) ─────────── */}
+        {/* Thanh bộ lọc */}
         <div className="p-4 rounded-2xl bg-[#0e1f38]/90 border border-white/10 mb-6 backdrop-blur-md shadow-xl flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
             {/* Ô tìm kiếm tức thời */}

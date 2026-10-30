@@ -52,9 +52,9 @@ export default function SpeciesTable({
   const renderSortIcon = (columnKey) => {
     if (sortBy === columnKey) {
       return sortOrder === "asc" ? (
-        <ArrowUp size={14} className="text-cyan-400 shrink-0" />
+        <ArrowUp size={14} className="text-sky-400 shrink-0" />
       ) : (
-        <ArrowDown size={14} className="text-cyan-400 shrink-0" />
+        <ArrowDown size={14} className="text-sky-400 shrink-0" />
       );
     }
     return (
@@ -82,15 +82,15 @@ export default function SpeciesTable({
             isDark ? "bg-[#142144]/60" : "bg-white/60"
           }`}
         >
-          <Loader2 size={28} className="text-cyan-400 animate-spin" />
+          <Loader2 size={28} className="text-sky-400 animate-spin" />
         </div>
       )}
 
       {/* Scrollable Table Area */}
       <div className="overflow-x-auto overflow-y-auto w-full flex-1 custom-scrollbar">
-        <table className="w-full text-left text-sm border-collapse table-fixed min-w-[880px]">
+        <table className="w-full text-left text-sm border-collapse table-fixed">
           {/* Table Header with Interactive Column Sorting */}
-          <thead className="sticky top-0 z-10">
+          <thead className={`sticky top-0 z-10 ${isDark ? "bg-[#1b2b54]" : "bg-slate-100"}`}>
             <tr
               className={`font-bold border-b text-sm select-none ${
                 isDark
@@ -99,7 +99,7 @@ export default function SpeciesTable({
               }`}
             >
               {/* Checkbox Column */}
-              <th className="p-3.5 w-10 text-center">
+              <th className="px-2 py-3.5 w-[4%] min-w-10 text-center bg-inherit">
                 <button
                   onClick={handleToggleCheckAll}
                   className={`cursor-pointer ${
@@ -115,7 +115,7 @@ export default function SpeciesTable({
                 >
                   {checkedIds.length === filteredList.length &&
                   filteredList.length > 0 ? (
-                    <CheckSquare size={15} className="text-cyan-400" />
+                    <CheckSquare size={15} className="text-sky-400" />
                   ) : (
                     <Square size={15} />
                   )}
@@ -123,95 +123,95 @@ export default function SpeciesTable({
               </th>
 
               {/* Mã sinh vật */}
-              <th className="p-3.5 w-[14%]">
+              <th className="px-2.5 py-3.5 w-[13%] bg-inherit">
                 <button
                   onClick={() => onSort("code")}
-                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-sky-300 transition-colors"
                 >
-                  <span className={sortBy === "code" ? "text-cyan-400" : ""}>Mã sinh vật</span>
+                  <span className={sortBy === "code" ? "text-sky-300" : ""}>Mã sinh vật</span>
                   {renderSortIcon("code")}
                 </button>
               </th>
 
               {/* Tên sinh vật */}
-              <th className="p-3.5 w-[20%]">
+              <th className="px-2.5 py-3.5 w-[19%] bg-inherit">
                 <button
                   onClick={() => onSort("name")}
-                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-sky-300 transition-colors"
                 >
-                  <span className={sortBy === "name" ? "text-cyan-400" : ""}>Tên sinh vật</span>
+                  <span className={sortBy === "name" ? "text-sky-300" : ""}>Tên sinh vật</span>
                   {renderSortIcon("name")}
                 </button>
               </th>
 
-              {/* Mã định danh (GBIF/Slug) */}
-              <th className="p-3.5 w-[16%]">
+              {/* Mã định danh */}
+              <th className="px-2.5 py-3.5 w-[13%] bg-inherit">
                 <button
                   onClick={() => onSort("gbifId")}
-                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-sky-300 transition-colors"
                 >
-                  <span className={sortBy === "gbifId" ? "text-cyan-400" : ""}>Mã định danh</span>
+                  <span className={sortBy === "gbifId" ? "text-sky-300" : ""}>Mã định danh</span>
                   {renderSortIcon("gbifId")}
                 </button>
               </th>
 
               {/* Nguồn dữ liệu */}
-              <th className="p-3.5 w-[11%] whitespace-nowrap">
+              <th className="px-2.5 py-3.5 w-[9%] whitespace-nowrap bg-inherit">
                 <button
                   onClick={() => onSort("source")}
-                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-sky-300 transition-colors"
                 >
-                  <span className={sortBy === "source" ? "text-cyan-400" : ""}>Nguồn</span>
+                  <span className={sortBy === "source" ? "text-sky-300" : ""}>Nguồn</span>
                   {renderSortIcon("source")}
                 </button>
               </th>
 
               {/* Vị trí */}
-              <th className="p-3.5 w-[10%] whitespace-nowrap">
+              <th className="px-2.5 py-3.5 w-[8%] whitespace-nowrap bg-inherit">
                 <button
                   onClick={() => onSort("location")}
-                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-sky-300 transition-colors"
                 >
-                  <span className={sortBy === "location" ? "text-cyan-400" : ""}>Vị trí</span>
+                  <span className={sortBy === "location" ? "text-sky-300" : ""}>Vị trí</span>
                   {renderSortIcon("location")}
                 </button>
               </th>
 
               {/* Bảo tồn */}
-              <th className="p-3.5 w-[12%] whitespace-nowrap">
+              <th className="px-2.5 py-3.5 w-[11%] whitespace-nowrap bg-inherit">
                 <button
                   onClick={() => onSort("conservationCode")}
-                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-sky-300 transition-colors"
                 >
-                  <span className={sortBy === "conservationCode" ? "text-cyan-400" : ""}>Bảo tồn</span>
+                  <span className={sortBy === "conservationCode" ? "text-sky-300" : ""}>Bảo tồn</span>
                   {renderSortIcon("conservationCode")}
                 </button>
               </th>
 
               {/* Lượt xem */}
-              <th className="p-3.5 w-[9%] whitespace-nowrap">
+              <th className="px-2 py-3.5 w-[7%] text-center whitespace-nowrap bg-inherit">
                 <button
                   onClick={() => onSort("views")}
-                  className="group flex items-center gap-1.5 cursor-pointer font-bold w-full text-left hover:text-cyan-400 transition-colors"
+                  className="group flex items-center justify-center gap-1.5 cursor-pointer font-bold w-full text-center hover:text-sky-300 transition-colors"
                 >
-                  <span className={sortBy === "views" ? "text-cyan-400" : ""}>Lượt xem</span>
+                  <span className={sortBy === "views" ? "text-sky-300" : ""}>Lượt xem</span>
                   {renderSortIcon("views")}
                 </button>
               </th>
 
               {/* Trạng thái */}
-              <th className="p-3.5 w-[10%] text-right whitespace-nowrap">
+              <th className="px-2.5 py-3.5 w-[9%] text-center whitespace-nowrap bg-inherit">
                 <button
                   onClick={() => onSort("is_visible")}
-                  className="group flex items-center justify-end gap-1.5 cursor-pointer font-bold w-full text-right hover:text-cyan-400 transition-colors"
+                  className="group flex items-center justify-center gap-1.5 cursor-pointer font-bold w-full text-center hover:text-sky-300 transition-colors"
                 >
-                  <span className={sortBy === "is_visible" ? "text-cyan-400" : ""}>Trạng thái</span>
+                  <span className={sortBy === "is_visible" ? "text-sky-300" : ""}>Trạng thái</span>
                   {renderSortIcon("is_visible")}
                 </button>
               </th>
 
               {/* Thao tác */}
-              <th className="p-3.5 w-[8%] text-center whitespace-nowrap">
+              <th className="px-2 py-3.5 w-[9%] min-w-[76px] text-center whitespace-nowrap bg-inherit">
                 <span>Thao tác</span>
               </th>
             </tr>
@@ -230,28 +230,26 @@ export default function SpeciesTable({
                 <td colSpan={10} className="p-10 sm:p-16 text-center">
                   <div className="max-w-md mx-auto flex flex-col items-center justify-center">
                     <div className="relative mb-5">
-                      {/* Ambient circles */}
-                      <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl animate-pulse" />
                       <div
-                        className={`relative w-20 h-20 rounded-3xl border flex items-center justify-center shadow-xl ${
+                        className={`relative w-16 h-16 rounded-2xl border flex items-center justify-center shadow-md ${
                           isDark
-                            ? "bg-[#182a55] border-cyan-500/30 text-cyan-400"
-                            : "bg-cyan-50 border-cyan-200 text-cyan-600"
+                            ? "bg-[#182a55] border-white/10 text-sky-400"
+                            : "bg-sky-50 border-sky-200 text-sky-600"
                         }`}
                       >
-                        <Fish size={38} className="animate-bounce duration-1000" />
+                        <Fish size={32} />
                       </div>
                     </div>
 
-                    <h3
-                      className={`text-lg sm:text-xl font-bold font-heading ${
+                    <h2
+                      className={`text-base sm:text-lg font-bold font-heading ${
                         isDark ? "text-white" : "text-slate-800"
                       }`}
                     >
                       Không tìm thấy sinh vật phù hợp
-                    </h3>
+                    </h2>
                     <p
-                      className={`text-xs sm:text-sm mt-2 leading-relaxed ${
+                      className={`text-xs sm:text-sm mt-1.5 leading-relaxed ${
                         isDark ? "text-slate-400" : "text-slate-500"
                       }`}
                     >
@@ -260,13 +258,13 @@ export default function SpeciesTable({
                         : "Cơ sở dữ liệu sinh vật hiện đang trống hoặc chưa có bản ghi nào được tạo."}
                     </p>
 
-                    <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+                    <div className="flex flex-wrap items-center justify-center gap-3 mt-5">
                       {hasActiveFilters && onResetFilters && (
                         <button
                           onClick={onResetFilters}
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-cyan-500/15 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/25 transition-all cursor-pointer active:scale-95"
+                          className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white/10 hover:bg-white/15 border border-white/20 text-white transition-all cursor-pointer active:scale-95"
                         >
-                          <RotateCcw size={15} />
+                          <RotateCcw size={14} />
                           <span>Đặt lại bộ lọc</span>
                         </button>
                       )}
@@ -274,9 +272,9 @@ export default function SpeciesTable({
                       {onOpenAddModal && (
                         <button
                           onClick={onOpenAddModal}
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-500/25 transition-all cursor-pointer active:scale-95"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-sm border border-sky-400/20 transition-all cursor-pointer active:scale-95"
                         >
-                          <Plus size={15} />
+                          <Plus size={14} />
                           <span>Thêm sinh vật mới</span>
                         </button>
                       )}
@@ -299,19 +297,19 @@ export default function SpeciesTable({
                     className={`transition-colors cursor-pointer ${
                       isExpanded
                         ? isDark
-                          ? "bg-[#25396e] border-l-4 border-cyan-400 font-semibold"
-                          : "bg-cyan-50/80 border-l-4 border-cyan-500 font-semibold text-slate-900"
+                          ? "bg-white/10 border-l-4 border-sky-400 font-semibold"
+                          : "bg-sky-50/80 border-l-4 border-sky-600 font-semibold text-slate-900"
                         : isDark
                           ? "hover:bg-white/5"
                           : "hover:bg-slate-50"
                     }`}
                   >
                     <td
-                      className="p-3.5 text-center"
+                      className="px-2 py-3.5 text-center"
                       onClick={(e) => handleToggleCheckRow(item.id, e)}
                     >
                       {isChecked ? (
-                        <CheckSquare size={14} className="text-cyan-400" />
+                        <CheckSquare size={14} className="text-sky-400" />
                       ) : (
                         <Square
                           size={14}
@@ -322,71 +320,98 @@ export default function SpeciesTable({
                       )}
                     </td>
                     <td
-                      className={`p-3.5 font-mono font-bold truncate ${
-                        isDark ? "text-cyan-300" : "text-cyan-700"
+                      className={`px-2.5 py-3.5 font-mono text-xs font-semibold truncate ${
+                        isDark ? "text-slate-200" : "text-slate-800"
                       }`}
                     >
                       {item.code}
                     </td>
                     <td
-                      className={`p-3.5 font-bold truncate ${
+                      className={`px-2.5 py-3.5 font-bold truncate ${
                         isDark ? "text-white" : "text-slate-900"
                       }`}
                     >
                       {item.name || item.scientificName || "Sinh vật biển"}
                     </td>
                     <td
-                      className={`p-3.5 font-mono truncate ${
-                        isDark ? "text-white/60" : "text-slate-500"
+                      className={`px-2.5 py-3.5 font-mono text-xs truncate ${
+                        isDark ? "text-slate-400" : "text-slate-500"
                       }`}
                     >
                       {item.gbifId}
                     </td>
-                    <td className="p-3.5 font-semibold truncate">
+                    <td className="px-2.5 py-3.5 font-medium truncate">
                       {item.source}
                     </td>
-                    <td className="p-3.5 truncate">{item.location}</td>
-                    <td className="p-3.5 truncate">
+                    <td className="px-2.5 py-3.5 truncate">{item.location}</td>
+                    <td className="px-2.5 py-3.5 truncate">
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          item.conservationCode === "CR"
-                            ? "bg-rose-500/20 text-rose-400 border border-rose-500/40"
+                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                          item.conservationCode === "CR" || item.conservationCode === "EX" || item.conservationCode === "EW"
+                            ? isDark
+                              ? "bg-rose-950/50 text-rose-300 border border-rose-800/60"
+                              : "bg-rose-50 text-rose-700 border border-rose-200"
                             : item.conservationCode === "EN"
-                              ? "bg-orange-500/20 text-orange-400 border border-orange-500/40"
-                              : "bg-amber-500/20 text-amber-400 border border-amber-500/40"
+                              ? isDark
+                                ? "bg-orange-950/50 text-orange-300 border border-orange-800/60"
+                                : "bg-orange-50 text-orange-700 border border-orange-200"
+                              : item.conservationCode === "VU"
+                                ? isDark
+                                  ? "bg-amber-950/50 text-amber-300 border border-amber-800/60"
+                                  : "bg-amber-50 text-amber-700 border border-amber-200"
+                                : item.conservationCode === "NT"
+                                  ? isDark
+                                    ? "bg-teal-950/50 text-teal-300 border border-teal-800/60"
+                                    : "bg-teal-50 text-teal-700 border border-teal-200"
+                                  : item.conservationCode === "LC"
+                                    ? isDark
+                                      ? "bg-emerald-950/50 text-emerald-300 border border-emerald-800/60"
+                                      : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                    : isDark
+                                      ? "bg-slate-800/60 text-slate-300 border border-slate-700/60"
+                                      : "bg-slate-100 text-slate-700 border border-slate-200"
                         }`}
                       >
                         {item.conservation}
                       </span>
                     </td>
                     <td
-                      className={`p-3.5 font-mono truncate ${
-                        isDark ? "text-white/70" : "text-slate-600"
+                      className={`px-2 py-3.5 text-center font-mono text-xs truncate ${
+                        isDark ? "text-slate-300" : "text-slate-600"
                       }`}
                     >
                       {(item.views || 0).toLocaleString()}
                     </td>
-                    <td className="p-3.5 text-right truncate">
+                    <td className="px-2.5 py-3.5 text-center truncate">
                       <span
-                        className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                           item.is_visible
-                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                            : "bg-gray-500/20 text-gray-400 border border-gray-500/30"
+                            ? isDark
+                              ? "bg-emerald-950/50 text-emerald-300 border border-emerald-800/50"
+                              : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : isDark
+                              ? "bg-slate-800/60 text-slate-400 border border-slate-700/50"
+                              : "bg-slate-100 text-slate-600 border border-slate-200"
                         }`}
                       >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            item.is_visible ? "bg-emerald-400" : "bg-slate-400"
+                          }`}
+                        />
                         {item.status}
                       </span>
                     </td>
-                    <td className="p-3.5 text-center" onClick={(e) => e.stopPropagation()}>
+                    <td className="px-2 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => setSelectedRowId(isExpanded ? null : item.id)}
                           className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                             isExpanded
-                              ? "bg-cyan-500/20 text-cyan-400"
+                              ? isDark ? "bg-white/15 text-white" : "bg-slate-200 text-slate-900"
                               : isDark
-                              ? "hover:bg-cyan-500/20 text-cyan-400"
-                              : "hover:bg-cyan-50 text-cyan-600"
+                              ? "text-slate-400 hover:text-white hover:bg-white/10"
+                              : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
                           }`}
                           title={isExpanded ? "Thu gọn chi tiết" : "Xem chi tiết sinh vật"}
                         >
@@ -396,8 +421,8 @@ export default function SpeciesTable({
                           onClick={(e) => handleOpenEditModal(item, e)}
                           className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                             isDark
-                              ? "hover:bg-amber-500/20 text-amber-400"
-                              : "hover:bg-amber-50 text-amber-600"
+                              ? "text-slate-400 hover:text-amber-300 hover:bg-amber-950/30"
+                              : "text-slate-500 hover:text-amber-700 hover:bg-amber-50"
                           }`}
                           title="Chỉnh sửa thông tin"
                         >

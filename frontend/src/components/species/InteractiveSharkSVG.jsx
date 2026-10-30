@@ -50,7 +50,7 @@ export function InteractiveSharkSVG({
         className="w-full h-auto drop-shadow-2xl"
         preserveAspectRatio="xMidYMid meet"
       >
-        {/* Lớp viền mờ (Base wireframe) - luôn hiển thị để làm nền */}
+        {/* Khung viền nền */}
         <g
           className="opacity-15 pointer-events-none"
           stroke="white"
@@ -64,7 +64,7 @@ export function InteractiveSharkSVG({
           <polygon points="800,180 950,80 920,200 950,320 800,220" />
         </g>
 
-        {/* Lớp 0: Ngoại hình (cyan) */}
+        {/* Lớp ngoại hình */}
         <g>
           <polygon
             points="100,200 200,170 300,150 450,140 530,145 800,180 800,220 500,260 350,250 250,230 200,210"
@@ -88,7 +88,7 @@ export function InteractiveSharkSVG({
           />
         </g>
 
-        {/* Lớp 1: Giác quan (amber) */}
+        {/* Lớp giác quan */}
         <g>
           <g {...getProps("s1", 1, "amber")} fill="none">
             <circle cx="130" cy="195" r="4" />
@@ -111,7 +111,7 @@ export function InteractiveSharkSVG({
           <circle cx="220" cy="185" r="8" {...getProps("s4", 1, "amber")} />
         </g>
 
-        {/* Lớp 2: Cơ bắp (rose) */}
+        {/* Lớp cơ bắp */}
         <g>
           <polygon
             points="220,210 250,190 280,220 250,230"
@@ -131,7 +131,7 @@ export function InteractiveSharkSVG({
           />
         </g>
 
-        {/* Lớp 3: Nội tạng (blue) */}
+        {/* Lớp nội tạng */}
         <g>
           <polygon
             points="180,200 220,210 200,220"
@@ -155,7 +155,7 @@ export function InteractiveSharkSVG({
           />
         </g>
 
-        {/* Lớp 4: Xương sụn (slate) */}
+        {/* Lớp xương sụn */}
         <g>
           <polygon
             points="150,185 280,160 280,190 150,200"

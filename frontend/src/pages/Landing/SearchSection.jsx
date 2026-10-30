@@ -98,7 +98,7 @@ export default function SearchSection() {
               </form>
             </div>
 
-            {/* Visual (5 Oceans Map Canvas) */}
+            {/* Bản đồ đại dương */}
             <div className="flex justify-center items-center">
               <div className="relative w-64 h-60">
                 <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.06)_0%,transparent_70%)] animate-pulse-glow" />

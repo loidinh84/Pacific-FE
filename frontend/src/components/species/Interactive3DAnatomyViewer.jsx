@@ -84,7 +84,7 @@ export function Interactive3DAnatomyViewer({
   const [isClipping, setIsClipping] = useState(false);
   const [clipX, setClipX] = useState(0);
   const [showPins, setShowPins] = useState(false); // Idea 3: 3D Callout Pins (mặc định tắt để tránh rối mắt)
-  const [activeSystem, setActiveSystem] = useState("all"); // Idea 2: Organ Systems Filter
+  const [activeSystem, setActiveSystem] = useState("all"); // Bộ lọc hệ cơ quan
   const [hoveredPart, setHoveredPart] = useState(null);
   const hoveredPartRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
@@ -123,7 +123,7 @@ export function Interactive3DAnatomyViewer({
     activePartRef.current = activePart;
   }, [activePart]);
 
-  // Kiểm tra xem viewer có đang ở chế độ giải phẫu (X-Ray, Bóc tách, Lọc hệ cơ quan, Chọn bộ phận, hoặc Ghim nhãn)
+  // Kiểm tra trạng thái chế độ giải phẫu
   const isAnatomyActive =
     isXRay ||
     explodePercent > 2 ||
@@ -137,7 +137,7 @@ export function Interactive3DAnatomyViewer({
   );
   const originalPositionsRef = useRef(new Map());
 
-  // Lựa chọn cơ quan & bay camera lấy nét (Focus Mode - Idea 1)
+  // Lấy nét camera vào cơ quan được chọn
   const handleSelectPartDirectly = useCallback(
     (partMeta) => {
       if (!partMeta) {
@@ -180,7 +180,7 @@ export function Interactive3DAnatomyViewer({
     [onSelectPart, anatomyPreset],
   );
 
-  // Phản ứng khi prop selectedPartId từ trang cha thay đổi (chỉ điều khiển camera)
+  // Cập nhật vị trí camera theo cơ quan được chọn
   useEffect(() => {
     if (selectedPartId) {
       const found = partsMetadata.find((p) => p.id === selectedPartId);
@@ -280,7 +280,7 @@ export function Interactive3DAnatomyViewer({
     fillLight.position.set(0, -6, 4);
     scene.add(fillLight);
 
-    // Vòng phát quang đáy đại dương sâu thẳm dịu nhẹ (thay cho sàn lưới cứng)
+    // Hiệu ứng vòng phát quang đáy đại dương
     const oceanFloorGeo = new THREE.RingGeometry(1.5, 6.5, 36);
     oceanFloorGeo.rotateX(-Math.PI / 2);
     const oceanFloorMat = new THREE.MeshBasicMaterial({
@@ -317,7 +317,7 @@ export function Interactive3DAnatomyViewer({
       p.visible = false;
     });
 
-    // Idea 4: Dòng chảy hạt máu sinh học dọc động mạch chủ
+    // Hiệu ứng dòng chảy hạt máu
     const bloodSim = anatomyPreset.buildBloodSim
       ? anatomyPreset.buildBloodSim(aortaCurve)
       : null;
@@ -327,12 +327,12 @@ export function Interactive3DAnatomyViewer({
       bloodSimRef.current = bloodSim;
     }
 
-    // Idea 4 & Môi trường nước biển: Marine snow (bụi biển)
+    // Hiệu ứng bụi biển lơ lửng
     const marineSnow = createMarineSnow();
     scene.add(marineSnow.points);
     marineSnowRef.current = marineSnow;
 
-    // Idea 4 & Sinh vật bơi xung quanh: Đàn cá hoa tiêu bơi lượn
+    // Hiệu ứng cá hoa tiêu bơi lượn
     const { schoolGroup, fishList } = createPilotFishSchool();
     scene.add(schoolGroup);
     fishSchoolRef.current = { schoolGroup, fishList };
@@ -342,7 +342,7 @@ export function Interactive3DAnatomyViewer({
       originalPositionsRef.current.set(p.name, p.position.clone());
     });
 
-    // 7. Nạp con cá mập 3D thực thụ từ file GLB (public/models/shark.glb)
+    // Tải mô hình 3D cá mập
     const loader = new GLTFLoader();
     loader.load(
       resolvedModelUrl,
@@ -445,13 +445,13 @@ export function Interactive3DAnatomyViewer({
           : 0.4 + pulse * 0.18;
       }
 
-      // Idea 4: Xung điện trường sinh học Ampullae of Lorenzini
+      // Xung điện trường Lorenzini
       if (ampMatRef.current) {
         const ampPulse = Math.sin(elapsedTime * 5.5);
         ampMatRef.current.emissiveIntensity = 0.4 + ampPulse * 0.28;
       }
 
-      // Idea 4: Dòng chảy hạt máu dọc động mạch chủ (Physiological Blood Flow)
+      // Hiệu ứng dòng chảy hạt máu dọc động mạch chủ
       if (bloodSimRef.current?.instMesh?.visible) {
         const {
           instMesh,
@@ -470,7 +470,7 @@ export function Interactive3DAnatomyViewer({
         instMesh.instanceMatrix.needsUpdate = true;
       }
 
-      // Idea 4 & Nước biển: Phù du đại dương trôi dạt lơ lửng êm dịu trong dòng nước sâu
+      // Hiệu ứng bụi biển lơ lửng
       if (marineSnowRef.current) {
         const { points, positions, speeds, count } = marineSnowRef.current;
         for (let i = 0; i < count; i++) {
@@ -483,7 +483,7 @@ export function Interactive3DAnatomyViewer({
         points.geometry.attributes.position.needsUpdate = true;
       }
 
-      // Idea 4 & Sinh vật bơi xung quanh: Đàn cá hoa tiêu bơi lượn uốn khúc nền xa
+      // Hiệu ứng cá hoa tiêu nền xa
       if (fishSchoolRef.current) {
         const { schoolGroup, fishList } = fishSchoolRef.current;
         // Ẩn cá nhỏ khi bật X-Ray, khi đang soi kỹ 1 cơ quan, hoặc khi đang kéo bóc tách để không làm sao nhãng
@@ -520,7 +520,7 @@ export function Interactive3DAnatomyViewer({
         sharkMeshRef.current.rotation.y = -Math.PI / 2;
       }
 
-      // Idea 1: Camera Smooth Lerp tới cơ quan đang lấy nét
+      // Di chuyển camera tới cơ quan được chọn
       if (
         isFocusLerpingRef.current &&
         cameraRef.current &&
@@ -537,7 +537,7 @@ export function Interactive3DAnatomyViewer({
         }
       }
 
-      // Idea 3: Cập nhật vị trí các ghim nhãn 3D trong không gian chính xác tại từng cơ quan
+      // Cập nhật vị trí nhãn 3D
       if (
         pinsContainerRef.current &&
         showPinsRef.current &&
@@ -648,7 +648,7 @@ export function Interactive3DAnatomyViewer({
     isXRayRef.current = isXRay;
   }, [isXRay]);
 
-  // ── Bóc tách 3D theo tỷ lệ explodePercent (vị trí không gian) ──
+  // Bóc tách mô hình 3D theo tỷ lệ vị trí
   useEffect(() => {
     const f = explodePercent / 100;
     partsRef.current.forEach((partGroup) => {
@@ -663,7 +663,7 @@ export function Interactive3DAnatomyViewer({
     });
   }, [explodePercent]);
 
-  // ── IDEA 1 (Focus/Solo Mode) & IDEA 2 (Organ Systems Filter) & X-Ray Opacities ──
+  // Xử lý độ trong suốt theo bộ lọc hệ cơ quan
   useEffect(() => {
     const f = explodePercent / 100;
     const isAnatomyActive =
@@ -674,7 +674,7 @@ export function Interactive3DAnatomyViewer({
       bloodSimRef.current.instMesh.visible = isAnatomyActive;
     }
 
-    // 1. Nếu đang có cơ quan được chọn (Solo Focus Mode - Idea 1)
+    // Trường hợp có cơ quan đang được chọn
     if (activePart) {
       partsRef.current.forEach((group) => {
         if (group.name !== "part_skin") {
@@ -706,7 +706,7 @@ export function Interactive3DAnatomyViewer({
       return;
     }
 
-    // 2. Nếu đang lọc theo hệ cơ quan (Organ Systems Filter - Idea 2)
+    // Trường hợp lọc theo hệ cơ quan
     if (activeSystem !== "all") {
       partsRef.current.forEach((group) => {
         const pData = group.userData;
@@ -740,7 +740,7 @@ export function Interactive3DAnatomyViewer({
       return;
     }
 
-    // 3. Chế độ mặc định (Hiển thị đầy đủ hoặc X-Ray hoặc Bóc tách)
+    // Chế độ hiển thị mặc định
     partsRef.current.forEach((group) => {
       if (group.name !== "part_skin") {
         // Chỉ hiển thị nội tạng khi X-Ray bật HOẶC đang bóc tách f > 0.02
@@ -771,7 +771,7 @@ export function Interactive3DAnatomyViewer({
             child.material.emissiveIntensity = 0.45;
             child.material.depthWrite = false;
           } else {
-            // Chế độ giải phẫu thông thường (không X-Ray):
+            // Chế độ giải phẫu thông thường
             if (f <= 0.02) {
               // Mức 0% bóc tách: Da cá nguyên vẹn, dày dặn, che phủ tự nhiên 100% như cá thật
               child.material.transparent = false;
@@ -851,7 +851,7 @@ export function Interactive3DAnatomyViewer({
       }
     }
 
-    // Nếu người dùng đang thực sự xoay camera (Orbiting hoặc đang kéo chuột)
+    // Kiểm tra trạng thái xoay camera
     if (isOrbitingRef.current || (e.buttons > 0 && didDragRef.current)) {
       if (!isHoveringModalRef.current) {
         if (hoverTimeoutRef.current) {
@@ -866,7 +866,7 @@ export function Interactive3DAnatomyViewer({
     const container = mountRef.current;
     if (!container || !cameraRef.current || !sceneRef.current) return;
 
-    // Chỉ kích hoạt Raycast bắt nội tạng khi đang ở chế độ giải phẫu (X-Ray, Bóc tách > 2%, Lọc hệ cơ quan, hoặc Đang chọn bộ phận, hoặc Bật nhãn)
+    // Kích hoạt tương tác chọn nội tạng
     const isAnatomyInspectable =
       isXRayRef.current ||
       explodePercentRef.current > 2 ||
@@ -974,7 +974,7 @@ export function Interactive3DAnatomyViewer({
     if (hoveredPart) {
       handleSelectPartDirectly(hoveredPart);
     } else if (activePart) {
-      // Nhấp vào vùng trống đại dương: Tự động thoát lấy nét và bay camera mượt mà về lại toàn cảnh!
+      // Đặt lại camera về góc nhìn toàn cảnh
       handleSelectPartDirectly(null);
     }
   }, [hoveredPart, activePart, handleSelectPartDirectly]);
@@ -1028,7 +1028,7 @@ export function Interactive3DAnatomyViewer({
           className="w-full h-[520px] md:h-[560px] cursor-grab active:cursor-grabbing"
         />
 
-        {/* ── IDEA 3: 3D Callout Pins (Ghim nhãn 3D trong không gian tại từng cơ quan) ── */}
+        {/* Nhãn vị trí cơ quan */}
         {showPins && (
           <div
             ref={pinsContainerRef}
@@ -1130,7 +1130,7 @@ export function Interactive3DAnatomyViewer({
           </button>
         )}
 
-        {/* ── Floating 3D Control Action Bar (Góc trên bên phải) ── */}
+        {/* Thanh điều khiển 3D */}
         <div
           onPointerEnter={handlePointerLeave}
           className="absolute top-4 right-4 flex items-center gap-1.5 bg-slate-950/80 p-1.5 rounded-xl border border-white/15 backdrop-blur-md shadow-xl z-10"
@@ -1156,7 +1156,7 @@ export function Interactive3DAnatomyViewer({
             onClick={() => {
               setShowPins((prev) => {
                 const next = !prev;
-                // Nếu người dùng tắt nhãn trong khi đang zoom lấy nét 1 cơ quan, tự động đưa camera và trạng thái về lại toàn cảnh!
+                // Đưa camera về toàn cảnh khi tắt nhãn
                 if (!next && activePart) {
                   handleSelectPartDirectly(null);
                 }
@@ -1202,7 +1202,7 @@ export function Interactive3DAnatomyViewer({
             <span>{isWireframe ? "Lưới: Bật" : "Lưới"}</span>
           </button>
 
-          {/* Mặt cắt vi phẫu 3D (Clipping Plane) */}
+          {/* Mặt cắt vi phẫu 3D */}
           <button
             onClick={() => setIsClipping((prev) => !prev)}
             className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
@@ -1234,7 +1234,7 @@ export function Interactive3DAnatomyViewer({
           </button>
         </div>
 
-        {/* ── IDEA 2: Organ Systems Filter Dock (Thanh phân loại hệ cơ quan dưới đáy) ── */}
+        {/* Bộ lọc hệ cơ quan */}
         <div
           onPointerEnter={handlePointerLeave}
           className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-slate-950/70 backdrop-blur-md px-2 py-1 rounded-full border border-white/10 shadow-sm z-10 max-w-[94%] overflow-x-auto scrollbar-none"
@@ -1267,7 +1267,7 @@ export function Interactive3DAnatomyViewer({
           })}
         </div>
 
-        {/* ── Thanh trượt vị trí mặt cắt (nếu bật chế độ Clipping) ── */}
+        {/* Thanh trượt vị trí mặt cắt */}
         {isClipping && (
           <div className="absolute top-16 right-4 flex items-center gap-2 bg-slate-950/90 px-3 py-1.5 rounded-xl border border-amber-400/40 backdrop-blur-md shadow-lg z-10 animate-fadeIn">
             <Scissors size={13} className="text-amber-400" />
@@ -1284,7 +1284,7 @@ export function Interactive3DAnatomyViewer({
           </div>
         )}
 
-        {/* ── Hovered Part Floating Modal (Không biến mất ngay, cho phép bôi đen & copy thủ công) ── */}
+        {/* Modal thông tin chi tiết bộ phận */}
         {isAnatomyInspectable &&
           hoveredPart &&
           hoveredPart.id !== activePart?.id && (

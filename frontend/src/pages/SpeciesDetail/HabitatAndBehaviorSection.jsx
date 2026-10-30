@@ -20,7 +20,7 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
   const [activeTab, setActiveTab] = useState("habitat");
   const isEn = language === "en";
 
-  // Trích xuất độ sâu số học (mét)
+  // Trích xuất độ sâu
   const depthMetrics = useMemo(() => {
     let minM = 0;
     let maxM = 100;
@@ -373,9 +373,9 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
       {/* ─── 2. NỘI DUNG TAB 1: SINH CẢNH & PHÂN BỐ TẠI BIỂN ĐÔNG ─── */}
       {activeTab === "habitat" && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in duration-300">
-          {/* Cột trái (7 cols): Tầng nước sinh thái & Vùng phân bố địa phương */}
+          {/* Tầng nước sinh thái và vùng phân bố */}
           <div className="lg:col-span-7 space-y-5">
-            {/* Thẻ Tầng nước sinh thái - Bề mặt kính sáng màu (Frosted Glass) */}
+            {/* Thẻ tầng nước sinh thái */}
             <div className="p-6 rounded-2xl bg-gradient-to-br from-[#122647]/90 via-[#0e1f3a]/90 to-[#0a182e]/90 border border-sky-400/25 relative overflow-hidden backdrop-blur-xl">
               <div className="flex items-start justify-between gap-4 mb-3">
                 <div className="flex items-center gap-2.5">
@@ -479,7 +479,7 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
             </div>
           </div>
 
-          {/* Cột phải (5 cols): Danh sách kiểu sinh cảnh */}
+          {/* Danh sách sinh cảnh */}
           <div className="lg:col-span-5 space-y-4">
             <h4 className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
               <Shield size={14} className="text-cyan-400" />

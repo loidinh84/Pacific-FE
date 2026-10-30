@@ -13,7 +13,7 @@ const getAuthHeaders = () => {
 };
 
 /**
- * Lấy mạng lưới tri thức sinh thái của 1 loài (Ego Network)
+ * Lấy mạng lưới tri thức sinh thái của một loài
  * @param {string|number} idOrSlug - ID hoặc Slug của loài
  * @returns {Promise<Object>}
  */
@@ -31,7 +31,7 @@ export const fetchSpeciesEcosystem = async (idOrSlug) => {
 };
 
 /**
- * Lấy toàn bộ Đồ thị Tri thức Đa dạng Sinh thái Biển Đông (Nodes & Links)
+ * Lấy toàn bộ đồ thị sinh thái Biển Đông
  * @param {Object} filters { zone, groupId, redList, type, limit }
  * @returns {Promise<Object>}
  */
@@ -68,7 +68,7 @@ export const fetchEcosystemStats = async () => {
 };
 
 /**
- * Tìm kiếm Ngữ nghĩa Sinh thái Biển Đông (Semantic Natural Language Search)
+ * Tìm kiếm ngữ nghĩa sinh thái Biển Đông
  * Nhận diện câu hỏi: "thiên địch của sao biển gai", "cộng sinh với hải quỳ", "nguy cấp ở Côn Đảo", v.v.
  * @param {string} query
  * @returns {Promise<Object>}

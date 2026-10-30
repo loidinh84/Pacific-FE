@@ -10,12 +10,12 @@ import {
 } from "./newsUtils";
 
 /**
- * NewsCard — Thẻ hiển thị 1 bài viết (dùng chung cho trang Tin tức & bài liên quan)
+ * Thẻ hiển thị bài viết
  *
- * @param {object}  article  Bài viết (cấu trúc giống bảng news_articles)
+ * @param {object}  article  Dữ liệu bài viết
  * @param {"default"|"compact"} variant
- *   - default: thẻ dọc có ảnh lớn (lưới tin)
- *   - compact: thẻ ngang nhỏ gọn (cột tin nổi bật phụ)
+ *   - default: thẻ dạng lưới
+ *   - compact: thẻ dạng danh sách nhỏ
  */
 export function NewsCard({ article, variant = "default", style }) {
   const { t, language } = useLanguage();

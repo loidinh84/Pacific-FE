@@ -35,7 +35,7 @@ export default function SpeciesExpandedDetail({
     <tr>
       <td
         colSpan={10}
-        className={`p-0 border-b-2 border-cyan-500/40 ${
+        className={`p-0 border-b-2 border-sky-500/30 ${
           isDark ? "bg-[#16254e]/95" : "bg-slate-100/90"
         }`}
       >
@@ -50,7 +50,7 @@ export default function SpeciesExpandedDetail({
               onClick={() => setActiveDetailTab("info")}
               className={`pb-2 transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeDetailTab === "info"
-                  ? "text-cyan-400 border-b-2 border-cyan-400"
+                  ? "text-sky-300 border-b-2 border-sky-400"
                   : isDark
                   ? "text-white/50 hover:text-white"
                   : "text-slate-500 hover:text-slate-900"
@@ -62,7 +62,7 @@ export default function SpeciesExpandedDetail({
               onClick={() => setActiveDetailTab("stats")}
               className={`pb-2 transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeDetailTab === "stats"
-                  ? "text-cyan-400 border-b-2 border-cyan-400"
+                  ? "text-sky-300 border-b-2 border-sky-400"
                   : isDark
                   ? "text-white/50 hover:text-white"
                   : "text-slate-500 hover:text-slate-900"

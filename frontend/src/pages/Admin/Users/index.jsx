@@ -1175,7 +1175,7 @@ const UserDetailModal = ({
             isDark ? "border-white/10 bg-white/5" : "border-slate-200 bg-slate-50/70"
           }`}
         >
-          {/* Quick Actions (if not self) */}
+          {/* Thao tác nhanh */}
           <div className="flex flex-wrap items-center gap-2">
             {detail && currentAdmin?.id !== detail.id && (
               <>
@@ -1520,7 +1520,7 @@ export default function UsersManagement() {
     showToast(`Đã xuất ${userList.length} người dùng ra CSV!`, "success");
   };
 
-  // Summary stats (from current page)
+  // Thống kê trang hiện tại
   const pageStats = useMemo(() => {
     const active = userList.filter((u) => u.status === "active").length;
     const locked = userList.filter((u) => u.status === "locked").length;
@@ -1766,7 +1766,7 @@ export default function UsersManagement() {
         </span>
       </div>
 
-      {/* ── MAIN LAYOUT: TABLE (full width, detail is a modal) ── */}
+      {/* Bảng danh sách người dùng */}
       <div className="grid grid-cols-1 gap-5">
         {/* TABLE */}
         <div className="col-span-1">

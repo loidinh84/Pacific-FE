@@ -17,7 +17,7 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
     setStatusMessage(null);
 
     try {
-      // Call backend API (or fallback for UI test)
+      // Gọi API khôi phục mật khẩu
       const res = await axios.post("/api/auth/forgot-password", { email });
       setStatusMessage({
         type: "success",

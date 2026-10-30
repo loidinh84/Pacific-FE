@@ -106,7 +106,7 @@
   animation: spin 20s linear infinite;
 }
 
-/* Custom Scrollbar (Vertical & Horizontal) */
+/* Thanh cuộn tùy chỉnh */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;

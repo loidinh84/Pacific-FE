@@ -31,7 +31,7 @@ body {
   transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ── 1. Tia nắng khúc xạ mặt nước (Sun Shafts / God Rays) ── */
+/* Tia nắng khúc xạ mặt nước */
 .od-sun-rays {
   position: absolute;
   top: -25%;
@@ -61,7 +61,7 @@ body {
   100% { transform: rotate(-2deg) scale(1.02); opacity: 0.9; }
 }
 
-/* ── 2. Gợn sóng phản quang tầng nông (Water Caustics) ── */
+/* Gợn sóng phản quang tầng nông */
 .od-water-caustics {
   position: absolute;
   top: 0;
@@ -86,7 +86,7 @@ body {
   100% { transform: scale(0.95) translateY(6px); filter: blur(20px); opacity: 0.9; }
 }
 
-/* ── 3. Sương mù quang học đại dương (Underwater Depth Fog) ── */
+/* Sương mù đại dương */
 .od-water-depth-fog {
   position: absolute;
   inset: 0;
@@ -95,7 +95,7 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* ── 4. Bóng tối tự nhiên tăng dần (Physical Darkness Attenuation) ── */
+/* Hiệu ứng bóng tối theo độ sâu */
 .od-depth-darkness {
   position: absolute;
   inset: 0;
@@ -104,7 +104,7 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* ── 5. Đèn pha tàu thám hiểm ROV (Subsea Expedition Spotlight) ── */
+/* Đèn pha tàu thám hiểm */
 .od-subsea-spotlight {
   position: absolute;
   inset: 0;
@@ -125,7 +125,7 @@ body {
   50% { transform: scale(1.05) translate(-15px, 12px); }
 }
 
-/* ── 6. Hạt lơ lửng: Bọt khí, Tuyết biển, Lân tinh phát quang ── */
+/* Hạt lơ lửng */
 .od-particles {
   position: fixed;
   inset: 0;
@@ -139,7 +139,7 @@ body {
   border-radius: 50%;
 }
 
-/* Bọt khí nước biển (nổi lên) */
+/* Bọt khí nước biển */
 .od-particle.bubble {
   background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.7) 0%, rgba(56, 189, 248, 0.35) 60%, rgba(14, 165, 233, 0.6) 100%);
   box-shadow: 0 0 6px rgba(56, 189, 248, 0.4), inset 0 0 4px rgba(255, 255, 255, 0.6);
@@ -147,7 +147,7 @@ body {
   opacity: 0.75;
 }
 
-/* Tuyết biển hữu cơ (chìm xuống nhẹ nhàng) */
+/* Tuyết biển */
 .od-particle.snow {
   background: rgba(224, 242, 254, 0.55);
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
@@ -282,7 +282,7 @@ body {
   pointer-events: none;
 }
 
-/* Vạch chia nhỏ (minor & medium ticks) */
+/* Vạch chia nhỏ */
 .od-ruler-subticks {
   position: absolute;
   left: 21px;
@@ -309,7 +309,7 @@ body {
   background: rgba(56, 189, 248, 0.38);
 }
 
-/* Vạch chia chính (Major ticks có nút bấm nhảy độ sâu) */
+/* Vạch chia chính */
 .od-ruler-major-ticks {
   position: absolute;
   left: 21px;
@@ -379,7 +379,7 @@ body {
   font-weight: 800;
 }
 
-/* Con trỏ định vị độ sâu trực tiếp (Live Cursor) */
+/* Con trỏ độ sâu */
 .od-ruler-cursor {
   position: absolute;
   left: 12px;
@@ -509,7 +509,7 @@ body {
   transition: none;
 }
 
-/* ── Thanh tiêu đề (drag handle) ── */
+/* Thanh tiêu đề */
 .od-hud-titlebar {
   display: flex;
   align-items: center;
@@ -813,7 +813,7 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* ── Sinh vật (cột giữa: 18–62%) ── */
+/* Sinh vật cột giữa */
 .od-creature-node {
   display: flex;
   flex-direction: column;
@@ -872,7 +872,7 @@ body {
   100% { transform: translateY(6px); }
 }
 
-/* ── Landmark (cột phải: 68–89%) ── */
+/* Cột mốc */
 .od-landmark-node {
   position: relative;
   background: rgba(10, 18, 35, 0.88);
@@ -889,7 +889,7 @@ body {
   gap: 5px;
 }
 
-/* Đường nối từ landmark sang trái (hướng về cột sinh vật) */
+/* Đường nối cột mốc */
 .od-landmark-connector {
   position: absolute;
   right: 100%;

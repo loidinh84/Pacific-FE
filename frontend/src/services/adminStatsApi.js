@@ -11,7 +11,7 @@ const getAuthHeaders = () => {
 };
 
 /**
- * Lấy dữ liệu tổng quan (User, Content, Comments, Activities)
+ * Lấy dữ liệu tổng quan thống kê
  */
 export const fetchAdminOverviewStats = async () => {
   const res = await axios.get(`${API_BASE}/overview`, getAuthHeaders());
@@ -19,7 +19,7 @@ export const fetchAdminOverviewStats = async () => {
 };
 
 /**
- * Lấy dữ liệu biểu đồ 7 ngày / 30 ngày (lượt xem, user mới)
+ * Lấy dữ liệu biểu đồ tăng trưởng
  */
 export const fetchAdminChartStats = async (days = 7) => {
   const res = await axios.get(`${API_BASE}/charts`, {
@@ -30,7 +30,7 @@ export const fetchAdminChartStats = async (days = 7) => {
 };
 
 /**
- * Lấy bảng xếp hạng (Top species, phân bố tầng, top user)
+ * Lấy bảng xếp hạng thống kê
  */
 export const fetchAdminRankingsStats = async () => {
   const res = await axios.get(`${API_BASE}/rankings`, getAuthHeaders());

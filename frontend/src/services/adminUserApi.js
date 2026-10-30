@@ -11,7 +11,7 @@ const getAuthHeaders = () => {
 };
 
 /**
- * Lấy danh sách người dùng (phân trang, tìm kiếm, lọc)
+ * Lấy danh sách người dùng
  * @param {Object} params - { page, limit, search, role, status, sortBy, order }
  */
 export const fetchAdminUserList = async (params = {}) => {
@@ -32,7 +32,7 @@ export const fetchAdminUserById = async (id) => {
 };
 
 /**
- * Cập nhật trạng thái người dùng (active | locked | pending)
+ * Cập nhật trạng thái người dùng
  * @param {string} id - User ID
  * @param {string} status - "active" | "locked" | "pending"
  */
@@ -46,7 +46,7 @@ export const updateAdminUserStatus = async (id, status) => {
 };
 
 /**
- * Cập nhật vai trò người dùng (user | top_fan | expert | moderator | admin | super_admin)
+ * Cập nhật vai trò người dùng
  * @param {string} id - User ID
  * @param {string} role - Vai trò mới
  * @param {string} [confirmPassword] - Mật khẩu xác nhận của Admin
@@ -65,7 +65,7 @@ export const updateAdminUserRole = async (id, role, confirmPassword = "") => {
 /**
  * Đặt lại mật khẩu người dùng về mặc định
  * @param {string} id - User ID
- * @param {string} newPassword - Mật khẩu mới (mặc định: "Pacific@123")
+ * @param {string} newPassword - Mật khẩu mới
  */
 export const resetAdminUserPassword = async (id, newPassword = "Pacific@123") => {
   const res = await axios.post(
@@ -77,7 +77,7 @@ export const resetAdminUserPassword = async (id, newPassword = "Pacific@123") =>
 };
 
 /**
- * Lấy lịch sử hoạt động của người dùng (bình luận, yêu thích, địa điểm)
+ * Lấy lịch sử hoạt động của người dùng
  * @param {string} id - User ID
  * @param {number} limit - Số lượng tối đa mỗi loại
  */
@@ -90,7 +90,7 @@ export const fetchAdminUserActivity = async (id, limit = 10) => {
 };
 
 /**
- * Lấy thông báo admin (pending reports, pending users)
+ * Lấy thông báo chờ duyệt
  */
 export const fetchAdminNotifications = async () => {
   const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";

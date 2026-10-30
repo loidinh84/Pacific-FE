@@ -1,7 +1,7 @@
 import { sharkAnatomyPreset } from "./presets/sharkAnatomyPreset";
 
 /**
- * Bộ đăng ký các mẫu giải phẫu sinh học biển (Anatomy Presets Registry)
+ * Bộ đăng ký các mẫu giải phẫu sinh học biển
  * Cho phép tự động phát hiện loài và cấp đúng bộ giải phẫu 3D tương ứng.
  */
 const PRESETS_MAP = {

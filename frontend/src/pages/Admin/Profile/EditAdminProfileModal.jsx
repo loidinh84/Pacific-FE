@@ -341,7 +341,7 @@ function EditAdminProfileModalContent({
             </div>
           )}
 
-          {/* Tiểu sử (Bio) */}
+          {/* Tiểu sử */}
           <div>
             <div className="flex justify-between items-center mb-1.5">
               <label className="block text-xs font-semibold text-slate-200">

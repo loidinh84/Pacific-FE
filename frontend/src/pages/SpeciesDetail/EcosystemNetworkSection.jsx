@@ -241,7 +241,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
     );
   }, [roles]);
 
-  // Node trung tâm (Ego Species)
+  // Node trung tâm
   const centerNode = useMemo(() => {
     const nodes = ecoData?.graph?.nodes || [];
     const centerFromGraph = nodes.find((n) => n.isCenter);
@@ -345,13 +345,13 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
     });
   }, [ecoData, centerNode]);
 
-  // Tọa độ hình tròn cho các node vệ tinh (Orbital Coordinates) với bán kính mở rộng tránh đè nhãn
+  // Tọa độ hình tròn cho các node vệ tinh
   const orbitalNodes = useMemo(() => {
     const count = satelliteNodes.length;
     if (count === 0) return [];
 
     return satelliteNodes.map((node, i) => {
-      // Phân bổ đều theo hình tròn (bắt đầu từ góc -90 độ / 12h)
+      // Phân bổ đều theo hình tròn
       const angle = (2 * Math.PI * i) / count - Math.PI / 2;
       const radiusX = 230;
       const radiusY = 165;
@@ -424,7 +424,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
     [selectedRelationFilter]
   );
 
-  // Phân tầng Tháp Dinh Dưỡng tự động theo sinh thái học thực thụ (Dynamic Trophic Hierarchy)
+  // Phân tầng tháp dinh dưỡng
   const pyramidTiers = useMemo(() => {
     const hasPredators = roles.predators && roles.predators.length > 0;
     const hasPrey = roles.prey && roles.prey.length > 0;
@@ -441,7 +441,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
     });
 
     if (hasPredators) {
-      // Trường hợp 1: Loài khảo sát có thiên địch săn bắt nó (Mesopredator hoặc Con mồi)
+      // Trường hợp loài có thiên địch
       return {
         apex: {
           level: isEn ? "Rank III / IV" : "Bậc III / IV",
@@ -505,7 +505,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         },
       };
     } else {
-      // Trường hợp 2: Loài khảo sát là Kẻ săn mồi đỉnh bảng (Apex Predator)
+      // Trường hợp loài là kẻ săn mồi đỉnh bảng
       const mesopredators = [];
       const primaryPrey = [];
 
@@ -604,11 +604,11 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
   // Định vị tooltip/modal thông minh luôn hướng vào khoảng trống trung tâm, tránh bị che khuất
   const getTooltipPositionClass = (x, y) => {
-    // Nếu node ở nửa trên đồ thị (y < -30) -> mở xuống dưới để không tràn viền trên
+    // Mở tooltip xuống dưới nếu node ở nửa trên đồ thị
     const verticalClass = y < -30 ? "top-full mt-3" : "bottom-full mb-3";
 
-    // Nếu node ở bên trái (x < -50) -> mở lệch sang phải (vào tâm)
-    // Nếu node ở bên phải (x > 50) -> mở lệch sang trái (vào tâm)
+    // Mở tooltip sang phải nếu node ở bên trái
+    // Mở tooltip sang trái nếu node ở bên phải
     let horizontalClass = "left-1/2 -translate-x-1/2";
     if (x < -50) {
       horizontalClass = "left-0";
@@ -768,7 +768,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             </span>
           </div>
 
-          {/* Chú giải & Bộ lọc tương tác (Interactive Filter Chips) */}
+          {/* Chú giải và bộ lọc */}
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
             <button
               onClick={() => setSelectedRelationFilter("all")}
@@ -902,7 +902,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             </p>
           </div>
         ) : viewMode === "orbit" ? (
-          /* ─── VIEW 1: BIOLUMINESCENT ORBITAL UNIVERSE (RESIZED SVG STAGE) ─── */
+          /* Đồ thị mạng lưới sinh thái */
           <div
             ref={containerRef}
             className="relative h-[500px] md:h-[550px] w-full flex items-center justify-center overflow-hidden select-none"
@@ -921,7 +921,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 transformOrigin: "center center",
               }}
             >
-              {/* Quét Radar Sonar đại dương xoay tròn dịu nhẹ (Oceanic Sonar Sweep) */}
+              {/* Hiệu ứng radar quét xoay */}
               <div className="absolute w-[460px] h-[460px] rounded-full pointer-events-none overflow-hidden opacity-25 animate-[spin_12s_linear_infinite]">
                 <div className="w-full h-full bg-[conic-gradient(from_0deg,transparent_0_310deg,rgba(56,189,248,0.22)_360deg)]" />
               </div>
@@ -935,7 +935,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
               <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent pointer-events-none" />
               <div className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-cyan-500/10 to-transparent pointer-events-none" />
 
-              {/* SVG CHUẨN TỌA ĐỘ SỐ (0,0 LÀ TÂM ĐỒ THỊ) */}
+              {/* Đồ thị SVG */}
               <svg
                 className="absolute inset-0 pointer-events-none"
                 width={STAGE.w}
@@ -958,7 +958,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                   const strokeColor = n.meta.color;
                   const strokeWidth = isHovered ? 3.5 : 1.8 + (n.strength ?? 1) * 1.1;
 
-                  // Tọa độ số học chuẩn (gốc 0,0 là tâm)
+                  // Tọa độ số học chuẩn với gốc tại tâm
                   const d = `M 0 0 Q ${n.x * 0.45} ${n.y * 0.55} ${n.x} ${n.y}`;
                   const back = `M ${n.x} ${n.y} Q ${n.x * 0.45} ${n.y * 0.55} 0 0`;
                   const activeMotionPath = n.flow === "toCenter" ? back : d;
@@ -1010,7 +1010,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 })}
               </svg>
 
-              {/* NODE TRUNG TÂM (CENTER SPECIES) */}
+              {/* Node trung tâm */}
               <div
                 className="absolute z-20 flex flex-col items-center"
                 style={{
@@ -1228,7 +1228,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             </div>
           </div>
         ) : (
-          /* ─── VIEW 2: THÁP DINH DƯỠNG ĐẠI DƯƠNG (TROPHIC HIERARCHY PYRAMID) ─── */
+          /* Tháp dinh dưỡng */
           <div className="p-6 md:p-8 space-y-6">
             <div className="text-center max-w-xl mx-auto mb-4">
               <span className="text-xs px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 font-mono">
@@ -1246,9 +1246,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
               </p>
             </div>
 
-            {/* KIẾN TRÚC KIM TỰ THÁP BẬC THANG (STEPPED TRAPEZOID PYRAMID) */}
+            {/* Cấu trúc tháp dinh dưỡng */}
             <div className="flex flex-col items-center space-y-3">
-              {/* TẦNG ĐỈNH: Kẻ săn mồi đỉnh bảng (Apex Predator) - Max-Width Hẹp nhất */}
+              {/* Tầng đỉnh: Kẻ săn mồi đỉnh bảng */}
               {pyramidTiers.apex.items.length > 0 && (
                 <div
                   className={`max-w-xl w-full mx-auto p-4 md:p-5 rounded-2xl bg-gradient-to-b ${pyramidTiers.apex.bgGradient} border ${pyramidTiers.apex.borderColor} shadow-[0_8px_30px_rgba(244,63,94,0.12)] transition-all relative overflow-hidden`}
@@ -1440,7 +1440,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 <div className="w-0.5 h-4 bg-gradient-to-t from-emerald-400 to-amber-400 my-0.5" />
               </div>
 
-              {/* TẦNG ĐÁY: Tiêu thụ sơ cấp, Ăn thực vật & Con mồi đàn - Rộng nhất (100% Max-Width) */}
+              {/* Tầng đáy: Sinh vật tiêu thụ sơ cấp */}
               {pyramidTiers.bottom.items.length > 0 && (
                 <div
                   className={`max-w-5xl w-full mx-auto p-4 md:p-5 rounded-2xl bg-gradient-to-b ${pyramidTiers.bottom.bgGradient} border ${pyramidTiers.bottom.borderColor} shadow-[0_8px_30px_rgba(16,185,129,0.12)] transition-all relative overflow-hidden`}

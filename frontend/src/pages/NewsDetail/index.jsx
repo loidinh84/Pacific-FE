@@ -41,7 +41,7 @@ export default function NewsDetail() {
     );
   }, [slug]);
 
-  // Related articles (same category or others, max 3)
+  // Bài viết liên quan
   const relatedArticles = useMemo(() => {
     if (!article) return [];
     return NEWS_ARTICLES.filter((a) => a.id !== article.id)

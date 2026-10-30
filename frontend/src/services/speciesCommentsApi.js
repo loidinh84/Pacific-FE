@@ -19,7 +19,7 @@ export const fetchSpeciesComments = async (idOrSlug) => {
 };
 
 /**
- * Gửi bình luận mới cho loài sinh vật (cần đăng nhập)
+ * Gửi bình luận mới cho loài sinh vật
  */
 export const postSpeciesComment = async (idOrSlug, content) => {
   const res = await axios.post(
@@ -31,7 +31,7 @@ export const postSpeciesComment = async (idOrSlug, content) => {
 };
 
 /**
- * Xóa bình luận (chính chủ hoặc admin)
+ * Xóa bình luận
  */
 export const deleteSpeciesComment = async (commentId) => {
   const res = await axios.delete(
@@ -42,7 +42,7 @@ export const deleteSpeciesComment = async (commentId) => {
 };
 
 /**
- * Ghi nhận lượt xem loài sinh vật (Backend sẽ tự lọc bỏ nếu là Admin)
+ * Ghi nhận lượt xem sinh vật
  */
 export const recordSpeciesView = async (idOrSlug) => {
   try {

@@ -200,7 +200,7 @@ export default function Footer() {
             {t("footer.contactDesc")}
           </p>
           <form onSubmit={handleFeedbackSubmit} className="flex flex-col gap-2.5">
-            {/* Hàng chọn đánh giá số sao (Rating Stars) */}
+            {/* Đánh giá số sao */}
             <div className="flex items-center gap-1.5 py-0.5">
               <span className="text-[11px] text-white/50 mr-1">
                 {isEn ? "Rating:" : "Đánh giá:"}

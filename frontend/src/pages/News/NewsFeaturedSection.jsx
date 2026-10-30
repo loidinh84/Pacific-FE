@@ -26,7 +26,7 @@ export function NewsFeaturedSection({ featuredArticles = [] }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Main Large Featured Article (7 cols) */}
+        {/* Bài viết nổi bật chính */}
         {mainFeatured && (
           <div className="lg:col-span-7">
             <Link
@@ -87,7 +87,7 @@ export function NewsFeaturedSection({ featuredArticles = [] }) {
           </div>
         )}
 
-        {/* Sub Featured Cards (5 cols) */}
+        {/* Bài viết nổi bật phụ */}
         <div className="lg:col-span-5 flex flex-col justify-between gap-4">
           {subFeatured.map((art) => (
             <NewsCard key={art.id} article={art} variant="compact" />

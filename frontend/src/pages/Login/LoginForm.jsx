@@ -27,7 +27,7 @@ export function LoginForm() {
 
   const hasProcessedCodeRef = useRef(false);
 
-  // Xử lý callback khi GitHub redirect về với mã ?code=... (Chạy duy nhất 1 lần)
+  // Xử lý xác thực GitHub
   useEffect(() => {
     const code = searchParams.get("code");
     if (code && !hasProcessedCodeRef.current) {

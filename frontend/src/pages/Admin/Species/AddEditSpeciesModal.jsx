@@ -340,7 +340,7 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
     setGbifMessage("");
 
     try {
-      // Gọi qua Backend Proxy Gateway API với Nguồn API được chọn (auto, gbif, inaturalist, worms)
+      // Gọi API tra cứu dữ liệu sinh vật
       const res = await searchSpeciesTaxonomy(rawQuery, selectedApiProvider);
 
       if (res && res.success && res.data) {
@@ -963,7 +963,7 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
                 )}
               </div>
 
-              {/* Add Custom Media Section (Compact Unified Bar) */}
+              {/* Thêm media */}
               <div
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -1090,15 +1090,22 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
                             </span>
                           </div>
                         ) : (
-                          <img
-                            src={mediaUrl}
-                            alt={`Media ${idx + 1}`}
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&auto=format&fit=crop";
-                            }}
-                            className="w-full h-full object-cover"
-                          />
+                          <div className="w-full h-full relative bg-slate-900/60 flex items-center justify-center">
+                            <img
+                              src={mediaUrl}
+                              alt={`Media ${idx + 1}`}
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                                const fallbackEl = e.target.parentElement?.querySelector(".img-error-fallback");
+                                if (fallbackEl) fallbackEl.style.display = "flex";
+                              }}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="img-error-fallback hidden w-full h-full flex-col items-center justify-center text-center p-2 bg-slate-900/90 text-rose-400">
+                              <ImageIcon size={22} className="mb-1 opacity-80" />
+                              <span className="text-[10px] font-semibold leading-tight text-white/70">Không tải được ảnh</span>
+                            </div>
+                          </div>
                         )}
 
                         <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">

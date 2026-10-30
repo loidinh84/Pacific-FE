@@ -254,14 +254,14 @@ export function createOrganicInternalOrgans() {
   craniumMesh.position.set(-1.75, -0.04, 0);
   spineGroup.add(craniumMesh);
 
-  // Mõm sụn Rostrum (thanh sụn hội tụ ở chóp mũi)
+  // Mõm sụn Rostrum
   const rostrumCenter = new THREE.CylinderGeometry(0.012, 0.008, 0.45, 8);
   rostrumCenter.rotateZ(Math.PI / 2);
   const rCMesh = new THREE.Mesh(rostrumCenter, craniumMat);
   rCMesh.position.set(-2.05, -0.08, 0);
   spineGroup.add(rCMesh);
 
-  // Hốc mắt sụn hai bên (Optic capsules)
+  // Hốc mắt sụn hai bên
   const opticL = new THREE.Mesh(
     new THREE.TorusGeometry(0.06, 0.012, 8, 16),
     craniumMat,
@@ -276,7 +276,7 @@ export function createOrganicInternalOrgans() {
   opticR.position.set(-1.75, -0.02, -0.17);
   spineGroup.add(opticR);
 
-  // 5 đôi cung mang sụn (5 Branchial arches) ở vùng hầu họng
+  // Cung mang sụn vùng hầu họng
   const archMat = new THREE.MeshStandardMaterial({
     color: 0xf43f5e,
     emissive: 0x9f1239,
@@ -317,7 +317,7 @@ export function createOrganicInternalOrgans() {
     vMesh.position.set(x, y, 0);
     spineGroup.add(vMesh);
 
-    // Cung thần kinh (Neural spines) hướng lên sống lưng, nằm gọn trong cơ
+    // Cung thần kinh hướng sống lưng
     if (i % 2 === 0 && i < 20) {
       const ribHeight = 0.055 * (1 - t * 0.5);
       const ribGeo = new THREE.CylinderGeometry(0.014, 0.014, ribHeight, 8);
@@ -330,7 +330,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(spineGroup);
   parts.push(spineGroup);
 
-  // ── 2. QUẢ TIM CƠ BẮP CÁ MẬP SINH HỌC (Heart) ──
+  // Quả tim cá mập
   const heartGroup = new THREE.Group();
   heartGroup.name = "part_heart";
   heartGroup.userData = SHARK_PARTS_METADATA.find((p) => p.id === "part_heart");
@@ -343,7 +343,7 @@ export function createOrganicInternalOrgans() {
     metalness: 0.15,
   });
 
-  // Tâm thất dày hình nón cơ bắp (Ventriculus pyramidalis)
+  // Tâm thất dày hình nón cơ bắp
   const ventGeo = new THREE.SphereGeometry(0.13, 28, 28);
   const vPos = ventGeo.attributes.position;
   for (let i = 0; i < vPos.count; i++) {
@@ -387,7 +387,7 @@ export function createOrganicInternalOrgans() {
   const coronary = new THREE.Mesh(coronaryGeo, coronaryMat);
   heartGroup.add(coronary);
 
-  // Tâm nhĩ vách mỏng hình bán nguyệt ôm sau đáy thất (Atrium cordis)
+  // Tâm nhĩ vách mỏng hình bán nguyệt
   const atriumMat = new THREE.MeshStandardMaterial({
     color: 0x9f1239,
     emissive: 0x4c0519,
@@ -400,7 +400,7 @@ export function createOrganicInternalOrgans() {
   atrium.position.set(-0.96, -0.31, 0);
   heartGroup.add(atrium);
 
-  // Nón động mạch có van (Conus arteriosus) dẫn máu lên hệ cung mang
+  // Nón động mạch có van
   const conusGeo = new THREE.CylinderGeometry(0.035, 0.05, 0.12, 16);
   conusGeo.rotateZ(Math.PI / 2);
   const conus = new THREE.Mesh(conusGeo, heartMat);
@@ -419,7 +419,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(heartGroup);
   parts.push(heartGroup);
 
-  // ── 3. HỆ THỐNG ĐỘNG MẠCH CHỦ VÀ MAO MẠCH 3D (Vessels) ──
+  // Hệ thống động mạch chủ và mao mạch
   const vesselsGroup = new THREE.Group();
   vesselsGroup.name = "part_vessels";
   vesselsGroup.userData = SHARK_PARTS_METADATA.find(
@@ -470,7 +470,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(vesselsGroup);
   parts.push(vesselsGroup);
 
-  // ── 4. GAN DẦU SQUALENE 3 THÙY HỮU CƠ (Tri-lobed Squalene Liver) ──
+  // Gan dầu squalene
   const liverGroup = new THREE.Group();
   liverGroup.name = "part_liver";
   liverGroup.userData = SHARK_PARTS_METADATA.find((p) => p.id === "part_liver");
@@ -514,7 +514,7 @@ export function createOrganicInternalOrgans() {
   liverGroup.add(leftLobe);
   liverGroup.add(rightLobe);
 
-  // Thùy giữa (Median lobe)
+  // Thùy giữa
   const medianCyl = new THREE.CylinderGeometry(0.06, 0.03, 0.42, 16, 12);
   medianCyl.rotateZ(Math.PI / 2);
   const medianPos = medianCyl.attributes.position;
@@ -526,7 +526,7 @@ export function createOrganicInternalOrgans() {
   medianLobe.position.set(-0.42, -0.38, 0);
   liverGroup.add(medianLobe);
 
-  // Túi mật (Gallbladder) hình giọt nước ngọc bích
+  // Túi mật
   const gallMat = new THREE.MeshStandardMaterial({
     color: 0x10b981,
     emissive: 0x065f46,
@@ -539,7 +539,7 @@ export function createOrganicInternalOrgans() {
   gallbladder.position.set(-0.35, -0.41, 0.02);
   liverGroup.add(gallbladder);
 
-  // Ống mật (Bile duct) nối vào tá tràng
+  // Ống mật nối vào tá tràng
   const bileCurve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-0.35, -0.41, 0.02),
     new THREE.Vector3(-0.25, -0.38, 0.03),
@@ -552,7 +552,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(liverGroup);
   parts.push(liverGroup);
 
-  // ── 5. DẠ DÀY HÌNH CHỮ J CƠ BẮP (J-Shaped Muscular Stomach) ──
+  // Dạ dày hình chữ J
   const stomachGroup = new THREE.Group();
   stomachGroup.name = "part_stomach";
   stomachGroup.userData = SHARK_PARTS_METADATA.find(
@@ -577,14 +577,14 @@ export function createOrganicInternalOrgans() {
   const stomachMesh = new THREE.Mesh(stomachGeo, stomachMat);
   stomachGroup.add(stomachMesh);
 
-  // Vòng cơ môn vị (Pyloric sphincter)
+  // Vòng cơ môn vị
   const pylorusGeo = new THREE.TorusGeometry(0.065, 0.018, 10, 18);
   pylorusGeo.rotateY(Math.PI / 4);
   const pylorus = new THREE.Mesh(pylorusGeo, stomachMat);
   pylorus.position.set(-0.04, -0.33, 0.05);
   stomachGroup.add(pylorus);
 
-  // Lá lách (Spleen) màu đỏ mận sẫm ôm dọc bờ cong lớn dạ dày
+  // Lá lách ôm dọc bờ cong lớn dạ dày
   const spleenMat = new THREE.MeshStandardMaterial({
     color: 0x6b21a8,
     emissive: 0x3b0764,
@@ -600,7 +600,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(stomachGroup);
   parts.push(stomachGroup);
 
-  // ── 6. RUỘT VAN XOẮN ỐC LIÊN TỤC (Spiral Valve Intestine) ──
+  // Ruột van xoắn ốc
   const valveGroup = new THREE.Group();
   valveGroup.name = "part_spiral_valve";
   valveGroup.userData = SHARK_PARTS_METADATA.find(
@@ -633,7 +633,7 @@ export function createOrganicInternalOrgans() {
   coreMesh.position.set(0.48, -0.26, 0);
   valveGroup.add(coreMesh);
 
-  // Cánh van xoắn ốc liên tục 3D (Helical spiral baffle)
+  // Cánh van xoắn ốc
   const spiralMat = new THREE.MeshStandardMaterial({
     color: 0x34d399,
     emissive: 0x059669,
@@ -660,7 +660,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(valveGroup);
   parts.push(valveGroup);
 
-  // ── 7. BỘ NÃO CÁ MẬP SINH HỌC 5 PHẦN (Encephalon) ──
+  // Bộ não cá mập
   const brainGroup = new THREE.Group();
   brainGroup.name = "part_brain";
   brainGroup.userData = SHARK_PARTS_METADATA.find((p) => p.id === "part_brain");
@@ -672,7 +672,7 @@ export function createOrganicInternalOrgans() {
     roughness: 0.25,
   });
 
-  // 1. Thùy khứu giác khổng lồ (Olfactory bulbs) ở 2 bên lỗ mũi
+  // Thùy khứu giác hai bên lỗ mũi
   const bulbGeo = new THREE.SphereGeometry(0.045, 16, 16);
   bulbGeo.scale(1.4, 0.85, 0.85);
   const leftBulb = new THREE.Mesh(bulbGeo, brainMat);
@@ -683,7 +683,7 @@ export function createOrganicInternalOrgans() {
   rightBulb.position.set(-2.0, -0.05, -0.065);
   brainGroup.add(rightBulb);
 
-  // 2. Cuống khứu giác (Olfactory tracts)
+  // Cuống khứu giác
   const tractGeo = new THREE.CylinderGeometry(0.01, 0.01, 0.16, 8);
   tractGeo.rotateZ(Math.PI / 2);
   const leftTract = new THREE.Mesh(tractGeo, brainMat);
@@ -694,7 +694,7 @@ export function createOrganicInternalOrgans() {
   rightTract.position.set(-1.88, -0.035, -0.055);
   brainGroup.add(rightTract);
 
-  // 3. Bán cầu đại não (Cerebral hemispheres)
+  // Bán cầu đại não
   const hemiGeo = new THREE.SphereGeometry(0.062, 16, 16);
   hemiGeo.scale(1.15, 0.9, 0.9);
   const leftHemi = new THREE.Mesh(hemiGeo, brainMat);
@@ -705,14 +705,14 @@ export function createOrganicInternalOrgans() {
   rightHemi.position.set(-1.76, -0.02, -0.042);
   brainGroup.add(rightHemi);
 
-  // 4. Tiểu não hình thoi nhô cao (Cerebellum)
+  // Tiểu não hình thoi
   const cereGeo = new THREE.SphereGeometry(0.055, 14, 14);
   cereGeo.scale(1.3, 1.1, 0.9);
   const cerebellum = new THREE.Mesh(cereGeo, brainMat);
   cerebellum.position.set(-1.64, 0.01, 0);
   brainGroup.add(cerebellum);
 
-  // 5. Hành não (Medulla oblongata) nối liền vào tủy sống
+  // Hành não nối liền vào tủy sống
   const medullaGeo = new THREE.CylinderGeometry(0.025, 0.035, 0.14, 10);
   medullaGeo.rotateZ(Math.PI / 2);
   const medulla = new THREE.Mesh(medullaGeo, brainMat);
@@ -722,7 +722,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(brainGroup);
   parts.push(brainGroup);
 
-  // ── 8. MẠNG LƯỚI BÓNG ĐIỆN TRƯỜNG LORENZINI (Ampullae of Lorenzini) ──
+  // Mạng lưới bóng điện trường Lorenzini
   const ampullaeGroup = new THREE.Group();
   ampullaeGroup.name = "part_ampullae";
   ampullaeGroup.userData = SHARK_PARTS_METADATA.find(
@@ -769,7 +769,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(ampullaeGroup);
   parts.push(ampullaeGroup);
 
-  // ── 9. HỆ THỐNG LÁ MANG LƯỢC ĐỎ TƯƠI (Gill Filaments & Lamellae) ──
+  // Hệ thống lá mang lược
   const gillsGroup = new THREE.Group();
   gillsGroup.name = "part_gills";
   gillsGroup.userData = SHARK_PARTS_METADATA.find((p) => p.id === "part_gills");
@@ -804,7 +804,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(gillsGroup);
   parts.push(gillsGroup);
 
-  // ── 10. ĐAI SỤN VÂY NGỰC (Pectoral Girdle / Coracoid Bar) ──
+  // Đai sụn vây ngực
   const girdleGroup = new THREE.Group();
   girdleGroup.name = "part_pectoral_girdle";
   girdleGroup.userData = SHARK_PARTS_METADATA.find(
@@ -825,7 +825,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(girdleGroup);
   parts.push(girdleGroup);
 
-  // ── 11. CẶP THẬN DẢI DẸP (Opisthonephric Kidneys) ──
+  // Cặp thận dải dẹp
   const kidneysGroup = new THREE.Group();
   kidneysGroup.name = "part_kidneys";
   kidneysGroup.userData = SHARK_PARTS_METADATA.find(
@@ -860,7 +860,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(kidneysGroup);
   parts.push(kidneysGroup);
 
-  // ── 12. TUYẾN TỤY TIÊU HÓA 2 THÙY (Pancreas) ──
+  // Tuyến tụy tiêu hóa
   const pancreasGroup = new THREE.Group();
   pancreasGroup.name = "part_pancreas";
   pancreasGroup.userData = SHARK_PARTS_METADATA.find(
@@ -892,7 +892,7 @@ export function createOrganicInternalOrgans() {
   organGroup.add(pancreasGroup);
   parts.push(pancreasGroup);
 
-  // ── 13. TUYẾN TRỰC TRÀNG BÀI TIẾT MUỐI (Rectal Salt-Secreting Gland) ──
+  // Tuyến trực tràng bài tiết muối
   const rectalGroup = new THREE.Group();
   rectalGroup.name = "part_rectal_gland";
   rectalGroup.userData = SHARK_PARTS_METADATA.find(
@@ -932,7 +932,7 @@ export function createOrganicInternalOrgans() {
 }
 
 /**
- * Hạt máu di chuyển dọc động mạch chủ (Physiological Blood Flow)
+ * Hạt máu di chuyển dọc động mạch chủ
  */
 export function createBloodParticles(aortaCurve) {
   if (!aortaCurve) return null;
@@ -951,7 +951,7 @@ export function createBloodParticles(aortaCurve) {
 }
 
 /**
- * Cấu hình tổng hợp (Preset) giải phẫu Cá Mập
+ * Cấu hình giải phẫu cá mập
  */
 export const sharkAnatomyPreset = {
   id: "shark",

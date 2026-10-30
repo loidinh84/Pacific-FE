@@ -29,7 +29,7 @@ const setCache = (sourceText, targetLang, translatedText) => {
 };
 
 /**
- * Translate a Vietnamese text string to target language (e.g. 'en') automatically
+ * Dịch tự động chuỗi văn bản sang ngôn ngữ đích
  */
 export async function autoTranslateText(text, targetLang = "en") {
   if (!text || typeof text !== "string" || targetLang === "vi") {

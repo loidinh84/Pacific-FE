@@ -318,7 +318,7 @@ export default function FeedbackManagement() {
             ))}
           </div>
 
-          {/* Lọc theo số sao (Rating) */}
+          {/* Lọc theo số sao */}
           <select
             value={ratingFilter}
             onChange={(e) => {
@@ -499,7 +499,7 @@ export default function FeedbackManagement() {
         </div>
       )}
 
-      {/* ── PHÂN TRANG (PAGINATION) ── */}
+      {/* Phân trang */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-4 border-t border-white/10">
           <p className="text-xs text-slate-400">

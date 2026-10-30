@@ -36,7 +36,7 @@ export default function SpeciesDetail() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [id, resolvedId]);
 
-  // Tự động chuyển hướng từ mock ID cũ sang slug chuẩn trong CSDL để đảm bảo URL đồng bộ & không lỗi 404
+  // Chuyển hướng id sang slug chuẩn
   useEffect(() => {
     if (MOCK_SLUG_MAP[id] && MOCK_SLUG_MAP[id] !== id) {
       navigate(`/species/${MOCK_SLUG_MAP[id]}`, { replace: true });
@@ -148,7 +148,7 @@ export default function SpeciesDetail() {
         {/* 2. Scientific anatomy analysis illustration with interactive hotspots */}
         <AnatomySection species={species} language={language} />
 
-        {/* 3. Mạng lưới sinh thái & Chuỗi thức ăn Biển Đông (Ecosystem Knowledge Graph) */}
+        {/* Mạng lưới sinh thái và chuỗi thức ăn Biển Đông */}
         <EcosystemNetworkSection species={species} language={language} />
 
         {/* 4. Sinh cảnh sống, Tầng nước & Tập tính sinh học Biển Đông */}
@@ -157,7 +157,7 @@ export default function SpeciesDetail() {
         {/* 5. Tình trạng bảo tồn Sách Đỏ, Khung pháp lý & Các mối đe dọa */}
         <ConservationAndThreatsSection species={species} language={language} />
 
-        {/* 6. Những sự thật sinh học kỳ thú ("Bạn có biết?") */}
+        {/* Thông tin thú vị về loài */}
         <SpeciesFacts species={species} language={language} />
 
         {/* 7. Sinh vật tương tự cùng hệ sinh thái Biển Đông */}

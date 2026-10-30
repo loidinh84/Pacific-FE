@@ -5,7 +5,7 @@ import {
   SubmarineIcon, MapPinIcon, TurtleIcon, ShellIcon
 } from "../../assets/Icons";
 
-// ─── Dữ liệu các vùng Biển Đông (max depth: 5,016m) ────────────────────────
+// Dữ liệu các vùng Biển Đông
 export const OCEAN_ZONES = [
   {
     id: "sunlight",

@@ -72,7 +72,7 @@ export default function Search() {
       };
 
       return semanticResults.data.map((item) => {
-        // Đối chiếu với catalog bằng ID, slug, tên khoa học hoặc tên tiếng Việt (khớp mờ)
+        // Đối chiếu dữ liệu tìm kiếm với danh mục sinh vật
         const itemClean = (item.commonName || "").toLowerCase().trim();
         const sciClean = (item.scientificName || "").toLowerCase().trim();
 

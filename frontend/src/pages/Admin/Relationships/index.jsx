@@ -555,7 +555,7 @@ export default function RelationshipsManagement() {
                         </div>
                       </td>
 
-                      {/* Badge kiểu quan hệ (đã sửa dính chữ) */}
+                      {/* Huy hiệu kiểu quan hệ */}
                       <td className="py-3.5 px-4 text-center">
                         <span
                           className={`inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-medium whitespace-nowrap shadow-sm ${typeObj.badgeStyle}`}

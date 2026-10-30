@@ -64,7 +64,7 @@ export default function SpeciesGroupCard({ group, onEdit, onDelete }) {
             </span>
           </div>
 
-          {/* Action buttons (vertical stack) */}
+          {/* Nút thao tác */}
           <div className="flex flex-col gap-2">
             <button
               type="button"

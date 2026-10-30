@@ -212,7 +212,7 @@ export default function AssignSpeciesModal({
           </div>
         )}
 
-        {/* 2-Column Body (Responsive for Mobile & Desktop) */}
+        {/* Nội dung gán sinh vật */}
         <div className="flex-1 flex flex-col md:grid md:grid-cols-12 overflow-y-auto md:overflow-hidden min-h-0">
           {/* LEFT COLUMN: Chọn nhóm cần gán */}
           <div
@@ -262,7 +262,7 @@ export default function AssignSpeciesModal({
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Danh sách sinh vật (md:col-span-7 lg:col-span-8) */}
+          {/* Danh sách sinh vật */}
           <div className="md:col-span-7 lg:col-span-8 p-4 sm:p-6 flex flex-col overflow-hidden min-h-[320px] md:min-h-[460px]">
             {/* Title & Search bar */}
             <div className="mb-4 shrink-0">

@@ -28,20 +28,40 @@ const cleanLabel = (text) => {
   return text.replace(/\s*\([^)]*\)/g, "").trim();
 };
 
+const CONSERVATION_VI_MAP = {
+  LC: "Ít lo ngại",
+  NT: "Gần bị đe dọa",
+  VU: "Sắp nguy cấp",
+  EN: "Nguy cấp",
+  CR: "Cực kỳ nguy cấp",
+  EW: "Tuyệt chủng tự nhiên",
+  EX: "Tuyệt chủng",
+  DD: "Thiếu dữ liệu",
+  NE: "Chưa đánh giá",
+};
+
 // Helper map backend item to table row item
 function mapSpeciesFromApi(item) {
+  const cCode =
+    item.conservation_statuses?.code ||
+    item.vietnam_red_list_status ||
+    "LC";
+
   return {
     id: String(item.id),
     code: item.code || `SV${String(item.id).padStart(6, "0")}`,
     name:
-      item.common_name || item.name || item.scientificName || "Sinh vật biển",
+      cleanLabel(item.common_name) ||
+      cleanLabel(item.name) ||
+      item.scientificName ||
+      "Sinh vật biển",
     gbifId: item.slug || String(item.id),
     slug: item.slug || "",
     source: item.source_api_id || "Pacific DB",
-    location: item.ocean_zones?.name || "Sunlight",
-    oceanZone: item.ocean_zones?.name || item.oceanZone || "Sunlight",
-    conservation: cleanLabel(item.conservation_statuses?.name) || "Ít lo ngại",
-    conservationCode: item.conservation_statuses?.code || "LC",
+    location: cleanLabel(item.ocean_zones?.name) || "Tầng mặt",
+    oceanZone: cleanLabel(item.ocean_zones?.name) || item.oceanZone || "Tầng mặt",
+    conservation: CONSERVATION_VI_MAP[cCode] || cleanLabel(item.conservation_statuses?.name) || "Ít lo ngại",
+    conservationCode: cCode,
     views: Number(item.view_count) || 0,
     status: item.is_visible ? "Hiển thị" : "Ẩn",
     is_visible: Boolean(item.is_visible),
@@ -634,6 +654,7 @@ export default function SpeciesManagement() {
     setCheckedIds([]);
   };
 
+
   const handleResetFilters = () => {
     setSearchTerm("");
     setSelectedConservation("all");
@@ -739,7 +760,7 @@ export default function SpeciesManagement() {
 
           <button
             onClick={handleOpenAddModal}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-xs md:text-sm font-bold shadow-lg shadow-blue-500/20 transition-all cursor-pointer active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs md:text-sm font-semibold shadow-sm border border-sky-400/20 transition-all cursor-pointer active:scale-95"
           >
             <Plus size={16} />
             <span>Thêm sinh vật</span>
@@ -783,7 +804,7 @@ export default function SpeciesManagement() {
         </div>
       )}
 
-      {/* ── MAIN 2-COLUMN LAYOUT: FILTER SIDEBAR (LEFT) + TABLE & DETAIL (RIGHT) ── */}
+      {/* Bố cục bộ lọc và bảng dữ liệu */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Filter Sidebar */}
         <div className="lg:col-span-3">
@@ -800,7 +821,7 @@ export default function SpeciesManagement() {
 
         {/* Right Column: Species Bulk Actions Bar & Species Table */}
         <div className="lg:col-span-9 space-y-4">
-          {/* Bulk Actions Toolbar (Phase 1.1) */}
+          {/* Thanh tác vụ hàng loạt */}
           <SpeciesBulkActionsBar
             selectedCount={checkedIds.length}
             onClearSelection={() => setCheckedIds([])}
@@ -809,7 +830,7 @@ export default function SpeciesManagement() {
             isProcessing={isBulkProcessing}
           />
 
-          {/* Species Table (Phase 1.2 Column Sorting & 1.4 Empty state) */}
+          {/* Bảng sinh vật */}
           <SpeciesTable
             isLoading={isLoading}
             filteredList={filteredList}
@@ -860,7 +881,7 @@ export default function SpeciesManagement() {
         }}
       />
 
-      {/* Inline Confirm Modal (Phase 1.3) */}
+      {/* Modal xác nhận */}
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         title={confirmModal.title}

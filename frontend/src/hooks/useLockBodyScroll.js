@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
 /**
- * useLockBodyScroll - Hook tự động khóa cuộn trang (body scroll) khi Modal mở
- * Hỗ trợ tự động hoàn tác (restore) trạng thái overflow ban đầu khi Modal đóng hoặc unmount
- * @param {boolean} [isLocked=true] - Trạng thái khóa cuộn (thường truyền isOpen của Modal)
+ * Khóa cuộn trang khi mở modal
+ * Khôi phục trạng thái cuộn ban đầu khi đóng modal
+ * @param {boolean} [isLocked=true] - Trạng thái khóa cuộn
  */
 export function useLockBodyScroll(isLocked = true) {
   useEffect(() => {

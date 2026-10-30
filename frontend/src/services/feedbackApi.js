@@ -10,7 +10,7 @@ const getAuthHeaders = () => {
 };
 
 /**
- * Gửi ý kiến đóng góp từ người dùng (Footer hoặc modal)
+ * Gửi ý kiến đóng góp từ người dùng
  * Hỗ trợ cả khách vãng lai và thành viên đã đăng nhập
  */
 export const submitFeedback = async ({ content, rating = 5 }) => {
@@ -34,7 +34,7 @@ export const fetchAdminFeedback = async (params = {}) => {
 };
 
 /**
- * Xóa một ý kiến đóng góp (Admin)
+ * Xóa một ý kiến đóng góp
  */
 export const deleteAdminFeedback = async (id) => {
   const res = await axios.delete(`${API_ROOT}/admin/feedback/${id}`, {

@@ -25,7 +25,7 @@ export default function News() {
     );
   }, [t, language]);
 
-  // Featured Articles (always the first 3 marked as is_featured)
+  // Bài viết nổi bật
   const featuredArticles = useMemo(() => {
     return NEWS_ARTICLES.filter((a) => a.is_featured);
   }, []);
@@ -86,7 +86,7 @@ export default function News() {
           onSearchSubmit={handleSearchSubmit}
         />
 
-        {/* 2. Featured Stories (only shown if not actively searching) */}
+        {/* Bài viết nổi bật */}
         {!searchTerm && (
           <NewsFeaturedSection featuredArticles={featuredArticles} />
         )}

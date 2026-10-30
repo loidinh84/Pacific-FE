@@ -13,7 +13,7 @@ const getAuthHeaders = () => {
 };
 
 /**
- * Lấy thông tin cá nhân đầy đủ (Private Profile)
+ * Lấy thông tin cá nhân
  */
 export const fetchMyProfile = async () => {
   const res = await axios.get(`${API_BASE_URL}/me`, getAuthHeaders());
@@ -21,7 +21,7 @@ export const fetchMyProfile = async () => {
 };
 
 /**
- * Cập nhật thông tin cơ bản (fullName, bio, phoneNumber, dateOfBirth)
+ * Cập nhật thông tin cơ bản
  */
 export const updateMyProfile = async (userData) => {
   const res = await axios.put(`${API_BASE_URL}/me`, userData, getAuthHeaders());
@@ -29,7 +29,7 @@ export const updateMyProfile = async (userData) => {
 };
 
 /**
- * Thay đổi email (yêu cầu mật khẩu hiện tại)
+ * Thay đổi email
  */
 export const changeEmail = async ({ newEmail, currentPassword }) => {
   const res = await axios.put(
@@ -65,7 +65,7 @@ export const updateAvatar = async (avatarUrl) => {
 };
 
 /**
- * Lấy số liệu thống kê (Favorites, Explored, Discovered, Member Days)
+ * Lấy số liệu thống kê người dùng
  */
 export const fetchMyStats = async () => {
   const res = await axios.get(`${API_BASE_URL}/me/stats`, getAuthHeaders());

@@ -14,7 +14,7 @@ export function SpeciesFacts({ species, language = "vi" }) {
       }));
     }
 
-    // 2. Kiểm tra fullBioHighlights từ mock (Bạch tuộc, Cá mập voi, Cá ngừ...)
+    // Kiểm tra dữ liệu đặc điểm sinh học
     const highlights = isEn
       ? species.fullBioHighlightsEn || species.fullBioHighlightsVi
       : species.fullBioHighlightsVi || species.fullBioHighlightsEn;
@@ -220,7 +220,7 @@ export function SpeciesFacts({ species, language = "vi" }) {
         </span>
       </div>
 
-      {/* ─── 2. DANH SÁCH THẺ SỰ THẬT KHOA HỌC: SÁNG, KÍNH MỜ NỔI BẬT (Static reading cards, no hover) ─── */}
+      {/* Danh sách thẻ thông tin khoa học */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {factsList.map((fact, i) => (
           <div
