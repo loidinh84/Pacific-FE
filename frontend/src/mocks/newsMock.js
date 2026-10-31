@@ -56,6 +56,7 @@ export const NEWS_ARTICLES = [
       <p>Hạn chế rác thải nhựa, không mua sản phẩm làm từ mai rùa và lan tỏa kiến thức bảo tồn là những hành động nhỏ nhưng có ý nghĩa lớn với loài rùa biển.</p>
     `,
     cover_url: TurtleHatchlings,
+    cover_caption: "Rùa con được thả về đại dương vào lúc bình minh tại Vườn quốc gia Côn Đảo. Ảnh: Ban biên tập Pacific",
     language: "vi",
     source_type: "internal",
     external_url: null,
@@ -67,7 +68,7 @@ export const NEWS_ARTICLES = [
     published_at: "2026-10-24T08:30:00+07:00",
   },
 
-  // ── 2. Bài nội bộ — nổi bật ──
+  // Bài viết sinh vật phát quang
   {
     id: 2,
     slug: "robot-lan-sau-sinh-vat-phat-quang",
@@ -92,6 +93,7 @@ export const NEWS_ARTICLES = [
       <p>Bạn có thể trải nghiệm hành trình lặn sâu ngay trên Pacific tại trang <a href="/ocean-depth">Độ Sâu Biển Đông</a>.</p>
     `,
     cover_url: DeepSeaROV,
+    cover_caption: "Robot thám hiểm đáy biển sâu (ROV) với hệ thống camera độ phân giải cao ghi hình sinh vật phát quang. Ảnh: NOAA Ocean Exploration",
     language: "vi",
     source_type: "internal",
     external_url: null,
@@ -103,7 +105,7 @@ export const NEWS_ARTICLES = [
     published_at: "2026-10-22T19:00:00+07:00",
   },
 
-  // ── 3. Bài nội bộ — nổi bật ──
+  // Bài viết phục hồi san hô
   {
     id: 3,
     slug: "phuc-hoi-ran-san-ho",
@@ -127,6 +129,7 @@ export const NEWS_ARTICLES = [
       <p>Tìm hiểu thêm về các loài sống quanh rạn san hô trong mục <a href="/search">Sinh vật biển</a>.</p>
     `,
     cover_url: CoralRestoration,
+    cover_caption: "Thợ lặn gắn từng nhánh san hô non lên giàn ươm kim loại dưới đáy biển. Ảnh: Ban biên tập Pacific",
     language: "vi",
     source_type: "internal",
     external_url: null,
@@ -141,15 +144,16 @@ export const NEWS_ARTICLES = [
   // Tin tức tổng hợp
   {
     id: 4,
-    slug: "bien-dong-da-dang-sinh-hoc-vnexpress",
-    title: "Biển Đông là một trong những vùng biển giàu đa dạng sinh học nhất thế giới",
+    slug: "rac-tu-long-tom-hum-bua-vay-bo-bien-cam-ranh",
+    title: "Rác từ lồng tôm hùm bủa vây bờ biển Cam Ranh",
     excerpt:
-      "Các khảo sát gần đây tiếp tục ghi nhận thêm nhiều loài sinh vật biển mới tại vùng biển Việt Nam, khẳng định giá trị sinh thái đặc biệt của Biển Đông.",
+      "Hàng trăm tấn phao xốp, lưới rách và rác thải nhựa phát sinh từ hoạt động nuôi trồng hải sản trôi dạt vào bãi tắm Cam Ranh, gióng lên hồi chuông cảnh báo về quản lý chất thải ven bờ.",
     content: null,
-    cover_url: BienDongMap,
+    cover_url: "https://i2-vnexpress.vnecdn.net/2026/10/29/longbe-1793270788-5772-1793271141.jpg?w=1200&h=675&q=100&dpr=1&fit=crop&s=PGVTXV4ztoerT8WKKHwBng",
+    cover_caption: "Rác từ lưới nhựa lồng nuôi tôm hùm thải ra ở bãi biển thôn Bình Lập, xã Nam Cam Ranh. Ảnh: Nguyễn Thông",
     language: "vi",
     source_type: "external",
-    external_url: "https://vnexpress.net/khoa-hoc",
+    external_url: "https://vnexpress.net/rac-tu-long-tom-hum-bua-vay-bo-bien-cam-ranh-5138277.html",
     source: { id: 1, name: "VnExpress" },
     category: category("east-sea"),
     author: null,
@@ -158,7 +162,7 @@ export const NEWS_ARTICLES = [
     published_at: "2026-10-23T14:20:00+07:00",
   },
 
-  // ── 5. Bài nội bộ ──
+  // Chiến dịch làm sạch bờ biển
   {
     id: 5,
     slug: "ngay-hoi-lam-sach-bo-bien",
@@ -182,6 +186,7 @@ export const NEWS_ARTICLES = [
       <p>Pacific sẽ tiếp tục cập nhật lịch các sự kiện tiếp theo trong chuyên mục Sự kiện.</p>
     `,
     cover_url: BeachCleanup,
+    cover_caption: "Các tình nguyện viên thu gom rác thải nhựa và phao xốp trên bãi biển. Ảnh: Ban biên tập Pacific",
     language: "vi",
     source_type: "internal",
     external_url: null,
@@ -193,19 +198,20 @@ export const NEWS_ARTICLES = [
     published_at: "2026-10-19T16:45:00+07:00",
   },
 
-  // ── 6. Tin ngoài — tiếng Anh ──
+  // Tin tức nghiên cứu NOAA Fisheries
   {
     id: 6,
-    slug: "global-shark-populations-mongabay",
-    title: "Why protecting sharks matters for the health of the entire ocean",
+    slug: "12-shark-facts-that-may-surprise-you",
+    title: "12 Shark Facts That May Surprise You",
     excerpt:
-      "As apex predators, sharks keep marine food webs in balance. Scientists explain how declining shark numbers can ripple through coral reefs and seagrass meadows.",
+      "As apex predators, sharks keep marine food webs in balance. NOAA fisheries scientists explain surprising adaptations, senses, and why protecting sharks matters for the whole ocean.",
     content: null,
-    cover_url: SharkGallery1,
+    cover_url: "https://www.fisheries.noaa.gov/s3/dam-migration/750x500-shortfin-mako-mark-conlin-swfsc.jpg",
+    cover_caption: "Cá mập vây ngắn Mako (Shortfin Mako) bơi trong vùng biển khơi. Ảnh: Mark Conlin / SWFSC / NOAA Fisheries",
     language: "en",
     source_type: "external",
-    external_url: "https://news.mongabay.com/",
-    source: { id: 2, name: "Mongabay" },
+    external_url: "https://www.fisheries.noaa.gov/feature-story/12-shark-facts-may-surprise-you",
+    source: { id: 2, name: "NOAA Fisheries" },
     category: category("research"),
     author: null,
     is_featured: false,
@@ -213,7 +219,7 @@ export const NEWS_ARTICLES = [
     published_at: "2026-10-21T09:00:00+07:00",
   },
 
-  // ── 7. Bài nội bộ ──
+  // Khám phá cá mập voi
   {
     id: 7,
     slug: "su-that-thu-vi-ve-ca-map-voi",
@@ -239,6 +245,7 @@ export const NEWS_ARTICLES = [
       <p>Xem hồ sơ chi tiết và giải phẫu 3D tại trang <a href="/species/ca-map-voi-nham-voi">Cá mập voi</a>.</p>
     `,
     cover_url: SharkGallery2,
+    cover_caption: "Cá mập voi với hoa văn đốm trắng độc nhất lướt nhẹ dưới làn nước trong xanh. Ảnh: Ban biên tập Pacific",
     language: "vi",
     source_type: "internal",
     external_url: null,
@@ -250,27 +257,28 @@ export const NEWS_ARTICLES = [
     published_at: "2026-10-17T20:00:00+07:00",
   },
 
-  // ── 8. Tin ngoài — tiếng Việt ──
+  // Tin bảo tồn Tuổi Trẻ Online
   {
     id: 8,
-    slug: "kham-pha-dai-duong-tuoi-tre",
-    title: "Hơn 80% đại dương vẫn chưa được con người khám phá",
+    slug: "trong-san-ho-duoi-day-bien-nhung-tho-vuon-cua-dai-duong",
+    title: "Trồng san hô dưới đáy biển: những ‘thợ vườn’ của đại dương",
     excerpt:
-      "Chúng ta có bản đồ bề mặt Mặt Trăng chi tiết hơn bản đồ đáy biển của chính Trái Đất. Những thách thức nào đang cản bước các nhà thám hiểm đại dương?",
+      "Hàng triệu rạn san hô trên khắp các vùng biển nhiệt đới đang bị tẩy trắng. Những thợ lặn, nhà khoa học trẻ tại Việt Nam đang miệt mài ươm mầm san hô dưới đáy biển như những thợ làm vườn kiên nhẫn.",
     content: null,
-    cover_url: Ocean3DBg,
+    cover_url: "https://cdn2.tuoitre.vn/zoom/1200_630/471584752817336320/2025/2/1/z62791105360851621435553749410145b8b9b2fc3aaf3-17383998825421975168620-73-0-638-1080-crop-1738400398614249033790.jpg",
+    cover_caption: "Nhiều bạn trẻ và thợ lặn tình nguyện bắt tay vào việc tái tạo, phục hồi san hô tại vịnh Nha Trang. Ảnh: Tuổi Trẻ",
     language: "vi",
     source_type: "external",
-    external_url: "https://tuoitre.vn/",
-    source: { id: 3, name: "Tuổi Trẻ" },
-    category: category("discovery"),
+    external_url: "https://tuoitre.vn/trong-san-ho-duoi-day-bien-nhung-tho-vuon-cua-dai-duong-20250201144023802.htm",
+    source: { id: 3, name: "Tuổi Trẻ Online" },
+    category: category("conservation"),
     author: null,
     is_featured: false,
     view_count: 1320,
     published_at: "2026-10-16T07:30:00+07:00",
   },
 
-  // ── 9. Bài nội bộ ──
+  // Bản đồ sinh thái Thái Bình Dương
   {
     id: 9,
     slug: "ban-do-sinh-thai-thai-binh-duong",
@@ -290,6 +298,7 @@ export const NEWS_ARTICLES = [
       <p>Khám phá các điểm nóng trên bản đồ tương tác tại <a href="/">trang chủ Pacific</a>.</p>
     `,
     cover_url: PacificOceanMap,
+    cover_caption: "Bản đồ các dòng hải lưu và khu vực đa dạng sinh học trọng điểm tại Thái Bình Dương. Ảnh: Pacific Ocean Atlas",
     language: "vi",
     source_type: "internal",
     external_url: null,
@@ -301,19 +310,20 @@ export const NEWS_ARTICLES = [
     published_at: "2026-10-14T11:00:00+07:00",
   },
 
-  // ── 10. Tin ngoài — tiếng Anh ──
+  // Tin bảo tồn rùa biển VnExpress
   {
     id: 10,
-    slug: "noaa-marine-protection-update",
-    title: "New marine protected areas aim to safeguard migratory species",
+    slug: "92-rua-con-no-tro-ve-bien-o-hon-cau",
+    title: "92 rùa con nở, trở về biển ở Hòn Cau",
     excerpt:
-      "Fisheries scientists highlight how connected networks of protected areas can help sharks, turtles and whales complete their long migrations safely.",
+      "Ổ trứng rùa biển gồm 92 cá thể rùa con sau gần hai tháng ấp nở tại Khu bảo tồn biển Hòn Cau đã bò khỏe mạnh xuống đại dương trong sự bảo vệ của các tình nguyện viên.",
     content: null,
-    cover_url: SharkGallery3,
-    language: "en",
+    cover_url: "https://i2-vnexpress.vnecdn.net/2026/10/31/Ruacon-1793418515-5795-1793418526.jpg?w=1200&h=675&q=100&dpr=1&fit=crop&s=mxUPFR8MN4FsDdOICbEptg",
+    cover_caption: "Rùa con nở rời ổ, bơi về mép nước cách bãi ấp 4 m tại khu bảo tồn biển Hòn Cau, sáng 31/10. Ảnh: Yến Phi",
+    language: "vi",
     source_type: "external",
-    external_url: "https://www.fisheries.noaa.gov/news",
-    source: { id: 4, name: "NOAA Fisheries" },
+    external_url: "https://vnexpress.net/92-rua-con-no-tro-ve-bien-o-hon-cau-5139079.html",
+    source: { id: 1, name: "VnExpress" },
     category: category("conservation"),
     author: null,
     is_featured: false,
@@ -321,7 +331,7 @@ export const NEWS_ARTICLES = [
     published_at: "2026-10-12T22:10:00+07:00",
   },
 
-  // ── 11. Bài nội bộ ──
+  // Giới thiệu đồ thị tri thức
   {
     id: 11,
     slug: "pacific-ra-mat-do-thi-tri-thuc",
@@ -343,6 +353,7 @@ export const NEWS_ARTICLES = [
       <p>Trải nghiệm ngay tại trang <a href="/knowledge-graph">Đồ thị tri thức</a>.</p>
     `,
     cover_url: SharkGallery4,
+    cover_caption: "Cá mập - loài săn mồi đầu bảng giữ vai trò trung tâm trong Đồ thị tri thức sinh thái đại dương. Ảnh: Pacific",
     language: "vi",
     source_type: "internal",
     external_url: null,

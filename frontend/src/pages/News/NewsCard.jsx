@@ -35,6 +35,7 @@ export function NewsCard({ article, variant = "default", style }) {
             src={article.cover_url}
             alt={article.title}
             loading="lazy"
+            referrerPolicy="no-referrer"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
         </div>
@@ -76,6 +77,7 @@ export function NewsCard({ article, variant = "default", style }) {
           src={article.cover_url}
           alt={article.title}
           loading="lazy"
+          referrerPolicy="no-referrer"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0d1f35] via-[#0d1f35]/10 to-transparent" />

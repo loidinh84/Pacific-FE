@@ -192,14 +192,22 @@ export default function NewsDetail() {
             </p>
           )}
 
-          {/* Cover Image */}
-          <div className="relative rounded-3xl overflow-hidden mb-8 border border-white/10">
-            <img
-              src={article.cover_url}
-              alt={article.title}
-              className="w-full h-[320px] sm:h-[420px] md:h-[480px] object-cover"
-            />
-          </div>
+          {/* Cover Image with Caption */}
+          <figure className="mb-8">
+            <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-black/30">
+              <img
+                src={article.cover_url}
+                alt={article.cover_caption || article.title}
+                referrerPolicy="no-referrer"
+                className="w-full h-full max-h-[520px] object-cover"
+              />
+            </div>
+            {article.cover_caption && (
+              <figcaption className="text-center text-xs sm:text-sm text-slate-300/85 mt-3 px-3 italic leading-relaxed">
+                {article.cover_caption}
+              </figcaption>
+            )}
+          </figure>
 
           {/* Article Body Content */}
           {article.content ? (

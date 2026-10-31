@@ -38,6 +38,7 @@ export function NewsFeaturedSection({ featuredArticles = [] }) {
               <img
                 src={mainFeatured.cover_url}
                 alt={mainFeatured.title}
+                referrerPolicy="no-referrer"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
               {/* Deep ocean gradient overlays */}
