@@ -84,6 +84,14 @@ export const fetchMyFavorites = async (params = { page: 1, limit: 12 }) => {
 };
 
 /**
+ * Lấy danh sách ID sinh vật đã yêu thích
+ */
+export const fetchMyFavoriteIds = async () => {
+  const res = await axios.get(`${API_BASE_URL}/me/favorites/ids`, getAuthHeaders());
+  return res.data;
+};
+
+/**
  * Lấy danh sách địa điểm đã khám phá của người dùng
  */
 export const fetchMyExplored = async (params = { page: 1, limit: 12 }) => {

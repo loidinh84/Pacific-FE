@@ -14,7 +14,10 @@ export default function SearchSection() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate("/search");
+    const params = new URLSearchParams();
+    if (searchTerm.trim()) params.set("q", searchTerm.trim());
+    if (category) params.set("cat", category);
+    navigate(`/search${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
   return (

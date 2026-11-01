@@ -2,12 +2,36 @@ import { useRef, useState, useEffect } from "react";
 import { ArrowUpDown, ShieldAlert, Waves, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { CATEGORIES_DATA } from "../../mocks/speciesMock";
+import { fetchSpeciesGroups } from "../../services/speciesApi";
 
 export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy, setSortBy }) {
   const { language, t } = useLanguage();
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [categories, setCategories] = useState(CATEGORIES_DATA.filter((c) => c.value !== ""));
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchSpeciesGroups()
+      .then((res) => {
+        if (!isMounted) return;
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const apiCats = res.data.map((g) => ({
+            value: g.slug || g.id,
+            labelVi: g.name,
+            labelEn: g.name,
+          }));
+          setCategories(apiCats);
+        }
+      })
+      .catch(() => {
+        // Fallback giữ nguyên CATEGORIES_DATA
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const checkScrollState = () => {
     if (scrollRef.current) {
@@ -76,7 +100,7 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
             </button>
 
             {/* Dynamic Categories */}
-            {CATEGORIES_DATA.filter((c) => c.value !== "").map((c) => {
+            {categories.map((c) => {
               const isSelected = selectedCategory === c.value;
               const label = language === "en" ? c.labelEn : c.labelVi;
 

@@ -456,4 +456,51 @@ export const fetchSpeciesDetail = async (idOrSlug) => {
   }
 };
 
+/**
+ * Lấy danh sách loài sinh vật biển công khai có bộ lọc và phân trang
+ * @param {Object} params
+ * @returns {Promise<{ success: boolean, data: Array, pagination: Object }>}
+ */
+export const fetchSpeciesList = async (params = {}) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species`, { params });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi tải danh sách sinh vật:", error);
+    throw error;
+  }
+};
+
+/**
+ * Toggle trạng thái yêu thích của loài sinh vật
+ * @param {string|number} idOrSlug
+ * @returns {Promise<{ success: boolean, isFavorited: boolean, message: string }>}
+ */
+export const toggleSpeciesFavorite = async (idOrSlug) => {
+  const response = await axios.post(
+    `${API_BASE_URL}/species/${encodeURIComponent(idOrSlug)}/favorite`,
+    {},
+    getAuthHeaders()
+  );
+  return response.data;
+};
+
+/**
+ * Kiểm tra trạng thái yêu thích của một loài sinh vật
+ * @param {string|number} idOrSlug
+ * @returns {Promise<{ success: boolean, isFavorited: boolean }>}
+ */
+export const getSpeciesFavoriteStatus = async (idOrSlug) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/species/${encodeURIComponent(idOrSlug)}/favorite-status`,
+      getAuthHeaders()
+    );
+    return response.data;
+  } catch {
+    return { success: false, isFavorited: false };
+  }
+};
+
+
 

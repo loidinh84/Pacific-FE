@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
@@ -9,6 +9,9 @@ import {
 import { useLanguage } from "../../hooks/useLanguage";
 import { Favorite, Favorited, Anchor } from "../../assets/Icons";
 import { NoFound, FishHidden } from "../../assets/Images";
+import { getStoredToken } from "../../utils/auth";
+import { toggleSpeciesFavorite } from "../../services/speciesApi";
+import { fetchMyFavoriteIds } from "../../services/userService";
 
 export function SearchGridList({
   speciesList,
@@ -21,6 +24,24 @@ export function SearchGridList({
   const [currentPage, setCurrentPage] = useState(1);
   const [favorites, setFavorites] = useState(new Set());
   const itemsPerPage = 6;
+
+  // Tải danh sách ID đã yêu thích nếu người dùng đã đăng nhập
+  useEffect(() => {
+    let isMounted = true;
+    if (getStoredToken()) {
+      fetchMyFavoriteIds()
+        .then((res) => {
+          if (!isMounted) return;
+          if (res && res.success && Array.isArray(res.data)) {
+            setFavorites(new Set(res.data.map(String)));
+          }
+        })
+        .catch(() => {});
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const totalPages = Math.ceil(speciesList.length / itemsPerPage) || 1;
   // Clamp currentPage so typing that reduces results never shows an empty grid
@@ -39,14 +60,43 @@ export function SearchGridList({
     }
   };
 
-  const toggleFavorite = (e, id) => {
+  const toggleFavorite = async (e, s) => {
     e.stopPropagation();
+    if (!getStoredToken()) {
+      navigate("/login");
+      return;
+    }
+
+    const targetKey = String(s.id);
+    const wasFav = favorites.has(targetKey);
+
+    // Optimistic update
     setFavorites((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (wasFav) next.delete(targetKey);
+      else next.add(targetKey);
       return next;
     });
+
+    try {
+      const res = await toggleSpeciesFavorite(s.slug || s.id);
+      if (res && res.success) {
+        setFavorites((prev) => {
+          const next = new Set(prev);
+          if (res.isFavorited) next.add(targetKey);
+          else next.delete(targetKey);
+          return next;
+        });
+      }
+    } catch {
+      // Revert nếu lỗi
+      setFavorites((prev) => {
+        const next = new Set(prev);
+        if (wasFav) next.add(targetKey);
+        else next.delete(targetKey);
+        return next;
+      });
+    }
   };
 
 
@@ -109,7 +159,7 @@ export function SearchGridList({
               const statusName = language === "en" ? s.statusEn : s.statusVi;
               const name = language === "en" ? s.nameEn : s.nameVi;
               const desc = language === "en" ? s.descEn : s.descVi;
-              const isFav = favorites.has(s.id);
+              const isFav = favorites.has(String(s.id)) || (s.slug && favorites.has(String(s.slug)));
 
               return (
                 <div
@@ -171,7 +221,7 @@ export function SearchGridList({
 
                     {/* Favorite Button */}
                     <button
-                      onClick={(e) => toggleFavorite(e, s.id)}
+                      onClick={(e) => toggleFavorite(e, s)}
                       className={`flex items-center gap-1 text-xs font-semibold transition-all cursor-pointer ${
                         isFav
                           ? "text-rose-400"

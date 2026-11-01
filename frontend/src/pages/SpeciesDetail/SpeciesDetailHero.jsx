@@ -25,6 +25,8 @@ import {
 import { Favorite, Favorited } from "../../assets/Icons";
 import { playSpeciesSound, stopSpeciesSound } from "../../utils/oceanAudio";
 import { useLanguage } from "../../hooks/useLanguage";
+import { getStoredToken } from "../../utils/auth";
+import { getSpeciesFavoriteStatus, toggleSpeciesFavorite } from "../../services/speciesApi";
 
 // Chuẩn hóa phân hạng bảo tồn Sách Đỏ
 const RED_LIST_BADGES = {
@@ -68,6 +70,46 @@ export function SpeciesDetailHero({ species }) {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [isCopied, setIsCopied] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  // Kiểm tra trạng thái yêu thích từ backend
+  useEffect(() => {
+    let isMounted = true;
+    const targetKey = species?.slug || species?.id;
+    if (targetKey && getStoredToken()) {
+      getSpeciesFavoriteStatus(targetKey).then((res) => {
+        if (!isMounted) return;
+        if (res && res.success) {
+          setIsFavorited(Boolean(res.isFavorited));
+        }
+      });
+    } else {
+      setIsFavorited(false);
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [species?.id, species?.slug]);
+
+  const handleToggleFavorite = async () => {
+    if (!getStoredToken()) {
+      navigate("/login");
+      return;
+    }
+    const targetKey = species?.slug || species?.id;
+    if (!targetKey) return;
+
+    const prevFav = isFavorited;
+    setIsFavorited(!prevFav);
+
+    try {
+      const res = await toggleSpeciesFavorite(targetKey);
+      if (res && res.success) {
+        setIsFavorited(Boolean(res.isFavorited));
+      }
+    } catch {
+      setIsFavorited(prevFav);
+    }
+  };
 
   const images =
     species.gallery && species.gallery.length > 0
@@ -540,7 +582,7 @@ export function SpeciesDetailHero({ species }) {
 
           {/* Nút 3: Yêu thích sinh vật */}
           <button
-            onClick={() => setIsFavorited(!isFavorited)}
+            onClick={handleToggleFavorite}
             className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer backdrop-blur-md ${
               isFavorited
                 ? "bg-rose-500/15 border-rose-400/50 text-rose-300"

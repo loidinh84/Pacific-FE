@@ -1,8 +1,68 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../hooks/useLanguage";
 import { SPECIES_DATA } from "../../mocks/speciesMock";
+import { fetchSpeciesList } from "../../services/speciesApi";
+import { FishHidden } from "../../assets/Images";
 
 export default function SpeciesSection() {
+  const navigate = useNavigate();
   const { language, t } = useLanguage();
+  const [speciesList, setSpeciesList] = useState(SPECIES_DATA);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchSpeciesList({ limit: 4, sortBy: "views" })
+      .then((res) => {
+        if (!isMounted) return;
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const mapped = res.data.map((s, idx) => ({
+            id: s.id,
+            slug: s.slug || s.id,
+            tagVi: s.group?.name || "Sinh vật biển",
+            tagEn: s.group?.name || "Marine Life",
+            nameVi: s.commonName,
+            nameEn: s.commonName,
+            sciName: s.scientificName,
+            image: s.image,
+            stats: [
+              {
+                val: s.sizeMaxCm ? `${(s.sizeMaxCm / 100).toFixed(1)}m` : "Đang cập nhật",
+                labelVi: "Chiều dài",
+                labelEn: "Length",
+              },
+              {
+                val: s.weightMaxKg ? `${s.weightMaxKg}kg` : "Đang cập nhật",
+                labelVi: "Cân nặng",
+                labelEn: "Weight",
+              },
+              {
+                val: s.lifespanYears ? `${s.lifespanYears} năm` : "Đang cập nhật",
+                labelVi: "Tuổi thọ",
+                labelEn: "Lifespan",
+              },
+            ],
+            descVi:
+              s.description ||
+              (s.diet ? `Tập tính ăn: ${s.diet}.` : "") ||
+              `Sinh vật đặc hữu phân bố tại vùng biển ${s.eastSeaZone || "Biển Đông"}.`,
+            descEn:
+              s.description ||
+              `Endemic marine creature found in ${s.eastSeaZone || "East Sea"}.`,
+            reverse: idx % 2 !== 0,
+            aos: idx % 2 === 0 ? "fade-right" : "fade-left",
+          }));
+          setSpeciesList(mapped);
+        }
+      })
+      .catch(() => {
+        // Fallback giữ nguyên SPECIES_DATA
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <section
@@ -24,7 +84,7 @@ export default function SpeciesSection() {
 
         {/* Species List */}
         <div className="flex flex-col gap-8 md:gap-10">
-          {SPECIES_DATA.map((s) => {
+          {speciesList.map((s) => {
             const tag = language === "en" ? s.tagEn : s.tagVi;
             const name = language === "en" ? s.nameEn : s.nameVi;
             const desc = language === "en" ? s.descEn : s.descVi;
@@ -32,9 +92,10 @@ export default function SpeciesSection() {
             return (
               <div
                 key={s.id}
-                className="bg-pacific-figma-card rounded-3xl p-6 md:p-8 shadow-xl border border-white/10 relative overflow-hidden"
+                className="bg-pacific-figma-card rounded-3xl p-6 md:p-8 shadow-xl border border-white/10 relative overflow-hidden group cursor-pointer hover:border-pacific-cyan/40 transition-colors"
                 data-aos={s.aos}
                 data-aos-duration="900"
+                onClick={() => navigate(`/species/${s.slug || s.id}`)}
               >
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-center">
                   {/* Left Column: Details */}
@@ -46,7 +107,7 @@ export default function SpeciesSection() {
                       </span>
 
                       {/* Name & SciName */}
-                      <h3 className="text-2xl md:text-3xl font-bold text-white font-heading mb-1">
+                      <h3 className="text-2xl md:text-3xl font-bold text-white font-heading mb-1 group-hover:text-pacific-cyan transition-colors">
                         {name}
                       </h3>
                       <p className="text-sm text-pacific-blue-pale italic mb-6">
@@ -54,7 +115,7 @@ export default function SpeciesSection() {
                       </p>
 
                       {/* Description */}
-                      <p className="text-sm md:text-base text-white/80 leading-relaxed mb-5">
+                      <p className="text-sm md:text-base text-white/80 leading-relaxed mb-5 line-clamp-3">
                         {desc}
                       </p>
                     </div>
@@ -78,9 +139,14 @@ export default function SpeciesSection() {
                   <div className="lg:col-span-5 flex justify-center items-center">
                     <div className="relative w-full max-w-sm aspect-square flex justify-center items-center p-4">
                       <img
-                        src={s.image}
+                        src={s.image || FishHidden}
                         alt={name}
-                        className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.65)] hover:scale-108 transition-transform duration-500"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = FishHidden;
+                        }}
+                        className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.65)] group-hover:scale-108 transition-transform duration-500"
                       />
                     </div>
                   </div>
@@ -92,7 +158,10 @@ export default function SpeciesSection() {
 
         {/* View All Button */}
         <div className="text-center mt-5" data-aos="fade-up">
-          <button className="px-5 py-2.5 rounded-2xl font-bold text-white bg-blue-950 hover:bg-blue-800  active:translate-y-0.5 transition-all cursor-pointer text-sm">
+          <button
+            onClick={() => navigate("/search")}
+            className="px-5 py-2.5 rounded-2xl font-bold text-white bg-blue-950 hover:bg-blue-800 active:translate-y-0.5 transition-all cursor-pointer text-sm"
+          >
             {t("species.btnViewAll")}
           </button>
         </div>

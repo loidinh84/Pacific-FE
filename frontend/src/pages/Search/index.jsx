@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { SearchHeroHeader } from "./SearchHeroHeader";
@@ -9,22 +10,96 @@ import { OceanFunFacts } from "./OceanFunFacts";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { useLanguage } from "../../hooks/useLanguage";
 import { searchSemantic } from "../../services/ecosystemApi";
+import { fetchSpeciesList } from "../../services/speciesApi";
 
 export default function Search() {
   const { language } = useLanguage();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchParams] = useSearchParams();
+  const initialQuery = searchParams.get("q") || searchParams.get("search") || "";
+  const initialCat = searchParams.get("category") || searchParams.get("cat") || "";
+
+  const [searchTerm, setSearchTerm] = useState(initialQuery);
+  const [selectedCategory, setSelectedCategory] = useState(initialCat);
   const [sortBy, setSortBy] = useState("az");
+
+  // Dữ liệu từ API Backend
+  const [apiSpecies, setApiSpecies] = useState(null);
+  const [apiLoading, setApiLoading] = useState(false);
 
   // State cho Tìm kiếm Ngữ nghĩa Tri thức Sinh thái
   const [semanticResults, setSemanticResults] = useState(null);
   const [semanticLoading, setSemanticLoading] = useState(false);
   const [semanticQuery, setSemanticQuery] = useState("");
 
-  /* Real-time Filter & Sort Logic */
-  const filteredSpecies = useMemo(() => {
+  // Tải danh sách sinh vật từ API theo thời gian thực (có debounce)
+  useEffect(() => {
+    let isMounted = true;
+    const timer = setTimeout(() => {
+      setApiLoading(true);
+      fetchSpeciesList({
+        search: searchTerm,
+        category: selectedCategory,
+        sortBy: sortBy,
+        limit: 100,
+      })
+        .then((res) => {
+          if (!isMounted) return;
+          if (res && res.success && Array.isArray(res.data)) {
+            const mapped = res.data.map((s) => {
+              const redList = s.vietnamRedListStatus || s.conservationStatus || "LC";
+              const statusType =
+                redList === "CR" || redList === "EN"
+                  ? "danger"
+                  : redList === "VU" || redList === "NT"
+                  ? "warning"
+                  : "safe";
+
+              return {
+                id: s.id,
+                slug: s.slug || s.id,
+                category: s.group?.slug || s.group?.name || "",
+                categoryVi: s.group?.name || "Sinh vật biển",
+                categoryEn: s.group?.name || "Marine Life",
+                statusVi: s.vietnamRedListStatus || "Ít quan tâm",
+                statusEn: s.vietnamRedListStatus || "Least Concern",
+                statusType,
+                nameVi: s.commonName,
+                nameEn: s.commonName,
+                sciName: s.scientificName,
+                descVi:
+                  s.description ||
+                  (s.diet ? `Tập tính ăn: ${s.diet}.` : "") ||
+                  `Phân bố tự nhiên tại vùng biển ${s.eastSeaZone || "Biển Đông"}.`,
+                descEn:
+                  s.description ||
+                  `Naturally distributed in ${s.eastSeaZone || "East Sea"}.`,
+                image: s.image,
+                depth:
+                  s.depthMin != null || s.depthMax != null
+                    ? `${s.depthMin || 0} - ${s.depthMax || 100}m`
+                    : "0 - 100m",
+              };
+            });
+            setApiSpecies(mapped);
+          }
+        })
+        .catch(() => {
+          // Giữ null để fallback sang mock dữ liệu cục bộ
+        })
+        .finally(() => {
+          if (isMounted) setApiLoading(false);
+        });
+    }, 250);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
+  }, [searchTerm, selectedCategory, sortBy]);
+
+  /* Fallback Filter & Sort Logic khi không có API */
+  const fallbackSpecies = useMemo(() => {
     return SEARCH_SPECIES_CATALOG.filter((s) => {
-      // Search term filter
       const term = searchTerm.toLowerCase().trim();
       const matchNameVi = s.nameVi.toLowerCase().includes(term);
       const matchNameEn = s.nameEn.toLowerCase().includes(term);
@@ -33,7 +108,6 @@ export default function Search() {
       const matchSearch =
         !term || matchNameVi || matchNameEn || matchSciName || matchDescVi;
 
-      // Category filter
       const matchCategory =
         !selectedCategory || s.category === selectedCategory;
 
@@ -54,6 +128,8 @@ export default function Search() {
     });
   }, [searchTerm, selectedCategory, sortBy, language]);
 
+  const activeCatalog = apiSpecies !== null ? apiSpecies : fallbackSpecies;
+
   // Khi có kết quả tìm kiếm ngữ nghĩa, chuyển hóa trực tiếp vào danh sách sinh vật chính
   const displayedSpecies = useMemo(() => {
     if (
@@ -72,11 +148,10 @@ export default function Search() {
       };
 
       return semanticResults.data.map((item) => {
-        // Đối chiếu dữ liệu tìm kiếm với danh mục sinh vật
         const itemClean = (item.commonName || "").toLowerCase().trim();
         const sciClean = (item.scientificName || "").toLowerCase().trim();
 
-        const matchedCatalog = SEARCH_SPECIES_CATALOG.find((c) => {
+        const matchedCatalog = activeCatalog.find((c) => {
           if (c.id === item.id || c.slug === item.slug) return true;
           const cSci = (c.sciName || "").toLowerCase();
           if (sciClean && cSci && (cSci.includes(sciClean) || sciClean.includes(cSci))) return true;
@@ -129,8 +204,8 @@ export default function Search() {
         };
       });
     }
-    return filteredSpecies;
-  }, [semanticResults, filteredSpecies]);
+    return activeCatalog;
+  }, [semanticResults, activeCatalog]);
 
   const executeSemanticSearch = async (queryText) => {
     const q = (queryText || searchTerm || "").trim();
@@ -213,7 +288,7 @@ export default function Search() {
           speciesList={displayedSpecies}
           semanticQuery={semanticQuery}
           onClearSemantic={handleClearSemantic}
-          loading={semanticLoading}
+          loading={semanticLoading || (apiLoading && apiSpecies === null)}
         />
 
         <OceanFunFacts />

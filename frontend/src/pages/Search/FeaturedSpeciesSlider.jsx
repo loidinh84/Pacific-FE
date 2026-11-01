@@ -1,12 +1,64 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../hooks/useLanguage";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
+import { fetchSpeciesList } from "../../services/speciesApi";
+import { FishHidden } from "../../assets/Images";
 import * as Icons from "../../assets/Icons";
 
-export function FeaturedSpeciesSlider() {
+export function FeaturedSpeciesSlider({ initialSpecies = null }) {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
-  const featuredList = SEARCH_SPECIES_CATALOG.filter((s) => s.isFeatured);
+  const [featuredList, setFeaturedList] = useState(() => {
+    return SEARCH_SPECIES_CATALOG.filter((s) => s.isFeatured);
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchSpeciesList({ sortBy: "views", limit: 8 })
+      .then((res) => {
+        if (!isMounted) return;
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const mapped = res.data.map((s) => {
+            const redList = s.vietnamRedListStatus || s.conservationStatus || "LC";
+            const statusType =
+              redList === "CR" || redList === "EN"
+                ? "danger"
+                : redList === "VU" || redList === "NT"
+                ? "warning"
+                : "safe";
+
+            return {
+              id: s.id,
+              slug: s.slug || s.id,
+              categoryVi: s.group?.name || "Sinh vật biển",
+              categoryEn: s.group?.name || "Marine Life",
+              statusVi: s.vietnamRedListStatus || "Ít quan tâm",
+              statusEn: s.vietnamRedListStatus || "Least Concern",
+              statusType,
+              nameVi: s.commonName,
+              nameEn: s.commonName,
+              sciName: s.scientificName,
+              descVi: s.description || `Sinh vật phân bố tại vùng biển ${s.eastSeaZone || "Biển Đông"}.`,
+              descEn: s.description || `Species found in ${s.eastSeaZone || "East Sea"}.`,
+              image: s.image,
+              depth:
+                s.depthMin != null || s.depthMax != null
+                  ? `${s.depthMin || 0} - ${s.depthMax || 100}m`
+                  : "0 - 100m",
+            };
+          });
+          setFeaturedList(mapped);
+        }
+      })
+      .catch(() => {
+        // Fallback giữ nguyên mock
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-4 mb-8">
@@ -53,8 +105,13 @@ export function FeaturedSpeciesSlider() {
               <div className="w-full h-32 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-white/[0.03]">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(56,189,248,0.08)_0%,transparent_70%)]" />
                 <img
-                  src={s.image}
+                  src={s.image || FishHidden}
                   alt={name}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = FishHidden;
+                  }}
                   className="w-full h-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-400 relative z-10"
                 />
               </div>
