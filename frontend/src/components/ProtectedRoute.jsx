@@ -1,11 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { getStoredUser } from "../utils/auth";
 
-/**
- * Route dành cho quản trị viên
- * Nếu chưa đăng nhập -> chuyển về /login
- * Nếu đã đăng nhập nhưng không phải admin -> chuyển về trang chủ /
- */
+// Tuyến đường dành cho quản trị viên
 export function AdminRoute({ children }) {
   const location = useLocation();
   const user = getStoredUser();
@@ -15,18 +11,13 @@ export function AdminRoute({ children }) {
   }
 
   if (user.role !== "admin" && user.role !== "super_admin") {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/403" replace />;
   }
 
   return children;
 }
 
-/**
- * Route dành cho khách chưa đăng nhập
- * Nếu đã đăng nhập:
- * - Admin/Super Admin -> chuyển hướng vào /admin/species
- * - Người dùng thông thường -> chuyển về trang chủ /
- */
+// Tuyến đường dành cho khách chưa đăng nhập
 export function GuestRoute({ children }) {
   const user = getStoredUser();
 
@@ -40,18 +31,12 @@ export function GuestRoute({ children }) {
   return children;
 }
 
-/**
- * Route cho người dùng
- * Cho phép cả khách vãng lai, người dùng lẫn Admin xem công khai một cách liền mạch, không bị chặn.
- */
+// Tuyến đường công khai
 export function ClientRoute({ children }) {
   return children;
 }
 
-/**
- * Route yêu cầu người dùng đăng nhập
- * Nếu chưa đăng nhập -> /login. Nếu là Admin -> chuyển vào /admin/profile.
- */
+// Tuyến đường yêu cầu đăng nhập
 export function UserProtectedRoute({ children }) {
   const location = useLocation();
   const user = getStoredUser();
@@ -67,7 +52,6 @@ export function UserProtectedRoute({ children }) {
   return children;
 }
 
-// Default export for backward compatibility
 export default function ProtectedRoute({ requireAdmin = false, children }) {
   if (requireAdmin) {
     return <AdminRoute>{children}</AdminRoute>;
