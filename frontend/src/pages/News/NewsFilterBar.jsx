@@ -2,14 +2,15 @@ import { useState, useRef } from "react";
 import { ArrowUpDown, ChevronDown, Check } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useClickOutside } from "../../hooks/useClickOutside";
-import { NEWS_CATEGORIES } from "../../mocks/newsMock";
 import { getCategoryLabel } from "./newsUtils";
 
 export function NewsFilterBar({
+  categories = [],
   selectedCategory,
   setSelectedCategory,
   sortBy,
   setSortBy,
+  isLoading = false,
 }) {
   const { t } = useLanguage();
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -28,35 +29,57 @@ export function NewsFilterBar({
   return (
     <div className="max-w-6xl mx-auto px-4 mb-10 mt-2">
       <div className="p-4 md:p-5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-5">
-        {/* Left: Category Pill Chips with generous spacing from borders */}
+        {/* Left: Category Pill Chips */}
         <div className="flex items-center gap-2.5 overflow-x-auto pb-3 lg:pb-0 custom-scrollbar-thin">
           <button
             onClick={() => setSelectedCategory("")}
             className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
               !selectedCategory
-                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white"
+                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/20"
                 : "bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
             }`}
           >
             {t("news.allCategories")}
           </button>
 
-          {NEWS_CATEGORIES.map((cat) => {
-            const isSelected = selectedCategory === cat.slug;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.slug)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                  isSelected
-                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white"
-                    : "bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
-                }`}
-              >
-                {getCategoryLabel(t, cat.slug)}
-              </button>
-            );
-          })}
+          {isLoading && categories.length === 0 ? (
+            <div className="flex items-center gap-2">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="w-24 h-8 rounded-xl bg-white/5 animate-pulse border border-white/10"
+                />
+              ))}
+            </div>
+          ) : (
+            categories.map((cat) => {
+              const isSelected = selectedCategory === cat.slug;
+              return (
+                <button
+                  key={cat.id || cat.slug}
+                  onClick={() => setSelectedCategory(cat.slug)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+                    isSelected
+                      ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/20"
+                      : "bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
+                  }`}
+                >
+                  <span>{getCategoryLabel(t, cat.slug) || cat.name}</span>
+                  {typeof cat.article_count === "number" && (
+                    <span
+                      className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                        isSelected
+                          ? "bg-white/20 text-white"
+                          : "bg-white/10 text-slate-400"
+                      }`}
+                    >
+                      {cat.article_count}
+                    </span>
+                  )}
+                </button>
+              );
+            })
+          )}
         </div>
 
         {/* Right: Custom Glassmorphic Sort Dropdown */}

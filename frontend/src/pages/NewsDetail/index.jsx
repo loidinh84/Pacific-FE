@@ -1,13 +1,12 @@
-import { useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
-import { NEWS_ARTICLES } from "../../mocks/newsMock";
 import { NewsCard } from "../News/NewsCard";
+import { fetchNewsDetail } from "../../services/newsApi";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import {
-  getCategoryStyle,
   getCategoryLabel,
   formatFullDate,
   formatViews,
@@ -21,6 +20,8 @@ import {
   Check,
   ExternalLink,
   ChevronRight,
+  AlertCircle,
+  RefreshCw,
 } from "lucide-react";
 
 export default function NewsDetail() {
@@ -29,29 +30,46 @@ export default function NewsDetail() {
   const { t, language } = useLanguage();
   const { copiedId, copy } = useCopyToClipboard();
 
-  // Scroll to top on slug change
+  const [article, setArticle] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorType, setErrorType] = useState(null); // 'not_found' | 'server_error' | null
+
+  // Tải chi tiết bài viết theo slug
   useEffect(() => {
+    let isMounted = true;
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [slug]);
 
-  // Find article
-  const article = useMemo(() => {
-    return (
-      NEWS_ARTICLES.find((a) => a.slug === slug || String(a.id) === slug) || null
-    );
-  }, [slug]);
+    const loadArticle = async () => {
+      try {
+        setIsLoading(true);
+        setErrorType(null);
+        const data = await fetchNewsDetail(slug);
+        if (isMounted) {
+          setArticle(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          if (err.response?.status === 404) {
+            setErrorType("not_found");
+          } else {
+            setErrorType("server_error");
+          }
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
 
-  // Bài viết liên quan
-  const relatedArticles = useMemo(() => {
-    if (!article) return [];
-    return NEWS_ARTICLES.filter((a) => a.id !== article.id)
-      .sort((a, b) => {
-        const sameCatA = a.category?.slug === article.category?.slug ? 1 : 0;
-        const sameCatB = b.category?.slug === article.category?.slug ? 1 : 0;
-        return sameCatB - sameCatA;
-      })
-      .slice(0, 3);
-  }, [article]);
+    if (slug) {
+      loadArticle();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
 
   // SEO Title & Meta
   useEffect(() => {
@@ -68,7 +86,38 @@ export default function NewsDetail() {
     copy("share-btn", currentUrl, e);
   };
 
-  if (!article) {
+  // 1. Trạng thái Đang tải (Skeleton)
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-pacific-figma-dark text-white flex flex-col justify-between relative selection:bg-cyan-500 selection:text-black">
+        <Navbar />
+        <main className="flex-1 relative z-10 pt-24 pb-20 max-w-4xl mx-auto px-4 w-full">
+          {/* Skeleton Breadcrumbs */}
+          <div className="w-48 h-4 bg-white/10 rounded mb-6 animate-pulse" />
+          {/* Skeleton Title */}
+          <div className="space-y-3 mb-6 animate-pulse">
+            <div className="w-full h-10 bg-white/15 rounded-xl" />
+            <div className="w-2/3 h-10 bg-white/15 rounded-xl" />
+          </div>
+          {/* Skeleton Meta Bar */}
+          <div className="w-full h-10 bg-white/5 rounded-xl mb-6 animate-pulse" />
+          {/* Skeleton Cover Image */}
+          <div className="w-full h-[380px] md:h-[460px] bg-white/10 rounded-3xl mb-8 animate-pulse" />
+          {/* Skeleton Content Paragraphs */}
+          <div className="space-y-4 animate-pulse">
+            <div className="w-full h-4 bg-white/10 rounded" />
+            <div className="w-5/6 h-4 bg-white/10 rounded" />
+            <div className="w-4/5 h-4 bg-white/10 rounded" />
+            <div className="w-full h-4 bg-white/10 rounded" />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // 2. Trạng thái Không tìm thấy bài viết (404)
+  if (errorType === "not_found" || (!isLoading && !article && !errorType)) {
     return (
       <div className="min-h-screen bg-pacific-figma-dark text-white flex flex-col justify-between">
         <Navbar />
@@ -90,8 +139,46 @@ export default function NewsDetail() {
     );
   }
 
+  // 3. Trạng thái Lỗi máy chủ
+  if (errorType === "server_error") {
+    return (
+      <div className="min-h-screen bg-pacific-figma-dark text-white flex flex-col justify-between">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center px-4 py-24">
+          <div className="text-center max-w-md p-8 rounded-3xl bg-red-500/10 border border-red-500/20 backdrop-blur-xl">
+            <div className="w-14 h-14 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400 mx-auto mb-4">
+              <AlertCircle size={28} />
+            </div>
+            <h1 className="text-xl font-bold mb-2">Không thể tải bài viết</h1>
+            <p className="text-xs text-slate-300 mb-6">
+              Đã xảy ra lỗi khi kết nối tới máy chủ. Vui lòng thử lại.
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs inline-flex items-center gap-2 transition-all cursor-pointer"
+              >
+                <RefreshCw size={14} />
+                <span>Tải lại</span>
+              </button>
+              <button
+                onClick={() => navigate("/news")}
+                className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs inline-flex items-center gap-2 transition-all cursor-pointer"
+              >
+                <ArrowLeft size={14} />
+                <span>Về trang tin tức</span>
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   const isExternal = article.source_type === "external";
   const categorySlug = article.category?.slug;
+  const relatedArticles = article.related_articles || [];
 
   return (
     <div className="min-h-screen bg-pacific-figma-dark text-white flex flex-col justify-between relative selection:bg-cyan-500 selection:text-black">
@@ -115,7 +202,7 @@ export default function NewsDetail() {
               </Link>
               <ChevronRight size={12} />
               <span className="text-cyan-300 font-semibold truncate max-w-[200px]">
-                {getCategoryLabel(t, categorySlug)}
+                {getCategoryLabel(t, categorySlug) || article.category?.name}
               </span>
             </div>
 
@@ -220,6 +307,29 @@ export default function NewsDetail() {
             /* Clean Excerpt Body for External Articles */
             <div className="text-slate-200 text-base md:text-lg leading-relaxed mb-12 space-y-4">
               <p>{article.excerpt}</p>
+            </div>
+          )}
+
+          {/* External Article Callout */}
+          {isExternal && article.external_url && (
+            <div className="p-6 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 mb-16">
+              <div>
+                <h3 className="text-base font-bold text-white mb-1">
+                  Đọc toàn bộ bài viết trên trang gốc
+                </h3>
+                <p className="text-xs text-slate-300">
+                  Bài viết này được tổng hợp và dẫn nguồn từ {article.source?.name || "báo chí đối tác"}.
+                </p>
+              </div>
+              <a
+                href={article.external_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs inline-flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all shrink-0 cursor-pointer"
+              >
+                <span>{t("news.readOriginal") || "Đọc bài gốc"}</span>
+                <ExternalLink size={14} />
+              </a>
             </div>
           )}
 
