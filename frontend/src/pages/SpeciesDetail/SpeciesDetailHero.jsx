@@ -455,6 +455,14 @@ export function SpeciesDetailHero({ species }) {
   };
 
   const hasSound = species.hasAudio !== false;
+  const slugLower = String(species?.slug || species?.id || "").toLowerCase();
+  const has3DModel = Boolean(
+    species?.model3dUrl ||
+    species?.model_3d_url ||
+    slugLower.includes("shark") ||
+    slugLower.includes("ca-map") ||
+    slugLower === "great-white-shark-1"
+  );
 
   return (
     <section className="relative pt-20 md:pt-24 pb-12 px-4 md:px-8 max-w-6xl mx-auto font-sans">
@@ -533,15 +541,25 @@ export function SpeciesDetailHero({ species }) {
         {/* Thanh thao tác */}
         <div className="flex flex-wrap items-center gap-2.5 shrink-0 pt-2 lg:pt-0">
           {/* Nút 1: Xem dưới dạng 3D */}
-          <button
-            onClick={() =>
-              navigate(`/species/${species.slug || species.id}/3d`)
-            }
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all cursor-pointer border border-cyan-400/40 hover:border-cyan-300"
-          >
-            <Box size={16} className="text-cyan-200" />
-            <span>{t("speciesDetail.btnView3D") || "Xem mô hình 3D"}</span>
-          </button>
+          {has3DModel ? (
+            <button
+              onClick={() =>
+                navigate(`/species/${species.slug || species.id}/3d`)
+              }
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all cursor-pointer border border-cyan-400/40 hover:border-cyan-300 shadow-md shadow-cyan-950/30"
+            >
+              <Box size={16} className="text-cyan-200" />
+              <span>{t("speciesDetail.btnView3D") || "Xem mô hình 3D"}</span>
+            </button>
+          ) : (
+            <div
+              className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-white/40 text-xs font-medium cursor-not-allowed"
+              title="Mô hình 3D cho loài này đang được cập nhật"
+            >
+              <Box size={14} className="text-white/30" />
+              <span>{t("speciesDetail.model3dUpdating") || "Mô hình 3D: Đang cập nhật"}</span>
+            </div>
+          )}
 
           {/* Nút 2: Phát âm thanh thủy âm */}
           {hasSound ? (

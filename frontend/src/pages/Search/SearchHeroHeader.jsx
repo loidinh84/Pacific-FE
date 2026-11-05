@@ -141,42 +141,6 @@ export function SearchHeroHeader({
           ))}
         </div>
       </form>
-
-      {/* 4 Quick Stats Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto pt-5 border-t border-white/10">
-        <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-          <p className="text-2xl md:text-3xl font-extrabold text-cyan-400 font-heading">
-            {t("searchPage.quickStat1")}
-          </p>
-          <p className="text-xs md:text-sm text-slate-300 mt-1 font-semibold">
-            {t("searchPage.quickStat1Title")}
-          </p>
-        </div>
-        <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-          <p className="text-2xl md:text-3xl font-extrabold text-cyan-400 font-heading">
-            {t("searchPage.quickStat2")}
-          </p>
-          <p className="text-xs md:text-sm text-slate-300 mt-1 font-semibold">
-            {t("searchPage.quickStat2Title")}
-          </p>
-        </div>
-        <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-          <p className="text-2xl md:text-3xl font-extrabold text-cyan-400 font-heading">
-            {t("searchPage.quickStat3")}
-          </p>
-          <p className="text-xs md:text-sm text-slate-300 mt-1 font-semibold">
-            {t("searchPage.quickStat3Title")}
-          </p>
-        </div>
-        <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-          <p className="text-2xl md:text-3xl font-extrabold text-cyan-400 font-heading">
-            {t("searchPage.quickStat4")}
-          </p>
-          <p className="text-xs md:text-sm text-slate-300 mt-1 font-semibold">
-            {t("searchPage.quickStat4Title")}
-          </p>
-        </div>
-      </div>
     </div>
   );
 }

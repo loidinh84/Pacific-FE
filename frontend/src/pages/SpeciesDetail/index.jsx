@@ -107,6 +107,7 @@ export default function SpeciesDetail() {
           diet: apiData.diet,
           categoryVi: apiData.group?.name || prev?.categoryVi,
           categoryEn: apiData.group?.name || prev?.categoryEn,
+          model3dUrl: apiData.model_3d_url || apiData.model3dUrl || prev?.model3dUrl || prev?.model_3d_url || null,
           fullBioHighlightsVi: localSpecies?.fullBioHighlightsVi || prev?.fullBioHighlightsVi,
           fullBioHighlightsEn: localSpecies?.fullBioHighlightsEn || prev?.fullBioHighlightsEn,
           bioFactsVi: localSpecies?.bioFactsVi || prev?.bioFactsVi,

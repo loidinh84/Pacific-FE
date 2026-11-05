@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
@@ -23,7 +23,7 @@ export function SearchGridList({
   const { language, t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
   const [favorites, setFavorites] = useState(new Set());
-  const itemsPerPage = 6;
+  const itemsPerPage = 9;
 
   // Tải danh sách ID đã yêu thích nếu người dùng đã đăng nhập
   useEffect(() => {
@@ -48,6 +48,20 @@ export function SearchGridList({
   const effectivePage = Math.min(currentPage, totalPages);
   const startIndex = (effectivePage - 1) * itemsPerPage;
   const currentItems = speciesList.slice(startIndex, startIndex + itemsPerPage);
+
+  // Sinh dải số trang thông minh dạng rút gọn có dấu '...' tránh tràn layout
+  const paginationItems = useMemo(() => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (effectivePage <= 4) {
+      return [1, 2, 3, 4, 5, "...", totalPages];
+    }
+    if (effectivePage >= totalPages - 3) {
+      return [1, "...", totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    return [1, "...", effectivePage - 1, effectivePage, effectivePage + 1, "...", totalPages];
+  }, [effectivePage, totalPages]);
 
   const goToPage = (p) => {
     if (p >= 1 && p <= totalPages) {
@@ -263,19 +277,31 @@ export function SearchGridList({
               <ChevronLeft size={15} />
             </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-              <button
-                key={p}
-                onClick={() => goToPage(p)}
-                className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  currentPage === p
-                    ? "bg-sky-500 text-white shadow-sky-500/30"
-                    : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-white/10"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
+            {paginationItems.map((p, idx) => {
+              if (p === "...") {
+                return (
+                  <span
+                    key={`ellipsis-${idx}`}
+                    className="w-8 h-8 flex items-center justify-center text-xs text-white/40 font-bold select-none"
+                  >
+                    ...
+                  </span>
+                );
+              }
+              return (
+                <button
+                  key={p}
+                  onClick={() => goToPage(p)}
+                  className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    effectivePage === p
+                      ? "bg-sky-500 text-white shadow-sky-500/30"
+                      : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-white/10"
+                  }`}
+                >
+                  {p}
+                </button>
+              );
+            })}
 
             <button
               onClick={() => goToPage(currentPage + 1)}

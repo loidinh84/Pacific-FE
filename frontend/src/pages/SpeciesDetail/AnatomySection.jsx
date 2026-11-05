@@ -469,15 +469,11 @@ export function AnatomySection({ species }) {
           </div>
         </div>
 
-        {/* Nút nhỏ gọn dẫn tới mô hình 3D mẫu */}
-        <Link
-          to="/species/great-white-shark-1"
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/25 text-cyan-300 hover:text-white text-xs font-medium transition-all group shrink-0"
-        >
-          <Box size={14} className="text-cyan-400 group-hover:scale-110 transition-transform" />
-          <span>Xem mô hình 3D mẫu (Cá mập)</span>
-          <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-        </Link>
+        {/* Trạng thái mô hình 3D */}
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-white/10 text-slate-400 text-xs font-medium shrink-0">
+          <Box size={14} className="text-slate-400" />
+          <span>Mô hình 3D: Đang cập nhật</span>
+        </span>
       </div>
 
       {/* ── 4 Chỉ số sinh lý nổi bật ── */}

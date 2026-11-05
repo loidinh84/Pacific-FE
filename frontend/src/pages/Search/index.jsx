@@ -12,6 +12,38 @@ import { useLanguage } from "../../hooks/useLanguage";
 import { searchSemantic } from "../../services/ecosystemApi";
 import { fetchSpeciesList } from "../../services/speciesApi";
 
+const STATUS_RANK = {
+  CR: 1,
+  EN: 2,
+  VU: 3,
+  NT: 4,
+  LC: 5,
+  DD: 6,
+  NE: 7,
+};
+
+// Trích xuất độ sâu tối đa (mét) để sắp xếp số học chuẩn xác từ vùng cạn đến biển sâu
+const parseDepthMax = (item) => {
+  if (item?.depthMax != null && !isNaN(Number(item.depthMax))) {
+    return Number(item.depthMax);
+  }
+  const match = String(item?.depth || "").match(/(\d+)\s*m/g);
+  if (match && match.length > 0) {
+    const last = match[match.length - 1].replace(/\D/g, "");
+    return Number(last) || 0;
+  }
+  return 0;
+};
+
+// Đánh giá thứ bậc Sách Đỏ: Cực kỳ nguy cấp (CR) -> Nguy cấp (EN) -> Sắp nguy cấp (VU) -> Ít lo ngại (LC)
+const getStatusRank = (item) => {
+  const code = item?.vietnamRedListStatus || item?.conservationStatus || item?.redList || "";
+  if (STATUS_RANK[code]) return STATUS_RANK[code];
+  if (item?.statusType === "danger") return 1;
+  if (item?.statusType === "warning") return 3;
+  return 5;
+};
+
 export default function Search() {
   const { language } = useLanguage();
   const [searchParams] = useSearchParams();
@@ -119,10 +151,10 @@ export default function Search() {
         return nameA.localeCompare(nameB);
       }
       if (sortBy === "depth") {
-        return a.depth.localeCompare(b.depth);
+        return parseDepthMax(a) - parseDepthMax(b);
       }
       if (sortBy === "status") {
-        return a.statusType.localeCompare(b.statusType);
+        return getStatusRank(a) - getStatusRank(b);
       }
       return 0;
     });
@@ -147,7 +179,7 @@ export default function Search() {
         NE: { vi: "Chưa đánh giá", en: "Not Evaluated", type: "safe" },
       };
 
-      return semanticResults.data.map((item) => {
+      const mapped = semanticResults.data.map((item) => {
         const itemClean = (item.commonName || "").toLowerCase().trim();
         const sciClean = (item.scientificName || "").toLowerCase().trim();
 
@@ -201,11 +233,28 @@ export default function Search() {
           descEn: realDescEn,
           image: matchedCatalog?.image || item.image,
           depth: matchedCatalog?.depth || item.depth || "0 - 200m",
+          depthMax: matchedCatalog?.depthMax,
+          vietnamRedListStatus: item.redList || matchedCatalog?.vietnamRedListStatus,
         };
+      });
+
+      return mapped.sort((a, b) => {
+        if (sortBy === "az") {
+          const nameA = language === "en" ? a.nameEn : a.nameVi;
+          const nameB = language === "en" ? b.nameEn : b.nameVi;
+          return nameA.localeCompare(nameB);
+        }
+        if (sortBy === "depth") {
+          return parseDepthMax(a) - parseDepthMax(b);
+        }
+        if (sortBy === "status") {
+          return getStatusRank(a) - getStatusRank(b);
+        }
+        return 0;
       });
     }
     return activeCatalog;
-  }, [semanticResults, activeCatalog]);
+  }, [semanticResults, activeCatalog, sortBy, language]);
 
   const executeSemanticSearch = async (queryText) => {
     const q = (queryText || searchTerm || "").trim();
