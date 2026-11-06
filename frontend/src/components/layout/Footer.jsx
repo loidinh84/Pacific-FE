@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaFacebookF, FaYoutube, FaInstagram } from "react-icons/fa";
-import { CheckCircle2, Send, Star, Loader2, AlertCircle } from "lucide-react";
+import { CheckCircle2, Send, Loader2, AlertCircle, Clock } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { submitFeedback } from "../../services/feedbackApi";
 import * as Images from "../../assets/Images";
@@ -10,39 +10,79 @@ export default function Footer() {
   const { t, language } = useLanguage();
   const isEn = language === "en";
   const [feedback, setFeedback] = useState("");
-  const [rating, setRating] = useState(5);
-  const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [cooldown, setCooldown] = useState(0);
+
+  // Bộ đếm lùi thời gian chờ chống spam
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => {
+      setCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
 
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
     if (!feedback.trim()) return;
+
+    if (cooldown > 0) {
+      setErrorMessage(
+        isEn
+          ? `Please wait ${cooldown}s before sending another feedback.`
+          : `Vui lòng đợi ${cooldown} giây trước khi gửi tiếp ý kiến.`
+      );
+      setTimeout(() => setErrorMessage(""), 4000);
+      return;
+    }
+
+    const trimmed = feedback.trim();
+    if (trimmed.length < 5) {
+      setErrorMessage(
+        isEn
+          ? "Feedback is too short (minimum 5 characters)."
+          : "Nội dung ý kiến đóng góp quá ngắn (tối thiểu 5 ký tự)."
+      );
+      setTimeout(() => setErrorMessage(""), 4000);
+      return;
+    }
+
+    // Kiểm tra ký tự lặp liên tục vô nghĩa (Spam)
+    if (/(.)\1{7,}/.test(trimmed)) {
+      setErrorMessage(
+        isEn
+          ? "Please enter meaningful feedback, avoid spamming characters."
+          : "Vui lòng nhập nội dung có ý nghĩa, tránh gửi chuỗi ký tự spam."
+      );
+      setTimeout(() => setErrorMessage(""), 4000);
+      return;
+    }
 
     setIsSubmitting(true);
     setErrorMessage("");
 
     try {
       await submitFeedback({
-        content: feedback.trim(),
-        rating,
+        content: trimmed,
       });
       setSubmitted(true);
       setFeedback("");
-      setRating(5);
+      setCooldown(60); // Bật thời gian chờ 60 giây chống spam
       setTimeout(() => {
         setSubmitted(false);
       }, 4000);
     } catch (err) {
       console.error("Gửi ý kiến thất bại:", err);
+      const serverMsg = err.response?.data?.message;
       setErrorMessage(
-        err.response?.data?.message ||
+        serverMsg ||
           (isEn
             ? "Could not send feedback, please try again."
             : "Không thể gửi ý kiến, vui lòng thử lại sau.")
       );
-      setTimeout(() => setErrorMessage(""), 4000);
+      setTimeout(() => setErrorMessage(""), 5000);
     } finally {
       setIsSubmitting(false);
     }
@@ -200,47 +240,12 @@ export default function Footer() {
             {t("footer.contactDesc")}
           </p>
           <form onSubmit={handleFeedbackSubmit} className="flex flex-col gap-2.5">
-            {/* Đánh giá số sao */}
-            <div className="flex items-center gap-1.5 py-0.5">
-              <span className="text-[11px] text-white/50 mr-1">
-                {isEn ? "Rating:" : "Đánh giá:"}
-              </span>
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((starVal) => {
-                  const isFilled = starVal <= (hoverRating || rating);
-                  return (
-                    <button
-                      key={starVal}
-                      type="button"
-                      onClick={() => setRating(starVal)}
-                      onMouseEnter={() => setHoverRating(starVal)}
-                      onMouseLeave={() => setHoverRating(0)}
-                      className="p-0.5 transition-transform hover:scale-125 focus:outline-none"
-                      title={`${starVal} / 5 ${isEn ? "stars" : "sao"}`}
-                    >
-                      <Star
-                        size={14}
-                        className={`transition-colors ${
-                          isFilled
-                            ? "fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]"
-                            : "text-white/20 hover:text-white/40"
-                        }`}
-                      />
-                    </button>
-                  );
-                })}
-              </div>
-              <span className="text-[10px] font-bold text-amber-400 ml-1">
-                {hoverRating || rating}/5
-              </span>
-            </div>
-
             <textarea
               rows={3}
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               placeholder={t("footer.feedbackPlaceholder")}
-              disabled={isSubmitting}
+              disabled={isSubmitting || cooldown > 0}
               className="px-3.5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-white/35 focus:outline-none focus:border-cyan-400 focus:bg-white/10 transition-all resize-none font-normal disabled:opacity-50"
             />
 
@@ -259,13 +264,18 @@ export default function Footer() {
             ) : (
               <button
                 type="submit"
-                disabled={isSubmitting || !feedback.trim()}
+                disabled={isSubmitting || !feedback.trim() || cooldown > 0}
                 className="py-2.5 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer active:translate-y-0.5 shadow-md shadow-cyan-950/40 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 size={13} className="animate-spin" />
                     <span>{isEn ? "Sending..." : "Đang gửi..."}</span>
+                  </>
+                ) : cooldown > 0 ? (
+                  <>
+                    <Clock size={13} />
+                    <span>{isEn ? `Wait ${cooldown}s` : `Chờ ${cooldown}s`}</span>
                   </>
                 ) : (
                   <>

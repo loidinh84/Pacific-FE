@@ -4,9 +4,7 @@ import {
   Search,
   Trash2,
   RefreshCw,
-  Star,
   Clock,
-  User,
   Users,
   UserX,
   ChevronLeft,
@@ -60,7 +58,6 @@ export default function FeedbackManagement() {
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [ratingFilter, setRatingFilter] = useState(""); // "" | "5" | "4" | "3" | "2" | "1"
   const [userTypeFilter, setUserTypeFilter] = useState("all"); // 'all' | 'user' | 'guest'
 
   // Pagination
@@ -93,7 +90,6 @@ export default function FeedbackManagement() {
         page,
         limit,
         search: debouncedSearch || undefined,
-        rating: ratingFilter || undefined,
         userType: userTypeFilter !== "all" ? userTypeFilter : undefined,
       };
 
@@ -114,7 +110,7 @@ export default function FeedbackManagement() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, limit, debouncedSearch, ratingFilter, userTypeFilter, showToast]);
+  }, [page, limit, debouncedSearch, userTypeFilter, showToast]);
 
   useEffect(() => {
     loadFeedback();
@@ -184,8 +180,8 @@ export default function FeedbackManagement() {
         </button>
       </div>
 
-      {/* ── 4 STAT CARDS TỔNG QUAN ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── 3 STAT CARDS TỔNG QUAN ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Card 1: Tổng ý kiến */}
         <div
           className={`p-4 rounded-2xl border transition-all flex items-center gap-4 ${
@@ -203,29 +199,7 @@ export default function FeedbackManagement() {
           </div>
         </div>
 
-        {/* Card 2: Đánh giá trung bình */}
-        <div
-          className={`p-4 rounded-2xl border transition-all flex items-center gap-4 ${
-            isDark
-              ? "bg-[#152042]/80 border-white/10 shadow-lg shadow-cyan-950/20"
-              : "bg-white border-slate-200 shadow-sm"
-          }`}
-        >
-          <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
-            <Star size={22} className="fill-amber-400" />
-          </div>
-          <div>
-            <p className="text-xs text-slate-400 font-medium">Đánh giá trung bình</p>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl font-bold font-heading text-amber-400">
-                {stats.avgRating}
-              </span>
-              <span className="text-xs text-slate-400">/ 5 sao</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Ý kiến hôm nay */}
+        {/* Card 2: Ý kiến hôm nay */}
         <div
           className={`p-4 rounded-2xl border transition-all flex items-center gap-4 ${
             isDark
@@ -244,7 +218,7 @@ export default function FeedbackManagement() {
           </div>
         </div>
 
-        {/* Card 4: Khách vãng lai / Thành viên */}
+        {/* Card 3: Khách vãng lai / Thành viên */}
         <div
           className={`p-4 rounded-2xl border transition-all flex items-center gap-4 ${
             isDark
@@ -317,27 +291,6 @@ export default function FeedbackManagement() {
               </button>
             ))}
           </div>
-
-          {/* Lọc theo số sao */}
-          <select
-            value={ratingFilter}
-            onChange={(e) => {
-              setRatingFilter(e.target.value);
-              setPage(1);
-            }}
-            className={`px-3 py-2 rounded-xl border text-xs font-medium focus:outline-none cursor-pointer ${
-              isDark
-                ? "bg-[#121c38] border-white/10 text-slate-300"
-                : "bg-white border-slate-200 text-slate-700 shadow-sm"
-            }`}
-          >
-            <option value="">Tất cả đánh giá</option>
-            <option value="5">⭐⭐⭐⭐⭐ 5 sao</option>
-            <option value="4">⭐⭐⭐⭐ 4 sao</option>
-            <option value="3">⭐⭐⭐ 3 sao</option>
-            <option value="2">⭐⭐ 2 sao</option>
-            <option value="1">⭐ 1 sao</option>
-          </select>
         </div>
       </div>
 
@@ -373,7 +326,7 @@ export default function FeedbackManagement() {
           </div>
           <h3 className="text-base font-bold text-white">Chưa có ý kiến đóng góp nào</h3>
           <p className="text-xs text-slate-400 max-w-sm">
-            {searchQuery || ratingFilter || userTypeFilter !== "all"
+            {searchQuery || userTypeFilter !== "all"
               ? "Không tìm thấy ý kiến nào phù hợp với bộ lọc hiện tại."
               : "Các ý kiến đóng góp được gửi từ biểu mẫu chân trang (Footer) sẽ xuất hiện tại đây."}
           </p>
@@ -448,29 +401,10 @@ export default function FeedbackManagement() {
                         )}
                       </div>
 
-                      {/* Stars & Timestamp */}
-                      <div className="flex items-center gap-3 mt-1">
-                        <div className="flex items-center gap-0.5">
-                          {[1, 2, 3, 4, 5].map((s) => (
-                            <Star
-                              key={s}
-                              size={13}
-                              className={
-                                s <= item.rating
-                                  ? "fill-amber-400 text-amber-400"
-                                  : "text-slate-600"
-                              }
-                            />
-                          ))}
-                          <span className="text-xs font-bold text-amber-400 ml-1">
-                            {item.rating}/5
-                          </span>
-                        </div>
-                        <span className="text-white/20">•</span>
-                        <span className="text-xs text-slate-400 flex items-center gap-1">
-                          <Clock size={11} />
-                          {formatRelativeTime(item.created_at)}
-                        </span>
+                      {/* Timestamp */}
+                      <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-400">
+                        <Clock size={11} className="text-slate-400" />
+                        <span>{formatRelativeTime(item.created_at)}</span>
                       </div>
                     </div>
                   </div>

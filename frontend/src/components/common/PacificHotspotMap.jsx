@@ -76,14 +76,14 @@ const HOTSPOTS = [
   },
 ];
 
-export default function PacificHotspotMap({ asBackground = false }) {
+export default function PacificHotspotMap({ asBackground = false, showHotspots = false }) {
   const { language } = useLanguage();
   const [activeSpot, setActiveSpot] = useState(null);
   const [modalSpot, setModalSpot] = useState(null);
   const [scrollOpacity, setScrollOpacity] = useState(1);
 
   useEffect(() => {
-    if (!asBackground) return;
+    if (!asBackground || !showHotspots) return;
 
     const handleScroll = () => {
       // Làm mờ hotspot khi cuộn qua hero
@@ -95,7 +95,7 @@ export default function PacificHotspotMap({ asBackground = false }) {
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [asBackground]);
+  }, [asBackground, showHotspots]);
 
   // Modal hiển thị chi tiết khi nhấp vào hotspot
   const renderDetailModal = () => {
@@ -188,72 +188,76 @@ export default function PacificHotspotMap({ asBackground = false }) {
           </div>
         </div>
 
-        {/* Các điểm tương tác */}
-        <div className="fixed inset-0 z-10 overflow-hidden pointer-events-none select-none">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative aspect-[1200/896] min-w-full min-h-full flex-shrink-0">
-              <div
-                className="absolute inset-0 transition-opacity duration-150"
-                style={{
-                  opacity: scrollOpacity,
-                  pointerEvents: scrollOpacity > 0.05 ? "auto" : "none",
-                }}
-              >
-                {HOTSPOTS.map((spot) => {
-                  const isHovered = activeSpot?.id === spot.id;
-                  const name = language === "en" ? spot.nameEn : spot.nameVi;
+        {/* Các điểm tương tác (chỉ hiển thị khi showHotspots = true) */}
+        {showHotspots && (
+          <>
+            <div className="fixed inset-0 z-10 overflow-hidden pointer-events-none select-none">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="relative aspect-[1200/896] min-w-full min-h-full flex-shrink-0">
+                  <div
+                    className="absolute inset-0 transition-opacity duration-150"
+                    style={{
+                      opacity: scrollOpacity,
+                      pointerEvents: scrollOpacity > 0.05 ? "auto" : "none",
+                    }}
+                  >
+                    {HOTSPOTS.map((spot) => {
+                      const isHovered = activeSpot?.id === spot.id;
+                      const name = language === "en" ? spot.nameEn : spot.nameVi;
 
-                  return (
-                    <div
-                      key={spot.id}
-                      className="absolute z-20 pointer-events-auto"
-                      style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
-                      onMouseEnter={() => setActiveSpot(spot)}
-                      onMouseLeave={() => setActiveSpot(null)}
-                      onClick={() => setModalSpot(spot)}
-                    >
-                      <div className="relative flex items-center justify-center cursor-pointer group/pin -translate-x-1/2 -translate-y-1/2">
-                        {/* Vòng quét radar xanh cyan */}
-                        <span className="absolute w-8 h-8 rounded-full bg-pacific-cyan/40 animate-ping" />
-                        <span className="absolute w-5 h-5 rounded-full bg-pacific-blue-bright/60 animate-pulse" />
-                        
-                        {/* Nút tâm điểm phát sáng */}
-                        <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-pacific-cyan to-white border-2 border-pacific-figma-dark shadow-[0_0_16px_rgba(34,211,238,1)] hover:scale-135 transition-transform" />
+                      return (
+                        <div
+                          key={spot.id}
+                          className="absolute z-20 pointer-events-auto"
+                          style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
+                          onMouseEnter={() => setActiveSpot(spot)}
+                          onMouseLeave={() => setActiveSpot(null)}
+                          onClick={() => setModalSpot(spot)}
+                        >
+                          <div className="relative flex items-center justify-center cursor-pointer group/pin -translate-x-1/2 -translate-y-1/2">
+                            {/* Vòng quét radar xanh cyan */}
+                            <span className="absolute w-8 h-8 rounded-full bg-pacific-cyan/40 animate-ping" />
+                            <span className="absolute w-5 h-5 rounded-full bg-pacific-blue-bright/60 animate-pulse" />
+                            
+                            {/* Nút tâm điểm phát sáng */}
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-pacific-cyan to-white border-2 border-pacific-figma-dark shadow-[0_0_16px_rgba(34,211,238,1)] hover:scale-135 transition-transform" />
 
-                        {/* Nhãn tên địa danh hiển thị trực tiếp dưới điểm */}
-                        <div className="absolute top-5 whitespace-nowrap px-2.5 py-0.5 rounded-full bg-pacific-figma-dark/85 backdrop-blur-sm border border-pacific-cyan/40 text-[10px] font-bold text-cyan-200 shadow-lg pointer-events-none group-hover/pin:border-pacific-cyan group-hover/pin:text-white transition-all">
-                          {name}
-                        </div>
-
-                        {/* Tooltip khi rê chuột */}
-                        {isHovered && (
-                          <div className="absolute bottom-7 left-1/2 -translate-x-1/2 w-52 p-3.5 rounded-2xl bg-pacific-figma-dark/95 border border-pacific-cyan/50 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] z-40 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
-                            <div className="flex items-center gap-1.5 text-pacific-cyan text-[10px] font-bold uppercase mb-1">
-                              <MapPin size={12} />
-                              <span>{spot.depth}</span>
-                            </div>
-                            <p className="text-xs font-bold text-white font-heading leading-snug mb-0.5">
+                            {/* Nhãn tên địa danh hiển thị trực tiếp dưới điểm */}
+                            <div className="absolute top-5 whitespace-nowrap px-2.5 py-0.5 rounded-full bg-pacific-figma-dark/85 backdrop-blur-sm border border-pacific-cyan/40 text-[10px] font-bold text-cyan-200 shadow-lg pointer-events-none group-hover/pin:border-pacific-cyan group-hover/pin:text-white transition-all">
                               {name}
-                            </p>
-                            <p className="text-[10px] text-pacific-blue-pale line-clamp-1 mb-1.5">
-                              {spot.tagVi}
-                            </p>
-                            <span className="text-[9px] text-cyan-400 font-semibold underline underline-offset-2">
-                              {language === "en" ? "Click to view details →" : "Nhấp để xem chi tiết →"}
-                            </span>
+                            </div>
+
+                            {/* Tooltip khi rê chuột */}
+                            {isHovered && (
+                              <div className="absolute bottom-7 left-1/2 -translate-x-1/2 w-52 p-3.5 rounded-2xl bg-pacific-figma-dark/95 border border-pacific-cyan/50 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] z-40 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
+                                <div className="flex items-center gap-1.5 text-pacific-cyan text-[10px] font-bold uppercase mb-1">
+                                  <MapPin size={12} />
+                                  <span>{spot.depth}</span>
+                                </div>
+                                <p className="text-xs font-bold text-white font-heading leading-snug mb-0.5">
+                                  {name}
+                                </p>
+                                <p className="text-[10px] text-pacific-blue-pale line-clamp-1 mb-1.5">
+                                  {spot.tagVi}
+                                </p>
+                                <span className="text-[9px] text-cyan-400 font-semibold underline underline-offset-2">
+                                  {language === "en" ? "Click to view details →" : "Nhấp để xem chi tiết →"}
+                                </span>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Modal chi tiết hiển thị khi click */}
-        {renderDetailModal()}
+            {/* Modal chi tiết hiển thị khi click */}
+            {renderDetailModal()}
+          </>
+        )}
       </>
     );
   }

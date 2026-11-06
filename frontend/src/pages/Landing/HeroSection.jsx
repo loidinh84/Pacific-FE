@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
-import { Compass } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 
 export default function HeroSection() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <section
@@ -13,15 +12,6 @@ export default function HeroSection() {
       <div className="max-w-7xl mx-auto px-6 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         {/* Cột trái: Nội dung tiêu đề, mô tả và nút điều hướng */}
         <div className="lg:col-span-7 flex flex-col items-start pointer-events-auto">
-          {/* Badge nhỏ */}
-          <div
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pacific-cyan/15 border border-pacific-cyan/30 text-pacific-cyan text-xs font-semibold mb-5 backdrop-blur-md"
-            data-aos="fade-down"
-            data-aos-delay="100"
-          >
-            <Compass size={14} className="animate-spin-slow" />
-            <span>{language === "en" ? "East Sea Bathymetric Atlas" : "Hải đồ độ sâu Biển Đông"}</span>
-          </div>
 
           <h1
             className="text-4xl md:text-6xl font-black text-white leading-[1.15] mb-6 font-heading tracking-tight drop-shadow-md"
