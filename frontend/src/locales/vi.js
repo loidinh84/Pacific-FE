@@ -140,6 +140,7 @@ const vi = {
     audioPlaying: "Đang phát âm thanh",
     noAudio: "Không có âm thanh",
     btnView3D: "Xem mô hình 3D",
+    model3dUpdating: "Mô hình 3D: Đang cập nhật",
     btnFavorite: "Yêu thích",
     btnFavorited: "Đã yêu thích",
     zoomImage: "Phóng to",

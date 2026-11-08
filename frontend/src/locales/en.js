@@ -140,6 +140,7 @@ const en = {
     audioPlaying: "Playing Audio",
     noAudio: "No Audio",
     btnView3D: "View in 3D",
+    model3dUpdating: "3D Model: Updating",
     btnFavorite: "Favorite",
     btnFavorited: "Favorited",
     zoomImage: "Zoom in",

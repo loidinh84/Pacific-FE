@@ -20,6 +20,64 @@ function getSpeciesAnatomyProfile(species) {
   const cat = (species?.category || species?.categoryVi || "").toLowerCase();
   const sciName = (species?.sciName || species?.scientificName || "").toLowerCase();
 
+  // Phân loại sinh vật đơn bào & rãnh thẳm biển sâu
+  if (
+    name.includes("trùng") ||
+    sciName.includes("syringammina") ||
+    sciName.includes("foram") ||
+    name.includes("đơn bào") ||
+    cat.includes("biển sâu") ||
+    cat.includes("phát quang")
+  ) {
+    return {
+      groupLabel: "Sinh vật đơn bào & Đáy thẳm",
+      metrics: [
+        { label: "Cấu trúc vỏ", value: "Xi măng sinh học", sub: "Kết dính trầm tích đáy thẳm", color: "text-amber-400" },
+        { label: "Kích thước tế bào", value: "Lên tới 20cm", sub: "Tế bào đơn khổng lồ đa nhân", color: "text-cyan-400" },
+        { label: "Áp suất chịu đựng", value: "Hơn 600 atm", sub: "Thích nghi đáy biển 3000-6000m", color: "text-emerald-400" },
+        { label: "Phương thức ăn", value: "Lọc tuyết biển", sub: "Hấp thụ cặn hữu cơ chìm lắng", color: "text-indigo-400" },
+      ],
+      systems: [
+        {
+          id: "cellular",
+          nameVi: "Cấu trúc tế bào đa nhân khổng lồ",
+          nameEn: "Syncytial Giant Single Cell",
+          icon: Activity,
+          color: "cyan",
+          headline: "Sinh vật đơn bào lớn nhất hành tinh với mạng lưới tế bào chất đa nhân phân nhánh (granellare)",
+          details: [
+            {
+              title: "Tế bào chất hợp bào đa nhân",
+              desc: "Toàn bộ cơ thể khổng lồ thực chất là một tế bào duy nhất chứa hàng triệu nhân tế bào, kết nối thành mạng lưới ống tế bào chất phân nhánh xuyên suốt cơ thể.",
+            },
+            {
+              title: "Vỏ kết dính hạt khoáng (Test)",
+              desc: "Tiết ra chất hữu cơ kết dính các hạt cát, khoáng vật barit và vỏ vi sinh vật đáy biển thành khung giàn tổ ong cứng cáp chống chịu áp suất biển sâu nghìn mét.",
+            },
+          ],
+        },
+        {
+          id: "nutrition",
+          nameVi: "Cơ chế bắt mồi & chuỗi dinh dưỡng đáy thẳm",
+          nameEn: "Benthic Filter Feeding",
+          icon: Brain,
+          color: "indigo",
+          headline: "Hấp thụ vật chất hữu cơ chìm lắng và vi khuẩn trong lớp bùn đáy đại dương",
+          details: [
+            {
+              title: "Lọc tuyết biển (Marine Snow)",
+              desc: "Mở rộng các chân giả (pseudopodia) ra ngoài vỏ để bắt giữ các hạt vụn hữu cơ trôi dạt từ các tầng nước trên rơi xuống đáy biển.",
+            },
+            {
+              title: "Môi trường sống đáy vực sâu",
+              desc: "Tạo nơi trú ẩn và giá thể bám cho nhiều loài giun nhiều tơ, giáp xác nhỏ và vi khuẩn đáy thẳm tại các rãnh sâu Biển Đông.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
   // Phân loại thân mềm
   if (
     cat.includes("mollusk") ||
@@ -335,6 +393,119 @@ function getSpeciesAnatomyProfile(species) {
             {
               title: "Vây bơi trước hình mái chèo",
               desc: "Các xương chi trước kéo dài và liên kết màng cơ bắp chắc khỏe, hoạt động như đôi cánh tàu ngầm tạo lực nâng và điều hướng linh hoạt.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  // Phân loại san hô & động vật thích ty bào (Cnidaria)
+  if (
+    cat.includes("san hô") ||
+    cat.includes("thực vật") ||
+    name.includes("san hô") ||
+    name.includes("hải quỳ") ||
+    name.includes("sứa") ||
+    sciName.includes("acropora")
+  ) {
+    return {
+      groupLabel: "San hô & Thích ty bào",
+      metrics: [
+        { label: "Quần thể polyp", value: "Hàng triệu cá thể", sub: "Cấu trúc khuẩn lạc liên kết", color: "text-rose-400" },
+        { label: "Cộng sinh tảo", value: "Zooxanthellae", sub: "Cung cấp 90% năng lượng qua quang hợp", color: "text-emerald-400" },
+        { label: "Bộ khung đá vôi", value: "Canxi cacbonat", sub: "Kiến tạo rạn san hô đại dương", color: "text-amber-400" },
+        { label: "Tế bào thích ty", value: "Nematocyst", sub: "Phóng nọc độc tự vệ và săn mồi", color: "text-cyan-400" },
+      ],
+      systems: [
+        {
+          id: "symbiosis",
+          nameVi: "Cộng sinh tảo & quang hợp",
+          nameEn: "Zooxanthellae Symbiosis",
+          icon: Activity,
+          color: "emerald",
+          headline: "Mối quan hệ cộng sinh kỳ diệu giữa polyp động vật và tảo quang hợp Zooxanthellae",
+          details: [
+            {
+              title: "Trao đổi chất nội bào",
+              desc: "Tảo đơn bào Zooxanthellae cư ngụ bên trong tế bào san hô, hấp thụ ánh sáng mặt trời để tạo ra đường glucose và oxy nuôi sống san hô, đổi lại nhận chất dinh dưỡng và môi trường bảo vệ an toàn.",
+            },
+            {
+              title: "Nhạy cảm với nhiệt độ nước",
+              desc: "Khi nhiệt độ nước biển tăng quá 1 - 2 độ C trong thời gian dài, san hô bị stress và trục xuất tảo cộng sinh, dẫn đến hiện tượng tẩy trắng san hô (coral bleaching).",
+            },
+          ],
+        },
+        {
+          id: "calcification",
+          nameVi: "Lắng đọng khung xương đá vôi",
+          nameEn: "CaCO3 Skeleton Calcification",
+          icon: Shield,
+          color: "amber",
+          headline: "Quá trình sinh hóa kết tủa Canxi cacbonat kiến tạo các rạn san hô kỳ vĩ",
+          details: [
+            {
+              title: "Xây dựng khung xương canxi",
+              desc: "Các tế bào đáy liên tục chiết xuất ion canxi và cacbonat từ nước biển để tạo thành các chén đá vôi vững chắc, đóng vai trò nền móng cho toàn bộ hệ sinh thái biển nhiệt đới.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  // Phân loại cá sụn (Cá mập, Cá đuối)
+  if (
+    cat.includes("sụn") ||
+    name.includes("cá mập") ||
+    name.includes("cá đuối") ||
+    sciName.includes("carcharodon") ||
+    sciName.includes("rhincodon") ||
+    sciName.includes("taeniura") ||
+    sciName.includes("mobula")
+  ) {
+    return {
+      groupLabel: "Cá sụn biển",
+      metrics: [
+        { label: "Cảm ứng điện trường", value: "Ampullae of Lorenzini", sub: "Phát hiện nhịp tim con mồi dưới cát", color: "text-amber-400" },
+        { label: "Khung xương sụn", value: "100% sụn mềm", sub: "Nhẹ và linh hoạt hơn xương cứng", color: "text-cyan-400" },
+        { label: "Kiểm soát độ nổi", value: "Gan giàu dầu squalene", sub: "Không có bóng khí như cá xương", color: "text-emerald-400" },
+        { label: "Lớp vảy bì", value: "Vảy tấm răng cưa", sub: "Triệt tiêu xoáy nước tăng tốc", color: "text-indigo-400" },
+      ],
+      systems: [
+        {
+          id: "electro",
+          nameVi: "Giác quan thụ cảm điện trường",
+          nameEn: "Ampullae of Lorenzini",
+          icon: Brain,
+          color: "amber",
+          headline: "Mạng lưới lỗ thụ cảm chứa gel dẫn điện cảm nhận điện thế nano-volt của sinh vật",
+          details: [
+            {
+              title: "Bầu cảm giác Ampullae of Lorenzini",
+              desc: "Hàng ngàn lỗ nhỏ tập trung quanh đầu và mõm cá mập/cá đuối chứa gel glycoprotein dẫn điện cao, giúp định vị chính xác vị trí con mồi ẩn mình dưới đáy cát.",
+            },
+            {
+              title: "Định vị từ trường trái đất",
+              desc: "Giúp chúng cảm nhận từ trường của đại dương để định hướng bơi xuyên các đại dương trong các chuyến hải trình di cư hàng ngàn kilomet.",
+            },
+          ],
+        },
+        {
+          id: "buoyancy",
+          nameVi: "Cơ chế độ nổi & gan chứa dầu squalene",
+          nameEn: "Buoyancy & Squalene Liver",
+          icon: Activity,
+          color: "emerald",
+          headline: "Gan khổng lồ chiếm tới 25% khối lượng cơ thể giúp giữ độ nổi trung tính",
+          details: [
+            {
+              title: "Không sở hữu bóng khí",
+              desc: "Khác với cá xương, cá sụn không có bóng khí nên không gặp nguy hiểm chấn thương khi thay đổi độ sâu đột ngột.",
+            },
+            {
+              title: "Dầu squalene nhẹ hơn nước",
+              desc: "Lượng dầu squalene tỷ trọng thấp trong gan khổng lồ tạo lực nâng tự nhiên, kết hợp vây ngực như cánh máy bay giữ cá nổi khi bơi.",
             },
           ],
         },

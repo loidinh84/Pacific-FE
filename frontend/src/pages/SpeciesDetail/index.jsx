@@ -47,7 +47,7 @@ export default function SpeciesDetail() {
     return (
       SEARCH_SPECIES_CATALOG.find(
         (s) => s.id === id || s.slug === id || s.slug === resolvedId
-      ) || SEARCH_SPECIES_CATALOG[0]
+      ) || null
     );
   });
 
@@ -80,40 +80,41 @@ export default function SpeciesDetail() {
             ? apiGallery
             : [primaryImage];
 
-        setSpecies((prev) => ({
-          ...prev,
+        setSpecies({
           id: apiData.id || id,
           slug: apiData.slug || id,
           code: apiData.code,
           nameVi: apiData.commonName,
           nameEn: apiData.commonName,
-          sciName: apiData.scientificName || prev?.sciName,
+          sciName: apiData.scientificName,
           image: primaryImage,
           gallery: gallery,
-          descVi: apiData.description || prev?.descVi,
-          descEn: apiData.description || prev?.descEn,
-          introHeaderVi: apiData.description || prev?.introHeaderVi,
-          introHeaderEn: apiData.description || prev?.introHeaderEn,
+          descVi: apiData.description,
+          descEn: apiData.description,
+          introHeaderVi: apiData.description,
+          introHeaderEn: apiData.description,
           depth: `${apiData.depthMinM || 0}m - ${apiData.depthMaxM || 100}m`,
-          size: `${apiData.sizeMinCm ? apiData.sizeMinCm / 100 : 1}m - ${apiData.sizeMaxCm ? apiData.sizeMaxCm / 100 : 2}m`,
-          weight: `${apiData.weightMinKg || 10}kg - ${apiData.weightMaxKg || 50}kg`,
-          statusVi: apiData.vietnamRedListStatus || prev?.statusVi || "Ít quan tâm (LC)",
-          statusEn: apiData.vietnamRedListStatus || prev?.statusEn || "Least Concern (LC)",
+          size: `${apiData.sizeMinCm ? apiData.sizeMinCm / 100 : 0.1}m - ${apiData.sizeMaxCm ? apiData.sizeMaxCm / 100 : 0.2}m`,
+          weight: `${apiData.weightMinKg || 0.01}kg - ${apiData.weightMaxKg || 0.1}kg`,
+          statusVi: apiData.conservationStatus?.name || (apiData.vietnamRedListStatus === "LC" ? "Ít quan tâm (LC)" : apiData.vietnamRedListStatus) || "Ít quan tâm (LC)",
+          statusEn: apiData.conservationStatus?.code || "LC",
           vietnamRedListStatus: apiData.vietnamRedListStatus,
           vietnamProtectionGroup: apiData.vietnamProtectionGroup,
           citesAppendix: apiData.citesAppendix,
           eastSeaZone: apiData.eastSeaZone,
           localDistribution: apiData.localDistribution,
           diet: apiData.diet,
-          categoryVi: apiData.group?.name || prev?.categoryVi,
-          categoryEn: apiData.group?.name || prev?.categoryEn,
-          model3dUrl: apiData.model_3d_url || apiData.model3dUrl || prev?.model3dUrl || prev?.model_3d_url || null,
-          fullBioHighlightsVi: localSpecies?.fullBioHighlightsVi || prev?.fullBioHighlightsVi,
-          fullBioHighlightsEn: localSpecies?.fullBioHighlightsEn || prev?.fullBioHighlightsEn,
-          bioFactsVi: localSpecies?.bioFactsVi || prev?.bioFactsVi,
-          bioFactsEn: localSpecies?.bioFactsEn || prev?.bioFactsEn,
+          category: apiData.group?.slug || apiData.group?.name || "",
+          categoryVi: apiData.group?.name || "",
+          categoryEn: apiData.group?.name || "",
+          model3dUrl: apiData.model_3d_url || apiData.model3dUrl || null,
+          fullBioHighlightsVi: localSpecies?.fullBioHighlightsVi || null,
+          fullBioHighlightsEn: localSpecies?.fullBioHighlightsEn || null,
+          bioFactsVi: localSpecies?.bioFactsVi || null,
+          bioFactsEn: localSpecies?.bioFactsEn || null,
           facts: apiData.facts || localSpecies?.facts || [],
-        }));
+          taxonomy: localSpecies?.taxonomy || null,
+        });
       });
     }
 

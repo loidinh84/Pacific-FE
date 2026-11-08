@@ -341,6 +341,24 @@ export function SpeciesDetailHero({ species }) {
     }
 
     if (
+      slug.includes("trung-lo") ||
+      nameVi.includes("trùng lỗ") ||
+      nameVi.includes("đơn bào") ||
+      sciName.toLowerCase().includes("syringammina") ||
+      sciName.toLowerCase().includes("foram")
+    ) {
+      return {
+        kingdom: isEn ? "Rhizaria" : "Sinh vật đơn bào",
+        phylum: isEn ? "Foraminifera" : "Trùng có lỗ",
+        class: isEn ? "Xenophyophorea" : "Trùng lỗ khổng lồ",
+        order: isEn ? "Psamminida" : "Bộ Cát bào",
+        family: "Syringamminidae",
+        genus: "Syringammina",
+        species: sciName || "Syringammina fragilissima",
+      };
+    }
+
+    if (
       slug.includes("shark") ||
       slug.includes("ca-map-trang") ||
       id === "great-white-shark-1" ||
@@ -369,6 +387,15 @@ export function SpeciesDetailHero({ species }) {
       className = isEn ? "Mammalia" : "Động vật có vú";
     } else if (cat.includes("reptile") || cat.includes("bò sát")) {
       className = isEn ? "Reptilia" : "Bò sát";
+    } else if (cat.includes("san hô") || cat.includes("thực vật")) {
+      phylumName = isEn ? "Cnidaria" : "Thích ty bào";
+      className = isEn ? "Anthozoa" : "San hô & TV biển";
+    } else if (cat.includes("biển sâu") || cat.includes("phát quang")) {
+      phylumName = isEn ? "Marine Abyssal" : "Sinh vật biển sâu";
+      className = isEn ? "Abyssal Organism" : "Khu hệ biển sâu";
+    } else if (!cat.includes("cá") && !nameVi.includes("cá")) {
+      phylumName = isEn ? "Marine Life" : "Sinh vật biển";
+      className = species.categoryVi || (isEn ? "Marine Life" : "Sinh vật biển");
     }
 
     return {
