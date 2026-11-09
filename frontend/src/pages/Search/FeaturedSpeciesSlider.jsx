@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, MoveHorizontal } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { fetchSpeciesList } from "../../services/speciesApi";
@@ -144,15 +144,9 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
     <div className="max-w-6xl mx-auto px-4 mb-8">
       {/* Header với Tiêu đề & Nút cuộn Trái / Phải */}
       <div className="flex items-center justify-between gap-4 mb-4">
-        <div className="flex items-center gap-3">
-          <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
-            {t("searchPage.featuredTitle")}
-          </h2>
-          <span className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-400 bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
-            <MoveHorizontal size={13} className="text-sky-400" />
-            {language === "en" ? "Drag to scroll" : "Kéo chuột để cuộn"}
-          </span>
-        </div>
+        <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
+          {t("searchPage.featuredTitle")}
+        </h2>
 
         {/* Nút điều hướng Trái / Phải */}
         <div className="flex items-center gap-2">

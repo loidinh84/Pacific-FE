@@ -21,7 +21,6 @@ import {
   Layers,
   Globe,
   X,
-  MoveHorizontal,
 } from "lucide-react";
 import { Favorite, Favorited } from "../../assets/Icons";
 import { playSpeciesSound, stopSpeciesSound } from "../../utils/oceanAudio";
@@ -1007,16 +1006,6 @@ export function SpeciesDetailHero({ species }) {
             ))}
           </div>
         )}
-
-        {/* Gợi ý kéo chuột & vuốt */}
-        <div className="flex items-center justify-center gap-2 mt-3 text-xs text-slate-400 select-none z-10">
-          <MoveHorizontal size={14} className="text-cyan-400 animate-pulse" />
-          <span>
-            {isEn
-              ? "Drag mouse horizontally or swipe to browse images • Click to enlarge"
-              : "Dùng chuột kéo qua lại để xem các góc ảnh • Nhấp để phóng to"}
-          </span>
-        </div>
       </div>
 
       {/* Modal xem ảnh phóng to */}
