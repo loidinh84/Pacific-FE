@@ -83,8 +83,6 @@ export function SpeciesDetailHero({ species }) {
           setIsFavorited(Boolean(res.isFavorited));
         }
       });
-    } else {
-      setIsFavorited(false);
     }
     return () => {
       isMounted = false;
@@ -159,7 +157,7 @@ export function SpeciesDetailHero({ species }) {
     return list.length > 0
       ? list
       : ["https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&auto=format&fit=crop&q=80"];
-  }, [species?.gallery, species?.image, species?.depth, species?.category, species?.categoryVi, species?.nameVi, species?.commonName]);
+  }, [species]);
 
   // Quản lý kéo thả chuột (Mouse Drag & Touch Swipe) trong Bộ sưu tập ảnh
   const [dragOffset, setDragOffset] = useState(0);

@@ -10,6 +10,9 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
   const [featuredList, setFeaturedList] = useState(() => {
+    if (initialSpecies && Array.isArray(initialSpecies) && initialSpecies.length > 0) {
+      return initialSpecies;
+    }
     return SEARCH_SPECIES_CATALOG.filter((s) => s.isFeatured);
   });
 
@@ -66,9 +69,9 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
         {t("searchPage.featuredTitle")}
       </h2>
 
-      {/* Horizontal scroll — infinite feel, no wrap */}
+      {/* Horizontal scroll — infinite feel, no wrap with generous vertical padding to prevent hover bounce clipping */}
       <div
-        className="flex gap-4 overflow-x-auto pb-2 scrollbar-none"
+        className="flex gap-4 overflow-x-auto pt-3 pb-4 -my-2 px-1 scrollbar-none"
         style={{ scrollbarWidth: "none" }}
       >
         {featuredList.map((s) => {
@@ -80,7 +83,7 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
           return (
             <div
               key={s.id}
-              className="flex-shrink-0 w-56 bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 group cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1"
+              className="flex-shrink-0 w-56 bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 group cursor-pointer shadow-sm hover:shadow-lg hover:shadow-sky-950/40 hover:-translate-y-1.5 relative hover:z-10"
               onClick={() => navigate(`/species/${s.slug || s.id}`)}
             >
               {/* Header Tags */}
