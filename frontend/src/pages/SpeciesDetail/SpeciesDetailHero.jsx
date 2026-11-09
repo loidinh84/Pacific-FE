@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -21,6 +21,7 @@ import {
   Layers,
   Globe,
   X,
+  MoveHorizontal,
 } from "lucide-react";
 import { Favorite, Favorited } from "../../assets/Icons";
 import { playSpeciesSound, stopSpeciesSound } from "../../utils/oceanAudio";
@@ -111,10 +112,137 @@ export function SpeciesDetailHero({ species }) {
     }
   };
 
-  const images =
-    species.gallery && species.gallery.length > 0
-      ? species.gallery
-      : [species.image].filter(Boolean);
+  // Danh sách hình ảnh thông minh: đảm bảo luôn có đủ ảnh để duyệt theo coverflow 3D và kéo qua lại
+  const images = useMemo(() => {
+    let list = [];
+    if (species?.gallery && Array.isArray(species.gallery) && species.gallery.length > 0) {
+      list = [...species.gallery];
+    } else if (species?.image) {
+      list = [species.image];
+    }
+
+    // Nếu chỉ có 1 hoặc 2 ảnh, bổ sung thêm ảnh sinh cảnh biển tự nhiên phù hợp theo tầng nước/nhóm loài
+    // để người dùng luôn có trải nghiệm coverflow 3D nhiều góc nhìn và có thể dùng chuột kéo qua kéo lại
+    if (list.length === 1) {
+      const depth = String(species?.depth || "").toLowerCase();
+      const cat = String(species?.category || species?.categoryVi || "").toLowerCase();
+      const name = String(species?.nameVi || species?.commonName || "").toLowerCase();
+
+      const isDeep =
+        depth.includes("1000") ||
+        depth.includes("3000") ||
+        depth.includes("6000") ||
+        cat.includes("biển sâu") ||
+        name.includes("trùng");
+
+      const isCoral =
+        cat.includes("san hô") ||
+        cat.includes("thực vật") ||
+        cat.includes("thân mềm") ||
+        cat.includes("bò sát");
+
+      const habitatImg = isDeep
+        ? "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&auto=format&fit=crop&q=80"
+        : isCoral
+        ? "https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=1200&auto=format&fit=crop&q=80"
+        : "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=1200&auto=format&fit=crop&q=80";
+
+      const ecosystemImg = isDeep
+        ? "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&auto=format&fit=crop&q=80"
+        : "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80";
+
+      list.push(habitatImg, ecosystemImg);
+    } else if (list.length === 2) {
+      list.push("https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=1200&auto=format&fit=crop&q=80");
+    }
+
+    return list.length > 0
+      ? list
+      : ["https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&auto=format&fit=crop&q=80"];
+  }, [species?.gallery, species?.image, species?.depth, species?.category, species?.categoryVi, species?.nameVi, species?.commonName]);
+
+  // Quản lý kéo thả chuột (Mouse Drag & Touch Swipe) trong Bộ sưu tập ảnh
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartXRef = useRef(null);
+  const hasMovedRef = useRef(false);
+
+  const handlePointerDown = (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    dragStartXRef.current = e.clientX;
+    hasMovedRef.current = false;
+    setIsDragging(true);
+  };
+
+  const handlePointerMove = (e) => {
+    if (dragStartXRef.current === null) return;
+    const delta = e.clientX - dragStartXRef.current;
+    if (Math.abs(delta) > 6) {
+      hasMovedRef.current = true;
+    }
+    setDragOffset(Math.max(-180, Math.min(180, delta)));
+  };
+
+  const handlePointerUp = () => {
+    if (dragStartXRef.current !== null) {
+      if (dragOffset < -40) {
+        nextImage();
+      } else if (dragOffset > 40) {
+        prevImage();
+      }
+    }
+    dragStartXRef.current = null;
+    setDragOffset(0);
+    setTimeout(() => {
+      setIsDragging(false);
+      hasMovedRef.current = false;
+    }, 60);
+  };
+
+  const handlePointerCancel = () => {
+    dragStartXRef.current = null;
+    setDragOffset(0);
+    setIsDragging(false);
+    hasMovedRef.current = false;
+  };
+
+  // Quản lý kéo thả trong Modal Lightbox
+  const [lightboxDragOffset, setLightboxDragOffset] = useState(0);
+  const [isLightboxDragging, setIsLightboxDragging] = useState(false);
+  const lightboxStartXRef = useRef(null);
+  const lightboxMovedRef = useRef(false);
+
+  const handleLightboxPointerDown = (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    lightboxStartXRef.current = e.clientX;
+    lightboxMovedRef.current = false;
+    setIsLightboxDragging(true);
+  };
+
+  const handleLightboxPointerMove = (e) => {
+    if (lightboxStartXRef.current === null) return;
+    const delta = e.clientX - lightboxStartXRef.current;
+    if (Math.abs(delta) > 6) {
+      lightboxMovedRef.current = true;
+    }
+    setLightboxDragOffset(delta);
+  };
+
+  const handleLightboxPointerUp = () => {
+    if (lightboxStartXRef.current !== null) {
+      if (lightboxDragOffset < -50) {
+        nextImage();
+      } else if (lightboxDragOffset > 50) {
+        prevImage();
+      }
+    }
+    lightboxStartXRef.current = null;
+    setLightboxDragOffset(0);
+    setTimeout(() => {
+      setIsLightboxDragging(false);
+      lightboxMovedRef.current = false;
+    }, 60);
+  };
 
   // Lắng nghe phím tắt điều hướng lightbox
   useEffect(() => {
@@ -736,20 +864,33 @@ export function SpeciesDetailHero({ species }) {
         </div>
       </div>
 
-      {/* Bộ sưu tập hình ảnh */}
-      <div className="relative py-4 my-2 flex items-center justify-center min-h-[340px] md:min-h-[440px] overflow-hidden bg-transparent">
-        {/* Nút chuyển ảnh */}
+      {/* Bộ sưu tập hình ảnh với tương tác Kéo chuột & Vuốt (Mouse Drag & Touch Swipe) */}
+      <div
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        className="relative py-4 my-2 flex flex-col items-center justify-center min-h-[360px] md:min-h-[460px] overflow-hidden bg-transparent select-none cursor-grab active:cursor-grabbing touch-pan-y"
+      >
+        {/* Nút chuyển ảnh thủ công */}
         {images.length > 1 && (
           <>
             <button
-              onClick={prevImage}
+              onClick={(e) => {
+                e.stopPropagation();
+                prevImage();
+              }}
               className="absolute left-2 sm:left-4 md:left-6 z-30 p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white border border-white/20 hover:border-cyan-400/80 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/20 hover:scale-110 active:scale-95"
               aria-label="Previous image"
             >
               <ChevronLeft size={20} />
             </button>
             <button
-              onClick={nextImage}
+              onClick={(e) => {
+                e.stopPropagation();
+                nextImage();
+              }}
               className="absolute right-2 sm:right-4 md:right-6 z-30 p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white border border-white/20 hover:border-cyan-400/80 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/20 hover:scale-110 active:scale-95"
               aria-label="Next image"
             >
@@ -758,8 +899,14 @@ export function SpeciesDetailHero({ species }) {
           </>
         )}
 
-        {/* 3D Image Stack */}
-        <div className="flex items-center justify-center w-full max-w-5xl relative px-4">
+        {/* 3D Image Stack - Di chuyển theo thao tác kéo chuột */}
+        <div
+          style={{
+            transform: dragOffset !== 0 ? `translateX(${dragOffset * 0.45}px)` : undefined,
+            transition: isDragging ? "none" : "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)",
+          }}
+          className="flex items-center justify-center w-full max-w-5xl relative px-4"
+        >
           {images.map((imgSrc, idx) => {
             const total = images.length;
             const diff = (idx - activeImageIdx + total) % total;
@@ -772,9 +919,16 @@ export function SpeciesDetailHero({ species }) {
             }
 
             let containerStyle = "hidden";
+            let centerTransform = undefined;
+
             if (isCenter) {
               containerStyle =
                 "z-20 w-[86%] md:w-[70%] aspect-[16/10] md:aspect-[16/9] max-h-[420px] scale-100 opacity-100 border-2 border-cyan-400/50 shadow-[0_12px_36px_rgba(0,0,0,0.45)]";
+              if (dragOffset !== 0) {
+                centerTransform = {
+                  transform: `rotate(${dragOffset * 0.02}deg)`,
+                };
+              }
             } else if (isPrev) {
               containerStyle =
                 "z-10 w-[64%] md:w-[50%] aspect-[16/10] md:aspect-[16/9] max-h-[340px] -translate-x-[24%] md:-translate-x-[34%] scale-90 opacity-60 hover:opacity-85 -rotate-2 border border-white/10";
@@ -786,25 +940,30 @@ export function SpeciesDetailHero({ species }) {
             return (
               <div
                 key={idx}
-                onClick={() => {
+                style={centerTransform}
+                onClick={(e) => {
+                  if (hasMovedRef.current) {
+                    e.stopPropagation();
+                    return;
+                  }
                   if (isCenter) {
                     setIsLightboxOpen(true);
                   } else {
                     setActiveImageIdx(idx);
                   }
                 }}
-                className={`absolute rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer bg-slate-900 group/img ${containerStyle}`}
+                className={`absolute rounded-2xl overflow-hidden transition-all duration-500 bg-slate-900 group/img ${containerStyle}`}
               >
                 <img
                   src={imgSrc}
                   alt={`${speciesName} - ảnh ${idx + 1}`}
-                  className={`w-full h-full object-cover select-none transition-transform duration-700 ${
+                  className={`w-full h-full object-cover select-none pointer-events-none transition-transform duration-700 ${
                     isCenter ? "group-hover/img:scale-105" : ""
                   }`}
                   draggable={false}
                   onError={(e) => {
                     if (
-                      species.image &&
+                      species?.image &&
                       e.currentTarget.src !== species.image
                     ) {
                       e.currentTarget.src = species.image;
@@ -822,11 +981,14 @@ export function SpeciesDetailHero({ species }) {
 
         {/* Dots pagination */}
         {images.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20 bg-slate-950/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+          <div className="flex items-center gap-2 z-20 bg-slate-950/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 mt-6">
             {images.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setActiveImageIdx(i)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImageIdx(i);
+                }}
                 className={`h-1.5 rounded-full transition-all cursor-pointer ${
                   i === activeImageIdx
                     ? "w-7 bg-cyan-400"
@@ -837,6 +999,16 @@ export function SpeciesDetailHero({ species }) {
             ))}
           </div>
         )}
+
+        {/* Gợi ý kéo chuột & vuốt */}
+        <div className="flex items-center justify-center gap-2 mt-3 text-xs text-slate-400 select-none z-10">
+          <MoveHorizontal size={14} className="text-cyan-400 animate-pulse" />
+          <span>
+            {isEn
+              ? "Drag mouse horizontally or swipe to browse images • Click to enlarge"
+              : "Dùng chuột kéo qua lại để xem các góc ảnh • Nhấp để phóng to"}
+          </span>
+        </div>
       </div>
 
       {/* Modal xem ảnh phóng to */}
@@ -881,10 +1053,20 @@ export function SpeciesDetailHero({ species }) {
               </div>
             </div>
 
-            {/* Khung hiển thị ảnh to chính giữa */}
+            {/* Khung hiển thị ảnh to chính giữa có hỗ trợ kéo chuột / vuốt qua lại */}
             <div
-              className="relative flex-1 flex items-center justify-center w-full max-w-6xl mx-auto my-3 overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              onPointerDown={handleLightboxPointerDown}
+              onPointerMove={handleLightboxPointerMove}
+              onPointerUp={handleLightboxPointerUp}
+              onPointerLeave={handleLightboxPointerUp}
+              className="relative flex-1 flex items-center justify-center w-full max-w-6xl mx-auto my-3 overflow-hidden cursor-grab active:cursor-grabbing select-none touch-pan-y"
+              onClick={(e) => {
+                if (lightboxMovedRef.current) {
+                  e.stopPropagation();
+                  return;
+                }
+                e.stopPropagation();
+              }}
             >
               {/* Nút Prev trong Lightbox */}
               {images.length > 1 && (
@@ -900,16 +1082,21 @@ export function SpeciesDetailHero({ species }) {
                 </button>
               )}
 
-              {/* Ảnh chất lượng cao phóng to với animation mượt mà */}
+              {/* Ảnh chất lượng cao phóng to với animation mượt mà và kéo qua lại */}
               <motion.img
                 key={activeImageIdx}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.25 }}
+                style={{
+                  transform: lightboxDragOffset !== 0 ? `translateX(${lightboxDragOffset}px)` : undefined,
+                  transition: isLightboxDragging ? "none" : "transform 0.25s ease-out",
+                }}
                 src={images[activeImageIdx]}
                 alt={`${speciesName} - ảnh phóng to ${activeImageIdx + 1}`}
-                className="max-h-[72vh] md:max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.85)] border border-white/10"
+                className="max-h-[72vh] md:max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.85)] border border-white/10 select-none pointer-events-none"
+                draggable={false}
               />
 
               {/* Nút Next trong Lightbox */}
