@@ -167,6 +167,11 @@ export function SpeciesDetailHero({ species }) {
 
   const handlePointerDown = (e) => {
     if (e.button !== undefined && e.button !== 0) return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
     dragStartXRef.current = e.clientX;
     hasMovedRef.current = false;
     setIsDragging(true);
@@ -212,6 +217,11 @@ export function SpeciesDetailHero({ species }) {
 
   const handleLightboxPointerDown = (e) => {
     if (e.button !== undefined && e.button !== 0) return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
     lightboxStartXRef.current = e.clientX;
     lightboxMovedRef.current = false;
     setIsLightboxDragging(true);
