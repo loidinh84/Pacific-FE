@@ -113,7 +113,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300 ${
         isScrolled
-          ? "bg-pacific-dark/90 backdrop-blur-md border-b border-white/10 shadow-lg py-3"
+          ? "bg-[#0a1628]/85 backdrop-blur-xl border-b border-cyan-500/15 shadow-[0_4px_30px_rgba(0,0,0,0.35)] py-3"
           : "bg-transparent"
       }`}
     >
@@ -169,7 +169,7 @@ export default function Navbar() {
 
             {/* Glassmorphism Language Menu */}
             {isLangOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-[#1b254b]/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.5),0_0_20px_rgba(14,165,233,0.2)] p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-44 bg-[#0e1d35]/95 backdrop-blur-2xl border border-cyan-500/20 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.5),0_0_20px_rgba(14,165,233,0.2)] p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="px-3 py-1.5 text-[10px] font-semibold text-white/40 border-b border-white/10 mb-1">
                   {t("nav.language")}
                 </div>
@@ -231,7 +231,7 @@ export default function Navbar() {
 
               {/* User Glassmorphism Dropdown Menu */}
               {isUserOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-[#1b254b]/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.5),0_0_20px_rgba(14,165,233,0.2)] p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute right-0 mt-2 w-56 bg-[#0e1d35]/95 backdrop-blur-2xl border border-cyan-500/20 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.5),0_0_20px_rgba(14,165,233,0.2)] p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <div className="px-3 py-2 border-b border-white/10 mb-1">
                     <p className="text-xs font-bold text-white truncate">
                       {user.full_name || user.username}
@@ -323,7 +323,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileOpen && (
-        <div className="lg:hidden mt-3 px-6 py-4 bg-pacific-navy/95 backdrop-blur-xl border-b border-white/10 flex flex-col gap-2">
+        <div className="lg:hidden mt-3 px-6 py-4 bg-[#0a1628]/95 backdrop-blur-xl border-b border-cyan-500/15 flex flex-col gap-2">
           {navLinks.map((link, index) => (
             <a
               key={index}

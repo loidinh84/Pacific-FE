@@ -110,7 +110,10 @@ export default function Footer() {
   const brandName = systemSettings?.general?.websiteName || "Pacific";
 
   return (
-    <footer className="bg-pacific-figma-dark border-t border-white/10 pt-16 pb-8 relative overflow-hidden text-white/70 text-sm">
+    <footer className="bg-[#07101e] border-t border-cyan-500/15 pt-16 pb-8 relative overflow-hidden text-white/70 text-sm">
+      {/* Top subtle ambient ocean light */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 max-w-4xl h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-20 bg-cyan-500/5 blur-3xl pointer-events-none" />
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12 relative z-10">
         {/* Col 1: Brand Info & Social Icons */}
         <div className="lg:col-span-2">

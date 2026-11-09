@@ -153,7 +153,7 @@ export function SpeciesComments({ speciesId }) {
         onClose={() => setDeleteModal({ isOpen: false, commentId: null })}
       />
 
-      <div className="bg-[#0e1f38] border border-white/10 rounded-2xl p-6 md:p-8 space-y-6">
+      <div className="bg-[#12233f]/80 backdrop-blur-xl border border-cyan-500/20 rounded-2xl p-6 md:p-8 space-y-6 shadow-lg shadow-cyan-950/20">
         {/* Header với icon và số lượng bình luận */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -188,7 +188,7 @@ export function SpeciesComments({ speciesId }) {
                     "Nhập ý kiến của bạn về loài sinh vật này..."
                   : "Đăng nhập để chia sẻ cảm nghĩ của bạn..."
               }
-              className="flex-1 bg-[#15294a] border border-white/15 text-white placeholder:text-white/40 text-xs md:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400 transition-colors"
+              className="flex-1 bg-[#10233e]/90 border border-cyan-500/25 text-white placeholder:text-white/40 text-xs md:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400 transition-colors"
             />
             {currentUser ? (
               <button

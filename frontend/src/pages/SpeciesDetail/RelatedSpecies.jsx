@@ -48,7 +48,7 @@ export function RelatedSpecies({ currentSpeciesId }) {
                 navigate(`/species/${s.slug || s.id}`);
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="group bg-[#0b172a] hover:bg-[#0f2038] border border-white/10 hover:border-cyan-400/50 rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col hover:-translate-y-1"
+              className="group bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/50 rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col hover:-translate-y-1 shadow-md shadow-cyan-950/20 hover:shadow-[0_8px_30px_rgba(6,182,212,0.18)]"
             >
               {/* Ảnh sinh vật */}
               <div className="relative aspect-[16/10] bg-slate-900 overflow-hidden">
@@ -62,7 +62,7 @@ export function RelatedSpecies({ currentSpeciesId }) {
                       "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&auto=format&fit=crop";
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0b172a] via-transparent to-black/30 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#12233f] via-transparent to-black/30 pointer-events-none" />
 
                 {/* Huy hiệu phân loại */}
                 {category && (

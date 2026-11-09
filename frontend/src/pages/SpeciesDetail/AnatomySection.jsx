@@ -641,8 +641,8 @@ export function AnatomySection({ species }) {
         </div>
 
         {/* Trạng thái mô hình 3D */}
-        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-white/10 text-slate-400 text-xs font-medium shrink-0">
-          <Box size={14} className="text-slate-400" />
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-cyan-950/40 border border-cyan-500/20 text-cyan-200/80 text-xs font-medium shrink-0">
+          <Box size={14} className="text-cyan-400" />
           <span>Mô hình 3D: Đang cập nhật</span>
         </span>
       </div>
@@ -652,7 +652,7 @@ export function AnatomySection({ species }) {
         {anatomyProfile.metrics.map((m, idx) => (
           <div
             key={idx}
-            className="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 backdrop-blur-md"
+            className="p-3.5 rounded-xl bg-[#12233f]/75 hover:bg-[#162c4e]/85 border border-cyan-500/20 hover:border-cyan-400/40 backdrop-blur-xl shadow-md shadow-cyan-950/20 transition-all duration-300"
           >
             <p className="text-xs text-slate-400">
               {m.label}
@@ -678,8 +678,8 @@ export function AnatomySection({ species }) {
               onClick={() => setActiveSystemTab(idx)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                 isActive
-                  ? "bg-cyan-500/20 border border-cyan-400/50 text-cyan-300"
-                  : "bg-slate-900/40 hover:bg-slate-800/60 border border-white/5 text-slate-400 hover:text-white"
+                  ? "bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 shadow-sm shadow-cyan-500/20"
+                  : "bg-[#10233e]/50 hover:bg-[#152e50]/75 border border-white/10 text-slate-300 hover:text-white"
               }`}
             >
               <Icon size={14} className={isActive ? "text-cyan-400" : "text-slate-400"} />
@@ -692,7 +692,7 @@ export function AnatomySection({ species }) {
       {/* ── Nội dung chi tiết của hệ cơ quan được chọn ── */}
       <div className="space-y-4">
         {/* Khối tóm tắt cơ chế chính */}
-        <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/30 via-slate-900/60 to-blue-950/30 border border-cyan-500/25 flex items-center gap-3">
+        <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 via-[#12233f]/80 to-blue-950/40 border border-cyan-500/30 backdrop-blur-xl flex items-center gap-3 shadow-md shadow-cyan-950/20">
           <div className="p-2.5 rounded-lg bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 shrink-0">
             <SystemIcon size={20} />
           </div>
@@ -706,7 +706,7 @@ export function AnatomySection({ species }) {
           {currentSystem.details.map((detail, idx) => (
             <div
               key={idx}
-              className="p-4 md:p-5 rounded-xl bg-slate-900/50 border border-white/10 backdrop-blur-md flex flex-col"
+              className="p-4 md:p-5 rounded-xl bg-[#12233f]/70 hover:bg-[#162c4e]/85 border border-cyan-500/20 hover:border-cyan-400/40 backdrop-blur-xl flex flex-col transition-all duration-300 shadow-md shadow-cyan-950/15"
             >
               <div className="flex items-center gap-2.5 mb-2">
                 <span className="w-5 h-5 rounded-md bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 flex items-center justify-center text-xs font-mono font-bold shrink-0">

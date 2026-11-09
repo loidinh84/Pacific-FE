@@ -408,11 +408,16 @@ export default function KnowledgeGraph() {
   };
 
   return (
-    <div className="min-h-screen bg-[#071324] text-white flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen bg-[#0a1628] text-white flex flex-col justify-between selection:bg-cyan-500 selection:text-black relative overflow-hidden">
+      {/* Background Ambient Bioluminescent Ocean Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(14,165,233,0.2)_0%,rgba(6,182,212,0.06)_40%,transparent_75%)] pointer-events-none" />
+      <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-cyan-500/10 blur-[140px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute top-2/3 -right-20 w-[500px] h-[500px] rounded-full bg-blue-600/10 blur-[160px] pointer-events-none" />
+
       <Navbar />
 
       {/* Main container với pt-28 để không bị che bởi fixed Navbar */}
-      <main className="flex-1 px-4 md:px-8 pt-28 pb-16 max-w-7xl mx-auto w-full">
+      <main className="flex-1 px-4 md:px-8 pt-28 pb-16 max-w-7xl mx-auto w-full relative z-10">
         {/* ─── 1. HEADER SECTION CHUẨN KHOA HỌC ─────────────────────── */}
         <div className="mb-6 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
           <div>
@@ -432,19 +437,19 @@ export default function KnowledgeGraph() {
 
           {/* Bảng số liệu thống kê nhanh */}
           <div className="flex items-center gap-3">
-            <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-cyan-500/20 text-center min-w-[90px]">
+            <div className="px-4 py-2.5 rounded-xl bg-[#12233f]/75 backdrop-blur-xl border border-cyan-500/20 text-center min-w-[90px] shadow-md shadow-cyan-950/20">
               <div className="text-xl sm:text-2xl font-bold font-mono text-cyan-300">{stats.totalSpecies}</div>
               <div className="text-xs font-medium text-slate-400 tracking-wide mt-0.5">
                 {isEn ? "Species" : "Loài"}
               </div>
             </div>
-            <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-cyan-500/20 text-center min-w-[90px]">
+            <div className="px-4 py-2.5 rounded-xl bg-[#12233f]/75 backdrop-blur-xl border border-cyan-500/20 text-center min-w-[90px] shadow-md shadow-cyan-950/20">
               <div className="text-xl sm:text-2xl font-bold font-mono text-white">{stats.totalLinks}</div>
               <div className="text-xs font-medium text-slate-400 tracking-wide mt-0.5">
                 {isEn ? "Links" : "Liên kết"}
               </div>
             </div>
-            <div className="px-4 py-2.5 rounded-xl bg-[#0e1f38] border border-rose-500/30 text-center min-w-[90px]">
+            <div className="px-4 py-2.5 rounded-xl bg-[#12233f]/75 backdrop-blur-xl border border-rose-500/30 text-center min-w-[90px] shadow-md shadow-rose-950/20">
               <div className="text-xl sm:text-2xl font-bold font-mono text-rose-400">{stats.threatenedCount}</div>
               <div className="text-xs font-medium text-rose-300 tracking-wide mt-0.5">
                 {isEn ? "Threatened" : "Nguy cấp"}
@@ -454,7 +459,7 @@ export default function KnowledgeGraph() {
         </div>
 
         {/* Thanh bộ lọc */}
-        <div className="p-4 rounded-2xl bg-[#0e1f38]/90 border border-white/10 mb-6 backdrop-blur-md shadow-xl flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 rounded-2xl bg-[#12233f]/80 border border-cyan-500/20 mb-6 backdrop-blur-xl shadow-xl shadow-cyan-950/20 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
             {/* Ô tìm kiếm tức thời */}
             <div className="relative min-w-[210px] flex-1 sm:max-w-xs">
@@ -464,7 +469,7 @@ export default function KnowledgeGraph() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={isEn ? "Search species, scientific name, MPA..." : "Tìm loài, tên khoa học, vùng biển..."}
-                className="w-full bg-[#152a4a] border border-white/10 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 transition-colors"
+                className="w-full bg-[#10233e]/90 border border-cyan-500/25 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 transition-colors"
               />
               {searchQuery && (
                 <button

@@ -178,7 +178,7 @@ export function SearchGridList({
               return (
                 <div
                   key={s.id}
-                  className="bg-[#0d1f35] border border-white/10 rounded-2xl p-4 flex flex-col justify-between hover:border-sky-500/40 hover:bg-[#0f2540] transition-all duration-300 group cursor-pointer"
+                  className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/50 rounded-2xl p-4 flex flex-col justify-between transition-all duration-300 group cursor-pointer shadow-lg shadow-cyan-950/20 hover:shadow-[0_8px_30px_rgba(6,182,212,0.18)] hover:-translate-y-1"
                   onClick={() => navigate(`/species/${s.slug || s.id}`)}
                 >
                   <div>
@@ -201,7 +201,7 @@ export function SearchGridList({
                     </div>
 
                     {/* Image */}
-                    <div className="w-full h-36 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-white/[0.03]">
+                    <div className="w-full h-36 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-[#0a1628]/60 border border-white/5">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(56,189,248,0.07)_0%,transparent_70%)]" />
                       <img
                         src={s.image || FishHidden}

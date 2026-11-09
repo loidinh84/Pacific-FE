@@ -308,10 +308,11 @@ export default function Search() {
   };
 
   return (
-    <div className="min-h-screen bg-pacific-figma-dark text-white flex flex-col justify-between relative overflow-hidden">
-      {/* Background Ambient Sunbeams */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.2)_0%,rgba(6,182,212,0.08)_35%,transparent_70%)] pointer-events-none" />
-      <div className="absolute top-1/3 left-10 w-96 h-96 rounded-full bg-pacific-blue-bright/10 blur-[140px] pointer-events-none animate-pulse-glow" />
+    <div className="min-h-screen bg-[#0a1628] text-white flex flex-col justify-between relative overflow-hidden">
+      {/* Background Ambient Sunbeams & Bioluminescent Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(14,165,233,0.22)_0%,rgba(6,182,212,0.08)_35%,transparent_75%)] pointer-events-none" />
+      <div className="absolute top-1/3 left-10 w-96 h-96 rounded-full bg-cyan-500/10 blur-[140px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute top-2/3 right-10 w-96 h-96 rounded-full bg-blue-600/10 blur-[150px] pointer-events-none" />
 
       <Navbar />
 

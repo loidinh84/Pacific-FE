@@ -21,10 +21,10 @@ export function OceanFunFacts() {
           return (
             <div
               key={fact.id}
-              className="bg-[#0d1f35] border border-white/10 rounded-2xl overflow-hidden hover:border-sky-500/35 hover:bg-[#0f2540] transition-all duration-300 group"
+              className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/50 rounded-2xl overflow-hidden transition-all duration-300 group shadow-lg shadow-cyan-950/20 hover:-translate-y-1"
             >
               {/* Top image thumbnail strip */}
-              <div className="relative h-32 overflow-hidden bg-white/[0.03]">
+              <div className="relative h-32 overflow-hidden bg-[#0a1628]/60 border-b border-white/5">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(56,189,248,0.12)_0%,transparent_70%)]" />
                 <img
                   src={fact.image}
@@ -52,7 +52,7 @@ export function OceanFunFacts() {
                 </p>
 
                 {/* Stat accent box */}
-                <div className="p-3 rounded-xl bg-white/5 border border-white/8 text-center">
+                <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-center">
                   <p className="text-xl md:text-2xl font-black text-cyan-300 font-heading">
                     {fact.statVal}
                   </p>

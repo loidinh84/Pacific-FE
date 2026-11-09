@@ -450,7 +450,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Kiểm soát quần thể sinh vật từ đỉnh chuỗi thức ăn",
           subEn: "Top-down trophic regulators",
           color: "#f43f5e",
-          bgGradient: "from-rose-950/40 via-[#0a1829] to-[#040c17]",
+          bgGradient: "from-rose-950/40 via-[#0d213b] to-[#091729]",
           borderColor: "border-rose-500/40",
           badgeStyle: "bg-rose-500/20 text-rose-300 border-rose-500/40",
           items: roles.predators.map((p) =>
@@ -464,7 +464,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Động vật tiêu thụ bậc trung trong mạng lưới sinh thái",
           subEn: "Mesopredators transferring kinetic biomass",
           color: "#f59e0b",
-          bgGradient: "from-amber-950/40 via-[#0a1829] to-[#040c17]",
+          bgGradient: "from-amber-950/40 via-[#0d213b] to-[#091729]",
           borderColor: "border-amber-500/40",
           badgeStyle: "bg-amber-500/20 text-amber-300 border-amber-500/40",
           items: [
@@ -486,7 +486,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Năng lượng nuôi dưỡng quần thể từ tầng dưới",
           subEn: "Energy foundation sustaining the trophic chain",
           color: "#10b981",
-          bgGradient: "from-emerald-950/40 via-[#0a1829] to-[#040c17]",
+          bgGradient: "from-emerald-950/40 via-[#0d213b] to-[#091729]",
           borderColor: "border-emerald-500/40",
           badgeStyle: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
           items: (hasPrey ? roles.prey : roles.habitats || []).map((p) =>
@@ -562,7 +562,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Đỉnh chóp chuỗi thức ăn, không có thiên địch tự nhiên trong đại dương",
           subEn: "Top trophic rank with zero natural apex predators",
           color: "#f43f5e",
-          bgGradient: "from-rose-950/40 via-[#0a1829] to-[#040c17]",
+          bgGradient: "from-rose-950/40 via-[#0d213b] to-[#091729]",
           borderColor: "border-rose-500/40",
           badgeStyle: "bg-rose-500/20 text-rose-300 border-rose-500/40",
           items: [
@@ -581,7 +581,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Động vật ăn thịt thứ cấp, điều phối sinh khối và cạnh tranh thức ăn",
           subEn: "Secondary carnivores transferring kinetic biomass",
           color: "#f59e0b",
-          bgGradient: "from-amber-950/40 via-[#0a1829] to-[#040c17]",
+          bgGradient: "from-amber-950/40 via-[#0d213b] to-[#091729]",
           borderColor: "border-amber-500/40",
           badgeStyle: "bg-amber-500/20 text-amber-300 border-amber-500/40",
           items: mesopredators,
@@ -593,7 +593,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Nguồn thức ăn cơ sở dồi dào, hấp thụ năng lượng quang hợp & thực vật",
           subEn: "Foundational forage prey sustaining higher trophic ranks",
           color: "#10b981",
-          bgGradient: "from-emerald-950/40 via-[#0a1829] to-[#040c17]",
+          bgGradient: "from-emerald-950/40 via-[#0d213b] to-[#091729]",
           borderColor: "border-emerald-500/40",
           badgeStyle: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
           items: primaryPrey,
@@ -749,7 +749,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
       </div>
 
       {/* ─── 2. BIỂU ĐỒ MẠNG LƯỚI SINH THÁI ĐẠI DƯƠNG ───────── */}
-      <div className="relative rounded-3xl bg-gradient-to-b from-[#061528] via-[#040e1b] to-[#02070f] border border-cyan-500/25 overflow-hidden mb-12 shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+      <div className="relative rounded-3xl bg-gradient-to-b from-[#0e223f] via-[#0a182d] to-[#071322] border border-cyan-500/30 overflow-hidden mb-12 shadow-[0_12px_40px_rgba(6,182,212,0.12)]">
         {/* Thanh công cụ khoa học phía trên đồ thị */}
         <div className="px-5 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02] backdrop-blur-md">
           <div className="flex items-center gap-2.5">

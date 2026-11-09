@@ -676,7 +676,7 @@ export function SpeciesDetailHero({ species }) {
       {/* Thông số nhanh */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6">
         {/* Kích thước */}
-        <div className="bg-[#0b172a]/90 border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
+        <div className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-300 shadow-md shadow-cyan-950/20 hover:-translate-y-0.5">
           <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/25 text-cyan-400 shrink-0">
             <Gauge size={18} />
           </div>
@@ -691,7 +691,7 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Độ sâu */}
-        <div className="bg-[#0b172a]/90 border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
+        <div className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-300 shadow-md shadow-cyan-950/20 hover:-translate-y-0.5">
           <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 shrink-0">
             <Compass size={18} />
           </div>
@@ -706,7 +706,7 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Khối lượng */}
-        <div className="bg-[#0b172a]/90 border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
+        <div className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-300 shadow-md shadow-cyan-950/20 hover:-translate-y-0.5">
           <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 shrink-0">
             <Scale size={18} />
           </div>
@@ -721,7 +721,7 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Tình trạng bảo tồn */}
-        <div className="bg-[#0b172a]/90 border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
+        <div className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-300 shadow-md shadow-cyan-950/20 hover:-translate-y-0.5">
           <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 shrink-0">
             <ShieldAlert size={18} />
           </div>
@@ -967,11 +967,11 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Bảng phân loại khoa học */}
-        <div className="bg-[#0b172a] border border-white/10 rounded-2xl p-5">
+        <div className="bg-[#12233f]/75 backdrop-blur-xl border border-cyan-500/20 rounded-2xl p-5 shadow-lg shadow-cyan-950/20">
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
             {/* Giới & Ngành */}
-            <div className="bg-white/5 rounded-xl p-3.5 border border-white/5 space-y-2">
+            <div className="bg-white/[0.04] hover:bg-white/[0.07] rounded-xl p-3.5 border border-white/10 transition-colors space-y-2">
               <div>
                 <span className="text-slate-400 text-[11px] block">
                   {t("speciesDetail.kingdom") || "Giới"}
@@ -991,7 +991,7 @@ export function SpeciesDetailHero({ species }) {
             </div>
 
             {/* Lớp & Bộ */}
-            <div className="bg-white/5 rounded-xl p-3.5 border border-white/5 space-y-2">
+            <div className="bg-white/[0.04] hover:bg-white/[0.07] rounded-xl p-3.5 border border-white/10 transition-colors space-y-2">
               <div>
                 <span className="text-slate-400 text-[11px] block">
                   {t("speciesDetail.class") || "Lớp"}
@@ -1011,7 +1011,7 @@ export function SpeciesDetailHero({ species }) {
             </div>
 
             {/* Họ & Chi */}
-            <div className="bg-white/5 rounded-xl p-3.5 border border-white/5 space-y-2">
+            <div className="bg-white/[0.04] hover:bg-white/[0.07] rounded-xl p-3.5 border border-white/10 transition-colors space-y-2">
               <div>
                 <span className="text-slate-400 text-[11px] block">
                   {t("speciesDetail.family") || "Họ"}
@@ -1056,7 +1056,7 @@ export function SpeciesDetailHero({ species }) {
               {scientificDossier.map((dossier, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#0b172a] border border-white/10 rounded-2xl p-5 space-y-2.5"
+                  className="bg-[#12233f]/70 hover:bg-[#152a4a]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-5 space-y-2.5 transition-all duration-300 shadow-md hover:-translate-y-0.5"
                 >
                   <div className="flex items-center gap-2">
                     {dossierIcons[idx % dossierIcons.length]}

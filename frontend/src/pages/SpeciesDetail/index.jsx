@@ -125,7 +125,7 @@ export default function SpeciesDetail() {
 
   if (!species) {
     return (
-      <div className="min-h-screen bg-[#071324] flex items-center justify-center text-white">
+      <div className="min-h-screen bg-[#0a1628] flex items-center justify-center text-white">
         <div className="text-center space-y-4">
           <p className="text-slate-400 text-lg">Không tìm thấy sinh vật</p>
           <button
@@ -140,7 +140,12 @@ export default function SpeciesDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-[#071324] text-white flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen bg-[#0a1628] text-white flex flex-col justify-between selection:bg-cyan-500 selection:text-black relative overflow-hidden">
+      {/* Background Ambient Bioluminescent Ocean Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(14,165,233,0.22)_0%,rgba(6,182,212,0.06)_40%,transparent_75%)] pointer-events-none" />
+      <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-cyan-500/10 blur-[140px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute top-2/3 -right-20 w-[500px] h-[500px] rounded-full bg-blue-600/10 blur-[160px] pointer-events-none" />
+
       <Navbar />
 
       <main className="flex-1 pb-16">
