@@ -69,7 +69,7 @@ export function NewsCard({ article, variant = "default", style }) {
       to={`/news/${article.slug}`}
       id={`news-card-${article.id}`}
       style={style}
-      className="group relative flex flex-col h-full rounded-3xl overflow-hidden bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/50 hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-cyan-950/20 hover:shadow-[0_8px_30px_rgba(6,182,212,0.18)] news-fade-up"
+      className="group relative flex flex-col h-full rounded-3xl overflow-hidden bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 hover:-translate-y-1 transition-all duration-200 shadow-sm hover:shadow-md news-fade-up"
     >
       {/* Ảnh bìa */}
       <div className="relative h-52 overflow-hidden">
@@ -80,7 +80,7 @@ export function NewsCard({ article, variant = "default", style }) {
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#12233f] via-[#12233f]/15 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#183c66] via-transparent to-transparent" />
 
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
           <span

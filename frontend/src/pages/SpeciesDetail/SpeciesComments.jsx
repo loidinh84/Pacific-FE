@@ -153,24 +153,24 @@ export function SpeciesComments({ speciesId }) {
         onClose={() => setDeleteModal({ isOpen: false, commentId: null })}
       />
 
-      <div className="bg-[#12233f]/80 backdrop-blur-xl border border-cyan-500/20 rounded-2xl p-6 md:p-8 space-y-6 shadow-lg shadow-cyan-950/20">
+      <div className="bg-[#183c66] border border-white/15 rounded-2xl p-6 md:p-8 space-y-6 shadow-sm">
         {/* Header với icon và số lượng bình luận */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <div className="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-300">
               <MessageSquare size={20} />
             </div>
             <div>
               <h2 className="text-lg md:text-xl font-bold text-white font-heading">
                 {t("speciesDetail.commentsTitle") || "Họ nói gì về sinh vật này?"}
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-300">
                 Ý kiến và trao đổi từ cộng đồng người yêu đại dương
               </p>
             </div>
           </div>
 
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+          <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-500/20 border border-sky-400/30 text-sky-300">
             {commentsList.length} bình luận
           </span>
         </div>
@@ -188,7 +188,7 @@ export function SpeciesComments({ speciesId }) {
                     "Nhập ý kiến của bạn về loài sinh vật này..."
                   : "Đăng nhập để chia sẻ cảm nghĩ của bạn..."
               }
-              className="flex-1 bg-[#10233e]/90 border border-cyan-500/25 text-white placeholder:text-white/40 text-xs md:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400 transition-colors"
+              className="flex-1 bg-[#112d4e] border border-white/20 text-white placeholder:text-white/40 text-xs md:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition-colors"
             />
             {currentUser ? (
               <button

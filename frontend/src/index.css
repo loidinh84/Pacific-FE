@@ -7,13 +7,13 @@
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-heading: 'Nunito', system-ui, -apple-system, sans-serif;
 
-  /* Figma Ocean Theme Colors - Deep Oceanic Bioluminescence Palette */
-  --color-pacific-darkest: #07101e;
-  --color-pacific-dark: #0a1628;
+  /* Ocean Theme Colors - Vibrant Ocean Sapphire (Crisp & Clean) */
+  --color-pacific-darkest: #0a1b30;
+  --color-pacific-dark: #0f2744;
   
-  /* Màu nền chuẩn đại dương sâu thẳm & thẻ kính mờ cao cấp */
-  --color-pacific-figma-dark: #0a1628;
-  --color-pacific-figma-card: #12233f;
+  /* Màu nền xanh đại dương tươi sáng, rõ nét, không bị đen sẫm */
+  --color-pacific-figma-dark: #0f2744;
+  --color-pacific-figma-card: #183c66;
   
   --color-pacific-blue-bright: #0ea5e9;
   --color-pacific-blue-light: #38bdf8;
@@ -21,7 +21,7 @@
   --color-pacific-teal: #06b6d4;
   --color-pacific-cyan: #22d3ee;
   --color-pacific-text-secondary: #bfdbfe;
-  --color-pacific-text-muted: #7ea8cd;
+  --color-pacific-text-muted: #93b5d8;
 }
 
 /* Base custom styles & Keyframes */
@@ -30,11 +30,8 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: #0a1628;
-    background-image: 
-      radial-gradient(ellipse 80% 60% at 50% -15%, rgba(14, 165, 233, 0.16), transparent 75%),
-      radial-gradient(circle at 92% 40%, rgba(6, 182, 212, 0.07), transparent 45%),
-      radial-gradient(circle at 8% 70%, rgba(2, 132, 199, 0.07), transparent 45%);
+    background-color: #0f2744;
+    background-image: linear-gradient(180deg, #133358 0%, #0f2744 45%, #0b1e36 100%);
     background-attachment: fixed;
     font-family: var(--font-sans);
     color: #ffffff;
@@ -42,25 +39,17 @@
   }
 }
 
-/* Glassmorphism utilities for Oceanic UI */
-.ocean-glass {
-  background: rgba(18, 35, 63, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(56, 189, 248, 0.18);
+/* Crisp & Clean Card Utilities (No blurry stains / No diffuse glow) */
+.ocean-card {
+  background-color: #183c66;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
-.ocean-glass-card {
-  background: rgba(18, 35, 63, 0.65);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.ocean-glass-card:hover {
-  background: rgba(22, 44, 78, 0.82);
-  border-color: rgba(34, 211, 238, 0.35);
-  box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.22);
+.ocean-card:hover {
+  background-color: #1f4a7d;
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 /* Animations */

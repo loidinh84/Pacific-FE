@@ -21,10 +21,10 @@ export function OceanFunFacts() {
           return (
             <div
               key={fact.id}
-              className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/50 rounded-2xl overflow-hidden transition-all duration-300 group shadow-lg shadow-cyan-950/20 hover:-translate-y-1"
+              className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl overflow-hidden transition-all duration-200 group shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               {/* Top image thumbnail strip */}
-              <div className="relative h-32 overflow-hidden bg-[#0a1628]/60 border-b border-white/5">
+              <div className="relative h-32 overflow-hidden bg-[#112d4e] border-b border-white/10">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(56,189,248,0.12)_0%,transparent_70%)]" />
                 <img
                   src={fact.image}

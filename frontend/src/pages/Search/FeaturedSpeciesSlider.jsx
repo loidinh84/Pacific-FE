@@ -80,21 +80,21 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
           return (
             <div
               key={s.id}
-              className="flex-shrink-0 w-56 bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/50 rounded-2xl p-4 flex flex-col justify-between transition-all duration-300 group cursor-pointer shadow-lg shadow-cyan-950/20 hover:shadow-[0_8px_30px_rgba(6,182,212,0.18)] hover:-translate-y-1"
+              className="flex-shrink-0 w-56 bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 group cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1"
               onClick={() => navigate(`/species/${s.slug || s.id}`)}
             >
               {/* Header Tags */}
               <div className="flex items-center justify-between gap-1.5 mb-3">
-                <span className="px-2 py-0.5 rounded-md bg-sky-500/15 border border-sky-500/25 text-sky-300 text-[10px] font-semibold leading-tight truncate max-w-[90px]">
+                <span className="px-2 py-0.5 rounded-md bg-sky-500/20 border border-sky-400/30 text-sky-200 text-[10px] font-semibold leading-tight truncate max-w-[90px]">
                   {categoryName}
                 </span>
                 <span
                   className={`flex-shrink-0 px-2 py-0.5 rounded-md text-[10px] font-semibold leading-tight ${
                     s.statusType === "danger"
-                      ? "bg-rose-500/15 border border-rose-500/30 text-rose-300"
+                      ? "bg-rose-500/20 border border-rose-400/40 text-rose-300"
                       : s.statusType === "warning"
-                        ? "bg-amber-500/15 border border-amber-500/30 text-amber-300"
-                        : "bg-emerald-500/15 border border-emerald-500/30 text-emerald-300"
+                        ? "bg-amber-500/20 border border-amber-400/40 text-amber-300"
+                        : "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300"
                   }`}
                 >
                   {statusName}
@@ -102,7 +102,7 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
               </div>
 
               {/* Image */}
-              <div className="w-full h-32 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-[#0a1628]/60 border border-white/5">
+              <div className="w-full h-32 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-[#112d4e] border border-white/10">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(56,189,248,0.08)_0%,transparent_70%)]" />
                 <img
                   src={s.image || FishHidden}

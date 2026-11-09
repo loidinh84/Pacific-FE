@@ -641,8 +641,8 @@ export function AnatomySection({ species }) {
         </div>
 
         {/* Trạng thái mô hình 3D */}
-        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-cyan-950/40 border border-cyan-500/20 text-cyan-200/80 text-xs font-medium shrink-0">
-          <Box size={14} className="text-cyan-400" />
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#112d4e] border border-white/15 text-slate-300 text-xs font-medium shrink-0">
+          <Box size={14} className="text-sky-400" />
           <span>Mô hình 3D: Đang cập nhật</span>
         </span>
       </div>
@@ -652,15 +652,15 @@ export function AnatomySection({ species }) {
         {anatomyProfile.metrics.map((m, idx) => (
           <div
             key={idx}
-            className="p-3.5 rounded-xl bg-[#12233f]/75 hover:bg-[#162c4e]/85 border border-cyan-500/20 hover:border-cyan-400/40 backdrop-blur-xl shadow-md shadow-cyan-950/20 transition-all duration-300"
+            className="p-3.5 rounded-xl bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 rounded-xl shadow-sm transition-all duration-200"
           >
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-300">
               {m.label}
             </p>
             <p className={`text-base md:text-lg font-bold mt-1 ${m.color || "text-white"}`}>
               {m.value}
             </p>
-            <p className="text-[11px] text-slate-400/80 mt-0.5">
+            <p className="text-[11px] text-slate-300/80 mt-0.5">
               {m.sub}
             </p>
           </div>
@@ -678,11 +678,11 @@ export function AnatomySection({ species }) {
               onClick={() => setActiveSystemTab(idx)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                 isActive
-                  ? "bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 shadow-sm shadow-cyan-500/20"
-                  : "bg-[#10233e]/50 hover:bg-[#152e50]/75 border border-white/10 text-slate-300 hover:text-white"
+                  ? "bg-sky-500 text-white font-bold shadow-sm"
+                  : "bg-[#112d4e] hover:bg-[#183c66] border border-white/10 text-slate-300 hover:text-white"
               }`}
             >
-              <Icon size={14} className={isActive ? "text-cyan-400" : "text-slate-400"} />
+              <Icon size={14} className={isActive ? "text-white" : "text-slate-400"} />
               <span>{language === "en" ? sys.nameEn : sys.nameVi}</span>
             </button>
           );
@@ -692,8 +692,8 @@ export function AnatomySection({ species }) {
       {/* ── Nội dung chi tiết của hệ cơ quan được chọn ── */}
       <div className="space-y-4">
         {/* Khối tóm tắt cơ chế chính */}
-        <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 via-[#12233f]/80 to-blue-950/40 border border-cyan-500/30 backdrop-blur-xl flex items-center gap-3 shadow-md shadow-cyan-950/20">
-          <div className="p-2.5 rounded-lg bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 shrink-0">
+        <div className="p-4 rounded-xl bg-[#143357] border border-sky-400/30 flex items-center gap-3 shadow-sm">
+          <div className="p-2.5 rounded-lg bg-sky-500/20 border border-sky-400/30 text-sky-300 shrink-0">
             <SystemIcon size={20} />
           </div>
           <p className="text-xs md:text-sm text-slate-200 leading-relaxed font-medium">
@@ -706,17 +706,17 @@ export function AnatomySection({ species }) {
           {currentSystem.details.map((detail, idx) => (
             <div
               key={idx}
-              className="p-4 md:p-5 rounded-xl bg-[#12233f]/70 hover:bg-[#162c4e]/85 border border-cyan-500/20 hover:border-cyan-400/40 backdrop-blur-xl flex flex-col transition-all duration-300 shadow-md shadow-cyan-950/15"
+              className="p-4 md:p-5 rounded-xl bg-[#183c66] border border-white/15 flex flex-col shadow-sm"
             >
               <div className="flex items-center gap-2.5 mb-2">
-                <span className="w-5 h-5 rounded-md bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 flex items-center justify-center text-xs font-mono font-bold shrink-0">
+                <span className="w-5 h-5 rounded-md bg-sky-500/20 border border-sky-400/30 text-sky-300 flex items-center justify-center text-xs font-mono font-bold shrink-0">
                   {idx + 1}
                 </span>
                 <h4 className="text-sm font-semibold text-white leading-snug">
                   {detail.title}
                 </h4>
               </div>
-              <p className="text-xs text-slate-300/90 leading-relaxed pl-7 flex-1">
+              <p className="text-xs text-slate-300 leading-relaxed pl-7 flex-1">
                 {detail.desc}
               </p>
             </div>

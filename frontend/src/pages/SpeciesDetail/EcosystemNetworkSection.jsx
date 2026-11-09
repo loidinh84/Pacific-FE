@@ -749,7 +749,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
       </div>
 
       {/* ─── 2. BIỂU ĐỒ MẠNG LƯỚI SINH THÁI ĐẠI DƯƠNG ───────── */}
-      <div className="relative rounded-3xl bg-gradient-to-b from-[#0e223f] via-[#0a182d] to-[#071322] border border-cyan-500/30 overflow-hidden mb-12 shadow-[0_12px_40px_rgba(6,182,212,0.12)]">
+      <div className="relative rounded-3xl bg-gradient-to-b from-[#183c66] via-[#133358] to-[#0f2744] border border-white/15 overflow-hidden mb-12 shadow-sm">
         {/* Thanh công cụ khoa học phía trên đồ thị */}
         <div className="px-5 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02] backdrop-blur-md">
           <div className="flex items-center gap-2.5">

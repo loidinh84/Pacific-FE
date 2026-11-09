@@ -676,12 +676,12 @@ export function SpeciesDetailHero({ species }) {
       {/* Thông số nhanh */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6">
         {/* Kích thước */}
-        <div className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-300 shadow-md shadow-cyan-950/20 hover:-translate-y-0.5">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/25 text-cyan-400 shrink-0">
+        <div className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/50 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+          <div className="p-2.5 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 shrink-0">
             <Gauge size={18} />
           </div>
           <div className="min-w-0">
-            <span className="text-slate-400 text-[11px] block font-medium truncate">
+            <span className="text-slate-300 text-[11px] block font-medium truncate">
               {t("speciesDetail.maxSize") || "Kích thước tối đa"}
             </span>
             <span className="text-white font-bold text-sm sm:text-base mt-0.5 block truncate">
@@ -691,12 +691,12 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Độ sâu */}
-        <div className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-300 shadow-md shadow-cyan-950/20 hover:-translate-y-0.5">
-          <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 shrink-0">
+        <div className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/50 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+          <div className="p-2.5 rounded-xl bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 shrink-0">
             <Compass size={18} />
           </div>
           <div className="min-w-0">
-            <span className="text-slate-400 text-[11px] block font-medium truncate">
+            <span className="text-slate-300 text-[11px] block font-medium truncate">
               {t("speciesDetail.depthZone") || "Vùng nước & Độ sâu"}
             </span>
             <span className="text-white font-bold text-sm sm:text-base mt-0.5 block truncate">
@@ -706,12 +706,12 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Khối lượng */}
-        <div className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-300 shadow-md shadow-cyan-950/20 hover:-translate-y-0.5">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 shrink-0">
+        <div className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/50 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+          <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 shrink-0">
             <Scale size={18} />
           </div>
           <div className="min-w-0">
-            <span className="text-slate-400 text-[11px] block font-medium truncate">
+            <span className="text-slate-300 text-[11px] block font-medium truncate">
               {t("speciesDetail.weight") || "Trọng lượng cơ thể"}
             </span>
             <span className="text-white font-bold text-sm sm:text-base mt-0.5 block truncate">
@@ -721,12 +721,12 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Tình trạng bảo tồn */}
-        <div className="bg-[#12233f]/75 hover:bg-[#162c4e]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-300 shadow-md shadow-cyan-950/20 hover:-translate-y-0.5">
-          <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 shrink-0">
+        <div className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/50 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+          <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-400/30 text-rose-300 shrink-0">
             <ShieldAlert size={18} />
           </div>
           <div className="min-w-0">
-            <span className="text-slate-400 text-[11px] block font-medium truncate">
+            <span className="text-slate-300 text-[11px] block font-medium truncate">
               {t("speciesDetail.conservationStatus") || "Tình trạng bảo tồn"}
             </span>
             <span className="text-rose-300 font-bold text-sm sm:text-base mt-0.5 block truncate">
@@ -967,21 +967,21 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Bảng phân loại khoa học */}
-        <div className="bg-[#12233f]/75 backdrop-blur-xl border border-cyan-500/20 rounded-2xl p-5 shadow-lg shadow-cyan-950/20">
+        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-5 shadow-sm">
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
             {/* Giới & Ngành */}
-            <div className="bg-white/[0.04] hover:bg-white/[0.07] rounded-xl p-3.5 border border-white/10 transition-colors space-y-2">
+            <div className="bg-[#112d4e] rounded-xl p-3.5 border border-white/10 space-y-2">
               <div>
-                <span className="text-slate-400 text-[11px] block">
+                <span className="text-slate-300 text-[11px] block">
                   {t("speciesDetail.kingdom") || "Giới"}
                 </span>
                 <span className="font-semibold text-white mt-0.5 block leading-snug">
                   {taxonomy.kingdom}
                 </span>
               </div>
-              <div className="pt-2 border-t border-white/5">
-                <span className="text-slate-400 text-[11px] block">
+              <div className="pt-2 border-t border-white/10">
+                <span className="text-slate-300 text-[11px] block">
                   {t("speciesDetail.phylum") || "Ngành"}
                 </span>
                 <span className="font-semibold text-white mt-0.5 block leading-snug">
@@ -991,17 +991,17 @@ export function SpeciesDetailHero({ species }) {
             </div>
 
             {/* Lớp & Bộ */}
-            <div className="bg-white/[0.04] hover:bg-white/[0.07] rounded-xl p-3.5 border border-white/10 transition-colors space-y-2">
+            <div className="bg-[#112d4e] rounded-xl p-3.5 border border-white/10 space-y-2">
               <div>
-                <span className="text-slate-400 text-[11px] block">
+                <span className="text-slate-300 text-[11px] block">
                   {t("speciesDetail.class") || "Lớp"}
                 </span>
                 <span className="font-semibold text-cyan-300 mt-0.5 block leading-snug">
                   {taxonomy.class}
                 </span>
               </div>
-              <div className="pt-2 border-t border-white/5">
-                <span className="text-slate-400 text-[11px] block">
+              <div className="pt-2 border-t border-white/10">
+                <span className="text-slate-300 text-[11px] block">
                   {t("speciesDetail.order") || "Bộ"}
                 </span>
                 <span className="font-semibold text-white mt-0.5 block leading-snug">
@@ -1011,17 +1011,17 @@ export function SpeciesDetailHero({ species }) {
             </div>
 
             {/* Họ & Chi */}
-            <div className="bg-white/[0.04] hover:bg-white/[0.07] rounded-xl p-3.5 border border-white/10 transition-colors space-y-2">
+            <div className="bg-[#112d4e] rounded-xl p-3.5 border border-white/10 space-y-2">
               <div>
-                <span className="text-slate-400 text-[11px] block">
+                <span className="text-slate-300 text-[11px] block">
                   {t("speciesDetail.family") || "Họ"}
                 </span>
                 <span className="font-semibold text-white mt-0.5 block leading-snug">
                   {taxonomy.family}
                 </span>
               </div>
-              <div className="pt-2 border-t border-white/5">
-                <span className="text-slate-400 text-[11px] block">
+              <div className="pt-2 border-t border-white/10">
+                <span className="text-slate-300 text-[11px] block">
                   {t("speciesDetail.genus") || "Chi"}
                 </span>
                 <span className="font-semibold text-cyan-300 italic mt-0.5 block leading-snug">
@@ -1031,14 +1031,14 @@ export function SpeciesDetailHero({ species }) {
             </div>
 
             {/* Loài */}
-            <div className="bg-cyan-500/10 rounded-xl p-3.5 border border-cyan-500/25 flex flex-col justify-center">
-              <span className="text-cyan-400/80 text-[11px] block font-semibold">
+            <div className="bg-[#112d4e] rounded-xl p-3.5 border border-cyan-400/30 flex flex-col justify-center">
+              <span className="text-cyan-300 text-[11px] block font-semibold">
                 {t("speciesDetail.species") || "Loài"}
               </span>
-              <span className="font-bold text-cyan-300 text-sm italic mt-1 block leading-snug">
+              <span className="font-bold text-white text-sm italic mt-1 block leading-snug">
                 {taxonomy.species}
               </span>
-              <span className="text-slate-400 text-[11px] mt-1 block">
+              <span className="text-slate-300 text-[11px] mt-1 block">
                 {speciesName}
               </span>
             </div>
@@ -1048,7 +1048,7 @@ export function SpeciesDetailHero({ species }) {
         {/* 4 Chuyên đề đặc điểm sinh thái học chuyên sâu */}
         {scientificDossier.length > 0 && (
           <div className="space-y-3 pt-2">
-            <h3 className="text-sm font-semibold text-slate-300 tracking-wide">
+            <h3 className="text-sm font-semibold text-slate-200 tracking-wide">
               {t("speciesDetail.bioFeatures") ||
                 "Đặc điểm sinh học & Sinh thái học"}
             </h3>
@@ -1056,18 +1056,18 @@ export function SpeciesDetailHero({ species }) {
               {scientificDossier.map((dossier, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#12233f]/70 hover:bg-[#152a4a]/85 backdrop-blur-xl border border-cyan-500/20 hover:border-cyan-400/40 rounded-2xl p-5 space-y-2.5 transition-all duration-300 shadow-md hover:-translate-y-0.5"
+                  className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl p-5 space-y-2.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5"
                 >
                   <div className="flex items-center gap-2">
                     {dossierIcons[idx % dossierIcons.length]}
-                    <span className="text-cyan-400 text-xs font-bold tracking-wide">
+                    <span className="text-cyan-300 text-xs font-bold tracking-wide">
                       {dossier.category}
                     </span>
                   </div>
                   <h4 className="text-white font-bold text-sm leading-snug">
                     {dossier.title}
                   </h4>
-                  <p className="text-slate-300 text-xs md:text-sm leading-relaxed font-normal">
+                  <p className="text-slate-200 text-xs md:text-sm leading-relaxed font-normal">
                     {dossier.desc}
                   </p>
                 </div>
