@@ -26,6 +26,7 @@ import FeedbackManagement from "./pages/Admin/Feedback";
 import SystemSettings from "./pages/Admin/Settings";
 import AdminProfile from "./pages/Admin/Profile";
 import RelationshipsManagement from "./pages/Admin/Relationships";
+import NewsManagement from "./pages/Admin/News";
 
 // Error Pages & Error Boundary
 import {
@@ -179,6 +180,7 @@ function App() {
             <Route path="species-groups" element={<Navigate to="/admin/groups" replace />} />
             <Route path="relationships" element={<RelationshipsManagement />} />
             <Route path="locations" element={<LocationsManagement />} />
+            <Route path="news" element={<NewsManagement />} />
             <Route path="users" element={<UsersManagement />} />
             <Route path="comments" element={<CommentsManagement />} />
             <Route path="feedback" element={<FeedbackManagement />} />

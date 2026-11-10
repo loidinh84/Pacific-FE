@@ -9,6 +9,7 @@ import {
   Eye,
   Search,
   Heart,
+  Newspaper,
   MessageSquare,
   AlertTriangle,
   MessageCircle,
@@ -231,13 +232,22 @@ export default function AdminDashboard() {
         >
           Nội dung & Lượt tương tác
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           <StatCard
             title="Tổng sinh vật"
             value={contentAndView?.totalSpecies}
             icon={Fish}
             iconColor="blue"
             subtext="Sinh vật trong cơ sở dữ liệu"
+            isDark={isDark}
+            isLoading={isLoading}
+          />
+          <StatCard
+            title="Bài viết & Tin tức"
+            value={contentAndView?.totalNews}
+            icon={Newspaper}
+            iconColor="emerald"
+            subtext="Bài viết & thông tin khoa học"
             isDark={isDark}
             isLoading={isLoading}
           />
