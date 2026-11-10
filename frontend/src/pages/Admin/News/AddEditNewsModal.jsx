@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { X, Sparkles, Image as ImageIcon, AlertCircle } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import CustomSelect from "./CustomSelect";
 
 function createSlug(str) {
   if (!str) return "";
@@ -115,8 +116,19 @@ export default function AddEditNewsModal({
     });
   };
 
+  const categoryOptions = [
+    { value: "", label: "-- Chưa phân loại --" },
+    ...categories.map((c) => ({ value: String(c.id), label: c.name })),
+  ];
+
+  const statusOptions = [
+    { value: "published", label: "Đã xuất bản (Công khai)" },
+    { value: "draft", label: "Bản nháp (Lưu tạm)" },
+    { value: "archived", label: "Lưu trữ (Ẩn)" },
+  ];
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-150 overflow-y-auto">
       <div
         className={`w-full max-w-3xl rounded-2xl border shadow-2xl transition-all my-8 overflow-hidden ${
           isDark
@@ -124,25 +136,22 @@ export default function AddEditNewsModal({
             : "bg-white border-slate-200 text-slate-800"
         }`}
       >
-        {/* Header Modal */}
+        {/* Header Modal - Không có tiêu đề phụ */}
         <div
           className={`flex items-center justify-between px-6 py-4 border-b ${
             isDark ? "border-white/10 bg-[#0f2744]" : "border-slate-100 bg-slate-50"
           }`}
         >
-          <div>
-            <h3 className="text-lg font-bold font-heading">
-              {initialData ? "Chỉnh sửa bài viết" : "Thêm bài viết mới"}
-            </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Quản lý nội dung tin tức, chuyên đề và kiến thức đại dương
-            </p>
-          </div>
+          <h3 className="text-base sm:text-lg font-bold font-heading">
+            {initialData ? "Chỉnh sửa bài viết" : "Thêm bài viết mới"}
+          </h3>
           <button
+            type="button"
             onClick={onClose}
-            className={`p-2 rounded-xl transition-all ${
+            className={`p-2 rounded-xl transition-all cursor-pointer ${
               isDark ? "hover:bg-white/10 text-slate-300" : "hover:bg-slate-200 text-slate-500"
             }`}
+            title="Đóng"
           >
             <X size={20} />
           </button>
@@ -200,41 +209,29 @@ export default function AddEditNewsModal({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold mb-1.5">Chuyên mục</label>
-              <select
-                name="category_id"
+              <CustomSelect
+                options={categoryOptions}
                 value={formData.category_id}
-                onChange={handleChange}
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-sm transition-all focus:outline-none cursor-pointer ${
-                  isDark
-                    ? "bg-[#183c66] border-white/15 text-white"
-                    : "bg-slate-50 border-slate-200 text-slate-800"
-                }`}
-              >
-                <option value="">-- Chưa phân loại --</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => {
+                  setFormData((prev) => ({ ...prev, category_id: val }));
+                  if (errors.category_id) setErrors((prev) => ({ ...prev, category_id: null }));
+                }}
+                isDark={isDark}
+                placeholder="Chọn chuyên mục..."
+              />
             </div>
 
             <div>
               <label className="block text-xs font-semibold mb-1.5">Trạng thái xuất bản</label>
-              <select
-                name="status"
+              <CustomSelect
+                options={statusOptions}
                 value={formData.status}
-                onChange={handleChange}
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-sm transition-all focus:outline-none cursor-pointer ${
-                  isDark
-                    ? "bg-[#183c66] border-white/15 text-white"
-                    : "bg-slate-50 border-slate-200 text-slate-800"
-                }`}
-              >
-                <option value="published">Đã xuất bản (Công khai)</option>
-                <option value="draft">Bản nháp (Lưu tạm)</option>
-                <option value="archived">Lưu trữ (Ẩn)</option>
-              </select>
+                onChange={(val) => {
+                  setFormData((prev) => ({ ...prev, status: val }));
+                }}
+                isDark={isDark}
+                placeholder="Chọn trạng thái..."
+              />
             </div>
 
             <div>
@@ -253,7 +250,7 @@ export default function AddEditNewsModal({
                   name="is_featured"
                   checked={formData.is_featured}
                   onChange={handleChange}
-                  className="rounded text-amber-400 focus:ring-amber-400"
+                  className="rounded text-amber-400 focus:ring-amber-400 cursor-pointer"
                 />
                 <Sparkles size={16} className={formData.is_featured ? "text-amber-400" : "text-slate-400"} />
                 <span className="text-xs font-semibold">Bài viết nổi bật</span>

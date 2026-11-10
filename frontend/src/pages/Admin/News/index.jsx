@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Plus,
   Search,
@@ -13,12 +13,15 @@ import {
   CheckCircle2,
   Clock,
   Archive,
+  Eye,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
 import { useToast } from "../../../hooks/useToast";
 import ToastContainer from "../../../hooks/ToastContainer";
 import ConfirmModal from "../Species/ConfirmModal";
 import AddEditNewsModal from "./AddEditNewsModal";
+import NewsDetailModal from "./NewsDetailModal";
+import CustomSelect from "./CustomSelect";
 import {
   fetchAdminNewsList,
   fetchAdminNewsCategories,
@@ -63,8 +66,31 @@ export default function NewsManagement() {
   // Modals
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState(null);
+  const [viewingArticle, setViewingArticle] = useState(null);
   const [deletingArticle, setDeletingArticle] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Filter options for CustomSelect
+  const categoryFilterOptions = useMemo(
+    () => [
+      { value: "all", label: "Tất cả chuyên mục" },
+      ...categories.map((c) => ({ value: String(c.id), label: c.name })),
+    ],
+    [categories],
+  );
+
+  const statusFilterOptions = [
+    { value: "all", label: "Tất cả trạng thái" },
+    { value: "published", label: "Đã xuất bản" },
+    { value: "draft", label: "Bản nháp" },
+    { value: "archived", label: "Lưu trữ" },
+  ];
+
+  const featuredFilterOptions = [
+    { value: "all", label: "Tất cả vị trí" },
+    { value: "true", label: "Chỉ bài nổi bật ⭐" },
+    { value: "false", label: "Bài viết thông thường" },
+  ];
 
   // Debounce search
   useEffect(() => {
@@ -198,28 +224,16 @@ export default function NewsManagement() {
     <div className="space-y-6">
       <ToastContainer toasts={toasts} removeToast={removeToast} />
 
-      {/* ── 1. HEADER CHÍNH (KHÔNG CHỨA THỐNG KÊ RỜI RẠC) ── */}
+      {/* ── 1. HEADER (KHÔNG ICON, KHÔNG TIÊU ĐỀ PHỤ) ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-sky-500/15 text-sky-400 border border-sky-400/30">
-              <Newspaper size={20} />
-            </div>
-            <h1
-              className={`text-xl sm:text-2xl font-bold font-heading ${
-                isDark ? "text-white" : "text-slate-900"
-              }`}
-            >
-              Quản lý Tin tức & Bài viết
-            </h1>
-          </div>
-          <p
-            className={`text-xs mt-1 ${
-              isDark ? "text-slate-400" : "text-slate-500"
+          <h1
+            className={`text-2xl md:text-3xl font-bold font-heading tracking-tight ${
+              isDark ? "text-white" : "text-slate-900"
             }`}
           >
-            Quản lý các tin bài bảo tồn, bài báo khoa học và các chuyên mục kiến thức đại dương
-          </p>
+            Quản lý tin tức
+          </h1>
         </div>
 
         <div className="flex items-center gap-2.5 self-start sm:self-auto">
@@ -273,7 +287,7 @@ export default function NewsManagement() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Tìm theo tiêu đề, slug..."
-              className={`w-full pl-9 pr-3.5 py-2 rounded-xl border text-xs transition-all focus:outline-none ${
+              className={`w-full pl-9 pr-3.5 py-2.5 rounded-xl border text-xs transition-all focus:outline-none ${
                 isDark
                   ? "bg-[#112d4e] border-white/15 text-white focus:border-cyan-400"
                   : "bg-slate-50 border-slate-200 text-slate-800 focus:border-sky-500"
@@ -282,68 +296,40 @@ export default function NewsManagement() {
           </div>
 
           {/* Lọc chuyên mục */}
-          <div className="relative">
-            <select
-              value={categoryFilter}
-              onChange={(e) => {
-                setCategoryFilter(e.target.value);
-                setPagination((prev) => ({ ...prev, page: 1 }));
-              }}
-              className={`w-full px-3.5 py-2 rounded-xl border text-xs transition-all focus:outline-none cursor-pointer ${
-                isDark
-                  ? "bg-[#112d4e] border-white/15 text-white"
-                  : "bg-slate-50 border-slate-200 text-slate-800"
-              }`}
-            >
-              <option value="all">Tất cả chuyên mục</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <CustomSelect
+            options={categoryFilterOptions}
+            value={categoryFilter}
+            onChange={(val) => {
+              setCategoryFilter(val);
+              setPagination((prev) => ({ ...prev, page: 1 }));
+            }}
+            isDark={isDark}
+            placeholder="Tất cả chuyên mục"
+          />
 
           {/* Lọc trạng thái */}
-          <div className="relative">
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setPagination((prev) => ({ ...prev, page: 1 }));
-              }}
-              className={`w-full px-3.5 py-2 rounded-xl border text-xs transition-all focus:outline-none cursor-pointer ${
-                isDark
-                  ? "bg-[#112d4e] border-white/15 text-white"
-                  : "bg-slate-50 border-slate-200 text-slate-800"
-              }`}
-            >
-              <option value="all">Tất cả trạng thái</option>
-              <option value="published">Đã xuất bản</option>
-              <option value="draft">Bản nháp</option>
-              <option value="archived">Lưu trữ</option>
-            </select>
-          </div>
+          <CustomSelect
+            options={statusFilterOptions}
+            value={statusFilter}
+            onChange={(val) => {
+              setStatusFilter(val);
+              setPagination((prev) => ({ ...prev, page: 1 }));
+            }}
+            isDark={isDark}
+            placeholder="Tất cả trạng thái"
+          />
 
           {/* Lọc nổi bật */}
-          <div className="relative">
-            <select
-              value={featuredFilter}
-              onChange={(e) => {
-                setFeaturedFilter(e.target.value);
-                setPagination((prev) => ({ ...prev, page: 1 }));
-              }}
-              className={`w-full px-3.5 py-2 rounded-xl border text-xs transition-all focus:outline-none cursor-pointer ${
-                isDark
-                  ? "bg-[#112d4e] border-white/15 text-white"
-                  : "bg-slate-50 border-slate-200 text-slate-800"
-              }`}
-            >
-              <option value="all">Tất cả vị trí</option>
-              <option value="true">Chỉ bài nổi bật ⭐</option>
-              <option value="false">Bài viết thông thường</option>
-            </select>
-          </div>
+          <CustomSelect
+            options={featuredFilterOptions}
+            value={featuredFilter}
+            onChange={(val) => {
+              setFeaturedFilter(val);
+              setPagination((prev) => ({ ...prev, page: 1 }));
+            }}
+            isDark={isDark}
+            placeholder="Tất cả vị trí"
+          />
         </div>
       </div>
 
@@ -357,20 +343,20 @@ export default function NewsManagement() {
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr
-                className={`border-b font-semibold uppercase tracking-wider text-[11px] ${
+                className={`border-b text-xs ${
                   isDark
                     ? "bg-[#112d4e]/80 border-white/10 text-slate-300"
                     : "bg-slate-50 border-slate-200 text-slate-600"
                 }`}
               >
-                <th className="py-3.5 px-4 w-12 text-center">STT</th>
-                <th className="py-3.5 px-4">Bài viết & Tiêu đề</th>
-                <th className="py-3.5 px-4 w-40">Chuyên mục</th>
-                <th className="py-3.5 px-4 w-32 text-center">Trạng thái</th>
-                <th className="py-3.5 px-4 w-28 text-center">Nổi bật</th>
-                <th className="py-3.5 px-4 w-24 text-center">Lượt xem</th>
-                <th className="py-3.5 px-4 w-32">Ngày xuất bản</th>
-                <th className="py-3.5 px-4 w-28 text-right">Hành động</th>
+                <th className="py-3.5 px-4 w-12 text-center font-semibold">STT</th>
+                <th className="py-3.5 px-4 font-semibold">Bài viết & tiêu đề</th>
+                <th className="py-3.5 px-4 w-40 font-semibold">Chuyên mục</th>
+                <th className="py-3.5 px-4 w-32 text-center font-semibold">Trạng thái</th>
+                <th className="py-3.5 px-4 w-28 text-center font-semibold">Nổi bật</th>
+                <th className="py-3.5 px-4 w-24 text-center font-semibold">Lượt xem</th>
+                <th className="py-3.5 px-4 w-32 font-semibold">Ngày xuất bản</th>
+                <th className="py-3.5 px-4 w-32 text-right font-semibold">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -402,27 +388,31 @@ export default function NewsManagement() {
                         {itemIndex}
                       </td>
 
-                      {/* Tiêu đề & Thumbnail */}
+                      {/* Tiêu đề & Thumbnail - Bấm để xem chi tiết bài đăng */}
                       <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-3">
+                        <div
+                          className="flex items-center gap-3 cursor-pointer group"
+                          onClick={() => setViewingArticle(art)}
+                          title="Xem chi tiết bài đăng"
+                        >
                           {art.cover_url ? (
                             <img
                               src={art.cover_url}
                               alt={art.title}
-                              className="w-14 h-10 object-cover rounded-lg border border-white/10 shrink-0 bg-slate-900"
+                              className="w-14 h-10 object-cover rounded-lg border border-white/10 shrink-0 bg-slate-900 group-hover:opacity-85 transition-opacity"
                               onError={(e) => {
                                 e.currentTarget.style.display = "none";
                               }}
                             />
                           ) : (
-                            <div className="w-14 h-10 rounded-lg bg-sky-500/10 border border-sky-400/20 flex items-center justify-center shrink-0 text-sky-400">
+                            <div className="w-14 h-10 rounded-lg bg-sky-500/10 border border-sky-400/20 flex items-center justify-center shrink-0 text-sky-400 group-hover:bg-sky-500/20 transition-colors">
                               <Newspaper size={18} />
                             </div>
                           )}
 
                           <div className="min-w-0 flex-1">
                             <h4
-                              className={`font-semibold line-clamp-1 text-sm ${
+                              className={`font-semibold line-clamp-1 text-sm transition-colors group-hover:text-sky-400 ${
                                 isDark ? "text-white" : "text-slate-800"
                               }`}
                               title={art.title}
@@ -463,6 +453,7 @@ export default function NewsManagement() {
                       {/* Ghim nổi bật */}
                       <td className="py-3.5 px-4 text-center">
                         <button
+                          type="button"
                           onClick={() => handleToggleFeatured(art.id)}
                           className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
                             art.is_featured
@@ -489,6 +480,15 @@ export default function NewsManagement() {
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           <button
+                            type="button"
+                            onClick={() => setViewingArticle(art)}
+                            className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-400/20 transition-all cursor-pointer"
+                            title="Xem chi tiết bài đăng"
+                          >
+                            <Eye size={13} />
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => {
                               setEditingArticle(art);
                               setIsModalOpen(true);
@@ -499,6 +499,7 @@ export default function NewsManagement() {
                             <Pencil size={13} />
                           </button>
                           <button
+                            type="button"
                             onClick={() => setDeletingArticle(art)}
                             className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-400/20 transition-all cursor-pointer"
                             title="Xóa bài viết"
@@ -565,6 +566,18 @@ export default function NewsManagement() {
         )}
       </div>
 
+      {/* Modal Xem chi tiết bài đăng */}
+      <NewsDetailModal
+        isOpen={Boolean(viewingArticle)}
+        onClose={() => setViewingArticle(null)}
+        article={viewingArticle}
+        onEdit={(art) => {
+          setViewingArticle(null);
+          setEditingArticle(art);
+          setIsModalOpen(true);
+        }}
+      />
+
       {/* Modal Thêm / Chỉnh sửa */}
       <AddEditNewsModal
         isOpen={isModalOpen}
@@ -584,9 +597,9 @@ export default function NewsManagement() {
         title="Xóa bài viết"
         message={`Bạn có chắc chắn muốn xóa bài viết "${deletingArticle?.title}" không? Thao tác này có thể hoàn tác từ cơ sở dữ liệu.`}
         confirmText="Xác nhận xóa"
-        confirmType="danger"
+        variant="danger"
         onConfirm={handleDeleteArticle}
-        onCancel={() => setDeletingArticle(null)}
+        onClose={() => setDeletingArticle(null)}
       />
     </div>
   );
