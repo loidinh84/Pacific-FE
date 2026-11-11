@@ -27,8 +27,8 @@ export function NewsFilterBar({
     sortOptions.find((opt) => opt.value === sortBy) || sortOptions[0];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 mb-10 mt-2">
-      <div className="p-4 md:p-5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-5">
+    <div className="max-w-6xl mx-auto px-4 mb-10 mt-2 relative z-30">
+      <div className="p-4 md:p-5 rounded-2xl bg-[#142d4c]/90 border border-white/15 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-5 shadow-lg">
         {/* Left: Category Pill Chips */}
         <div className="flex items-center gap-2.5 overflow-x-auto pb-3 lg:pb-0 custom-scrollbar-thin">
           <button
@@ -65,17 +65,6 @@ export function NewsFilterBar({
                   }`}
                 >
                   <span>{getCategoryLabel(t, cat.slug) || cat.name}</span>
-                  {typeof cat.article_count === "number" && (
-                    <span
-                      className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                        isSelected
-                          ? "bg-white/20 text-white"
-                          : "bg-white/10 text-slate-400"
-                      }`}
-                    >
-                      {cat.article_count}
-                    </span>
-                  )}
                 </button>
               );
             })
@@ -100,9 +89,9 @@ export function NewsFilterBar({
               />
             </button>
 
-            {/* Glassmorphism Dropdown Menu matching Navbar & CustomSelect */}
+            {/* Dropdown Menu */}
             {isSortOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-[#1b254b]/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-48 bg-[#0f2744] border border-white/20 rounded-2xl shadow-2xl p-1.5 z-[60] animate-in fade-in zoom-in-95 duration-150">
                 <div className="px-3 py-1.5 text-[10px] font-semibold text-white/40 border-b border-white/10 mb-1">
                   Sắp xếp bài viết
                 </div>

@@ -25,6 +25,7 @@ import CustomSelect from "./CustomSelect";
 import {
   fetchAdminNewsList,
   fetchAdminNewsCategories,
+  fetchAdminNewsSources,
   createAdminNews,
   updateAdminNews,
   deleteAdminNews,
@@ -46,6 +47,7 @@ export default function NewsManagement() {
 
   const [articles, setArticles] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [sources, setSources] = useState([]);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
@@ -101,7 +103,7 @@ export default function NewsManagement() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // Load categories
+  // Load categories & official sources
   useEffect(() => {
     fetchAdminNewsCategories()
       .then((res) => {
@@ -111,6 +113,16 @@ export default function NewsManagement() {
       })
       .catch((err) => {
         console.error("Lỗi lấy danh mục tin tức:", err);
+      });
+
+    fetchAdminNewsSources()
+      .then((res) => {
+        if (res?.success && Array.isArray(res.data)) {
+          setSources(res.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi lấy nguồn tin chính thống:", err);
       });
   }, []);
 
@@ -588,6 +600,7 @@ export default function NewsManagement() {
         onSubmit={handleSubmitArticle}
         initialData={editingArticle}
         categories={categories}
+        sources={sources}
         isLoading={isSubmitting}
       />
 

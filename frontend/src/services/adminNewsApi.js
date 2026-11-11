@@ -27,6 +27,14 @@ export const fetchAdminNewsCategories = async () => {
 };
 
 /**
+ * Lấy danh sách nguồn tin chính thống
+ */
+export const fetchAdminNewsSources = async () => {
+  const res = await axios.get(`${API_BASE}/sources`, getAuthHeaders());
+  return res.data;
+};
+
+/**
  * Lấy chi tiết 1 bài viết
  */
 export const fetchAdminNewsById = async (id) => {

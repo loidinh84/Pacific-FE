@@ -10,6 +10,8 @@ import {
   CheckCircle2,
   Clock,
   Archive,
+  Layers,
+  ShieldCheck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../../hooks/useTheme";
@@ -131,6 +133,41 @@ export default function NewsDetailModal({
             </div>
           )}
 
+          {/* Khối thông số ấn tượng (dành cho bài Có thể bạn chưa biết) */}
+          {(article.stat_val || article.badge) && (
+            <div
+              className={`p-4 rounded-xl border flex flex-col sm:flex-row items-center justify-between gap-4 ${
+                isDark
+                  ? "bg-amber-500/10 border-amber-400/30 text-amber-100"
+                  : "bg-amber-50 border-amber-200 text-amber-900"
+              }`}
+            >
+              <div className="space-y-1 text-center sm:text-left">
+                {article.badge && (
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/40">
+                    {article.badge}
+                  </span>
+                )}
+                <p className="text-xs text-slate-300">
+                  Thông số nổi bật hiển thị ở thẻ &ldquo;Có thể bạn chưa biết&rdquo;
+                </p>
+              </div>
+
+              {article.stat_val && (
+                <div className="p-3 rounded-xl bg-black/30 border border-amber-400/30 text-center min-w-[180px]">
+                  <p className="text-xl sm:text-2xl font-black text-amber-300 font-heading">
+                    {article.stat_val}
+                  </p>
+                  {article.stat_title && (
+                    <p className="text-[11px] text-slate-400 font-semibold mt-0.5">
+                      {article.stat_title}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Dải thông số bài viết */}
           <div
             className={`grid grid-cols-2 sm:grid-cols-3 gap-3 p-3.5 rounded-xl border text-xs ${
@@ -162,6 +199,70 @@ export default function NewsDetailModal({
             </div>
           </div>
 
+          {/* Nguồn tin chính thống (Nếu dẫn nguồn ngoài) */}
+          {article.source_type === "external" && (
+            <div
+              className={`p-3.5 rounded-xl border flex flex-wrap items-center justify-between gap-3 text-xs ${
+                isDark
+                  ? "bg-emerald-500/10 border-emerald-400/30 text-emerald-200"
+                  : "bg-emerald-50 border-emerald-200 text-emerald-900"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={16} className="text-emerald-400 shrink-0" />
+                <span>
+                  Nguồn tin chính thống:{" "}
+                  <strong className="font-bold">
+                    {article.source?.name || "Cơ quan báo chí đối tác"}
+                  </strong>
+                </span>
+              </div>
+              {article.external_url && (
+                <a
+                  href={article.external_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-sky-400 hover:text-sky-300 font-semibold cursor-pointer"
+                >
+                  <span>Mở bài báo gốc</span>
+                  <ExternalLink size={12} />
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* Bộ sưu tập ảnh (Gallery) */}
+          {article.gallery && article.gallery.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Layers size={15} className="text-cyan-400" />
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Bộ sưu tập ảnh ({article.gallery.length})
+                </p>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {article.gallery.map((imgUrl, i) => (
+                  <a
+                    key={`${imgUrl}-${i}`}
+                    href={imgUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative rounded-xl overflow-hidden border border-white/10 aspect-video group bg-slate-900 cursor-pointer block shadow-sm"
+                  >
+                    <img
+                      src={imgUrl}
+                      alt={`Ảnh minh họa ${i + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
+                      <ExternalLink size={14} />
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Đoạn tóm tắt (Excerpt) */}
           {article.excerpt && (
             <div
@@ -185,15 +286,26 @@ export default function NewsDetailModal({
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               Nội dung bài viết
             </p>
-            <div
-              className={`p-4 rounded-xl border text-xs sm:text-sm leading-relaxed whitespace-pre-wrap ${
-                isDark
-                  ? "bg-[#183c66]/20 border-white/10 text-slate-100"
-                  : "bg-slate-50 border-slate-200 text-slate-800"
-              }`}
-            >
-              {article.content || "Chưa có nội dung chi tiết cho bài viết này."}
-            </div>
+            {article.content || article.clean_content ? (
+              <div
+                className={`p-4 rounded-xl border text-xs sm:text-sm leading-relaxed space-y-4 news-content-body prose max-w-none ${
+                  isDark
+                    ? "bg-[#183c66]/20 border-white/10 text-slate-100 prose-invert"
+                    : "bg-slate-50 border-slate-200 text-slate-800"
+                }`}
+                dangerouslySetInnerHTML={{ __html: article.content || article.clean_content }}
+              />
+            ) : (
+              <div
+                className={`p-4 rounded-xl border text-xs sm:text-sm leading-relaxed italic ${
+                  isDark
+                    ? "bg-[#183c66]/20 border-white/10 text-slate-400"
+                    : "bg-slate-50 border-slate-200 text-slate-500"
+                }`}
+              >
+                Chưa có nội dung chi tiết cho bài viết này.
+              </div>
+            )}
           </div>
         </div>
 
@@ -243,4 +355,3 @@ export default function NewsDetailModal({
     </div>
   );
 }
-

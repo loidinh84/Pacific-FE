@@ -231,6 +231,7 @@ const en = {
       conservation: "Conservation",
       discovery: "Discovery",
       "east-sea": "East Sea",
+      "fun-facts": "Did You Know?",
       events: "Events",
       research: "Research",
     },

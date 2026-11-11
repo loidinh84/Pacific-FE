@@ -193,11 +193,6 @@ export default function News() {
             <h2 className="text-xl md:text-2xl font-black text-white font-heading tracking-tight">
               {t("news.latestTitle")}
             </h2>
-            {pagination.total > 0 && !isLoadingArticles && (
-              <span className="text-xs font-semibold text-slate-400">
-                {pagination.total} bài viết
-              </span>
-            )}
           </div>
 
           {/* Trạng thái lỗi */}
