@@ -1509,7 +1509,7 @@ export default function LocationsManagement() {
         <CustomSelect
           options={[
             { value: "all", label: "Tất cả" },
-            { value: "true", label: "⭐ Nổi bật" },
+            { value: "true", label: "Nổi bật" },
             { value: "false", label: "Thường" },
           ]}
           value={filterFeatured}

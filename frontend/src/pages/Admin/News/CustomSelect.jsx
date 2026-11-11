@@ -44,7 +44,10 @@ export default function CustomSelect({
             : ""
         }`}
       >
-        <span className="truncate">{selectedOption?.label || placeholder}</span>
+        <span className="truncate flex items-center gap-1.5">
+          {selectedOption?.icon && <selectedOption.icon size={13} className="shrink-0 text-amber-400" />}
+          <span>{selectedOption?.label || placeholder}</span>
+        </span>
         <ChevronDown
           size={14}
           className={`shrink-0 transition-transform duration-200 text-slate-400 ${
@@ -81,7 +84,10 @@ export default function CustomSelect({
                     : "hover:bg-slate-100 text-slate-700"
                 }`}
               >
-                <span className="truncate">{opt.label}</span>
+                <span className="truncate flex items-center gap-1.5">
+                  {opt.icon && <opt.icon size={13} className="shrink-0 text-amber-400" />}
+                  <span>{opt.label}</span>
+                </span>
                 {isSelected && <Check size={14} className="text-sky-400 shrink-0" />}
               </button>
             );
@@ -91,3 +97,4 @@ export default function CustomSelect({
     </div>
   );
 }
+

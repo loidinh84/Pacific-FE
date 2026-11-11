@@ -88,7 +88,7 @@ export default function NewsManagement() {
 
   const featuredFilterOptions = [
     { value: "all", label: "Tất cả vị trí" },
-    { value: "true", label: "Chỉ bài nổi bật ⭐" },
+    { value: "true", label: "Chỉ bài nổi bật", icon: Sparkles },
     { value: "false", label: "Bài viết thông thường" },
   ];
 
