@@ -416,8 +416,13 @@ export const SEARCH_SPECIES_CATALOG = [
       "Loài cá ngừ lớn nhất, có khả năng di cư đường dài qua các vùng biển sâu và có giá trị kinh tế cao.",
     descEn:
       "Largest tuna species migrating across deep ocean waters with high economic value.",
-    image: Images.CaMapVoi,
-    gallery: [Images.SharkGallery1, Images.SharkGallery2, Images.SharkGallery3],
+    image: "https://static.inaturalist.org/photos/756400191/large.jpg",
+    gallery: [
+      "https://static.inaturalist.org/photos/756400191/large.jpg",
+      "https://static.inaturalist.org/photos/756400197/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/754020687/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/754020722/large.jpg",
+    ],
     anatomyImage: Images.SharkAnatomy,
     fullBioHighlightsVi: [
       {
@@ -491,8 +496,13 @@ export const SEARCH_SPECIES_CATALOG = [
     descVi: "Gã khổng lồ hiền lành ăn vi sinh vật phù du lớn nhất đại dương.",
     descEn:
       "Gentle giant filter feeder and the largest fish species in the ocean.",
-    image: Images.CaMapVoi,
-    gallery: [Images.CaMapVoi, Images.SharkGallery1, Images.SharkGallery4],
+    image: "https://static.inaturalist.org/photos/761401387/large.jpg",
+    gallery: [
+      "https://static.inaturalist.org/photos/761401387/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/760658636/large.jpg",
+      "https://static.inaturalist.org/photos/760142860/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/759569382/large.jpg",
+    ],
     anatomyImage: Images.SharkAnatomy,
     fullBioHighlightsVi: [
       {
@@ -693,8 +703,13 @@ export const SEARCH_SPECIES_CATALOG = [
     descVi: "Loài bạch tuộc thông minh bậc nhất với sải tay dài tới 6 mét.",
     descEn:
       "Highly intelligent octopus species with arm spans reaching up to 6 meters.",
-    image: Images.BachTuotKhongLo,
-    gallery: [Images.BachTuotKhongLo, Images.FishHidden],
+    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/761256498/large.jpg",
+    gallery: [
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/761256498/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/760546680/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/760546703/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/760155599/large.jpg",
+    ],
     fullBioHighlightsVi: [
       {
         title: "Trí thông minh siêu việt",
@@ -766,7 +781,13 @@ export const SEARCH_SPECIES_CATALOG = [
     depth: "1 - 15m",
     size: "Kích thước: 11cm",
     sizeEn: "Size: 11cm",
-    image: Images.CaMapVoi,
+    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/761506258/large.jpg",
+    gallery: [
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/761506258/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/761506276/large.jpg",
+      "https://static.inaturalist.org/photos/761402597/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/761179500/large.jpg",
+    ],
     isFeatured: false,
   },
   {
@@ -787,7 +808,13 @@ export const SEARCH_SPECIES_CATALOG = [
     depth: "0 - 100m",
     size: "Kích thước: 1.5m",
     sizeEn: "Size: 1.5m",
-    image: Images.BachTuotKhongLo,
+    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/761347192/large.jpg",
+    gallery: [
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/761347192/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/761747692/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/761555130/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/761542241/large.jpg",
+    ],
     isFeatured: false,
   },
   {
@@ -808,7 +835,13 @@ export const SEARCH_SPECIES_CATALOG = [
     depth: "0 - 300m",
     size: "Kích thước: 3.8m",
     sizeEn: "Size: 3.8m",
-    image: Images.CaMapVoi,
+    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/761491490/large.jpg",
+    gallery: [
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/761491490/large.jpg",
+      "https://static.inaturalist.org/photos/761474801/large.jpg",
+      "https://static.inaturalist.org/photos/761474819/large.jpg",
+      "https://static.inaturalist.org/photos/761474806/large.jpg",
+    ],
     isFeatured: false,
   },
   {
@@ -829,7 +862,13 @@ export const SEARCH_SPECIES_CATALOG = [
     depth: "0 - 500m",
     size: "Kích thước: 30m",
     sizeEn: "Size: 30m",
-    image: Images.CaMapVoi,
+    image: "https://static.inaturalist.org/photos/208318926/large.jpeg",
+    gallery: [
+      "https://static.inaturalist.org/photos/208318926/large.jpeg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/75317002/large.jpeg",
+      "https://static.inaturalist.org/photos/459821035/large.jpeg",
+      "https://static.inaturalist.org/photos/194385336/large.jpg",
+    ],
     isFeatured: false,
   },
   {
@@ -850,7 +889,13 @@ export const SEARCH_SPECIES_CATALOG = [
     depth: "100 - 700m",
     size: "Kích thước: 20cm",
     sizeEn: "Size: 20cm",
-    image: Images.BachTuotKhongLo,
+    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/760908706/large.jpg",
+    gallery: [
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/760908706/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/760908730/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/760639119/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/760639135/large.jpg",
+    ],
     isFeatured: false,
   },
   {
@@ -871,7 +916,13 @@ export const SEARCH_SPECIES_CATALOG = [
     depth: "0 - 1000m",
     size: "Kích thước: 7m",
     sizeEn: "Size: 7m",
-    image: Images.CaMapVoi,
+    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/755771238/large.jpg",
+    gallery: [
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/755771238/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/754349954/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/754349984/large.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/752882036/large.jpg",
+    ],
     isFeatured: false,
   },
 ];

@@ -118,44 +118,15 @@ export function SpeciesDetailHero({ species }) {
       list = [species.image];
     }
 
-    // Nếu chỉ có 1 hoặc 2 ảnh, bổ sung thêm ảnh sinh cảnh biển tự nhiên phù hợp theo tầng nước/nhóm loài
-    // để người dùng luôn có trải nghiệm coverflow 3D nhiều góc nhìn và có thể dùng chuột kéo qua kéo lại
+    // Nếu chỉ có 1 hoặc 2 ảnh, nhân bản chính ảnh sinh vật đó để luôn đủ 3 ảnh cho coverflow 3D
+    // Tuyệt đối không chèn ảnh phong cảnh biển, bờ cát hay sa mạc
     if (list.length === 1) {
-      const depth = String(species?.depth || "").toLowerCase();
-      const cat = String(species?.category || species?.categoryVi || "").toLowerCase();
-      const name = String(species?.nameVi || species?.commonName || "").toLowerCase();
-
-      const isDeep =
-        depth.includes("1000") ||
-        depth.includes("3000") ||
-        depth.includes("6000") ||
-        cat.includes("biển sâu") ||
-        name.includes("trùng");
-
-      const isCoral =
-        cat.includes("san hô") ||
-        cat.includes("thực vật") ||
-        cat.includes("thân mềm") ||
-        cat.includes("bò sát");
-
-      const habitatImg = isDeep
-        ? "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&auto=format&fit=crop&q=80"
-        : isCoral
-        ? "https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=1200&auto=format&fit=crop&q=80"
-        : "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=1200&auto=format&fit=crop&q=80";
-
-      const ecosystemImg = isDeep
-        ? "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&auto=format&fit=crop&q=80"
-        : "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80";
-
-      list.push(habitatImg, ecosystemImg);
+      list.push(list[0], list[0]);
     } else if (list.length === 2) {
-      list.push("https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=1200&auto=format&fit=crop&q=80");
+      list.push(list[0]);
     }
 
-    return list.length > 0
-      ? list
-      : ["https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&auto=format&fit=crop&q=80"];
+    return list;
   }, [species]);
 
   // Quản lý kéo thả chuột (Mouse Drag & Touch Swipe) trong Bộ sưu tập ảnh
@@ -974,9 +945,6 @@ export function SpeciesDetailHero({ species }) {
                       e.currentTarget.src !== species.image
                     ) {
                       e.currentTarget.src = species.image;
-                    } else {
-                      e.currentTarget.src =
-                        "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&auto=format&fit=crop";
                     }
                   }}
                 />

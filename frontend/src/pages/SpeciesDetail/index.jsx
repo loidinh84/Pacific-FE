@@ -65,19 +65,19 @@ export default function SpeciesDetail() {
           (s) => s.id === id || s.slug === id || s.slug === resolvedId
         );
 
-        // Ưu tiên ảnh chất lượng cao có sẵn trong assets cục bộ, sau đó đến API media
+        // Ưu tiên ảnh thật từ API cơ sở dữ liệu (media do thợ lặn chụp), sau đó mới tới mock cục bộ
+        const apiGallery = apiData.media?.map((m) => m.url).filter(Boolean) || [];
         const primaryImage =
-          localSpecies?.image ||
           apiData.media?.find((m) => m.isPrimary)?.url ||
           apiData.media?.[0]?.url ||
-          "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&auto=format&fit=crop";
+          localSpecies?.image ||
+          "";
 
-        const apiGallery = apiData.media?.map((m) => m.url).filter(Boolean) || [];
         const gallery =
-          localSpecies?.gallery && localSpecies.gallery.length > 0
-            ? localSpecies.gallery
-            : apiGallery.length > 0
+          apiGallery.length > 0
             ? apiGallery
+            : localSpecies?.gallery && localSpecies.gallery.length > 0
+            ? localSpecies.gallery
             : [primaryImage];
 
         setSpecies({
