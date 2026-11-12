@@ -26,7 +26,10 @@ import { Favorite, Favorited } from "../../assets/Icons";
 import { playSpeciesSound, stopSpeciesSound } from "../../utils/oceanAudio";
 import { useLanguage } from "../../hooks/useLanguage";
 import { getStoredToken } from "../../utils/auth";
-import { getSpeciesFavoriteStatus, toggleSpeciesFavorite } from "../../services/speciesApi";
+import {
+  getSpeciesFavoriteStatus,
+  toggleSpeciesFavorite,
+} from "../../services/speciesApi";
 
 // Chuẩn hóa phân hạng bảo tồn Sách Đỏ
 const RED_LIST_BADGES = {
@@ -112,7 +115,11 @@ export function SpeciesDetailHero({ species }) {
   // Danh sách hình ảnh thông minh: đảm bảo luôn có đủ ảnh để duyệt theo coverflow 3D và kéo qua lại
   const images = useMemo(() => {
     let list = [];
-    if (species?.gallery && Array.isArray(species.gallery) && species.gallery.length > 0) {
+    if (
+      species?.gallery &&
+      Array.isArray(species.gallery) &&
+      species.gallery.length > 0
+    ) {
       list = [...species.gallery];
     } else if (species?.image) {
       list = [species.image];
@@ -501,7 +508,8 @@ export function SpeciesDetailHero({ species }) {
       className = isEn ? "Abyssal Organism" : "Khu hệ biển sâu";
     } else if (!cat.includes("cá") && !nameVi.includes("cá")) {
       phylumName = isEn ? "Marine Life" : "Sinh vật biển";
-      className = species.categoryVi || (isEn ? "Marine Life" : "Sinh vật biển");
+      className =
+        species.categoryVi || (isEn ? "Marine Life" : "Sinh vật biển");
     }
 
     return {
@@ -542,7 +550,10 @@ export function SpeciesDetailHero({ species }) {
       "unknown",
     ];
     if (genericTerms.includes(lower)) return null;
-    return raw.replace(/\s*&\s*thái bình dương/gi, "").replace(/\s*&\s*pacific/gi, "").trim();
+    return raw
+      .replace(/\s*&\s*thái bình dương/gi, "")
+      .replace(/\s*&\s*pacific/gi, "")
+      .trim();
   }, [species.eastSeaZone]);
 
   const dossierIcons = [
@@ -594,7 +605,7 @@ export function SpeciesDetailHero({ species }) {
     species?.model_3d_url ||
     slugLower.includes("shark") ||
     slugLower.includes("ca-map") ||
-    slugLower === "great-white-shark-1"
+    slugLower === "great-white-shark-1",
   );
 
   return (
@@ -638,7 +649,9 @@ export function SpeciesDetailHero({ species }) {
               <span className="flex items-center gap-1">
                 <Layers size={12} className="text-cyan-400" />
                 <span>
-                  {taxonomy.class || taxonomy.phylum || (isEn ? "Marine Life" : "Sinh vật biển")}
+                  {taxonomy.class ||
+                    taxonomy.phylum ||
+                    (isEn ? "Marine Life" : "Sinh vật biển")}
                 </span>
               </span>
               {specificZone && (
@@ -690,7 +703,10 @@ export function SpeciesDetailHero({ species }) {
               title="Mô hình 3D cho loài này đang được cập nhật"
             >
               <Box size={14} className="text-white/30" />
-              <span>{t("speciesDetail.model3dUpdating") || "Mô hình 3D: Đang cập nhật"}</span>
+              <span>
+                {t("speciesDetail.model3dUpdating") ||
+                  "Mô hình 3D: Đang cập nhật"}
+              </span>
             </div>
           )}
 
@@ -880,8 +896,13 @@ export function SpeciesDetailHero({ species }) {
         {/* 3D Image Stack - Di chuyển theo thao tác kéo chuột */}
         <div
           style={{
-            transform: dragOffset !== 0 ? `translateX(${dragOffset * 0.45}px)` : undefined,
-            transition: isDragging ? "none" : "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)",
+            transform:
+              dragOffset !== 0
+                ? `translateX(${dragOffset * 0.45}px)`
+                : undefined,
+            transition: isDragging
+              ? "none"
+              : "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)",
           }}
           className="flex items-center justify-center w-full max-w-5xl relative px-4"
         >
@@ -1055,8 +1076,13 @@ export function SpeciesDetailHero({ species }) {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.25 }}
                 style={{
-                  transform: lightboxDragOffset !== 0 ? `translateX(${lightboxDragOffset}px)` : undefined,
-                  transition: isLightboxDragging ? "none" : "transform 0.25s ease-out",
+                  transform:
+                    lightboxDragOffset !== 0
+                      ? `translateX(${lightboxDragOffset}px)`
+                      : undefined,
+                  transition: isLightboxDragging
+                    ? "none"
+                    : "transform 0.25s ease-out",
                 }}
                 src={images[activeImageIdx]}
                 alt={`${speciesName} - ảnh phóng to ${activeImageIdx + 1}`}
@@ -1120,7 +1146,6 @@ export function SpeciesDetailHero({ species }) {
 
         {/* Bảng phân loại khoa học */}
         <div className="bg-[#183c66] border border-white/15 rounded-2xl p-5 shadow-sm">
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
             {/* Giới & Ngành */}
             <div className="bg-[#112d4e] rounded-xl p-3.5 border border-white/10 space-y-2">

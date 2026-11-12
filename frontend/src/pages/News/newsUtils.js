@@ -4,15 +4,16 @@
 
 /** Màu sắc theo chuyên mục */
 export const CATEGORY_STYLES = {
-  conservation: "bg-emerald-500/15 border-emerald-400/30 text-emerald-300",
-  discovery: "bg-sky-500/15 border-sky-400/30 text-sky-300",
-  "east-sea": "bg-cyan-500/15 border-cyan-400/30 text-cyan-300",
-  events: "bg-amber-500/15 border-amber-400/30 text-amber-300",
-  research: "bg-fuchsia-500/15 border-fuchsia-400/30 text-fuchsia-300",
+  conservation: "bg-emerald-950/85 border-emerald-400/50 text-emerald-300 shadow-sm",
+  discovery: "bg-sky-950/85 border-sky-400/50 text-sky-300 shadow-sm",
+  "east-sea": "bg-cyan-950/85 border-cyan-400/50 text-cyan-300 shadow-sm",
+  "fun-facts": "bg-amber-950/85 border-amber-400/50 text-amber-300 shadow-sm",
+  events: "bg-orange-950/85 border-orange-400/50 text-orange-300 shadow-sm",
+  research: "bg-fuchsia-950/85 border-fuchsia-400/50 text-fuchsia-300 shadow-sm",
 };
 
 export const getCategoryStyle = (slug) =>
-  CATEGORY_STYLES[slug] || "bg-white/10 border-white/20 text-white/80";
+  CATEGORY_STYLES[slug] || "bg-slate-900/85 border-white/25 text-white/90 shadow-sm";
 
 /** Lấy tên chuyên mục đã dịch theo ngôn ngữ hiện tại */
 export const getCategoryLabel = (t, slug) =>

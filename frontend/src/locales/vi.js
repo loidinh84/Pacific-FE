@@ -231,6 +231,7 @@ const vi = {
       conservation: "Bảo tồn",
       discovery: "Khám phá",
       "east-sea": "Biển Đông",
+      "fun-facts": "Có thể bạn chưa biết",
       events: "Sự kiện",
       research: "Nghiên cứu",
     },

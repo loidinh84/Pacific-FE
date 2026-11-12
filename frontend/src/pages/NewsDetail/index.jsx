@@ -22,6 +22,7 @@ import {
   ChevronRight,
   AlertCircle,
   RefreshCw,
+  Layers,
 } from "lucide-react";
 
 export default function NewsDetail() {
@@ -279,6 +280,32 @@ export default function NewsDetail() {
             </p>
           )}
 
+          {/* Fun Fact Metric Callout */}
+          {article.stat_val && (
+            <div className="mb-8 p-5 rounded-3xl bg-gradient-to-r from-sky-950/60 to-cyan-950/60 border border-cyan-400/30 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xl">
+              <div className="space-y-1.5 text-center sm:text-left">
+                {article.badge && (
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-cyan-400/20 text-cyan-300 border border-cyan-400/40">
+                    {article.badge}
+                  </span>
+                )}
+                <h3 className="text-sm font-semibold text-slate-300">
+                  Thông số ấn tượng từ chuyên mục &ldquo;Có thể bạn chưa biết&rdquo;
+                </h3>
+              </div>
+              <div className="px-6 py-3.5 rounded-2xl bg-black/40 border border-cyan-400/30 text-center min-w-[200px] shrink-0">
+                <p className="text-2xl sm:text-3xl font-black text-cyan-300 font-heading">
+                  {article.stat_val}
+                </p>
+                {article.stat_title && (
+                  <p className="text-xs text-slate-400 font-semibold tracking-wider mt-1">
+                    {article.stat_title}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Cover Image with Caption */}
           <figure className="mb-8">
             <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-black/30">
@@ -307,6 +334,39 @@ export default function NewsDetail() {
             /* Clean Excerpt Body for External Articles */
             <div className="text-slate-200 text-base md:text-lg leading-relaxed mb-12 space-y-4">
               <p>{article.excerpt}</p>
+            </div>
+          )}
+
+          {/* Article Gallery (Bộ sưu tập ảnh) */}
+          {article.gallery && article.gallery.length > 0 && (
+            <div className="mb-12 space-y-4">
+              <div className="flex items-center gap-2">
+                <Layers size={18} className="text-cyan-400" />
+                <h3 className="text-lg font-bold text-white font-heading">
+                  Bộ sưu tập ảnh ({article.gallery.length})
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {article.gallery.map((imgUrl, idx) => (
+                  <a
+                    key={`${imgUrl}-${idx}`}
+                    href={imgUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative rounded-2xl overflow-hidden border border-white/10 aspect-video group bg-slate-900 shadow-md block cursor-pointer"
+                  >
+                    <img
+                      src={imgUrl}
+                      alt={`Ảnh minh họa ${idx + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-1.5">
+                      <ExternalLink size={16} />
+                      <span>Xem kích thước gốc</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
             </div>
           )}
 
