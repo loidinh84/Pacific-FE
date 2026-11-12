@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,10 +18,14 @@ export function SearchGridList({
   semanticQuery,
   onClearSemantic,
   loading = false,
+  currentPage: controlledPage,
+  onPageChange,
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { language, t } = useLanguage();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [internalPage, setInternalPage] = useState(1);
+  const currentPage = controlledPage ?? internalPage;
   const [favorites, setFavorites] = useState(new Set());
   const itemsPerPage = 9;
 
@@ -65,7 +69,11 @@ export function SearchGridList({
 
   const goToPage = (p) => {
     if (p >= 1 && p <= totalPages) {
-      setCurrentPage(p);
+      if (onPageChange) {
+        onPageChange(p);
+      } else {
+        setInternalPage(p);
+      }
       setTimeout(() => {
         document
           .getElementById("search-results")
@@ -179,7 +187,11 @@ export function SearchGridList({
                 <div
                   key={s.id}
                   className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 group cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1"
-                  onClick={() => navigate(`/species/${s.slug || s.id}`)}
+                  onClick={() =>
+                    navigate(`/species/${s.slug || s.id}`, {
+                      state: { fromSearch: `${location.pathname}${location.search}` },
+                    })
+                  }
                 >
                   <div>
                     {/* Header Tags */}
@@ -262,15 +274,15 @@ export function SearchGridList({
           <div className="flex items-center justify-center gap-2">
             <button
               onClick={() => goToPage(1)}
-              disabled={currentPage === 1}
+              disabled={effectivePage <= 1}
               className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
               title="Trang đầu"
             >
               <ChevronsLeft size={15} />
             </button>
             <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
+              onClick={() => goToPage(effectivePage - 1)}
+              disabled={effectivePage <= 1}
               className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
               title="Trang trước"
             >
@@ -304,8 +316,8 @@ export function SearchGridList({
             })}
 
             <button
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
+              onClick={() => goToPage(effectivePage + 1)}
+              disabled={effectivePage >= totalPages}
               className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
               title="Trang sau"
             >
@@ -313,7 +325,7 @@ export function SearchGridList({
             </button>
             <button
               onClick={() => goToPage(totalPages)}
-              disabled={currentPage === totalPages}
+              disabled={effectivePage >= totalPages}
               className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
               title="Trang cuối"
             >

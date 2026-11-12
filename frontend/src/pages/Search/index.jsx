@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useSearchParams, useNavigationType } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { SearchHeroHeader } from "./SearchHeroHeader";
@@ -46,13 +46,28 @@ const getStatusRank = (item) => {
 
 export default function Search() {
   const { language } = useLanguage();
-  const [searchParams] = useSearchParams();
-  const initialQuery = searchParams.get("q") || searchParams.get("search") || "";
-  const initialCat = searchParams.get("category") || searchParams.get("cat") || "";
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigationType = useNavigationType();
+  const urlQuery = searchParams.get("q") || searchParams.get("search") || "";
+  const selectedCategory =
+    searchParams.get("category") || searchParams.get("cat") || "";
+  const sortBy = searchParams.get("sort") || "az";
+  const rawPage = Number.parseInt(searchParams.get("page") || "1", 10);
+  const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
-  const [searchTerm, setSearchTerm] = useState(initialQuery);
-  const [selectedCategory, setSelectedCategory] = useState(initialCat);
-  const [sortBy, setSortBy] = useState("az");
+  const [searchTerm, setSearchTerm] = useState(urlQuery);
+  const lastWrittenQueryRef = useRef(urlQuery);
+  const shouldRestoreScrollRef = useRef(
+    navigationType === "POP" && currentPage > 1,
+  );
+
+  // Đồng bộ ô tìm kiếm khi URL thay đổi từ bên ngoài (Back/Forward hoặc menu)
+  useEffect(() => {
+    if (urlQuery !== lastWrittenQueryRef.current) {
+      lastWrittenQueryRef.current = urlQuery;
+      setSearchTerm(urlQuery);
+    }
+  }, [urlQuery]);
 
   // Dữ liệu từ API Backend
   const [apiSpecies, setApiSpecies] = useState(null);
@@ -72,7 +87,7 @@ export default function Search() {
         search: searchTerm,
         category: selectedCategory,
         sortBy: sortBy,
-        limit: 100,
+        limit: 500,
       })
         .then((res) => {
           if (!isMounted) return;
@@ -286,14 +301,89 @@ export default function Search() {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (newPage > 1) next.set("page", String(newPage));
+        else next.delete("page");
+        return next;
+      },
+      { replace: false },
+    );
+  };
+
+  const handleCategoryChange = (cat) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("cat");
+        if (cat) next.set("category", cat);
+        else next.delete("category");
+        next.delete("page");
+        return next;
+      },
+      { replace: false },
+    );
+  };
+
+  const handleSortChange = (sort) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (sort && sort !== "az") next.set("sort", sort);
+        else next.delete("sort");
+        next.delete("page");
+        return next;
+      },
+      { replace: false },
+    );
+  };
+
+  useEffect(() => {
+    if (shouldRestoreScrollRef.current && !apiLoading && apiSpecies !== null) {
+      shouldRestoreScrollRef.current = false;
+      const timer = setTimeout(() => {
+        document
+          .getElementById("search-results")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [apiLoading, apiSpecies]);
+
   const handleSearchSubmit = (e, overrideTerm) => {
     if (e && e.preventDefault) e.preventDefault();
-    const term = overrideTerm || searchTerm;
+    const term = overrideTerm ?? searchTerm;
+    lastWrittenQueryRef.current = term;
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("search");
+        if (term.trim()) next.set("q", term);
+        else next.delete("q");
+        next.delete("page");
+        return next;
+      },
+      { replace: false },
+    );
     executeSemanticSearch(term);
   };
 
   const handleSearchTermChange = (val) => {
     setSearchTerm(val);
+    lastWrittenQueryRef.current = val;
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("search");
+        if (val.trim()) next.set("q", val);
+        else next.delete("q");
+        next.delete("page");
+        return next;
+      },
+      { replace: true },
+    );
 
     if (val.length < searchTerm.length && val.length < 2) {
       setSemanticResults(null);
@@ -305,6 +395,17 @@ export default function Search() {
     setSemanticResults(null);
     setSemanticQuery("");
     setSearchTerm("");
+    lastWrittenQueryRef.current = "";
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("q");
+        next.delete("search");
+        next.delete("page");
+        return next;
+      },
+      { replace: false },
+    );
   };
 
   return (
@@ -320,9 +421,9 @@ export default function Search() {
 
         <SearchFilterBar
           selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
+          setSelectedCategory={handleCategoryChange}
           sortBy={sortBy}
-          setSortBy={setSortBy}
+          setSortBy={handleSortChange}
         />
 
         <FeaturedSpeciesSlider />
@@ -334,6 +435,8 @@ export default function Search() {
           semanticQuery={semanticQuery}
           onClearSemantic={handleClearSemantic}
           loading={semanticLoading || (apiLoading && apiSpecies === null)}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
         />
 
         <OceanFunFacts />

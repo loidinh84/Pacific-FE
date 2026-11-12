@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Volume2,
@@ -65,8 +65,10 @@ const RED_LIST_BADGES = {
 
 export function SpeciesDetailHero({ species }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { language, t } = useLanguage();
   const isEn = language === "en";
+  const searchBackUrl = location.state?.fromSearch || "/search";
 
   const [isFavorited, setIsFavorited] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
@@ -621,7 +623,7 @@ export function SpeciesDetailHero({ species }) {
           </Link>
           <span className="text-slate-600">/</span>
           <Link
-            to="/search"
+            to={searchBackUrl}
             className="hover:text-cyan-300 transition-colors shrink-0"
           >
             <span>{t("speciesDetail.catalog") || "Khám phá sinh vật"}</span>
@@ -633,7 +635,13 @@ export function SpeciesDetailHero({ species }) {
         </nav>
 
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            if (window.history.length > 1) {
+              navigate(-1);
+            } else {
+              navigate(searchBackUrl);
+            }
+          }}
           className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/10 border border-white/10 transition-all cursor-pointer"
         >
           <ArrowLeft size={13} />
@@ -865,122 +873,138 @@ export function SpeciesDetailHero({ species }) {
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
         onPointerCancel={handlePointerCancel}
-        className="relative py-4 my-2 flex flex-col items-center justify-center min-h-[360px] md:min-h-[460px] overflow-hidden bg-transparent select-none cursor-grab active:cursor-grabbing touch-pan-y"
+        className="py-4 my-2 flex flex-col items-center justify-center bg-transparent select-none cursor-grab active:cursor-grabbing touch-pan-y"
       >
-        {/* Nút chuyển ảnh thủ công */}
-        {images.length > 1 && (
-          <>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                prevImage();
-              }}
-              className="absolute left-2 sm:left-4 md:left-6 z-30 p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white border border-white/20 hover:border-cyan-400/80 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/20 hover:scale-110 active:scale-95"
-              aria-label="Previous image"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                nextImage();
-              }}
-              className="absolute right-2 sm:right-4 md:right-6 z-30 p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white border border-white/20 hover:border-cyan-400/80 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/20 hover:scale-110 active:scale-95"
-              aria-label="Next image"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </>
-        )}
-
-        {/* 3D Image Stack - Di chuyển theo thao tác kéo chuột */}
-        <div
-          style={{
-            transform:
-              dragOffset !== 0
-                ? `translateX(${dragOffset * 0.45}px)`
-                : undefined,
-            transition: isDragging
-              ? "none"
-              : "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)",
-          }}
-          className="flex items-center justify-center w-full max-w-5xl relative px-4"
-        >
-          {images.map((imgSrc, idx) => {
-            const total = images.length;
-            const diff = (idx - activeImageIdx + total) % total;
-            const isCenter = diff === 0;
-            const isPrev = diff === total - 1;
-            const isNext = diff === 1;
-
-            if (!isCenter && !isPrev && !isNext && total > 3) {
-              return null;
-            }
-
-            let containerStyle = "hidden";
-            let centerTransform = undefined;
-
-            if (isCenter) {
-              containerStyle =
-                "z-20 w-[86%] md:w-[70%] aspect-[16/10] md:aspect-[16/9] max-h-[420px] scale-100 opacity-100 border-2 border-cyan-400/50 shadow-[0_12px_36px_rgba(0,0,0,0.45)]";
-              if (dragOffset !== 0) {
-                centerTransform = {
-                  transform: `rotate(${dragOffset * 0.02}deg)`,
-                };
-              }
-            } else if (isPrev) {
-              containerStyle =
-                "z-10 w-[64%] md:w-[50%] aspect-[16/10] md:aspect-[16/9] max-h-[340px] -translate-x-[24%] md:-translate-x-[34%] scale-90 opacity-60 hover:opacity-85 -rotate-2 border border-white/10";
-            } else if (isNext) {
-              containerStyle =
-                "z-10 w-[64%] md:w-[50%] aspect-[16/10] md:aspect-[16/9] max-h-[340px] translate-x-[24%] md:translate-x-[34%] scale-90 opacity-60 hover:opacity-85 rotate-2 border border-white/10";
-            }
-
-            return (
-              <div
-                key={idx}
-                style={centerTransform}
+        {/* Khung sân khấu ảnh 3D - giữ đúng chiều cao ảnh chính để nút 2 bên và pagination luôn đúng vị trí */}
+        <div className="relative w-full max-w-5xl flex items-center justify-center overflow-hidden py-4 px-4">
+          {/* Nút chuyển ảnh thủ công hai bên */}
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onPointerDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
-                  if (hasMovedRef.current) {
-                    e.stopPropagation();
-                    return;
-                  }
-                  if (isCenter) {
-                    setIsLightboxOpen(true);
-                  } else {
-                    setActiveImageIdx(idx);
-                  }
+                  e.stopPropagation();
+                  prevImage();
                 }}
-                className={`absolute rounded-2xl overflow-hidden transition-all duration-500 bg-slate-900 group/img ${containerStyle}`}
+                className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/75 hover:bg-slate-800/95 text-white/90 hover:text-white border border-white/25 hover:border-cyan-400/80 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/30 hover:scale-110 active:scale-95"
+                aria-label="Previous image"
               >
-                <img
-                  src={imgSrc}
-                  alt={`${speciesName} - ảnh ${idx + 1}`}
-                  className={`w-full h-full object-cover select-none pointer-events-none transition-transform duration-700 ${
-                    isCenter ? "group-hover/img:scale-105" : ""
-                  }`}
-                  draggable={false}
-                  onError={(e) => {
-                    if (
-                      species?.image &&
-                      e.currentTarget.src !== species.image
-                    ) {
-                      e.currentTarget.src = species.image;
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                type="button"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextImage();
+                }}
+                className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/75 hover:bg-slate-800/95 text-white/90 hover:text-white border border-white/25 hover:border-cyan-400/80 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/30 hover:scale-110 active:scale-95"
+                aria-label="Next image"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </>
+          )}
+
+          {/* 3D Image Stack - Di chuyển theo thao tác kéo chuột */}
+          <div
+            style={{
+              transform:
+                dragOffset !== 0
+                  ? `translateX(${dragOffset * 0.45}px)`
+                  : undefined,
+              transition: isDragging
+                ? "none"
+                : "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)",
+            }}
+            className="flex items-center justify-center w-full relative"
+          >
+            {/* Spacer vô hình giữ chiều cao container khớp chính xác với ảnh trung tâm */}
+            <div
+              aria-hidden="true"
+              className="w-[86%] md:w-[70%] aspect-[16/10] md:aspect-[16/9] max-h-[420px] invisible pointer-events-none"
+            />
+            {images.map((imgSrc, idx) => {
+              const total = images.length;
+              const diff = (idx - activeImageIdx + total) % total;
+              const isCenter = diff === 0;
+              const isPrev = diff === total - 1;
+              const isNext = diff === 1;
+
+              if (!isCenter && !isPrev && !isNext && total > 3) {
+                return null;
+              }
+
+              let containerStyle = "hidden";
+              let centerTransform = undefined;
+
+              if (isCenter) {
+                containerStyle =
+                  "z-20 w-[86%] md:w-[70%] aspect-[16/10] md:aspect-[16/9] max-h-[420px] scale-100 opacity-100 border-2 border-cyan-400/50 shadow-[0_12px_36px_rgba(0,0,0,0.45)]";
+                if (dragOffset !== 0) {
+                  centerTransform = {
+                    transform: `rotate(${dragOffset * 0.02}deg)`,
+                  };
+                }
+              } else if (isPrev) {
+                containerStyle =
+                  "z-10 w-[64%] md:w-[50%] aspect-[16/10] md:aspect-[16/9] max-h-[340px] -translate-x-[24%] md:-translate-x-[34%] scale-90 opacity-60 hover:opacity-85 -rotate-2 border border-white/10";
+              } else if (isNext) {
+                containerStyle =
+                  "z-10 w-[64%] md:w-[50%] aspect-[16/10] md:aspect-[16/9] max-h-[340px] translate-x-[24%] md:translate-x-[34%] scale-90 opacity-60 hover:opacity-85 rotate-2 border border-white/10";
+              }
+
+              return (
+                <div
+                  key={idx}
+                  style={centerTransform}
+                  onClick={(e) => {
+                    if (hasMovedRef.current) {
+                      e.stopPropagation();
+                      return;
+                    }
+                    if (isCenter) {
+                      setIsLightboxOpen(true);
+                    } else {
+                      setActiveImageIdx(idx);
                     }
                   }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
-              </div>
-            );
-          })}
+                  className={`absolute rounded-2xl overflow-hidden transition-all duration-500 bg-slate-900 group/img ${containerStyle}`}
+                >
+                  <img
+                    src={imgSrc}
+                    alt={`${speciesName} - ảnh ${idx + 1}`}
+                    className={`w-full h-full object-cover select-none pointer-events-none transition-transform duration-700 ${
+                      isCenter ? "group-hover/img:scale-105" : ""
+                    }`}
+                    draggable={false}
+                    onError={(e) => {
+                      if (
+                        species?.image &&
+                        e.currentTarget.src !== species.image
+                      ) {
+                        e.currentTarget.src = species.image;
+                      }
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Dots pagination */}
+        {/* Dots pagination nằm gọn bên dưới khung ảnh */}
         {images.length > 1 && (
-          <div className="flex items-center gap-2 z-20 bg-slate-950/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 mt-6">
+          <div
+            onPointerDown={(e) => e.stopPropagation()}
+            className="flex items-center gap-2 z-20 bg-slate-950/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 mt-3"
+          >
             {images.map((_, i) => (
               <button
                 key={i}
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   setActiveImageIdx(i);
@@ -1057,6 +1081,8 @@ export function SpeciesDetailHero({ species }) {
               {/* Nút Prev trong Lightbox */}
               {images.length > 1 && (
                 <button
+                  type="button"
+                  onPointerDown={(e) => e.stopPropagation()}
                   onClick={(e) => {
                     e.stopPropagation();
                     prevImage();
@@ -1093,6 +1119,8 @@ export function SpeciesDetailHero({ species }) {
               {/* Nút Next trong Lightbox */}
               {images.length > 1 && (
                 <button
+                  type="button"
+                  onPointerDown={(e) => e.stopPropagation()}
                   onClick={(e) => {
                     e.stopPropagation();
                     nextImage();

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { SpeciesDetailHero } from "./SpeciesDetailHero";
@@ -27,7 +27,9 @@ const MOCK_SLUG_MAP = {
 export default function SpeciesDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { language } = useLanguage();
+  const searchBackUrl = location.state?.fromSearch || "/search";
 
   const resolvedId = MOCK_SLUG_MAP[id] || id;
 
@@ -39,9 +41,12 @@ export default function SpeciesDetail() {
   // Chuyển hướng id sang slug chuẩn
   useEffect(() => {
     if (MOCK_SLUG_MAP[id] && MOCK_SLUG_MAP[id] !== id) {
-      navigate(`/species/${MOCK_SLUG_MAP[id]}`, { replace: true });
+      navigate(`/species/${MOCK_SLUG_MAP[id]}`, {
+        replace: true,
+        state: location.state,
+      });
     }
-  }, [id, navigate]);
+  }, [id, navigate, location.state]);
 
   const [species, setSpecies] = useState(() => {
     return (
@@ -129,7 +134,7 @@ export default function SpeciesDetail() {
         <div className="text-center space-y-4">
           <p className="text-slate-300 text-lg">Không tìm thấy sinh vật</p>
           <button
-            onClick={() => navigate("/search")}
+            onClick={() => navigate(searchBackUrl)}
             className="px-5 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-semibold cursor-pointer transition-all"
           >
             Quay lại tìm kiếm
