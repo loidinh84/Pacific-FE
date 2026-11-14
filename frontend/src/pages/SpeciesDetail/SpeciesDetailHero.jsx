@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -21,6 +21,8 @@ import {
   Layers,
   Globe,
   X,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
 import { Favorite, Favorited } from "../../assets/Icons";
 import { playSpeciesSound, stopSpeciesSound } from "../../utils/oceanAudio";
@@ -72,9 +74,39 @@ export function SpeciesDetailHero({ species }) {
 
   const [isFavorited, setIsFavorited] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [imageSelection, setImageSelection] = useState({
+    speciesId: species?.id ?? null,
+    idx: 0,
+  });
   const [isCopied, setIsCopied] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxZoom, setLightboxZoom] = useState(1);
+
+  const openLightbox = useCallback(() => {
+    setLightboxZoom(1);
+    setIsLightboxOpen(true);
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setIsLightboxOpen(false);
+    setLightboxZoom(1);
+  }, []);
+
+  const currentSpeciesId = species?.id ?? null;
+  const activeImageIdx =
+    imageSelection.speciesId === currentSpeciesId ? imageSelection.idx : 0;
+  const setActiveImageIdx = useCallback(
+    (updater) => {
+      setImageSelection((prev) => {
+        const currentIdx =
+          prev.speciesId === currentSpeciesId ? prev.idx : 0;
+        const nextIdx =
+          typeof updater === "function" ? updater(currentIdx) : updater;
+        return { speciesId: currentSpeciesId, idx: nextIdx };
+      });
+    },
+    [currentSpeciesId],
+  );
 
   // Kiểm tra trạng thái yêu thích từ backend
   useEffect(() => {
@@ -114,122 +146,153 @@ export function SpeciesDetailHero({ species }) {
     }
   };
 
-  // Danh sách hình ảnh thông minh: đảm bảo luôn có đủ ảnh để duyệt theo coverflow 3D và kéo qua lại
+  // Danh sách hình ảnh thực tế của loài (khử trùng lặp, tuyệt đối không chèn ảnh phong cảnh giả lập)
   const images = useMemo(() => {
-    let list = [];
-    if (
-      species?.gallery &&
-      Array.isArray(species.gallery) &&
-      species.gallery.length > 0
-    ) {
-      list = [...species.gallery];
-    } else if (species?.image) {
-      list = [species.image];
+    const raw = [];
+    if (species?.gallery && Array.isArray(species.gallery)) {
+      raw.push(...species.gallery);
     }
-
-    // Nếu chỉ có 1 hoặc 2 ảnh, nhân bản chính ảnh sinh vật đó để luôn đủ 3 ảnh cho coverflow 3D
-    // Tuyệt đối không chèn ảnh phong cảnh biển, bờ cát hay sa mạc
-    if (list.length === 1) {
-      list.push(list[0], list[0]);
-    } else if (list.length === 2) {
-      list.push(list[0]);
+    if (species?.image) {
+      raw.push(species.image);
     }
-
-    return list;
+    const seen = new Set();
+    return raw.filter((url) => {
+      if (!url || typeof url !== "string" || seen.has(url)) return false;
+      seen.add(url);
+      return true;
+    });
   }, [species]);
+
+  const nextImage = useCallback(() => {
+    if (images.length === 0) return;
+    setLightboxZoom(1);
+    setActiveImageIdx((prev) => (prev + 1) % images.length);
+  }, [images.length, setActiveImageIdx]);
+
+  const prevImage = useCallback(() => {
+    if (images.length === 0) return;
+    setLightboxZoom(1);
+    setActiveImageIdx((prev) => (prev - 1 + images.length) % images.length);
+  }, [images.length, setActiveImageIdx]);
 
   // Quản lý kéo thả chuột (Mouse Drag & Touch Swipe) trong Bộ sưu tập ảnh
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const dragStartXRef = useRef(null);
+  const dragOffsetRef = useRef(0);
   const hasMovedRef = useRef(false);
 
   const handlePointerDown = (e) => {
+    if (e.target.closest("button")) return;
     if (e.button !== undefined && e.button !== 0) return;
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
+    if (images.length <= 1) return;
     dragStartXRef.current = e.clientX;
+    dragOffsetRef.current = 0;
     hasMovedRef.current = false;
     setIsDragging(true);
   };
 
-  const handlePointerMove = (e) => {
-    if (dragStartXRef.current === null) return;
-    const delta = e.clientX - dragStartXRef.current;
-    if (Math.abs(delta) > 6) {
-      hasMovedRef.current = true;
-    }
-    setDragOffset(Math.max(-180, Math.min(180, delta)));
-  };
+  useEffect(() => {
+    if (!isDragging) return;
 
-  const handlePointerUp = () => {
-    if (dragStartXRef.current !== null) {
-      if (dragOffset < -40) {
-        nextImage();
-      } else if (dragOffset > 40) {
-        prevImage();
+    const handleWindowMove = (e) => {
+      if (dragStartXRef.current === null) return;
+      const delta = e.clientX - dragStartXRef.current;
+      if (Math.abs(delta) > 6) {
+        hasMovedRef.current = true;
       }
-    }
-    dragStartXRef.current = null;
-    setDragOffset(0);
-    setTimeout(() => {
-      setIsDragging(false);
-      hasMovedRef.current = false;
-    }, 60);
-  };
+      const clamped = Math.max(-180, Math.min(180, delta));
+      dragOffsetRef.current = clamped;
+      setDragOffset(clamped);
+    };
 
-  const handlePointerCancel = () => {
-    dragStartXRef.current = null;
-    setDragOffset(0);
-    setIsDragging(false);
-    hasMovedRef.current = false;
-  };
+    const handleWindowUp = () => {
+      const finalOffset = dragOffsetRef.current;
+      if (dragStartXRef.current !== null) {
+        if (finalOffset < -40) {
+          nextImage();
+        } else if (finalOffset > 40) {
+          prevImage();
+        }
+      }
+      dragStartXRef.current = null;
+      dragOffsetRef.current = 0;
+      setDragOffset(0);
+      setIsDragging(false);
+      setTimeout(() => {
+        hasMovedRef.current = false;
+      }, 60);
+    };
+
+    window.addEventListener("pointermove", handleWindowMove);
+    window.addEventListener("pointerup", handleWindowUp);
+    window.addEventListener("pointercancel", handleWindowUp);
+
+    return () => {
+      window.removeEventListener("pointermove", handleWindowMove);
+      window.removeEventListener("pointerup", handleWindowUp);
+      window.removeEventListener("pointercancel", handleWindowUp);
+    };
+  }, [isDragging, nextImage, prevImage]);
 
   // Quản lý kéo thả trong Modal Lightbox
   const [lightboxDragOffset, setLightboxDragOffset] = useState(0);
   const [isLightboxDragging, setIsLightboxDragging] = useState(false);
   const lightboxStartXRef = useRef(null);
+  const lightboxOffsetRef = useRef(0);
   const lightboxMovedRef = useRef(false);
 
   const handleLightboxPointerDown = (e) => {
+    if (e.target.closest("button")) return;
     if (e.button !== undefined && e.button !== 0) return;
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
+    if (images.length <= 1 || lightboxZoom > 1) return;
     lightboxStartXRef.current = e.clientX;
+    lightboxOffsetRef.current = 0;
     lightboxMovedRef.current = false;
     setIsLightboxDragging(true);
   };
 
-  const handleLightboxPointerMove = (e) => {
-    if (lightboxStartXRef.current === null) return;
-    const delta = e.clientX - lightboxStartXRef.current;
-    if (Math.abs(delta) > 6) {
-      lightboxMovedRef.current = true;
-    }
-    setLightboxDragOffset(delta);
-  };
+  useEffect(() => {
+    if (!isLightboxDragging) return;
 
-  const handleLightboxPointerUp = () => {
-    if (lightboxStartXRef.current !== null) {
-      if (lightboxDragOffset < -50) {
-        nextImage();
-      } else if (lightboxDragOffset > 50) {
-        prevImage();
+    const handleLightboxMove = (e) => {
+      if (lightboxStartXRef.current === null) return;
+      const delta = e.clientX - lightboxStartXRef.current;
+      if (Math.abs(delta) > 6) {
+        lightboxMovedRef.current = true;
       }
-    }
-    lightboxStartXRef.current = null;
-    setLightboxDragOffset(0);
-    setTimeout(() => {
+      lightboxOffsetRef.current = delta;
+      setLightboxDragOffset(delta);
+    };
+
+    const handleLightboxUp = () => {
+      const finalOffset = lightboxOffsetRef.current;
+      if (lightboxStartXRef.current !== null) {
+        if (finalOffset < -50) {
+          nextImage();
+        } else if (finalOffset > 50) {
+          prevImage();
+        }
+      }
+      lightboxStartXRef.current = null;
+      lightboxOffsetRef.current = 0;
+      setLightboxDragOffset(0);
       setIsLightboxDragging(false);
-      lightboxMovedRef.current = false;
-    }, 60);
-  };
+      setTimeout(() => {
+        lightboxMovedRef.current = false;
+      }, 60);
+    };
+
+    window.addEventListener("pointermove", handleLightboxMove);
+    window.addEventListener("pointerup", handleLightboxUp);
+    window.addEventListener("pointercancel", handleLightboxUp);
+
+    return () => {
+      window.removeEventListener("pointermove", handleLightboxMove);
+      window.removeEventListener("pointerup", handleLightboxUp);
+      window.removeEventListener("pointercancel", handleLightboxUp);
+    };
+  }, [isLightboxDragging, nextImage, prevImage]);
 
   // Lắng nghe phím tắt điều hướng lightbox
   useEffect(() => {
@@ -237,11 +300,11 @@ export function SpeciesDetailHero({ species }) {
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        setIsLightboxOpen(false);
+        closeLightbox();
       } else if (e.key === "ArrowLeft") {
-        setActiveImageIdx((prev) => (prev - 1 + images.length) % images.length);
+        prevImage();
       } else if (e.key === "ArrowRight") {
-        setActiveImageIdx((prev) => (prev + 1) % images.length);
+        nextImage();
       }
     };
 
@@ -253,7 +316,7 @@ export function SpeciesDetailHero({ species }) {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = originalOverflow;
     };
-  }, [isLightboxOpen, images.length]);
+  }, [isLightboxOpen, closeLightbox, nextImage, prevImage]);
 
   const speciesName = isEn
     ? species.nameEn || species.commonName || "Marine Creature"
@@ -491,7 +554,6 @@ export function SpeciesDetailHero({ species }) {
       };
     }
 
-    const genusGuess = sciName ? sciName.split(" ")[0] : "Chưa xác định";
     let phylumName = isEn ? "Chordata" : "Dây sống";
     let className = isEn ? "Actinopterygii" : "Cá vây tia";
 
@@ -514,14 +576,19 @@ export function SpeciesDetailHero({ species }) {
         species.categoryVi || (isEn ? "Marine Life" : "Sinh vật biển");
     }
 
+    const updatingLabel = isEn ? "Updating" : "Đang cập nhật";
+    const isEcosystemLabel = /ecosystem|habitat|community/i.test(sciName);
+    const genusGuess =
+      sciName && !isEcosystemLabel ? sciName.split(" ")[0] : updatingLabel;
+
     return {
       kingdom: isEn ? "Animalia" : "Động vật",
       phylum: phylumName,
       class: className,
-      order: isEn ? "Marine Fauna" : "Sinh vật biển",
-      family: genusGuess ? `${genusGuess}idae` : "Chưa xác định",
+      order: updatingLabel,
+      family: updatingLabel,
       genus: genusGuess,
-      species: sciName || (isEn ? "Marine Specimen" : "Mẫu vật biển"),
+      species: sciName || updatingLabel,
     };
   }, [species, isEn]);
 
@@ -591,14 +658,6 @@ export function SpeciesDetailHero({ species }) {
       stopSpeciesSound();
     };
   }, []);
-
-  const nextImage = () => {
-    setActiveImageIdx((prev) => (prev + 1) % images.length);
-  };
-
-  const prevImage = () => {
-    setActiveImageIdx((prev) => (prev - 1 + images.length) % images.length);
-  };
 
   const hasSound = species.hasAudio !== false;
   const slugLower = String(species?.slug || species?.id || "").toLowerCase();
@@ -806,7 +865,7 @@ export function SpeciesDetailHero({ species }) {
       {/* Thông số nhanh */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6">
         {/* Kích thước */}
-        <div className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/50 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-4 flex items-center gap-3.5 shadow-sm">
           <div className="p-2.5 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 shrink-0">
             <Gauge size={18} />
           </div>
@@ -821,7 +880,7 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Độ sâu */}
-        <div className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/50 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-4 flex items-center gap-3.5 shadow-sm">
           <div className="p-2.5 rounded-xl bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 shrink-0">
             <Compass size={18} />
           </div>
@@ -830,13 +889,13 @@ export function SpeciesDetailHero({ species }) {
               {t("speciesDetail.depthZone") || "Vùng nước & Độ sâu"}
             </span>
             <span className="text-white font-bold text-sm sm:text-base mt-0.5 block truncate">
-              {species.depth || "0m - 100m"}
+              {species.depth || (isEn ? "Updating" : "Đang cập nhật")}
             </span>
           </div>
         </div>
 
         {/* Khối lượng */}
-        <div className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/50 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-4 flex items-center gap-3.5 shadow-sm">
           <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 shrink-0">
             <Scale size={18} />
           </div>
@@ -851,7 +910,7 @@ export function SpeciesDetailHero({ species }) {
         </div>
 
         {/* Tình trạng bảo tồn */}
-        <div className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/50 rounded-2xl p-4 flex items-center gap-3.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-4 flex items-center gap-3.5 shadow-sm">
           <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-400/30 text-rose-300 shrink-0">
             <ShieldAlert size={18} />
           </div>
@@ -859,7 +918,7 @@ export function SpeciesDetailHero({ species }) {
             <span className="text-slate-300 text-[11px] block font-medium truncate">
               {t("speciesDetail.conservationStatus") || "Tình trạng bảo tồn"}
             </span>
-            <span className="text-rose-300 font-bold text-sm sm:text-base mt-0.5 block truncate">
+            <span className="text-rose-300 font-bold text-sm sm:text-base mt-0.5 block leading-snug line-clamp-2">
               {status || redListMeta.label || "Ít quan tâm (LC)"}
             </span>
           </div>
@@ -867,157 +926,158 @@ export function SpeciesDetailHero({ species }) {
       </div>
 
       {/* Bộ sưu tập hình ảnh với tương tác Kéo chuột & Vuốt (Mouse Drag & Touch Swipe) */}
-      <div
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerLeave={handlePointerUp}
-        onPointerCancel={handlePointerCancel}
-        className="py-4 my-2 flex flex-col items-center justify-center bg-transparent select-none cursor-grab active:cursor-grabbing touch-pan-y"
-      >
-        {/* Khung sân khấu ảnh 3D - giữ đúng chiều cao ảnh chính để nút 2 bên và pagination luôn đúng vị trí */}
-        <div className="relative w-full max-w-5xl flex items-center justify-center overflow-hidden py-4 px-4">
-          {/* Nút chuyển ảnh thủ công hai bên */}
-          {images.length > 1 && (
-            <>
-              <button
-                type="button"
-                onPointerDown={(e) => e.stopPropagation()}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  prevImage();
-                }}
-                className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/75 hover:bg-slate-800/95 text-white/90 hover:text-white border border-white/25 hover:border-cyan-400/80 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/30 hover:scale-110 active:scale-95"
-                aria-label="Previous image"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                type="button"
-                onPointerDown={(e) => e.stopPropagation()}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  nextImage();
-                }}
-                className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/75 hover:bg-slate-800/95 text-white/90 hover:text-white border border-white/25 hover:border-cyan-400/80 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/30 hover:scale-110 active:scale-95"
-                aria-label="Next image"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </>
-          )}
-
-          {/* 3D Image Stack - Di chuyển theo thao tác kéo chuột */}
-          <div
-            style={{
-              transform:
-                dragOffset !== 0
-                  ? `translateX(${dragOffset * 0.45}px)`
-                  : undefined,
-              transition: isDragging
-                ? "none"
-                : "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)",
-            }}
-            className="flex items-center justify-center w-full relative"
-          >
-            {/* Spacer vô hình giữ chiều cao container khớp chính xác với ảnh trung tâm */}
+      <div className="relative py-4 my-2 flex flex-col items-center justify-center bg-transparent select-none">
+        {images.length === 0 ? (
+          <div className="w-full max-w-2xl h-[240px] sm:h-[320px] rounded-2xl bg-slate-900/70 border border-white/10 flex flex-col items-center justify-center text-slate-400 gap-2">
+            <Compass size={32} className="text-cyan-400/60" />
+            <span className="text-sm font-medium">
+              {isEn ? "Species imagery updating" : "Hình ảnh loài đang được cập nhật"}
+            </span>
+          </div>
+        ) : (
+          <>
+            {/* Khung sân khấu 3D Image Stack có chiều cao rõ ràng để nút & dấu chấm không đè lên ảnh */}
             <div
-              aria-hidden="true"
-              className="w-[86%] md:w-[70%] aspect-[16/10] md:aspect-[16/9] max-h-[420px] invisible pointer-events-none"
-            />
-            {images.map((imgSrc, idx) => {
-              const total = images.length;
-              const diff = (idx - activeImageIdx + total) % total;
-              const isCenter = diff === 0;
-              const isPrev = diff === total - 1;
-              const isNext = diff === 1;
-
-              if (!isCenter && !isPrev && !isNext && total > 3) {
-                return null;
-              }
-
-              let containerStyle = "hidden";
-              let centerTransform = undefined;
-
-              if (isCenter) {
-                containerStyle =
-                  "z-20 w-[86%] md:w-[70%] aspect-[16/10] md:aspect-[16/9] max-h-[420px] scale-100 opacity-100 border-2 border-cyan-400/50 shadow-[0_12px_36px_rgba(0,0,0,0.45)]";
-                if (dragOffset !== 0) {
-                  centerTransform = {
-                    transform: `rotate(${dragOffset * 0.02}deg)`,
-                  };
-                }
-              } else if (isPrev) {
-                containerStyle =
-                  "z-10 w-[64%] md:w-[50%] aspect-[16/10] md:aspect-[16/9] max-h-[340px] -translate-x-[24%] md:-translate-x-[34%] scale-90 opacity-60 hover:opacity-85 -rotate-2 border border-white/10";
-              } else if (isNext) {
-                containerStyle =
-                  "z-10 w-[64%] md:w-[50%] aspect-[16/10] md:aspect-[16/9] max-h-[340px] translate-x-[24%] md:translate-x-[34%] scale-90 opacity-60 hover:opacity-85 rotate-2 border border-white/10";
-              }
-
-              return (
-                <div
-                  key={idx}
-                  style={centerTransform}
-                  onClick={(e) => {
-                    if (hasMovedRef.current) {
+              onPointerDown={handlePointerDown}
+              className="relative flex items-center justify-center w-full max-w-5xl h-[240px] sm:h-[340px] md:h-[420px] px-4 overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y"
+            >
+              {/* Nút chuyển ảnh thủ công */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
                       e.stopPropagation();
-                      return;
-                    }
-                    if (isCenter) {
-                      setIsLightboxOpen(true);
-                    } else {
-                      setActiveImageIdx(idx);
-                    }
-                  }}
-                  className={`absolute rounded-2xl overflow-hidden transition-all duration-500 bg-slate-900 group/img ${containerStyle}`}
-                >
-                  <img
-                    src={imgSrc}
-                    alt={`${speciesName} - ảnh ${idx + 1}`}
-                    className={`w-full h-full object-cover select-none pointer-events-none transition-transform duration-700 ${
-                      isCenter ? "group-hover/img:scale-105" : ""
-                    }`}
-                    draggable={false}
-                    onError={(e) => {
-                      if (
-                        species?.image &&
-                        e.currentTarget.src !== species.image
-                      ) {
-                        e.currentTarget.src = species.image;
-                      }
+                      prevImage();
                     }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                    className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/70 hover:bg-slate-800/90 text-white/90 hover:text-white border border-white/25 hover:border-cyan-400 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/30 hover:scale-110 active:scale-95"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      nextImage();
+                    }}
+                    className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/70 hover:bg-slate-800/90 text-white/90 hover:text-white border border-white/25 hover:border-cyan-400 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/30 hover:scale-110 active:scale-95"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </>
+              )}
 
-        {/* Dots pagination nằm gọn bên dưới khung ảnh */}
-        {images.length > 1 && (
-          <div
-            onPointerDown={(e) => e.stopPropagation()}
-            className="flex items-center gap-2 z-20 bg-slate-950/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 mt-3"
-          >
-            {images.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveImageIdx(i);
+              <div
+                style={{
+                  transform:
+                    dragOffset !== 0
+                      ? `translateX(${dragOffset * 0.45}px)`
+                      : undefined,
+                  transition: isDragging
+                    ? "none"
+                    : "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)",
                 }}
-                className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                  i === activeImageIdx
-                    ? "w-7 bg-cyan-400"
-                    : "w-2 bg-white/30 hover:bg-white/60"
-                }`}
-                aria-label={`Xem ảnh ${i + 1}`}
-              />
-            ))}
-          </div>
+                className="flex items-center justify-center w-full h-full relative"
+              >
+                {images.map((imgSrc, idx) => {
+                  const total = images.length;
+                  const diff = (idx - activeImageIdx + total) % total;
+                  const isCenter = diff === 0;
+                  const isPrev = total > 1 && diff === total - 1;
+                  const isNext = total > 1 && diff === 1;
+
+                  if (!isCenter && !isPrev && !isNext && total > 3) {
+                    return null;
+                  }
+
+                  let containerStyle = "hidden";
+                  let centerTransform = undefined;
+
+                  if (isCenter) {
+                    containerStyle =
+                      "z-20 w-[84%] sm:w-[76%] md:w-[68%] h-[220px] sm:h-[320px] md:h-[400px] scale-100 opacity-100 border-2 border-cyan-400/50 shadow-[0_12px_36px_rgba(0,0,0,0.45)] cursor-zoom-in";
+                    if (dragOffset !== 0) {
+                      centerTransform = {
+                        transform: `rotate(${dragOffset * 0.02}deg)`,
+                      };
+                    }
+                  } else if (isPrev) {
+                    containerStyle =
+                      "z-10 w-[62%] md:w-[48%] h-[180px] sm:h-[260px] md:h-[330px] -translate-x-[24%] md:-translate-x-[34%] scale-90 opacity-60 hover:opacity-85 -rotate-2 border border-white/10 cursor-pointer";
+                  } else if (isNext) {
+                    containerStyle =
+                      "z-10 w-[62%] md:w-[48%] h-[180px] sm:h-[260px] md:h-[330px] translate-x-[24%] md:translate-x-[34%] scale-90 opacity-60 hover:opacity-85 rotate-2 border border-white/10 cursor-pointer";
+                  }
+
+                  return (
+                    <div
+                      key={idx}
+                      style={centerTransform}
+                      onClick={(e) => {
+                        if (hasMovedRef.current) {
+                          e.stopPropagation();
+                          return;
+                        }
+                        if (isCenter) {
+                          openLightbox();
+                        } else {
+                          setActiveImageIdx(idx);
+                        }
+                      }}
+                      className={`absolute rounded-2xl overflow-hidden transition-all duration-500 bg-slate-900 group/img ${containerStyle}`}
+                    >
+                      <img
+                        src={imgSrc}
+                        alt={`${speciesName} - ảnh ${idx + 1}`}
+                        className={`w-full h-full object-cover select-none pointer-events-none transition-transform duration-700 ${
+                          isCenter ? "group-hover/img:scale-105" : ""
+                        }`}
+                        draggable={false}
+                        onError={(e) => {
+                          if (
+                            species?.image &&
+                            e.currentTarget.src !== species.image
+                          ) {
+                            e.currentTarget.src = species.image;
+                          } else {
+                            e.currentTarget.style.opacity = "0";
+                          }
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Dots pagination nằm gọn bên dưới khung ảnh */}
+            {images.length > 1 && (
+              <div className="flex items-center gap-2 z-20 bg-slate-900/35 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10 mt-4">
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveImageIdx(i);
+                    }}
+                    className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                      i === activeImageIdx
+                        ? "w-6 bg-cyan-400/75"
+                        : "w-1.5 bg-white/25 hover:bg-white/45"
+                    }`}
+                    aria-label={`Xem ảnh ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -1030,7 +1090,7 @@ export function SpeciesDetailHero({ species }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-50 flex flex-col justify-between bg-black/92 backdrop-blur-2xl p-4 sm:p-6 select-none"
-            onClick={() => setIsLightboxOpen(false)}
+            onClick={closeLightbox}
           >
             {/* Top Bar trong Lightbox */}
             <div
@@ -1053,7 +1113,25 @@ export function SpeciesDetailHero({ species }) {
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setIsLightboxOpen(false)}
+                  type="button"
+                  onClick={() => setLightboxZoom((z) => (z === 1 ? 2 : 1))}
+                  className="p-2 sm:p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/15 hover:border-cyan-400 shadow-md"
+                  title={
+                    lightboxZoom > 1
+                      ? isEn
+                        ? "Zoom out"
+                        : "Thu nhỏ"
+                      : isEn
+                        ? "Zoom in"
+                        : "Phóng to"
+                  }
+                  aria-label={lightboxZoom > 1 ? "Zoom out" : "Zoom in"}
+                >
+                  {lightboxZoom > 1 ? <ZoomOut size={18} /> : <ZoomIn size={18} />}
+                </button>
+                <button
+                  type="button"
+                  onClick={closeLightbox}
                   className="p-2 sm:p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/15 hover:border-cyan-400 shadow-md"
                   title="Đóng (Esc)"
                   aria-label="Close lightbox"
@@ -1066,16 +1144,15 @@ export function SpeciesDetailHero({ species }) {
             {/* Khung hiển thị ảnh to chính giữa có hỗ trợ kéo chuột / vuốt qua lại */}
             <div
               onPointerDown={handleLightboxPointerDown}
-              onPointerMove={handleLightboxPointerMove}
-              onPointerUp={handleLightboxPointerUp}
-              onPointerLeave={handleLightboxPointerUp}
-              className="relative flex-1 flex items-center justify-center w-full max-w-6xl mx-auto my-3 overflow-hidden cursor-grab active:cursor-grabbing select-none touch-pan-y"
+              className={`relative flex-1 flex items-center justify-center w-full max-w-6xl mx-auto my-3 select-none touch-pan-y ${
+                lightboxZoom > 1
+                  ? "overflow-auto cursor-zoom-out"
+                  : "overflow-hidden cursor-zoom-in"
+              }`}
               onClick={(e) => {
-                if (lightboxMovedRef.current) {
-                  e.stopPropagation();
-                  return;
-                }
                 e.stopPropagation();
+                if (lightboxMovedRef.current) return;
+                setLightboxZoom((z) => (z === 1 ? 2 : 1));
               }}
             >
               {/* Nút Prev trong Lightbox */}
@@ -1095,12 +1172,7 @@ export function SpeciesDetailHero({ species }) {
               )}
 
               {/* Ảnh chất lượng cao phóng to với animation mượt mà và kéo qua lại */}
-              <motion.img
-                key={activeImageIdx}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.25 }}
+              <div
                 style={{
                   transform:
                     lightboxDragOffset !== 0
@@ -1110,11 +1182,20 @@ export function SpeciesDetailHero({ species }) {
                     ? "none"
                     : "transform 0.25s ease-out",
                 }}
-                src={images[activeImageIdx]}
-                alt={`${speciesName} - ảnh phóng to ${activeImageIdx + 1}`}
-                className="max-h-[72vh] md:max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.85)] border border-white/10 select-none pointer-events-none"
-                draggable={false}
-              />
+                className="flex items-center justify-center"
+              >
+                <motion.img
+                  key={activeImageIdx}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: lightboxZoom }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.22 }}
+                  src={images[activeImageIdx]}
+                  alt={`${speciesName} - ảnh phóng to ${activeImageIdx + 1}`}
+                  className="max-h-[72vh] md:max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.85)] border border-white/10 select-none pointer-events-none"
+                  draggable={false}
+                />
+              </div>
 
               {/* Nút Next trong Lightbox */}
               {images.length > 1 && (
@@ -1142,7 +1223,11 @@ export function SpeciesDetailHero({ species }) {
                 {images.map((img, i) => (
                   <button
                     key={i}
-                    onClick={() => setActiveImageIdx(i)}
+                    type="button"
+                    onClick={() => {
+                      setLightboxZoom(1);
+                      setActiveImageIdx(i);
+                    }}
                     className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden transition-all cursor-pointer border-2 shrink-0 ${
                       i === activeImageIdx
                         ? "border-cyan-400 scale-105 shadow-md shadow-cyan-400/40"
@@ -1261,7 +1346,7 @@ export function SpeciesDetailHero({ species }) {
               {scientificDossier.map((dossier, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl p-5 space-y-2.5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                  className="bg-[#183c66] border border-white/15 rounded-2xl p-5 space-y-2.5 shadow-sm"
                 >
                   <div className="flex items-center gap-2">
                     {dossierIcons[idx % dossierIcons.length]}

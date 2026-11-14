@@ -234,6 +234,8 @@ const getInitialFormData = (editingSpecies) => {
           : "",
       model3dUrl: editingSpecies.model3dUrl || editingSpecies.model_3d_url || "",
       soundUrl: editingSpecies.soundUrl || editingSpecies.sound_url || "",
+      sourceApiId: editingSpecies.source_api_id || editingSpecies.sourceApiId || "",
+      geoZone: editingSpecies.east_sea_zone || editingSpecies.geoZone || "",
       gbifQuery: editingSpecies.scientificName || editingSpecies.scientific_name || "",
       description: editingSpecies.description || "",
       mediaItems: (editingSpecies.images || []).map((item) =>
@@ -247,7 +249,7 @@ const getInitialFormData = (editingSpecies) => {
     name: "",
     scientificName: "",
     oceanZone: "Sunlight",
-    conservationStatus: "VU",
+    conservationStatus: "NE",
     depthMin: "",
     depthMax: "",
     groupId: "",
@@ -261,6 +263,8 @@ const getInitialFormData = (editingSpecies) => {
     tempMaxC: "",
     model3dUrl: "",
     soundUrl: "",
+    sourceApiId: "",
+    geoZone: "",
     gbifQuery: "",
     description: "",
     mediaItems: [],
@@ -350,20 +354,23 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
           ...prev,
           name: prev.name || d.name || rawQuery,
           scientificName: d.scientificName || rawQuery,
-          description: d.description || prev.description || `Sinh vật biển loài ${d.scientificName}.`,
+          description: d.description || prev.description || "",
           mediaItems: d.mediaItems && d.mediaItems.length > 0 ? d.mediaItems : prev.mediaItems,
-          groupId: d.groupId || prev.groupId || "1",
+          groupId: d.groupId || prev.groupId || "",
           oceanZone: d.oceanZone || prev.oceanZone || "Sunlight",
-          diet: d.diet || prev.diet || "Kẻ săn mồi (Carnivore)",
-          depthMin: d.depthMin || prev.depthMin || "0",
-          depthMax: d.depthMax || prev.depthMax || "100",
-          sizeMinCm: d.sizeMinCm || prev.sizeMinCm || "50",
-          sizeMaxCm: d.sizeMaxCm || prev.sizeMaxCm || "200",
-          weightMinKg: d.weightMinKg || prev.weightMinKg || "5",
-          weightMaxKg: d.weightMaxKg || prev.weightMaxKg || "50",
-          lifespanYears: d.lifespanYears || prev.lifespanYears || "10",
-          tempMinC: d.tempMinC || prev.tempMinC || "10",
-          tempMaxC: d.tempMaxC || prev.tempMaxC || "25",
+          conservationStatus: d.conservationStatus || prev.conservationStatus || "NE",
+          diet: d.diet || prev.diet || "",
+          depthMin: d.depthMin !== undefined && d.depthMin !== "" ? String(d.depthMin) : prev.depthMin,
+          depthMax: d.depthMax !== undefined && d.depthMax !== "" ? String(d.depthMax) : prev.depthMax,
+          sizeMinCm: d.sizeMinCm !== undefined && d.sizeMinCm !== "" ? String(d.sizeMinCm) : prev.sizeMinCm,
+          sizeMaxCm: d.sizeMaxCm !== undefined && d.sizeMaxCm !== "" ? String(d.sizeMaxCm) : prev.sizeMaxCm,
+          weightMinKg: d.weightMinKg !== undefined && d.weightMinKg !== "" ? String(d.weightMinKg) : prev.weightMinKg,
+          weightMaxKg: d.weightMaxKg !== undefined && d.weightMaxKg !== "" ? String(d.weightMaxKg) : prev.weightMaxKg,
+          lifespanYears: d.lifespanYears !== undefined && d.lifespanYears !== "" ? String(d.lifespanYears) : prev.lifespanYears,
+          tempMinC: d.tempMinC !== undefined && d.tempMinC !== "" ? String(d.tempMinC) : prev.tempMinC,
+          tempMaxC: d.tempMaxC !== undefined && d.tempMaxC !== "" ? String(d.tempMaxC) : prev.tempMaxC,
+          sourceApiId: d.source_api_id || prev.sourceApiId || "",
+          geoZone: d.geoZone || prev.geoZone || "",
         }));
 
         setGbifFound(true);
@@ -374,9 +381,10 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
         } else {
           setGbifStatusType("success");
           const providerLabel = selectedApiProvider === "auto"
-            ? "AI Gateway"
+            ? "Multi-Source Scientific Gateway"
             : selectedApiProvider.toUpperCase();
-          setGbifMessage(`✓ Tra cứu thành công từ [${providerLabel}] - Thông tin sinh học tự động điền!`);
+          const idTag = d.source_api_id ? ` [${d.source_api_id}]` : "";
+          setGbifMessage(`Tra cứu xác thực thành công từ [${providerLabel}]${idTag}`);
         }
       } else {
         setGbifFound(true);

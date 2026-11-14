@@ -33,17 +33,31 @@ export function SpeciesFacts({ species, language = "vi" }) {
       }));
     }
 
-    // 4. Sinh sự thật khoa học thông minh theo nhóm loài
-    const nameLower = (
-      species.nameVi ||
-      species.commonName ||
-      ""
-    ).toLowerCase();
+    // 4. Sinh sự thật khoa học bám sát nhóm phân loại & thông số thực tế của từng loài
+    const displayName = species.nameVi || species.commonName || "Loài sinh vật này";
+    const nameLower = displayName.toLowerCase();
     const sciLower = (
       species.sciName ||
       species.scientificName ||
       ""
     ).toLowerCase();
+    const catLower = `${species.category || ""} ${species.categoryVi || ""} ${
+      species.taxonomy?.phylum || ""
+    } ${species.taxonomy?.class || ""} ${species.taxonomy?.order || ""} ${
+      species.taxonomy?.family || ""
+    }`.toLowerCase();
+
+    const taxFamily = species.taxonomy?.family || null;
+    const taxOrder = species.taxonomy?.order || null;
+    const depthLabel = species.depth || null;
+    const sizeLabel = species.size || null;
+    const tempRange =
+      species.temperatureMinC !== null &&
+      species.temperatureMinC !== undefined &&
+      species.temperatureMaxC !== null &&
+      species.temperatureMaxC !== undefined
+        ? `${species.temperatureMinC}°C – ${species.temperatureMaxC}°C`
+        : null;
 
     if (nameLower.includes("bạch tuộc") || sciLower.includes("octopus")) {
       return [
@@ -81,8 +95,9 @@ export function SpeciesFacts({ species, language = "vi" }) {
     if (
       nameLower.includes("mập") ||
       nameLower.includes("nhám") ||
-      sciLower.includes("rhincodon") ||
-      sciLower.includes("shark")
+      nameLower.includes("cá đuối") ||
+      catLower.includes("elasmobranchii") ||
+      catLower.includes("chondrichthyes")
     ) {
       return [
         {
@@ -91,31 +106,31 @@ export function SpeciesFacts({ species, language = "vi" }) {
             : "Giác quan cảm nhận điện trường",
           text: isEn
             ? "Tiny jelly-filled pores across its snout detect electrical fields as faint as one-billionth of a volt."
-            : "Mạng lưới lỗ cảm biến quanh mõm phát hiện dòng điện sinh học siêu nhỏ phát ra từ cơ bắp con mồi.",
+            : `${displayName} sở hữu mạng lưới lỗ cảm biến quanh mõm giúp phát hiện dòng điện sinh học siêu nhỏ từ con mồi.`,
         },
         {
           title: isEn
-            ? "Regenerating Teeth"
-            : "Hàng ngàn chiếc răng tự thay thế",
+            ? "Cartilaginous Skeleton"
+            : "Khung xương sụn nhẹ linh hoạt",
           text: isEn
-            ? "Can shed and regrow tens of thousands of teeth in continuous conveyor-belt rows throughout life."
-            : "Có thể thay thế hàng chục ngàn chiếc răng xếp thành nhiều hàng băng chuyền liên tục trong vòng đời.",
+            ? `Members of ${taxFamily || "cartilaginous fishes"} replace heavy calcified bone with flexible cartilage enriched by a buoyant oil-filled liver.`
+            : `Khung xương 100% bằng sụn đàn hồi của họ ${taxFamily || "cá sụn"} giúp tiết kiệm năng lượng khi bơi đường dài ở dải độ sâu ${depthLabel || "tự nhiên"}.`,
         },
         {
           title: isEn
             ? "Skin of Dermal Denticles"
-            : "Lớp da phủ vảy gai sắc bén",
+            : "Lớp da phủ vảy tấm giảm xoáy nước",
           text: isEn
             ? "Covered in microscopic tooth-like denticles that minimize water drag and deter parasites."
-            : "Lớp da bao phủ bởi vô số vảy gai siêu nhỏ giúp giảm ma sát nước và bơi lướt êm ái.",
+            : "Lớp da phủ vô số vảy gai siêu nhỏ giúp triệt tiêu xoáy nước ma sát và giảm tiếng ồn khi áp sát con mồi.",
         },
         {
           title: isEn
-            ? "Ancient Ocean Survivors"
-            : "Xuất hiện trước cả cây cối",
+            ? "Ancient Ocean Lineage"
+            : "Dòng tiến hóa hơn 400 triệu năm",
           text: isEn
-            ? "Patrolled Earth's oceans for over 400 million years, surviving four major mass extinctions."
-            : "Tổ tiên cá mập đã thống trị biển hơn 400 triệu năm, xuất hiện trước cây cối và qua 4 cuộc đại tuyệt chủng.",
+            ? "Cartilaginous fishes have patrolled Earth's oceans since before trees existed."
+            : "Tổ tiên nhóm cá sụn đã xuất hiện trước cả thực vật thân gỗ trên cạn và vượt qua nhiều cuộc đại tuyệt chủng.",
         },
       ];
     }
@@ -158,39 +173,156 @@ export function SpeciesFacts({ species, language = "vi" }) {
       ];
     }
 
-    // Mặc định sinh vật biển Biển Đông
+    if (
+      catLower.includes("echinodermata") ||
+      catLower.includes("asteroidea") ||
+      nameLower.includes("sao biển") ||
+      nameLower.includes("cầu gai") ||
+      nameLower.includes("nhum") ||
+      nameLower.includes("hải sâm")
+    ) {
+      return [
+        {
+          title: isEn ? "Hydraulic Tube Feet" : "Di chuyển bằng áp suất nước biển",
+          text: isEn
+            ? `${displayName} moves hundreds of tube feet by pumping seawater rather than relying on blood circulation.`
+            : `${displayName} vận hành hàng trăm chân ống giác bám bằng cách bơm nước biển qua hệ thống mạch thủy lực.`,
+        },
+        {
+          title: isEn ? "Remarkable Regeneration" : "Tái sinh cơ thể ấn tượng",
+          text: isEn
+            ? "Damaged arms or spines can regrow over months from the central nerve ring."
+            : "Các phần chi hoặc mô bị tổn thương có thể tái sinh hoàn chỉnh nhờ tế bào gốc quanh vòng thần kinh trung tâm.",
+        },
+        {
+          title: isEn ? "No Central Brain Needed" : "Phản xạ qua vòng thần kinh tỏa tròn",
+          text: isEn
+            ? "A decentralized nerve ring coordinates movement in all directions simultaneously."
+            : "Cơ thể đối xứng tỏa tròn giúp cảm nhận hóa chất và ánh sáng đồng đều từ mọi phía mà không cần não tập trung.",
+        },
+        {
+          title: isEn ? "Ecological Niche & Range" : "Hồ sơ phân bố sinh thái",
+          text: isEn
+            ? `Recorded size ${sizeLabel || "verified in field"}, inhabiting ${depthLabel || "coastal reefs"}${tempRange ? ` (${tempRange})` : ""}.`
+            : `${taxFamily ? `Thuộc họ ${taxFamily}, ` : ""}kích thước ghi nhận ${sizeLabel || "ngoài tự nhiên"} tại dải độ sâu ${depthLabel || "ven bờ"}${tempRange ? ` (nhiệt độ ${tempRange})` : ""}.`,
+        },
+      ];
+    }
+
+    if (
+      catLower.includes("malacostraca") ||
+      catLower.includes("arthropoda") ||
+      nameLower.includes("tôm") ||
+      nameLower.includes("cua") ||
+      nameLower.includes("ghẹ") ||
+      nameLower.includes("sam biển") ||
+      nameLower.includes("so biển") ||
+      nameLower.includes("bọ biển")
+    ) {
+      return [
+        {
+          title: isEn ? "Periodic Exoskeleton Molting" : "Lột xác để phát triển kích thước",
+          text: isEn
+            ? `${displayName} sheds its hardened chitin shell periodically to grow before calcifying a larger armor.`
+            : `${displayName} định kỳ tách bỏ lớp giáp kitin cứng bên ngoài và kết cứng bộ vỏ mới lớn hơn chỉ trong vài ngày.`,
+        },
+        {
+          title: isEn ? "Copper-Based Blue Hemolymph" : "Huyết tương xanh chứa gốc đồng",
+          text: isEn
+            ? "Instead of iron hemoglobin, crustaceans transport oxygen with copper-based hemocyanin."
+            : "Sử dụng protein hemocyanin chứa đồng thay cho sắt để vận chuyển oxy hiệu quả trong nước biển nhiều biến động.",
+        },
+        {
+          title: isEn ? "Stalked Compound Eyes" : "Mắt kép & râu dò hóa chất nhạy bén",
+          text: isEn
+            ? "Hundreds of optical units detect rapid motion while antennae taste dissolved nutrients in sediment."
+            : "Hệ thống râu cảm giác hóa học giúp lần theo dấu vết thức ăn trong lớp cát bùn ngay cả vào ban đêm.",
+        },
+        {
+          title: isEn ? "Field Measurements" : "Thông số sinh học ghi nhận",
+          text: isEn
+            ? `${taxFamily ? `Family ${taxFamily}: ` : ""}measured size ${sizeLabel || "documented"} across ${depthLabel || "marine habitats"}.`
+            : `${taxOrder ? `Bộ ${taxOrder}${taxFamily ? `, họ ${taxFamily}` : ""}: ` : ""}kích thước ${sizeLabel || "thực địa"}, phân bố tại tầng ${depthLabel || "biển tự nhiên"}.`,
+        },
+      ];
+    }
+
+    if (
+      catLower.includes("san-ho") ||
+      catLower.includes("cnidaria") ||
+      nameLower.includes("san hô") ||
+      nameLower.includes("sứa") ||
+      nameLower.includes("hải quỳ") ||
+      sciLower.includes("plankton") ||
+      nameLower.includes("phù du")
+    ) {
+      return [
+        {
+          title: isEn ? "Foundation of Ocean Life" : "Mắt xích nền tảng đại dương",
+          text: isEn
+            ? `${displayName} forms vital structure or primary biomass supporting coastal marine biodiversity.`
+            : `${displayName} góp phần kiến tạo nơi trú ẩn hoặc nguồn sinh khối sơ cấp nuôi sống hàng trăm loài cá rạn và sinh vật biển.`,
+        },
+        {
+          title: isEn ? "Microscopic Defense or Symbiosis" : "Cộng sinh & tế bào phòng vệ vi mô",
+          text: isEn
+            ? "Relies on specialized stinging cells, lipid buoyancy, or algal symbionts instead of swimming chase."
+            : "Thay vì săn đuổi tốc độ cao, nhóm sinh vật này thích nghi bằng cộng sinh quang hợp, lơ lửng theo dòng hoặc tế bào gai tự vệ.",
+        },
+        {
+          title: isEn ? "Environmental Bio-Indicator" : "Chỉ thị nhạy cảm môi trường biển",
+          text: isEn
+            ? `Sensitive to thermal anomalies and water quality shifts${tempRange ? ` beyond ${tempRange}` : ""}.`
+            : `Nhạy cảm với biến đổi nhiệt độ và pH đại dương${tempRange ? `, ngưỡng thích nghi ghi nhận khoảng ${tempRange}` : ""}.`,
+        },
+        {
+          title: isEn ? "Depth & Distribution Profile" : "Phạm vi tầng nước & địa lý",
+          text: isEn
+            ? `Documented across ${depthLabel || "sunlit marine layers"} (${species.eastSeaZone || "Indo-Pacific"}).`
+            : `Phân bố tập trung ở độ sâu ${depthLabel || "tầng nước mặt"} tại ${species.eastSeaZone || "vùng biển nhiệt đới Biển Đông"}.`,
+        },
+      ];
+    }
+
+    // Dữ liệu động dành cho cá xương, thú biển và các loài có thông số thực nghiệm từ DB
+    const isFish =
+      catLower.includes("ca-bien") ||
+      catLower.includes("actinopter") ||
+      nameLower.includes("cá ");
     return [
       {
         title: isEn
-          ? "Keystone Ecological Role"
-          : "Mắt xích cân bằng sinh thái",
+          ? isFish
+            ? "Lateral Line Motion Sensor"
+            : "Biological Adaptation Profile"
+          : isFish
+            ? "Đường bên cảm nhận dao động nước"
+            : `Hồ sơ phân loại học ${taxFamily || ""}`.trim(),
         text: isEn
-          ? "Regulates prey populations and maintains biological diversity across East Sea coral reefs."
-          : "Đóng vai trò điều hòa chuỗi thức ăn và duy trì độ đa dạng sinh học cho các rạn san hô Biển Đông.",
+          ? `${displayName} (${species.sciName || ""}) is documented under ${taxFamily || "marine taxonomy"} and adapts precisely to local currents.`
+          : `${displayName} (${species.sciName || ""})${taxFamily ? ` thuộc họ ${taxFamily}` : ""}, thích nghi với dòng chảy và điều kiện thủy văn đặc trưng vùng phân bố.`,
       },
       {
-        title: isEn
-          ? "Hydrodynamic Efficiency"
-          : "Cấu trúc thủy động lực học tối ưu",
+        title: isEn ? "Verified Size & Depth Range" : "Thông số kích thước & độ sâu thực tế",
         text: isEn
-          ? "Body contours have evolved over millions of years to glide efficiently against monsoon currents."
-          : "Hình dáng cơ thể được tiến hóa để lướt êm ái chống lại các dòng hải lưu gió mùa mạnh mẽ.",
+          ? `Adults measure ${sizeLabel || "varying sizes"} and inhabit depths of ${depthLabel || "coastal to pelagic zones"}.`
+          : `Kích thước trưởng thành ghi nhận ${sizeLabel || "đang cập nhật"}, sinh sống ở dải độ sâu ${depthLabel || "tự nhiên"}.`,
       },
       {
-        title: isEn
-          ? "Tropical Habitat Adaptation"
-          : "Thích nghi hoàn hảo với Biển Đông",
-        text: isEn
-          ? "Thrives under 33-34.5‰ salinity and seasonal tropical monsoonal temperature shifts."
-          : "Phát triển lý tưởng trong môi trường độ mặn 33–34.5‰ và dòng hải lưu nhiệt đới Việt Nam.",
+        title: isEn ? "Thermal & Habitat Envelope" : "Dải nhiệt độ & vùng phân bố",
+        text: tempRange
+          ? isEn
+            ? `Oceanographic occurrence records show preferred sea temperatures around ${tempRange} in ${species.eastSeaZone || "regional waters"}.`
+            : `Dữ liệu quan trắc hải dương học OBIS ghi nhận ngưỡng nhiệt độ thích hợp khoảng ${tempRange}${species.eastSeaZone ? ` tại ${species.eastSeaZone}` : ""}.`
+          : isEn
+            ? `Recorded habitat zone: ${species.eastSeaZone || species.localDistribution || "tropical East Sea waters"}.`
+            : `Khu vực ghi nhận phân bố: ${species.eastSeaZone || species.localDistribution || "vùng biển nhiệt đới và Biển Đông"}.`,
       },
       {
-        title: isEn
-          ? "Acute Sensory Perception"
-          : "Cảm biến dao động nước tinh nhạy",
+        title: isEn ? "Diet & Conservation Context" : "Tập tính dinh dưỡng & bảo tồn",
         text: isEn
-          ? "Equipped with specialized sensory organs detecting subtle pressure vibrations underwater."
-          : "Trang bị cơ quan xúc giác tinh tế giúp nhận biết dao động áp suất nước từ khoảng cách rất xa.",
+          ? `${species.diet ? `Diet profile: ${species.diet}. ` : ""}Conservation rating: ${species.statusEn || species.statusVi || "Evaluated"}.`
+          : `${species.diet ? `Nguồn thức ăn chính: ${species.diet}. ` : ""}Mức độ bảo tồn hiện tại: ${species.statusVi || "Đang theo dõi"}.`,
       },
     ];
   }, [species, isEn]);

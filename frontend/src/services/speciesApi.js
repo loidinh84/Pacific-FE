@@ -457,6 +457,26 @@ export const fetchSpeciesDetail = async (idOrSlug) => {
 };
 
 /**
+ * Lấy tối đa 4 loài sinh vật tương tự từ cơ sở dữ liệu (cùng nhóm hoặc cùng tầng nước)
+ * @param {string|number} idOrSlug
+ * @returns {Promise<Array>}
+ */
+export const fetchRelatedSpecies = async (idOrSlug) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/species/${encodeURIComponent(idOrSlug)}/related`
+    );
+    if (response.data && response.data.success && Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+    return [];
+  } catch (error) {
+    console.warn(`Không thể lấy sinh vật tương tự cho ${idOrSlug}:`, error.message);
+    return [];
+  }
+};
+
+/**
  * Lấy danh sách loài sinh vật biển công khai có bộ lọc và phân trang
  * @param {Object} params
  * @returns {Promise<{ success: boolean, data: Array, pagination: Object }>}

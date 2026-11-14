@@ -248,7 +248,7 @@ export function SpeciesComments({ speciesId }) {
                 return (
                   <div
                     key={c.id}
-                    className="p-4 rounded-xl bg-white/5 hover:bg-white/[0.07] border border-white/10 space-y-2 transition-all duration-200"
+                    className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2"
                   >
                     {/* Header bình luận: Avatar + Tên + Badge + Thời gian + Xóa */}
                     <div className="flex items-center justify-between">

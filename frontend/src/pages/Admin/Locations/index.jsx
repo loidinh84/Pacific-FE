@@ -1019,10 +1019,10 @@ const LocationDetailDrawer = ({
                     {detail.recentSpecies.map((sp) => (
                       <div
                         key={sp.id}
-                        className={`flex items-center gap-2.5 p-2 rounded-xl border transition-all ${
+                        className={`flex items-center gap-2.5 p-2 rounded-xl border ${
                           isDark
-                            ? "bg-white/5 border-white/10 hover:border-cyan-400/40"
-                            : "bg-slate-50 border-slate-200 hover:border-cyan-400/50"
+                            ? "bg-white/5 border-white/10"
+                            : "bg-slate-50 border-slate-200"
                         }`}
                       >
                         <div className="w-11 h-11 rounded-lg overflow-hidden shrink-0 bg-slate-800 border border-white/10">

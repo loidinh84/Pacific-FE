@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, Search } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { CATEGORIES_DATA, HABITATS_DATA } from "../../mocks/speciesMock";
+import { fetchSpeciesGroups } from "../../services/speciesApi";
 import * as Images from "../../assets/Images";
 
 export default function SearchSection() {
@@ -11,6 +12,37 @@ export default function SearchSection() {
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
   const [habitat, setHabitat] = useState("");
+  const [categories, setCategories] = useState(CATEGORIES_DATA);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchSpeciesGroups()
+      .then((res) => {
+        if (!isMounted) return;
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const apiCats = [
+            {
+              value: "",
+              labelVi: "Tất cả nhóm sinh vật",
+              labelEn: "All Species Groups",
+            },
+            ...res.data.map((g) => ({
+              value: g.slug || g.id,
+              labelVi: g.name,
+              labelEn: g.name,
+            })),
+          ];
+          setCategories(apiCats);
+        }
+      })
+      .catch(() => {
+        // Giữ fallback CATEGORIES_DATA
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -59,7 +91,7 @@ export default function SearchSection() {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
-                    {CATEGORIES_DATA.map((c) => (
+                    {categories.map((c) => (
                       <option key={c.value} value={c.value}>
                         {language === "en" ? c.labelEn : c.labelVi}
                       </option>

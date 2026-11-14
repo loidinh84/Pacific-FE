@@ -40,13 +40,13 @@ export const SPECIES_DATA = [
 ];
 
 export const CATEGORIES_DATA = [
-  { value: "", labelVi: "Nhóm sinh vật", labelEn: "Species Group" },
-  { value: "mammal", labelVi: "Động vật có vú", labelEn: "Mammals" },
-  { value: "bony-fish", labelVi: "Cá xương", labelEn: "Bony Fish" },
-  { value: "cartilage-fish", labelVi: "Cá sụn", labelEn: "Cartilaginous Fish" },
-  { value: "mollusk", labelVi: "Động vật thân mềm", labelEn: "Mollusks" },
-  { value: "shellfish", labelVi: "Sò ốc", labelEn: "Shellfish" },
-  { value: "turtle", labelVi: "Rùa biển", labelEn: "Sea Turtles" },
+  { value: "", labelVi: "Tất cả nhóm sinh vật", labelEn: "All Species Groups" },
+  { value: "ca-bien", labelVi: "Cá biển", labelEn: "Marine Fishes" },
+  { value: "dong-vat-co-vu-bien", labelVi: "Động vật có vú biển", labelEn: "Marine Mammals" },
+  { value: "bo-sat-bien", labelVi: "Bò sát biển", labelEn: "Marine Reptiles" },
+  { value: "than-mem-khong-xuong-song", labelVi: "Thân mềm & Không xương sống", labelEn: "Mollusks & Invertebrates" },
+  { value: "san-ho-thuc-vat-bien", labelVi: "San hô & Thực vật biển", labelEn: "Corals & Marine Plants" },
+  { value: "sinh-vat-bien-sau", labelVi: "Sinh vật biển sâu & Phát quang", labelEn: "Deep Sea Life" },
 ];
 
 export const HABITATS_DATA = [

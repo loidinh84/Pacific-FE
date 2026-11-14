@@ -37,6 +37,19 @@ export default function SpeciesView3D() {
     if (targetId) {
       fetchSpeciesDetail(targetId).then((apiData) => {
         if (!apiData) return;
+        const primaryImage =
+          apiData.media?.find((m) => m.isPrimary)?.url ||
+          apiData.media?.[0]?.url ||
+          null;
+        const redList =
+          apiData.vietnamRedListStatus || apiData.conservationStatus?.code || "LC";
+        const statusType =
+          redList === "CR" || redList === "EN"
+            ? "danger"
+            : redList === "VU" || redList === "NT"
+            ? "warning"
+            : "safe";
+
         setSpecies((prev) => ({
           ...prev,
           id: apiData.id || id,
@@ -46,6 +59,10 @@ export default function SpeciesView3D() {
           sciName: apiData.scientificName || prev?.sciName,
           descVi: apiData.description || prev?.descVi,
           descEn: apiData.description || prev?.descEn,
+          image: primaryImage || prev?.image,
+          statusType: statusType,
+          statusVi: apiData.vietnamRedListStatus || prev?.statusVi || "Ít quan tâm",
+          statusEn: redList,
         }));
       });
     }

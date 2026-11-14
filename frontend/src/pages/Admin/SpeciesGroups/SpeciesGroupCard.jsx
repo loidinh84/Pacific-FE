@@ -7,10 +7,10 @@ export default function SpeciesGroupCard({ group, onEdit, onDelete }) {
 
   return (
     <div
-      className={`group relative rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:shadow-lg flex flex-col justify-between ${
+      className={`relative rounded-2xl border p-5 sm:p-6 flex flex-col justify-between ${
         isDark
-          ? "bg-[#182649] border-white/10 hover:border-cyan-400/40 hover:bg-[#1c2c54]"
-          : "bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-md"
+          ? "bg-[#182649] border-white/10"
+          : "bg-white border-slate-200"
       }`}
     >
       <div className="flex items-start justify-between gap-4">
@@ -25,8 +25,8 @@ export default function SpeciesGroupCard({ group, onEdit, onDelete }) {
             />
             <h3
               className={`text-lg sm:text-xl font-bold font-heading truncate ${
-                isDark ? "text-white group-hover:text-cyan-300" : "text-slate-900 group-hover:text-cyan-700"
-              } transition-colors`}
+                isDark ? "text-white" : "text-slate-900"
+              }`}
             >
               {group.name}
             </h3>

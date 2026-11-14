@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
 import {
   Heart,
   Brain,
@@ -8,7 +7,7 @@ import {
   Shield,
   Box,
   Sparkles,
-  ArrowRight,
+  Compass,
   Info,
 } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -16,17 +15,25 @@ import { Interactive3DAnatomyViewer } from "../../components/species/Interactive
 
 // Hồ sơ sinh lý học & cấu trúc giải phẫu học thuật tự nhiên, tinh gọn, không lạm dụng chữ hoa và từ trong ngoặc
 function getSpeciesAnatomyProfile(species) {
-  const name = (species?.nameVi || species?.commonName || "").toLowerCase();
-  const cat = (species?.category || species?.categoryVi || "").toLowerCase();
+  const displayName = species?.nameVi || species?.commonName || "Sinh vật biển";
+  const name = displayName.toLowerCase();
+  const cat = `${species?.category || ""} ${species?.categoryVi || ""} ${
+    species?.taxonomy?.phylum || ""
+  } ${species?.taxonomy?.class || ""} ${species?.taxonomy?.order || ""} ${
+    species?.taxonomy?.family || ""
+  }`.toLowerCase();
   const sciName = (species?.sciName || species?.scientificName || "").toLowerCase();
 
-  // Phân loại sinh vật đơn bào & rãnh thẳm biển sâu
+  // 1. Sinh vật đơn bào đáy thẳm & chuyên biệt vùng tối sâu
   if (
     name.includes("trùng") ||
     sciName.includes("syringammina") ||
     sciName.includes("foram") ||
     name.includes("đơn bào") ||
+    cat.includes("foraminifera") ||
+    cat.includes("xenophyophorea") ||
     cat.includes("biển sâu") ||
+    cat.includes("sinh-vat-bien-sau") ||
     cat.includes("phát quang")
   ) {
     return {
@@ -44,33 +51,33 @@ function getSpeciesAnatomyProfile(species) {
           nameEn: "Syncytial Giant Single Cell",
           icon: Activity,
           color: "cyan",
-          headline: "Sinh vật đơn bào lớn nhất hành tinh với mạng lưới tế bào chất đa nhân phân nhánh (granellare)",
+          headline: `${displayName} sở hữu mạng lưới tế bào chất phân nhánh và phát quang/chống áp suất đặc thù tầng sâu`,
           details: [
             {
-              title: "Tế bào chất hợp bào đa nhân",
-              desc: "Toàn bộ cơ thể khổng lồ thực chất là một tế bào duy nhất chứa hàng triệu nhân tế bào, kết nối thành mạng lưới ống tế bào chất phân nhánh xuyên suốt cơ thể.",
+              title: "Thích nghi áp suất thủy tĩnh",
+              desc: "Màng tế bào chứa tỷ lệ axit béo không bão hòa cao giúp giữ độ linh động của lớp kép lipid dưới áp suất hàng trăm atmosphere.",
             },
             {
-              title: "Vỏ kết dính hạt khoáng (Test)",
-              desc: "Tiết ra chất hữu cơ kết dính các hạt cát, khoáng vật barit và vỏ vi sinh vật đáy biển thành khung giàn tổ ong cứng cáp chống chịu áp suất biển sâu nghìn mét.",
+              title: "Cấu trúc vỏ & mô nâng đỡ",
+              desc: "Tiết hợp chất hữu cơ kết dính khoáng vật đáy biển hoặc phát triển mô gelatin trong suốt để cân bằng lực ép từ cột nước sâu.",
             },
           ],
         },
         {
           id: "nutrition",
-          nameVi: "Cơ chế bắt mồi & chuỗi dinh dưỡng đáy thẳm",
-          nameEn: "Benthic Filter Feeding",
+          nameVi: "Cơ chế bắt mồi tầng sâu",
+          nameEn: "Abyssal Feeding Strategy",
           icon: Brain,
           color: "indigo",
-          headline: "Hấp thụ vật chất hữu cơ chìm lắng và vi khuẩn trong lớp bùn đáy đại dương",
+          headline: "Tối ưu hóa tiêu hao năng lượng để săn mồi và lọc tuyết biển trong bóng tối vĩnh cửu",
           details: [
             {
-              title: "Lọc tuyết biển (Marine Snow)",
-              desc: "Mở rộng các chân giả (pseudopodia) ra ngoài vỏ để bắt giữ các hạt vụn hữu cơ trôi dạt từ các tầng nước trên rơi xuống đáy biển.",
+              title: "Lọc vụn hữu cơ hoặc bẫy phát quang",
+              desc: "Tận dụng hạt cặn hữu cơ rơi từ tầng mặt (marine snow) hoặc ánh sáng sinh học luciferin để thu hút con mồi ít ỏi dưới đáy thẳm.",
             },
             {
-              title: "Môi trường sống đáy vực sâu",
-              desc: "Tạo nơi trú ẩn và giá thể bám cho nhiều loài giun nhiều tơ, giáp xác nhỏ và vi khuẩn đáy thẳm tại các rãnh sâu Biển Đông.",
+              title: "Trao đổi chất chậm tiết kiệm năng lượng",
+              desc: "Nhịp tim và tốc độ tiêu hóa duy trì ở mức cực thấp nhằm kéo dài thời gian tồn tại giữa những lần tìm thấy nguồn thức ăn.",
             },
           ],
         },
@@ -78,19 +85,289 @@ function getSpeciesAnatomyProfile(species) {
     };
   }
 
-  // Phân loại thân mềm
+  // 2. Sinh vật phù du, tảo & cỏ biển (Phù du / Thực vật thủy sinh)
   if (
-    cat.includes("mollusk") ||
-    cat.includes("thân mềm") ||
+    sciName.includes("plankton") ||
+    name.includes("phù du") ||
+    name.includes("cỏ biển") ||
+    name.includes("rong ") ||
+    name.includes("tảo") ||
+    cat.includes("copepoda") ||
+    cat.includes("halophila")
+  ) {
+    return {
+      groupLabel: "Sinh vật phù du & Thực vật biển",
+      metrics: [
+        { label: "Tầng hoạt động", value: species?.depth || "0 - 100m", sub: "Vùng ngập nắng giàu ánh sáng", color: "text-cyan-400" },
+        { label: "Giọt dầu nổi", value: "Lipid sinh học", sub: "Giữ cơ thể lơ lửng theo hải lưu", color: "text-amber-400" },
+        { label: "Vai trò oxy", value: "Quang hợp & Sơ cấp", sub: "Nền tảng lưới thức ăn đại dương", color: "text-emerald-400" },
+        { label: "Chu kỳ sinh học", value: "Di cư ngày - đêm", sub: "Trồi lên mặt nước vào ban đêm", color: "text-indigo-400" },
+      ],
+      systems: [
+        {
+          id: "buoyancy-oil",
+          nameVi: "Cấu trúc nổi & lơ lửng theo dòng",
+          nameEn: "Planktonic Buoyancy & Drifting",
+          icon: Waves,
+          color: "cyan",
+          headline: `${displayName} tích trữ giọt lipid và tăng diện tích tiếp xúc vi mô để hạn chế chìm xuống đáy biển`,
+          details: [
+            {
+              title: "Gai phụ & bề mặt giảm tốc chìm",
+              desc: "Các nhánh râu hoặc gai vỏ vi mô tạo lực cản nhớt trong nước biển, giữ cơ thể lơ lửng ổn định ở tầng mặt giàu ánh sáng.",
+            },
+            {
+              title: "Tích trữ giọt dầu năng lượng",
+              desc: "Giọt lipid nhẹ hơn nước vừa giúp điều chỉnh độ nổi vừa đóng vai trò nguồn dự trữ dinh dưỡng cho mắt xích cá nhỏ phía trên.",
+            },
+          ],
+        },
+        {
+          id: "primary-chain",
+          nameVi: "Trao đổi khí & chuỗi thức ăn sơ cấp",
+          nameEn: "Primary Production & Trophic Transfer",
+          icon: Sparkles,
+          color: "emerald",
+          headline: "Hấp thụ trực tiếp khoáng chất và truyền năng lượng mặt trời vào toàn bộ hệ sinh thái biển",
+          details: [
+            {
+              title: "Trao đổi chất qua bề mặt cơ thể",
+              desc: "Kích thước siêu nhỏ cho phép oxy và chất dinh dưỡng khuếch tán trực tiếp qua thành tế bào/vỏ mỏng mà không cần hệ hô hấp phức tạp.",
+            },
+            {
+              title: "Bơm sinh học carbon (Biological Pump)",
+              desc: "Chuyển hóa CO2 hòa tan thành sinh khối hữu cơ và lắng đọng carbon xuống tầng đáy khi hoàn tất vòng đời ngắn ngủi.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  // 3. Ngành Da gai (Echinodermata: Sao biển, Cầu gai, Hải sâm)
+  if (
+    cat.includes("echinodermata") ||
+    cat.includes("asteroidea") ||
+    cat.includes("echinoidea") ||
+    cat.includes("holothuroidea") ||
+    cat.includes("valvatida") ||
+    name.includes("sao biển") ||
+    name.includes("cầu gai") ||
+    name.includes("nhum") ||
+    name.includes("hải sâm") ||
+    sciName.includes("acanthaster")
+  ) {
+    return {
+      groupLabel: "Động vật Da gai",
+      metrics: [
+        { label: "Hệ vận động", value: "Ống nước thủy lực", sub: "Hàng trăm chân ống co giãn nhịp nhàng", color: "text-cyan-400" },
+        { label: "Đối xứng cơ thể", value: "Ngũ tia (5+ cánh)", sub: "Cấu trúc tỏa tròn thích nghi đáy biển", color: "text-indigo-400" },
+        { label: "Tái sinh mô", value: "Phục hồi hoàn chỉnh", sub: "Tái tạo cánh tay bị tổn thương", color: "text-emerald-400" },
+        { label: "Tự vệ hóa học", value: "Gai canxi & Saponin", sub: "Xua đuổi kẻ săn mồi trên rạn đá", color: "text-rose-400" },
+      ],
+      systems: [
+        {
+          id: "water-vascular",
+          nameVi: "Hệ mạch nước & chân ống thủy lực",
+          nameEn: "Water Vascular System & Tube Feet",
+          icon: Waves,
+          color: "cyan",
+          headline: `${displayName} không dùng máu mà bơm nước biển qua hệ thống ống dẫn thủy lực để di chuyển và bám chặt vào đá ngầm`,
+          details: [
+            {
+              title: "Tấm sàng hút nước (Madreporite)",
+              desc: "Nước biển được lọc qua tấm sàng đá vôi trên mặt lưng, đi vào vòng ống trung tâm và phân nhánh ra từng cánh tay.",
+            },
+            {
+              title: "Hàng trăm chân ống giác bám",
+              desc: "Mỗi chân ống hoạt động nhờ thay đổi áp suất nước trong bầu cơ, vừa giúp bám chắc trước sóng mạnh vừa mở vỏ con mồi.",
+            },
+          ],
+        },
+        {
+          id: "feeding-regen",
+          nameVi: "Cơ chế tiêu hóa & tái sinh mô",
+          nameEn: "External Digestion & Tissue Regeneration",
+          icon: Activity,
+          color: "emerald",
+          headline: "Khả năng lộn dạ dày tiêu hóa ngoài cơ thể và tự tái tạo các phần chi bị mất",
+          details: [
+            {
+              title: "Tiêu hóa ngoài trực tiếp",
+              desc: "Một số loài da gai có thể lộn túi dạ dày mỏng ra ngoài miệng, tiết enzyme phân hủy mô mềm của san hô hoặc thân mềm rồi mới hấp thụ.",
+            },
+            {
+              title: "Tái sinh tế bào gốc mạnh mẽ",
+              desc: "Nếu mất một cánh tay khi tự vệ, vòng thần kinh trung tâm kích hoạt phân chia tế bào để mọc lại hoàn chỉnh phần cơ thể đã mất.",
+            },
+          ],
+        },
+        {
+          id: "armor-defense",
+          nameVi: "Bộ xương đá vôi & gai độc tự vệ",
+          nameEn: "Calcareous Ossicles & Saponin Defense",
+          icon: Shield,
+          color: "rose",
+          headline: "Các mảnh xương canxi dưới lớp biểu bì kết hợp hợp chất saponin chống kẻ săn mồi",
+          details: [
+            {
+              title: "Khung mảnh đá vôi linh hoạt",
+              desc: "Bên dưới lớp da là hàng ngàn mảnh CaCO3 đan xen bằng sợi collagen đặc biệt có thể chuyển từ mềm dẻo sang cứng cáp tức thì.",
+            },
+            {
+              title: "Gai sắc và hợp chất saponin",
+              desc: "Ở các loài như sao biển gai hay cầu gai, gai canxi phủ chất nhầy chứa saponin gây sưng đau và răn đe cá săn mồi rạn san hô.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  // 4. Giáp xác & Chân khớp biển (Crustacea: Tôm, Cua, Ghẹ, Bọ biển, Sam biển)
+  if (
+    cat.includes("malacostraca") ||
+    cat.includes("arthropoda") ||
+    cat.includes("decapoda") ||
+    cat.includes("stomatopoda") ||
+    cat.includes("xiphosura") ||
+    name.includes("tôm") ||
+    name.includes("cua") ||
+    name.includes("ghẹ") ||
+    name.includes("bọ biển") ||
+    name.includes("sam biển") ||
+    name.includes("so biển") ||
+    sciName.includes("portunus") ||
+    sciName.includes("panulirus") ||
+    sciName.includes("charybdis")
+  ) {
+    return {
+      groupLabel: "Giáp xác & Chân khớp biển",
+      metrics: [
+        { label: "Bộ xương ngoài", value: "Chitin khoáng hóa", sub: "Giáp canxi cứng bảo vệ nội quan", color: "text-amber-400" },
+        { label: "Tăng trưởng", value: "Lột xác định kỳ", sub: "Thay lớp vỏ cũ để lớn lên theo chu kỳ", color: "text-cyan-400" },
+        { label: "Hô hấp dưới nước", value: "Mang lá trong khoang", sub: "Luân chuyển dòng nước giàu oxy", color: "text-emerald-400" },
+        { label: "Thị giác & râu", value: "Mắt kép & Thụ thể mùi", sub: "Nhận diện hóa chất và chuyển động 360°", color: "text-indigo-400" },
+      ],
+      systems: [
+        {
+          id: "exoskeleton",
+          nameVi: "Giáp ngoài kitin & chu kỳ lột xác",
+          nameEn: "Calcified Chitin Exoskeleton & Molting",
+          icon: Shield,
+          color: "amber",
+          headline: `${displayName} được bao bọc bởi bộ giáp kitin tẩm muối canxi vừa chống áp lực vừa bảo vệ trước kẻ săn mồi`,
+          details: [
+            {
+              title: "Lột xác để tăng kích thước",
+              desc: "Do lớp giáp ngoài không tự giãn nở, cá thể tiết hormone ecdysteroid tách bỏ vỏ cũ, hút nước làm phồng mô mềm rồi kết cứng vỏ mới trong vài ngày.",
+            },
+            {
+              title: "Khớp chi & càng chuyên hóa",
+              desc: "Các đốt chân có khớp bản lề cơ học tối ưu lực kẹp của đôi càng, giúp nghiền vỏ hai mảnh vỏ hoặc đào hang trú ẩn.",
+            },
+          ],
+        },
+        {
+          id: "gills-sensory",
+          nameVi: "Mang lá kép & râu cảm giác hóa học",
+          nameEn: "Branchial Gills & Chemosensory Antennae",
+          icon: Activity,
+          color: "cyan",
+          headline: "Hệ mang ẩn dưới mai ngực kết hợp râu dài dò tín hiệu hóa học trong bùn cát",
+          details: [
+            {
+              title: "Tuần hoàn hở với hemocyanin",
+              desc: "Tim nằm ở mặt lưng đẩy huyết tương chứa đồng đi qua khoang mang dưới giáp ngực để trao đổi oxy liên tục.",
+            },
+            {
+              title: "Mắt kép trên cuống di động",
+              desc: "Hàng trăm ống kính nhỏ (ommatidia) gắn trên cuống xoay giúp phát hiện chuyển động của con mồi hoặc kẻ thù ở nhiều góc khuất.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  // 5. Phân loại thân mềm (Mollusca: Bạch tuộc, Mực, Ốc, Sò, Trai, Điệp)
+  if (
+    cat.includes("mollusca") ||
+    cat.includes("cephalopoda") ||
+    cat.includes("bivalvia") ||
+    cat.includes("gastropoda") ||
     name.includes("bạch tuộc") ||
     name.includes("mực") ||
     name.includes("ốc") ||
     name.includes("trai") ||
+    name.includes("sò") ||
+    name.includes("điệp") ||
+    name.includes("tu hài") ||
     sciName.includes("octopus") ||
-    sciName.includes("enteroctopus")
+    sciName.includes("enteroctopus") ||
+    sciName.includes("loligo")
   ) {
+    const isShelled =
+      cat.includes("bivalvia") ||
+      cat.includes("gastropoda") ||
+      name.includes("ốc") ||
+      name.includes("sò") ||
+      name.includes("trai") ||
+      name.includes("điệp") ||
+      name.includes("tu hài");
+
+    if (isShelled) {
+      return {
+        groupLabel: "Thân mềm có vỏ (Ốc & Hai mảnh vỏ)",
+        metrics: [
+          { label: "Áo & Lớp vỏ", value: "Aragonite CaCO3", sub: "Màng áo tiết khoáng tạo vỏ xoắn hoặc hai mảnh", color: "text-amber-400" },
+          { label: "Lớp xà cừ", value: "Phản xạ ngọc", sub: "Bảo vệ mô mềm trước dị vật và ký sinh", color: "text-cyan-400" },
+          { label: "Cơ khép / Chân cơ", value: "Áp lực thủy lực", sub: "Đào cát vùi thân hoặc bám chắc vào đá", color: "text-emerald-400" },
+          { label: "Dinh dưỡng", value: "Lọc phù du / Lưỡi gai", sub: "Tùy biến theo tập tính ăn lọc hay gặm tảo", color: "text-indigo-400" },
+        ],
+        systems: [
+          {
+            id: "mantle-shell",
+            nameVi: "Màng áo & cấu trúc vỏ đá vôi",
+            nameEn: "Mantle & Calcareous Shell",
+            icon: Shield,
+            color: "amber",
+            headline: `${displayName} sở hữu màng áo chuyên biệt liên tục bồi đắp tinh thể canxi cacbonat theo độ tuổi`,
+            details: [
+              {
+                title: "Hai hoặc một mảnh vỏ bảo vệ",
+                desc: "Cấu trúc nhiều lớp gồm màng sừng chống ăn mòn axit nhẹ bên ngoài, lớp lăng trụ chịu lực ở giữa và lớp xà cừ mịn bên trong.",
+              },
+              {
+                title: "Ống hút siphon & chân rìu đào cát",
+                desc: "Chân cơ bơm máu trương nở giúp vùi sâu xuống nền cát triều cường, để lộ ống siphon hút nước lọc phù du và hô hấp.",
+              },
+            ],
+          },
+          {
+            id: "filter-gills",
+            nameVi: "Lọc sinh học & làm sạch vùng nước",
+            nameEn: "Bio-Filtration & Ctenidia Gills",
+            icon: Waves,
+            color: "emerald",
+            headline: "Hệ mang có lông rung tạo dòng chảy vừa trao đổi oxy vừa giữ lại vi tảo dinh dưỡng",
+            details: [
+              {
+                title: "Lọc hàng chục lít nước mỗi ngày",
+                desc: "Đóng góp vai trò bộ lọc tự nhiên giúp cải thiện độ trong và cân bằng phù du tại các vùng đầm phá ven biển.",
+              },
+              {
+                title: "Phản xạ đóng kín khi gặp hiểm nguy",
+                desc: "Cơ khép vỏ hoặc nắp sừng (operculum) đóng chặt tức thời khi phát hiện dao động ánh sáng hoặc hóa chất từ kẻ săn mồi.",
+              },
+            ],
+          },
+        ],
+      };
+    }
+
     return {
-      groupLabel: "Động vật thân mềm",
+      groupLabel: "Động vật thân mềm Chân đầu",
       metrics: [
         { label: "Số lượng tim", value: "3 trái tim", sub: "2 tim mang và 1 tim chính", color: "text-rose-400" },
         { label: "Mạng lưới nơ-ron", value: "500 triệu", sub: "2/3 phân bố ở 8 xúc tu", color: "text-cyan-400" },
@@ -190,9 +467,11 @@ function getSpeciesAnatomyProfile(species) {
     };
   }
 
-  // Phân loại động vật có vú biển
+  // 6. Phân loại động vật có vú biển
   if (
     cat.includes("mammal") ||
+    cat.includes("mammalia") ||
+    cat.includes("dong-vat-co-vu-bien") ||
     cat.includes("vú") ||
     name.includes("cá voi") ||
     name.includes("cá heo") ||
@@ -270,195 +549,14 @@ function getSpeciesAnatomyProfile(species) {
     };
   }
 
-  // Phân loại cá có xương
-  if (
-    cat.includes("fish") ||
-    cat.includes("cá") ||
-    name.includes("cá ngừ") ||
-    name.includes("cá hề") ||
-    name.includes("cá vẹt") ||
-    name.includes("cá trích")
-  ) {
-    return {
-      groupLabel: "Cá xương biển",
-      metrics: [
-        { label: "Hiệu suất lọc mang", value: "80 - 85%", sub: "Dòng chảy đối lưu ngược dòng", color: "text-cyan-400" },
-        { label: "Bóng khí điều phù", value: "Tự cân bằng", sub: "Kiểm soát độ nổi chính xác", color: "text-emerald-400" },
-        { label: "Đường bên cảm nhận", value: "360 độ", sub: "Cảm ứng vi rung động nước", color: "text-indigo-400" },
-        { label: "Cơ thịt đỏ bền bỉ", value: "Tuần hoàn kín", sub: "Duy trì bơi liên tục không mệt", color: "text-rose-400" },
-      ],
-      systems: [
-        {
-          id: "gills",
-          nameVi: "Hô hấp mang & trao đổi khí",
-          nameEn: "Gills & Gas Exchange",
-          icon: Activity,
-          color: "cyan",
-          headline: "Cơ chế trích xuất oxy hòa tan với hiệu suất cao trong môi trường nước",
-          details: [
-            {
-              title: "Nguyên lý dòng chảy ngược dòng",
-              desc: "Nước biển chảy qua phiến mang ngược chiều với dòng máu trong mao mạch, đảm bảo oxy luôn khuếch tán liên tục và đồng đều vào hệ tuần hoàn.",
-            },
-            {
-              title: "Bóng khí kiểm soát độ nổi",
-              desc: "Bóng khí tự nhiên giúp cá giữ thăng bằng ở bất kỳ độ sâu mong muốn nào mà không phải tiêu tốn nhiều năng lượng quẫy bơi liên tục.",
-            },
-          ],
-        },
-        {
-          id: "lateral-line",
-          nameVi: "Hệ thống cảm nhận đường bên",
-          nameEn: "Lateral Line Sensory System",
-          icon: Brain,
-          color: "indigo",
-          headline: "Giác quan phát hiện chuyển động nước và áp suất bầy đàn",
-          details: [
-            {
-              title: "Hàng tế bào thụ thể chuyên biệt",
-              desc: "Dải ống chạy dọc thân chứa các tế bào lông cảm nhận vi dao động của nước, giúp đàn cá bơi đồng bộ hàng vạn con mà không va chạm.",
-            },
-            {
-              title: "Phát hiện kẻ săn mồi trong bóng tối",
-              desc: "Ngay cả khi tầm nhìn bị hạn chế, cá vẫn cảm nhận được chính xác khoảng cách và hướng di chuyển của vật thể xung quanh nhờ sóng chấn động nước.",
-            },
-          ],
-        },
-        {
-          id: "hydrodynamics",
-          nameVi: "Thủy động lực & lớp nhầy giảm ma sát",
-          nameEn: "Hydrodynamics & Skin Mucus",
-          icon: Waves,
-          color: "emerald",
-          headline: "Thân hình thoi thuôn dài giảm thiểu lực cản ma sát của dòng nước",
-          details: [
-            {
-              title: "Lớp nhầy bề mặt bảo vệ",
-              desc: "Bề mặt da được phủ một lớp nhầy trơn mịn giúp triệt tiêu các xoáy nước ma sát, đồng thời bảo vệ cá trước vi khuẩn và ký sinh trùng biển.",
-            },
-            {
-              title: "Vây đuôi tạo lực đẩy phản hồi",
-              desc: "Cấu trúc vây đuôi chắc khỏe tạo lực đẩy phản hồi mạnh, giúp cá bứt tốc tức thì để săn bắt con mồi hoặc thoát khỏi nguy hiểm.",
-            },
-          ],
-        },
-      ],
-    };
-  }
-
-  // Phân loại bò sát biển
-  if (
-    cat.includes("reptile") ||
-    cat.includes("bò sát") ||
-    name.includes("rùa") ||
-    name.includes("vích") ||
-    name.includes("đồi mồi") ||
-    name.includes("rắn biển")
-  ) {
-    return {
-      groupLabel: "Bò sát biển",
-      metrics: [
-        { label: "Tuyến bài tiết muối", value: "Sau hốc mắt", sub: "Thải lượng muối dư thừa hiệu quả", color: "text-amber-400" },
-        { label: "Mai sừng bảo vệ", value: "Khung xương sọ & sườn", sub: "Chống chịu va chạm và áp lực", color: "text-emerald-400" },
-        { label: "Thời gian lặn sâu", value: "4 - 7 giờ", sub: "Trạng thái nghỉ ngơi dưới rạn đá", color: "text-cyan-400" },
-        { label: "Định vị địa từ", value: "Từ trường trái đất", sub: "Định hướng trở về bãi đẻ tự nhiên", color: "text-indigo-400" },
-      ],
-      systems: [
-        {
-          id: "salt-gland",
-          nameVi: "Tuyến muối sau hốc mắt",
-          nameEn: "Salt Glands",
-          icon: Activity,
-          color: "amber",
-          headline: "Cơ chế đào thải muối sinh học giúp duy trì cân bằng điện giải khi sống trong nước mặn",
-          details: [
-            {
-              title: "Hiện tượng rùa đào thải muối",
-              desc: "Tuyến muối sau hốc mắt liên tục bơm lượng muối dư thừa ra khỏi máu dưới dạng dịch mặn đậm đặc, bảo đảm cơ thể không bị mất nước nội bào.",
-            },
-          ],
-        },
-        {
-          id: "shell",
-          nameVi: "Cấu trúc mai xương lướt nước",
-          nameEn: "Hydrodynamic Shell & Skeleton",
-          icon: Shield,
-          color: "emerald",
-          headline: "Bộ giáp sinh học tiến hóa thành hình dạng thuôn dẹt lướt sóng",
-          details: [
-            {
-              title: "Mai dẹt hình giọt nước",
-              desc: "Mai dẹt giúp rùa biển lướt êm trong các dòng hải lưu dài hàng ngàn cây số mà ít tiêu hao sức lực.",
-            },
-            {
-              title: "Vây bơi trước hình mái chèo",
-              desc: "Các xương chi trước kéo dài và liên kết màng cơ bắp chắc khỏe, hoạt động như đôi cánh tàu ngầm tạo lực nâng và điều hướng linh hoạt.",
-            },
-          ],
-        },
-      ],
-    };
-  }
-
-  // Phân loại san hô & động vật thích ty bào (Cnidaria)
-  if (
-    cat.includes("san hô") ||
-    cat.includes("thực vật") ||
-    name.includes("san hô") ||
-    name.includes("hải quỳ") ||
-    name.includes("sứa") ||
-    sciName.includes("acropora")
-  ) {
-    return {
-      groupLabel: "San hô & Thích ty bào",
-      metrics: [
-        { label: "Quần thể polyp", value: "Hàng triệu cá thể", sub: "Cấu trúc khuẩn lạc liên kết", color: "text-rose-400" },
-        { label: "Cộng sinh tảo", value: "Zooxanthellae", sub: "Cung cấp 90% năng lượng qua quang hợp", color: "text-emerald-400" },
-        { label: "Bộ khung đá vôi", value: "Canxi cacbonat", sub: "Kiến tạo rạn san hô đại dương", color: "text-amber-400" },
-        { label: "Tế bào thích ty", value: "Nematocyst", sub: "Phóng nọc độc tự vệ và săn mồi", color: "text-cyan-400" },
-      ],
-      systems: [
-        {
-          id: "symbiosis",
-          nameVi: "Cộng sinh tảo & quang hợp",
-          nameEn: "Zooxanthellae Symbiosis",
-          icon: Activity,
-          color: "emerald",
-          headline: "Mối quan hệ cộng sinh kỳ diệu giữa polyp động vật và tảo quang hợp Zooxanthellae",
-          details: [
-            {
-              title: "Trao đổi chất nội bào",
-              desc: "Tảo đơn bào Zooxanthellae cư ngụ bên trong tế bào san hô, hấp thụ ánh sáng mặt trời để tạo ra đường glucose và oxy nuôi sống san hô, đổi lại nhận chất dinh dưỡng và môi trường bảo vệ an toàn.",
-            },
-            {
-              title: "Nhạy cảm với nhiệt độ nước",
-              desc: "Khi nhiệt độ nước biển tăng quá 1 - 2 độ C trong thời gian dài, san hô bị stress và trục xuất tảo cộng sinh, dẫn đến hiện tượng tẩy trắng san hô (coral bleaching).",
-            },
-          ],
-        },
-        {
-          id: "calcification",
-          nameVi: "Lắng đọng khung xương đá vôi",
-          nameEn: "CaCO3 Skeleton Calcification",
-          icon: Shield,
-          color: "amber",
-          headline: "Quá trình sinh hóa kết tủa Canxi cacbonat kiến tạo các rạn san hô kỳ vĩ",
-          details: [
-            {
-              title: "Xây dựng khung xương canxi",
-              desc: "Các tế bào đáy liên tục chiết xuất ion canxi và cacbonat từ nước biển để tạo thành các chén đá vôi vững chắc, đóng vai trò nền móng cho toàn bộ hệ sinh thái biển nhiệt đới.",
-            },
-          ],
-        },
-      ],
-    };
-  }
-
-  // Phân loại cá sụn (Cá mập, Cá đuối)
+  // 7. Phân loại cá sụn (Cá mập, Cá đuối, Cá nhám — đặt TRƯỚC cá xương)
   if (
     cat.includes("sụn") ||
+    cat.includes("elasmobranchii") ||
+    cat.includes("chondrichthyes") ||
     name.includes("cá mập") ||
     name.includes("cá đuối") ||
+    name.includes("cá nhám") ||
     sciName.includes("carcharodon") ||
     sciName.includes("rhincodon") ||
     sciName.includes("taeniura") ||
@@ -479,15 +577,15 @@ function getSpeciesAnatomyProfile(species) {
           nameEn: "Ampullae of Lorenzini",
           icon: Brain,
           color: "amber",
-          headline: "Mạng lưới lỗ thụ cảm chứa gel dẫn điện cảm nhận điện thế nano-volt của sinh vật",
+          headline: `${displayName} sở hữu mạng lưới lỗ thụ cảm chứa gel dẫn điện cảm nhận điện thế nano-volt từ cơ bắp con mồi`,
           details: [
             {
               title: "Bầu cảm giác Ampullae of Lorenzini",
-              desc: "Hàng ngàn lỗ nhỏ tập trung quanh đầu và mõm cá mập/cá đuối chứa gel glycoprotein dẫn điện cao, giúp định vị chính xác vị trí con mồi ẩn mình dưới đáy cát.",
+              desc: "Hàng ngàn lỗ nhỏ tập trung quanh đầu và mõm chứa gel glycoprotein dẫn điện cao, giúp định vị chính xác vị trí con mồi ẩn mình dưới đáy cát.",
             },
             {
               title: "Định vị từ trường trái đất",
-              desc: "Giúp chúng cảm nhận từ trường của đại dương để định hướng bơi xuyên các đại dương trong các chuyến hải trình di cư hàng ngàn kilomet.",
+              desc: "Cảm nhận từ trường đại dương để định hướng bơi xuyên qua các vùng biển rộng trong những hành trình di cư hàng ngàn kilômét.",
             },
           ],
         },
@@ -497,15 +595,15 @@ function getSpeciesAnatomyProfile(species) {
           nameEn: "Buoyancy & Squalene Liver",
           icon: Activity,
           color: "emerald",
-          headline: "Gan khổng lồ chiếm tới 25% khối lượng cơ thể giúp giữ độ nổi trung tính",
+          headline: "Gan lớn giàu lipid tỷ trọng thấp giúp duy trì độ nổi trung tính mà không cần bóng khí",
           details: [
             {
               title: "Không sở hữu bóng khí",
-              desc: "Khác với cá xương, cá sụn không có bóng khí nên không gặp nguy hiểm chấn thương khi thay đổi độ sâu đột ngột.",
+              desc: "Khác với cá xương, cá sụn không có bóng khí nên có thể thay đổi độ sâu nhanh chóng mà không gặp chấn thương áp suất.",
             },
             {
               title: "Dầu squalene nhẹ hơn nước",
-              desc: "Lượng dầu squalene tỷ trọng thấp trong gan khổng lồ tạo lực nâng tự nhiên, kết hợp vây ngực như cánh máy bay giữ cá nổi khi bơi.",
+              desc: "Dầu squalene trong gan tạo lực nâng tự nhiên, kết hợp đôi vây ngực như cánh nâng giúp giữ thăng bằng khi lướt nước.",
             },
           ],
         },
@@ -513,45 +611,319 @@ function getSpeciesAnatomyProfile(species) {
     };
   }
 
-  // Phân loại các nhóm sinh vật biển khác
+  // 8. Phân loại rắn biển (Tách riêng khỏi rùa biển)
+  if (
+    name.includes("rắn biển") ||
+    name.includes("đẻn") ||
+    sciName.includes("hydrophis") ||
+    sciName.includes("laticauda") ||
+    sciName.includes("microcephalophis") ||
+    cat.includes("elapidae")
+  ) {
+    return {
+      groupLabel: "Rắn biển (Bò sát thích nghi hoàn toàn)",
+      metrics: [
+        { label: "Vây bơi", value: "Đuôi dẹt dạng mái chèo", sub: "Tạo lực đẩy linh hoạt trong cột nước", color: "text-cyan-400" },
+        { label: "Hô hấp kép", value: "Phổi dài + Qua da", sub: "Hấp thụ tới 20% oxy trực tiếp qua da", color: "text-emerald-400" },
+        { label: "Tuyến thải muối", value: "Dưới lưỡi chuyên biệt", sub: "Loại bỏ muối NaCl giữ cân bằng dịch", color: "text-amber-400" },
+        { label: "Nọc sinh học", value: "Neurotoxin hiệu lực cao", sub: "Làm bất động cá mồi rạn san hô ngay lập tức", color: "text-rose-400" },
+      ],
+      systems: [
+        {
+          id: "sea-snake-respiration",
+          nameVi: "Phổi kéo dài & hô hấp qua da",
+          nameEn: "Elongated Lung & Cutaneous Gas Exchange",
+          icon: Waves,
+          color: "cyan",
+          headline: `${displayName} có một lá phổi kéo dài dọc cơ thể kết hợp trao đổi khí qua da để lặn sâu hàng chục phút`,
+          details: [
+            {
+              title: "Van đóng kín lỗ mũi khi lặn",
+              desc: "Lỗ mũi nằm cao ở đỉnh mõm và có van cơ đóng chặt tự động ngay khi rắn chìm xuống nước, ngăn nước biển tràn vào đường thở.",
+            },
+            {
+              title: "Đuôi dẹt bên chuyên hóa bơi lội",
+              desc: "Đoạn đuôi ép dẹt như mái chèo cùng thân thuôn giúp uốn lượn nhẹ nhàng len lỏi vào các hốc đá ngầm tìm cá nhỏ và lươn biển.",
+            },
+          ],
+        },
+        {
+          id: "sea-snake-salt",
+          nameVi: "Tuyến muối dưới lưỡi & nọc độc",
+          nameEn: "Sublingual Salt Gland & Venom Apparatus",
+          icon: Shield,
+          color: "rose",
+          headline: "Đào thải lượng muối hấp thụ từ nước biển và săn mồi nhanh gọn bằng nọc thần kinh",
+          details: [
+            {
+              title: "Tuyến muối dưới lưỡi",
+              desc: "Khác với rùa biển thải muối qua hốc mắt, rắn biển bài tiết muối cô đặc qua tuyến dưới lưỡi mỗi khi thè lưỡi ra ngoài.",
+            },
+            {
+              title: "Răng nanh cố định phía trước",
+              desc: "Tiết nọc độc tác động nhanh lên hệ thần kinh cá mồi để con mồi không kịp vùng vẫy làm tổn thương lớp vảy mềm.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  // 9. Phân loại rùa biển (Bò sát có mai)
+  if (
+    cat.includes("reptile") ||
+    cat.includes("bo-sat-bien") ||
+    cat.includes("bò sát") ||
+    name.includes("rùa") ||
+    name.includes("vích") ||
+    name.includes("đồi mồi") ||
+    sciName.includes("chelonia") ||
+    sciName.includes("eretmochelys") ||
+    sciName.includes("dermochelys")
+  ) {
+    return {
+      groupLabel: "Rùa biển (Bò sát có mai)",
+      metrics: [
+        { label: "Tuyến bài tiết muối", value: "Sau hốc mắt", sub: "Thải lượng muối dư thừa hiệu quả", color: "text-amber-400" },
+        { label: "Mai sừng bảo vệ", value: "Khung xương sọ & sườn", sub: "Chống chịu va chạm và áp lực", color: "text-emerald-400" },
+        { label: "Thời gian lặn sâu", value: "4 - 7 giờ", sub: "Trạng thái nghỉ ngơi dưới rạn đá", color: "text-cyan-400" },
+        { label: "Định vị địa từ", value: "Từ trường trái đất", sub: "Định hướng trở về bãi đẻ tự nhiên", color: "text-indigo-400" },
+      ],
+      systems: [
+        {
+          id: "salt-gland",
+          nameVi: "Tuyến muối sau hốc mắt",
+          nameEn: "Salt Glands",
+          icon: Activity,
+          color: "amber",
+          headline: `${displayName} duy trì cân bằng điện giải nhờ tuyến muối sau hốc mắt liên tục lọc muối dư ra khỏi máu`,
+          details: [
+            {
+              title: "Hiện tượng rùa đào thải muối",
+              desc: "Tuyến muối sau hốc mắt bơm lượng muối dư thừa ra ngoài dưới dạng dịch mặn đậm đặc, đảm bảo cơ thể không bị mất nước nội bào.",
+            },
+          ],
+        },
+        {
+          id: "shell",
+          nameVi: "Cấu trúc mai xương lướt nước",
+          nameEn: "Hydrodynamic Shell & Skeleton",
+          icon: Shield,
+          color: "emerald",
+          headline: "Bộ giáp sinh học tiến hóa thành hình dạng thuôn dẹt giúp lướt sóng ít tốn sức",
+          details: [
+            {
+              title: "Mai dẹt hình giọt nước",
+              desc: "Giảm lực cản thủy động lực khi bơi qua các dòng hải lưu dài hàng ngàn kilômét.",
+            },
+            {
+              title: "Chi trước biến đổi thành mái chèo",
+              desc: "Các xương bàn kéo dài liên kết cơ ngực khỏe tạo lực nâng như đôi cánh dưới nước.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  // 10. San hô, sứa, hải quỳ & bọt biển (Cnidaria / Porifera)
+  if (
+    cat.includes("cnidaria") ||
+    cat.includes("porifera") ||
+    cat.includes("san-ho-thuc-vat-bien") ||
+    cat.includes("san hô") ||
+    cat.includes("thực vật") ||
+    name.includes("san hô") ||
+    name.includes("hải quỳ") ||
+    name.includes("sứa") ||
+    name.includes("bọt biển") ||
+    name.includes("hải miên") ||
+    sciName.includes("acropora") ||
+    sciName.includes("euplectella")
+  ) {
+    const isCoralReef =
+      name.includes("san hô") || cat.includes("anthozoa") || sciName.includes("acropora");
+    if (!isCoralReef) {
+      return {
+        groupLabel: "Thích ty bào & Hải miên",
+        metrics: [
+          { label: "Tỉ lệ nước", value: "90 - 95% nước", sub: "Cơ thể keo nhẹ nổi trôi hoặc lọc dòng", color: "text-cyan-400" },
+          { label: "Tế bào phòng vệ", value: "Nematocyst / Gai", sub: "Tế bào châm hoặc khung gai silica", color: "text-rose-400" },
+          { label: "Hô hấp trực tiếp", value: "Khuếch tán bề mặt", sub: "Trao đổi khí trực tiếp với nước biển", color: "text-emerald-400" },
+          { label: "Hệ thần kinh", value: "Mạng lưới phân tán", sub: "Phản xạ co bóp nhịp nhàng không cần não", color: "text-indigo-400" },
+        ],
+        systems: [
+          {
+            id: "gel-cnida",
+            nameVi: "Cấu trúc keo sinh học & tế bào châm",
+            nameEn: "Mesoglea & Cnidocytes",
+            icon: Waves,
+            color: "cyan",
+            headline: `${displayName} sở hữu cơ thể đối xứng tỏa tròn với tầng keo đàn hồi hoặc khung mạng lọc dòng nước biển`,
+            details: [
+              {
+                title: "Động lực co bóp dù / Lọc lỗ xốp",
+                desc: "Cơ vòng dưới dù tạo xung đẩy nước giúp sứa trôi nhịp nhàng; với hải miên, tế bào cổ áo (choanocyte) quạt nước liên tục qua hàng triệu lỗ nhỏ.",
+              },
+              {
+                title: "Cơ chế tự vệ bằng tế bào gai",
+                desc: "Xúc tu mang tế bào châm phóng sợi gai chứa độc tố tức thời khi chạm vào con mồi phù du hoặc kẻ săn mồi.",
+              },
+            ],
+          },
+        ],
+      };
+    }
+
+    return {
+      groupLabel: "San hô kiến tạo rạn",
+      metrics: [
+        { label: "Quần thể polyp", value: "Hàng triệu cá thể", sub: "Cấu trúc khuẩn lạc liên kết", color: "text-rose-400" },
+        { label: "Cộng sinh tảo", value: "Zooxanthellae", sub: "Cung cấp tới 90% năng lượng quang hợp", color: "text-emerald-400" },
+        { label: "Bộ khung đá vôi", value: "Canxi cacbonat", sub: "Kiến tạo rạn san hô đại dương", color: "text-amber-400" },
+        { label: "Tế bào thích ty", value: "Nematocyst", sub: "Phóng nọc độc bắt phù du về đêm", color: "text-cyan-400" },
+      ],
+      systems: [
+        {
+          id: "symbiosis",
+          nameVi: "Cộng sinh tảo & quang hợp",
+          nameEn: "Zooxanthellae Symbiosis",
+          icon: Activity,
+          color: "emerald",
+          headline: `${displayName} cộng sinh chặt chẽ với vi tảo quang hợp Zooxanthellae bên trong tế bào nội bì`,
+          details: [
+            {
+              title: "Trao đổi chất nội bào",
+              desc: "Tảo đơn bào hấp thụ ánh sáng mặt trời tạo đường glucose và oxy nuôi sống polyp, đổi lại nhận nitơ và nơi trú ẩn an toàn.",
+            },
+            {
+              title: "Nhạy cảm với nhiệt độ nước",
+              desc: "Khi nhiệt độ nước biển tăng bất thường kéo dài, polyp bị stress và đẩy tảo cộng sinh ra ngoài, gây hiện tượng tẩy trắng san hô.",
+            },
+          ],
+        },
+        {
+          id: "calcification",
+          nameVi: "Lắng đọng khung xương đá vôi",
+          nameEn: "CaCO3 Skeleton Calcification",
+          icon: Shield,
+          color: "amber",
+          headline: "Quá trình sinh hóa kết tủa Canxi cacbonat kiến tạo cấu trúc rạn vững chắc",
+          details: [
+            {
+              title: "Xây dựng khung xương aragonite",
+              desc: "Các tế bào đáy chiết xuất ion canxi và cacbonat từ nước biển tạo chén đá vôi làm nền móng trú ẩn cho hàng ngàn loài sinh vật rạn.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  // 11. Phân loại cá xương (Cá vây tia: Cá Chim Trắng, Cá Ngừ, Cá Hề, Cá Ngựa...)
+  if (
+    cat.includes("fish") ||
+    cat.includes("actinopter") ||
+    cat.includes("teleost") ||
+    cat.includes("perciformes") ||
+    cat.includes("ca-bien") ||
+    cat.includes("cá") ||
+    name.includes("cá ")
+  ) {
+    return {
+      groupLabel: "Cá xương biển (Actinopterygii)",
+      metrics: [
+        { label: "Hiệu suất lọc mang", value: "80 - 85%", sub: "Dòng chảy đối lưu ngược dòng", color: "text-cyan-400" },
+        { label: "Bóng khí điều phù", value: "Tự cân bằng", sub: `Giữ ổn định ở tầng ${species?.depth || "sống"}`, color: "text-emerald-400" },
+        { label: "Đường bên cảm nhận", value: "360 độ", sub: "Cảm ứng vi rung động nước", color: "text-indigo-400" },
+        { label: "Kích thước ghi nhận", value: species?.size || "Đang cập nhật", sub: "Cơ thân dẹt/thoi lướt dòng hải lưu", color: "text-rose-400" },
+      ],
+      systems: [
+        {
+          id: "gills",
+          nameVi: "Hô hấp mang & trao đổi khí",
+          nameEn: "Gills & Gas Exchange",
+          icon: Activity,
+          color: "cyan",
+          headline: `${displayName} trích xuất oxy hòa tan hiệu suất cao nhờ cấu trúc phiến mang chảy ngược dòng`,
+          details: [
+            {
+              title: "Nguyên lý dòng chảy ngược dòng",
+              desc: "Nước biển đi qua phiến mang ngược chiều dòng máu mao mạch, duy trì chênh lệch áp suất giúp oxy khuếch tán liên tục vào hệ tuần hoàn.",
+            },
+            {
+              title: "Bóng khí kiểm soát độ nổi",
+              desc: "Túi khí co giãn tự nhiên giúp cá lơ lửng giữ thăng bằng ở độ sâu mong muốn mà không tốn nhiều năng lượng quẫy vây.",
+            },
+          ],
+        },
+        {
+          id: "lateral-line",
+          nameVi: "Hệ thống cảm nhận đường bên",
+          nameEn: "Lateral Line Sensory System",
+          icon: Brain,
+          color: "indigo",
+          headline: "Cơ quan thụ cảm áp suất chạy dọc thân giúp di chuyển theo đàn và né tránh kẻ săn mồi",
+          details: [
+            {
+              title: "Chuỗi tế bào lông cảm ứng rung động",
+              desc: "Ống đường bên dọc hai bên sườn nhận biết vi dao động áp suất nước, cho phép đàn cá đổi hướng đồng loạt trong nháy mắt.",
+            },
+            {
+              title: "Định hướng trong vùng nước đục",
+              desc: "Khi tầm nhìn hạn chế gần đáy bùn cát hoặc ban đêm, cá vẫn định vị được chướng ngại và dòng chảy xung quanh.",
+            },
+          ],
+        },
+        {
+          id: "hydrodynamics",
+          nameVi: "Thủy động lực & lớp nhầy giảm ma sát",
+          nameEn: "Hydrodynamics & Skin Mucus",
+          icon: Waves,
+          color: "emerald",
+          headline: "Cấu trúc vây và vảy xếp lợp giảm thiểu lực cản của nước và chống ký sinh trùng",
+          details: [
+            {
+              title: "Lớp nhầy biểu bì bảo vệ",
+              desc: "Chất nhầy trơn trên lớp vảy vừa làm giảm ma sát thủy động lực vừa chứa kháng thể tự nhiên ngăn vi khuẩn và nấm biển.",
+            },
+            {
+              title: "Vây ngực & vây đuôi định hướng",
+              desc: "Hệ xương tia vây linh hoạt giúp phanh gấp, xoay trở hẹp hoặc bứt tốc tức thì trước nguy hiểm.",
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  // Fallback tối giản, gắn trực tiếp dữ liệu loài nếu chưa khớp nhóm nào ở trên
   return {
-    groupLabel: "Cấu trúc sinh học biển sâu",
+    groupLabel: species?.categoryVi || "Đặc điểm sinh học biển",
     metrics: [
-      { label: "Thích nghi áp suất", value: "Tự nhiên", sub: "Cân bằng nội bào ổn định", color: "text-cyan-400" },
-      { label: "Trao đổi chất", value: "Tối ưu hóa", sub: "Tiết kiệm năng lượng vùng nước tối", color: "text-emerald-400" },
-      { label: "Cảm ứng môi trường", value: "Thụ thể hóa học", sub: "Nhận biết dòng chảy và dinh dưỡng", color: "text-indigo-400" },
-      { label: "Cơ chế sinh tồn", value: "Đặc hữu", sub: "Tiến hóa thích nghi bền bỉ", color: "text-amber-400" },
+      { label: "Kích thước cơ thể", value: species?.size || "Đang cập nhật", sub: "Biên độ phát triển trưởng thành", color: "text-cyan-400" },
+      { label: "Tầng phân bố", value: species?.depth || "Đang cập nhật", sub: "Dải độ sâu sinh sống thực tế", color: "text-indigo-400" },
+      { label: "Nhóm phân loại", value: species?.taxonomy?.family || species?.categoryVi || "Đang cập nhật", sub: "Hồ sơ định danh sinh học", color: "text-emerald-400" },
+      { label: "Dinh dưỡng", value: species?.diet ? "Tập tính riêng" : "Đang cập nhật", sub: species?.diet || "Đang bổ sung dữ liệu", color: "text-amber-400" },
     ],
     systems: [
       {
-        id: "cellular",
-        nameVi: "Cấu trúc tế bào & cân bằng nội môi",
-        nameEn: "Cellular Structure & Homeostasis",
-        icon: Activity,
+        id: "habitat-adaptation",
+        nameVi: "Thích nghi sinh cảnh tự nhiên",
+        nameEn: "Natural Habitat Adaptation",
+        icon: Compass,
         color: "cyan",
-        headline: "Cơ chế chuyển hóa năng lượng thích nghi ổn định với áp lực và độ mặn",
+        headline: `${displayName} phát triển các đặc điểm hình thái phù hợp với dải độ sâu ${species?.depth || "biển tự nhiên"}`,
         details: [
           {
-            title: "Trao đổi chất qua màng thẩm thấu",
-            desc: "Các tế bào biểu mô có màng bán thấm điều tiết nồng độ ion muối và khoáng chất, đảm bảo hoạt động sinh lý bình thường dưới áp suất cao.",
+            title: "Cân bằng áp suất và độ mặn",
+            desc: `Cơ thể điều hòa áp suất thẩm thấu phù hợp với môi trường ${species?.eastSeaZone || "nước mặn đại dương"}.`,
           },
           {
-            title: "Thích nghi nhiệt độ nước biển",
-            desc: "Thành phần lipid màng tế bào linh động giúp duy trì trao đổi chất ngay cả ở nhiệt độ gần đóng băng.",
-          },
-        ],
-      },
-      {
-        id: "defense",
-        nameVi: "Cơ chế phòng vệ sinh thái",
-        nameEn: "Ecological Defense & Adaptation",
-        icon: Shield,
-        color: "emerald",
-        headline: "Phối hợp sinh thái và cơ chế tự vệ trước môi trường khắc nghiệt",
-        details: [
-          {
-            title: "Cộng sinh và tuần hoàn dinh dưỡng",
-            desc: "Đóng vai trò mắt xích trong chuỗi thức ăn đại dương, trao đổi vật chất với các sinh vật phù du và vi sinh vật biển sâu.",
+            title: "Chiến lược kiếm ăn",
+            desc: species?.diet
+              ? `Nguồn dinh dưỡng ghi nhận: ${species.diet}.`
+              : "Tối ưu hóa tiêu thụ năng lượng theo chu kỳ thủy triều và dòng chảy.",
           },
         ],
       },
@@ -562,7 +934,13 @@ function getSpeciesAnatomyProfile(species) {
 export function AnatomySection({ species }) {
   const { language, t } = useLanguage();
   const [activeHotspot, setActiveHotspot] = useState(null);
-  const [activeSystemTab, setActiveSystemTab] = useState(0);
+  const [tabSelection, setTabSelection] = useState({ speciesId: null, idx: 0 });
+  const currentSpeciesId = species?.id ?? null;
+  const activeSystemTab =
+    tabSelection.speciesId === currentSpeciesId ? tabSelection.idx : 0;
+  const setActiveSystemTab = (idx) => {
+    setTabSelection({ speciesId: currentSpeciesId, idx });
+  };
 
   // Kiểm tra mô hình 3D bóc tách của loài
   const isShark = useMemo(() => {
@@ -652,7 +1030,7 @@ export function AnatomySection({ species }) {
         {anatomyProfile.metrics.map((m, idx) => (
           <div
             key={idx}
-            className="p-3.5 rounded-xl bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 rounded-xl shadow-sm transition-all duration-200"
+            className="p-3.5 rounded-xl bg-[#183c66] border border-white/15 shadow-sm"
           >
             <p className="text-xs text-slate-300">
               {m.label}
@@ -675,6 +1053,7 @@ export function AnatomySection({ species }) {
           return (
             <button
               key={sys.id}
+              type="button"
               onClick={() => setActiveSystemTab(idx)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                 isActive

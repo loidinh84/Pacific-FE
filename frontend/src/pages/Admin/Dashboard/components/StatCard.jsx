@@ -48,8 +48,8 @@ export default function StatCard({
 
   return (
     <div
-      className={`rounded-2xl border p-4 sm:p-5 transition-all duration-200 ${
-        isDark ? "bg-[#162040] border-white/10 hover:border-white/20" : "bg-white border-slate-200 hover:border-slate-300"
+      className={`rounded-2xl border p-4 sm:p-5 ${
+        isDark ? "bg-[#162040] border-white/10" : "bg-white border-slate-200"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
