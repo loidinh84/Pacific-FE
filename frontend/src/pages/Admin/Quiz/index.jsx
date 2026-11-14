@@ -248,9 +248,6 @@ export default function QuizManagement() {
           <h1 className="text-2xl md:text-3xl font-bold font-heading">
             Ngân hàng câu hỏi trắc nghiệm
           </h1>
-          <p className={`text-xs md:text-sm mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-            Quản trị các câu hỏi đố vui kiến thức đại dương, sinh vật học và bảo tồn môi trường biển
-          </p>
         </div>
 
         <button

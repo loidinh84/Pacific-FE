@@ -185,9 +185,6 @@ export default function FeedbackManagement() {
           >
             Ý kiến đóng góp
           </h1>
-          <p className={`text-xs md:text-sm mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-            Xem và quản lý tất cả ý kiến, phản hồi và cảm nghĩ gửi từ chân trang (Footer)
-          </p>
         </div>
 
         <button
