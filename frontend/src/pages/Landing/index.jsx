@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import HeroSection from "./HeroSection";
-import AboutSection from "./AboutSection";
+import CorePillarsSection from "./CorePillarsSection";
 import SpeciesSection from "./SpeciesSection";
+import LocationsShowcaseSection from "./LocationsShowcaseSection";
 import SearchSection from "./SearchSection";
 import PacificHotspotMap from "../../components/common/PacificHotspotMap";
 
@@ -23,7 +24,7 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-pacific-figma-dark text-white selection:bg-pacific-cyan/30">
-      {/* Bản đồ Biển Đông tương tác làm nền cho cả trang Landing */}
+      {/* Bản đồ Biển Đông tương tác làm nền cho khu vực Hero */}
       <PacificHotspotMap asBackground />
 
       {/* Thanh điều hướng */}
@@ -32,8 +33,9 @@ export default function Landing() {
       {/* Nội dung các phần của trang Landing */}
       <main className="relative z-10 overflow-x-hidden">
         <HeroSection />
-        <AboutSection />
+        <CorePillarsSection />
         <SpeciesSection />
+        <LocationsShowcaseSection />
         <SearchSection />
       </main>
 

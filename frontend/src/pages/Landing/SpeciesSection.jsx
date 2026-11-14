@@ -1,19 +1,52 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ArrowRight, Compass, ShieldAlert, Sparkles, Waves } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { SPECIES_DATA } from "../../mocks/speciesMock";
-import { fetchSpeciesList } from "../../services/speciesApi";
+import { fetchSpeciesList, fetchSpeciesGroups } from "../../services/speciesApi";
 import { FishHidden } from "../../assets/Images";
 import { getLocalizedCategory, getLocalizedSpeciesName } from "../../utils/speciesFormatters";
+
+const IUCN_COLORS = {
+  CR: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+  EN: "bg-orange-500/20 text-orange-300 border-orange-500/40",
+  VU: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+  NT: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+  LC: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+  DD: "bg-slate-500/20 text-slate-300 border-slate-500/40",
+};
 
 export default function SpeciesSection() {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
+  const isEn = language === "en";
   const [speciesList, setSpeciesList] = useState(SPECIES_DATA);
+  const [categories, setCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Load Categories for Filter Tabs
+  useEffect(() => {
+    fetchSpeciesGroups()
+      .then((res) => {
+        if (res?.success && Array.isArray(res.data)) {
+          setCategories(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Load Species List based on active category
   useEffect(() => {
     let isMounted = true;
-    fetchSpeciesList({ limit: 4, sortBy: "views" })
+    setIsLoading(true);
+
+    const queryParams = { limit: 4, sortBy: "views" };
+    if (activeCategory !== "all") {
+      queryParams.groupId = activeCategory;
+    }
+
+    fetchSpeciesList(queryParams)
       .then((res) => {
         if (!isMounted) return;
         if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
@@ -26,6 +59,9 @@ export default function SpeciesSection() {
             nameEn: getLocalizedSpeciesName(s, "en"),
             sciName: s.scientificName,
             image: s.image,
+            cCode: s.conservationStatus?.code || s.conservationCode || "LC",
+            cName: s.conservationStatus?.name || s.conservation || "Ít lo ngại",
+            depthZone: s.oceanZone?.name || s.oceanZone || "Tầng mặt (0 - 200m)",
             stats: [
               {
                 val: s.sizeMaxCm ? `${(s.sizeMaxCm / 100).toFixed(1)}m` : null,
@@ -59,42 +95,87 @@ export default function SpeciesSection() {
       })
       .catch(() => {
         // Fallback giữ nguyên SPECIES_DATA
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
       });
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [activeCategory]);
 
   return (
     <section
       id="species"
-      className="bg-pacific-figma-dark/80 backdrop-blur-md pt-12 pb-6 relative overflow-hidden border-t border-white/5"
+      className="bg-pacific-figma-dark/90 backdrop-blur-md pt-16 pb-20 relative overflow-hidden border-t border-white/5"
     >
       <div className="absolute top-1/3 right-0 w-80 h-80 rounded-full bg-pacific-cyan/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="text-center mb-16" data-aos="fade-up">
-          <h2 className="text-3xl md:text-4xl font-black text-white font-heading">
+        <div className="text-center max-w-2xl mx-auto mb-10" data-aos="fade-up">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/30 uppercase mb-3">
+            <Sparkles size={13} />
+            <span>{isEn ? "Featured Marine Fauna" : "Sinh Vật Tiêu Biểu"}</span>
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black text-white font-heading tracking-tight leading-tight">
             {t("species.title")}
           </h2>
-          <p className="text-sm md:text-base text-pacific-blue-pale mt-3 max-w-xl mx-auto font-medium">
+          <p className="text-sm md:text-base text-slate-300/80 mt-3 font-normal leading-relaxed">
             {t("species.subtitle")}
           </p>
         </div>
 
+        {/* Quick Filter Tabs */}
+        {categories.length > 0 && (
+          <div
+            className="flex items-center justify-center flex-wrap gap-2 mb-12"
+            data-aos="fade-up"
+          >
+            <button
+              onClick={() => setActiveCategory("all")}
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                activeCategory === "all"
+                  ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/25 scale-105"
+                  : "bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10"
+              }`}
+            >
+              {isEn ? "All Species" : "Tất cả sinh vật"}
+            </button>
+            {categories.slice(0, 5).map((cat) => {
+              const isSelected = String(activeCategory) === String(cat.id);
+              const label = isEn ? getLocalizedCategory(cat.name, "en") : cat.name;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    isSelected
+                      ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/25 scale-105"
+                      : "bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* Species List */}
         <div className="flex flex-col gap-8 md:gap-10">
           {speciesList.map((s) => {
-            const tag = language === "en" ? s.tagEn : s.tagVi;
-            const name = language === "en" ? s.nameEn : s.nameVi;
-            const desc = language === "en" ? s.descEn : s.descVi;
+            const tag = isEn ? s.tagEn : s.tagVi;
+            const name = isEn ? s.nameEn : s.nameVi;
+            const desc = isEn ? s.descEn : s.descVi;
+            const iucnClass = IUCN_COLORS[s.cCode] || IUCN_COLORS.LC;
 
             return (
               <div
                 key={s.id}
-                className="bg-pacific-figma-card rounded-3xl p-6 md:p-8 shadow-xl border border-white/10 relative overflow-hidden group cursor-pointer hover:border-pacific-cyan/40 transition-colors"
+                className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl p-6 md:p-8 shadow-xl border border-white/10 backdrop-blur-xl relative overflow-hidden group cursor-pointer hover:border-cyan-400/40 hover:shadow-cyan-500/10 transition-all duration-300"
                 data-aos={s.aos}
                 data-aos-duration="900"
                 onClick={() => navigate(`/species/${s.slug || s.id}`)}
@@ -103,21 +184,33 @@ export default function SpeciesSection() {
                   {/* Left Column: Details */}
                   <div className="lg:col-span-7 flex flex-col justify-between">
                     <div>
-                      {/* Tag */}
-                      <span className="inline-block px-3 py-1.5 bg-pacific-blue-bright/20 border border-pacific-blue-bright/40 text-pacific-blue-light text-sm font-semibold rounded-xl tracking-wider mb-3">
-                        {tag}
-                      </span>
+                      {/* Tags row: Group, IUCN & Depth */}
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <span className="inline-block px-3 py-1 bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 text-xs font-semibold rounded-xl tracking-wide">
+                          {tag}
+                        </span>
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-xl border ${iucnClass}`}
+                        >
+                          <ShieldAlert size={12} />
+                          <span>IUCN: {s.cCode}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-xl bg-white/5 text-slate-300 border border-white/10">
+                          <Waves size={12} className="text-cyan-400" />
+                          <span>{s.depthZone}</span>
+                        </span>
+                      </div>
 
                       {/* Name & SciName */}
-                      <h3 className="text-2xl md:text-3xl font-bold text-white font-heading mb-1 group-hover:text-pacific-cyan transition-colors">
+                      <h3 className="text-2xl md:text-3xl font-black text-white font-heading mb-1 group-hover:text-cyan-300 transition-colors">
                         {name}
                       </h3>
-                      <p className="text-sm text-pacific-blue-pale italic mb-6">
+                      <p className="text-sm text-cyan-200/70 italic mb-4 font-mono">
                         {s.sciName}
                       </p>
 
                       {/* Description */}
-                      <p className="text-sm md:text-base text-white/80 leading-relaxed mb-5 line-clamp-3">
+                      <p className="text-sm md:text-base text-slate-200/80 leading-relaxed mb-6 line-clamp-3 font-normal">
                         {desc}
                       </p>
                     </div>
@@ -127,21 +220,21 @@ export default function SpeciesSection() {
                       {s.stats.map((st, idx) => {
                         const displayVal = st.val
                           ? st.isYears
-                            ? language === "en"
+                            ? isEn
                               ? `${st.val} yrs`
                               : `${st.val} năm`
                             : st.val
-                          : language === "en"
+                          : isEn
                           ? "Updating"
                           : "Đang cập nhật";
 
                         return (
-                          <div key={idx} className="text-center">
-                            <p className="text-xl md:text-2xl font-black text-pacific-cyan font-heading whitespace-nowrap">
+                          <div key={idx} className="text-center p-2 rounded-xl bg-white/5 border border-white/5">
+                            <p className="text-lg md:text-xl font-black text-cyan-300 font-heading whitespace-nowrap">
                               {displayVal}
                             </p>
-                            <p className="text-xs text-pacific-text-muted mt-1">
-                              {language === "en" ? st.labelEn : st.labelVi}
+                            <p className="text-[11px] text-slate-400 mt-0.5">
+                              {isEn ? st.labelEn : st.labelVi}
                             </p>
                           </div>
                         );
@@ -149,9 +242,10 @@ export default function SpeciesSection() {
                     </div>
                   </div>
 
-                  {/* Right Column: Image without glass frame */}
+                  {/* Right Column: Image with floating glow */}
                   <div className="lg:col-span-5 flex justify-center items-center">
                     <div className="relative w-full max-w-sm aspect-square flex justify-center items-center p-4">
+                      <div className="absolute inset-4 rounded-full bg-cyan-500/10 blur-2xl group-hover:bg-cyan-400/20 transition-all pointer-events-none" />
                       <img
                         src={s.image || FishHidden}
                         alt={name}
@@ -160,7 +254,7 @@ export default function SpeciesSection() {
                           e.currentTarget.onerror = null;
                           e.currentTarget.src = FishHidden;
                         }}
-                        className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.65)] group-hover:scale-108 transition-transform duration-500"
+                        className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] group-hover:scale-108 transition-transform duration-500"
                       />
                     </div>
                   </div>
@@ -171,12 +265,13 @@ export default function SpeciesSection() {
         </div>
 
         {/* View All Button */}
-        <div className="text-center mt-5" data-aos="fade-up">
+        <div className="text-center mt-12" data-aos="fade-up">
           <button
             onClick={() => navigate("/search")}
-            className="px-5 py-2.5 rounded-2xl font-bold text-white bg-blue-950 hover:bg-blue-800 active:translate-y-0.5 transition-all cursor-pointer text-sm"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/20 active:translate-y-0.5 transition-all text-sm cursor-pointer"
           >
-            {t("species.btnViewAll")}
+            <span>{t("species.btnViewAll")}</span>
+            <ArrowRight size={16} />
           </button>
         </div>
       </div>

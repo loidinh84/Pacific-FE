@@ -91,14 +91,23 @@ export default function Navbar() {
   useClickOutside(userDropdownRef, () => setIsUserOpen(false));
 
   const navLinks = [
-    { label: t("nav.news"), href: "/news", hasDropdown: false },
-    { label: t("nav.species"), href: "/search", hasDropdown: true },
+    { label: t("nav.species"), href: "/search", hasDropdown: false },
     {
       label: language === "vi" ? "Độ Sâu Biển Đông" : "East Sea Depth",
       href: "/ocean-depth",
       hasDropdown: false,
     },
-    { label: t("nav.about"), href: "/#about", hasDropdown: true },
+    {
+      label: language === "vi" ? "Đồ Thị Sinh Thái" : "Knowledge Graph",
+      href: "/knowledge-graph",
+      hasDropdown: false,
+    },
+    {
+      label: language === "vi" ? "Khu Bảo Tồn" : "Marine Sanctuaries",
+      href: "/#marine-locations",
+      hasDropdown: false,
+    },
+    { label: t("nav.news"), href: "/news", hasDropdown: false },
   ];
 
   const languages = [

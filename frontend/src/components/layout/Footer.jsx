@@ -203,8 +203,8 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <a href="/#about" className="hover:text-pacific-cyan transition-colors">
-                {t("nav.about")}
+              <a href="/#marine-locations" className="hover:text-pacific-cyan transition-colors">
+                {language === "vi" ? "Khu bảo tồn biển" : "Marine Sanctuaries"}
               </a>
             </li>
           </ul>
