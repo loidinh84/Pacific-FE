@@ -3,6 +3,7 @@ import { X, Eye, EyeOff, Loader2, CheckCircle2, AlertCircle } from "lucide-react
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
 import { changeAdminPassword } from "../../../services/adminProfileApi";
 import { useLanguage } from "../../../hooks/useLanguage";
+import { localizeMessage } from "../../../utils/errorTranslator";
 
 export default function ChangePasswordModal({
   isOpen,
@@ -69,7 +70,11 @@ export default function ChangePasswordModal({
       });
 
       setPassSuccess(
-        res.message || (isEn ? "Password updated successfully." : "Đổi mật khẩu thành công.")
+        localizeMessage(
+          res.message,
+          language,
+          isEn ? "Password updated successfully." : "Đổi mật khẩu thành công."
+        )
       );
       setCurrentPassword("");
       setNewPassword("");
@@ -79,10 +84,11 @@ export default function ChangePasswordModal({
       }, 1500);
     } catch (err) {
       console.error("Đổi mật khẩu lỗi:", err);
-      const msg =
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        (isEn ? "Could not update password." : "Không thể đổi mật khẩu.");
+      const msg = localizeMessage(
+        err,
+        language,
+        isEn ? "Could not update password." : "Không thể đổi mật khẩu."
+      );
       setPassError(msg);
     } finally {
       setIsChangingPass(false);
@@ -131,8 +137,8 @@ export default function ChangePasswordModal({
         <form onSubmit={handleSubmit} className="space-y-4 text-sm">
           {/* Current Password */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-              {isEn ? "Current Password" : "MẬT KHẨU HIỆN TẠI"} <span className="text-rose-400">*</span>
+            <label className="text-xs font-semibold text-slate-300">
+              {isEn ? "Current Password" : "Mật khẩu hiện tại"} <span className="text-rose-400">*</span>
             </label>
             <div className="relative">
               <input
@@ -156,8 +162,8 @@ export default function ChangePasswordModal({
 
           {/* New Password */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-              {isEn ? "New Password" : "MẬT KHẨU MỚI"} <span className="text-rose-400">*</span>
+            <label className="text-xs font-semibold text-slate-300">
+              {isEn ? "New Password" : "Mật khẩu mới"} <span className="text-rose-400">*</span>
             </label>
             <div className="relative">
               <input
@@ -182,8 +188,8 @@ export default function ChangePasswordModal({
 
           {/* Confirm Password */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-              {isEn ? "Confirm New Password" : "XÁC NHẬN MẬT KHẨU MỚI"} <span className="text-rose-400">*</span>
+            <label className="text-xs font-semibold text-slate-300">
+              {isEn ? "Confirm New Password" : "Xác nhận mật khẩu mới"} <span className="text-rose-400">*</span>
             </label>
             <div className="relative">
               <input

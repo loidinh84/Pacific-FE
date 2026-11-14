@@ -289,12 +289,12 @@ const ResetPasswordDialog = ({
   onConfirm,
   onClose,
 }) => {
-  const [newPwd, setNewPwd] = useState("Pacific@123");
+  const [newPwd, setNewPwd] = useState("Security@123");
   const [showPwd, setShowPwd] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      setNewPwd("Pacific@123");
+      setNewPwd("Security@123");
       setShowPwd(false);
     }
   }, [isOpen]);
@@ -305,7 +305,7 @@ const ResetPasswordDialog = ({
     for (let i = 0; i < 8; i++) {
       gen += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    setNewPwd(`Pacific@${gen}`);
+    setNewPwd(`Security@${gen}`);
   };
 
   if (!isOpen) return null;
@@ -947,7 +947,7 @@ const UserDetailModal = ({
                 }`}
               >
                 <div className="flex items-center justify-between pb-2.5 border-b border-white/10">
-                  <span className="font-bold uppercase tracking-wider text-[11px] text-cyan-400">
+                  <span className="font-bold text-[11px] text-cyan-400">
                     Thông tin tài khoản & Hoạt động
                   </span>
                   <span
@@ -1023,7 +1023,7 @@ const UserDetailModal = ({
                     }`}
                   >
                     <h3
-                      className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${
+                      className={`text-xs font-bold flex items-center gap-2 ${
                         isDark ? "text-slate-300" : "text-slate-700"
                       }`}
                     >
@@ -1079,7 +1079,7 @@ const UserDetailModal = ({
                     }`}
                   >
                     <h3
-                      className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${
+                      className={`text-xs font-bold flex items-center gap-2 ${
                         isDark ? "text-slate-300" : "text-slate-700"
                       }`}
                     >
@@ -1136,7 +1136,7 @@ const UserDetailModal = ({
                       }`}
                     >
                       <h3
-                        className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${
+                        className={`text-xs font-bold flex items-center gap-2 ${
                           isDark ? "text-slate-300" : "text-slate-700"
                         }`}
                       >
@@ -1512,7 +1512,7 @@ export default function UsersManagement() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `pacific_users_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `danh_sach_nguoi_dung_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

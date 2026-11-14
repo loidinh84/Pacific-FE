@@ -14,9 +14,11 @@ import { useLanguage } from "../../hooks/useLanguage";
 import { Interactive3DAnatomyViewer } from "../../components/species/Interactive3DAnatomyViewer";
 
 // Hồ sơ sinh lý học & cấu trúc giải phẫu học thuật tự nhiên, tinh gọn, không lạm dụng chữ hoa và từ trong ngoặc
-function getSpeciesAnatomyProfile(species) {
-  const displayName = species?.nameVi || species?.commonName || "Sinh vật biển";
-  const name = displayName.toLowerCase();
+function getSpeciesAnatomyProfile(species, isEn = false) {
+  const displayName = isEn
+    ? species?.nameEn || species?.commonName || "Marine Creature"
+    : species?.nameVi || species?.commonName || "Sinh vật biển";
+  const name = (species?.nameVi || species?.commonName || "").toLowerCase();
   const cat = `${species?.category || ""} ${species?.categoryVi || ""} ${
     species?.taxonomy?.phylum || ""
   } ${species?.taxonomy?.class || ""} ${species?.taxonomy?.order || ""} ${
@@ -473,18 +475,31 @@ function getSpeciesAnatomyProfile(species) {
     cat.includes("mammalia") ||
     cat.includes("dong-vat-co-vu-bien") ||
     cat.includes("vú") ||
+    cat.includes("cetacea") ||
+    cat.includes("delphinidae") ||
+    cat.includes("sirenia") ||
     name.includes("cá voi") ||
     name.includes("cá heo") ||
     name.includes("dugong") ||
-    name.includes("bò biển")
+    name.includes("bò biển") ||
+    name.includes("dolphin") ||
+    name.includes("whale") ||
+    sciName.includes("delphinus") ||
+    sciName.includes("lagenodelphis") ||
+    sciName.includes("stenella") ||
+    sciName.includes("tursiops") ||
+    sciName.includes("sousa") ||
+    sciName.includes("orca") ||
+    sciName.includes("balaenoptera") ||
+    sciName.includes("megaptera")
   ) {
     return {
-      groupLabel: "Động vật có vú biển",
+      groupLabel: isEn ? "Marine Mammals" : "Động vật có vú biển",
       metrics: [
-        { label: "Nín thở tối đa", value: "60 - 90 phút", sub: "Dung tích nạp oxy trong cơ bắp", color: "text-cyan-400" },
-        { label: "Lớp mỡ dưới da", value: "15 - 30 cm", sub: "Cách nhiệt và tích trữ năng lượng", color: "text-amber-400" },
-        { label: "Định vị âm thanh", value: "Hơn 150 kHz", sub: "Sóng siêu âm qua khối mỡ trán", color: "text-indigo-400" },
-        { label: "Dung tích phổi", value: "90% dung tích", sub: "Hiệu suất trao đổi khí mỗi lần thở", color: "text-emerald-400" },
+        { label: isEn ? "Max Breath-Hold" : "Nín thở tối đa", value: isEn ? "60 - 90 mins" : "60 - 90 phút", sub: isEn ? "Muscle myoglobin oxygen load" : "Dung tích nạp oxy trong cơ bắp", color: "text-cyan-400" },
+        { label: isEn ? "Blubber Layer" : "Lớp mỡ dưới da", value: "15 - 30 cm", sub: isEn ? "Thermal insulation & energy store" : "Cách nhiệt và tích trữ năng lượng", color: "text-amber-400" },
+        { label: isEn ? "Biosonar Frequency" : "Định vị âm thanh", value: isEn ? "Over 150 kHz" : "Hơn 150 kHz", sub: isEn ? "Ultrasonic echolocation beam" : "Sóng siêu âm qua khối mỡ trán", color: "text-indigo-400" },
+        { label: isEn ? "Lung Exchange" : "Dung tích phổi", value: isEn ? "90% capacity" : "90% dung tích", sub: isEn ? "Gas exchange efficiency per breath" : "Hiệu suất trao đổi khí mỗi lần thở", color: "text-emerald-400" },
       ],
       systems: [
         {
@@ -898,13 +913,40 @@ function getSpeciesAnatomyProfile(species) {
   }
 
   // Fallback tối giản, gắn trực tiếp dữ liệu loài nếu chưa khớp nhóm nào ở trên
+  const updatingLabel = isEn ? "Updating" : "Đang cập nhật";
   return {
-    groupLabel: species?.categoryVi || "Đặc điểm sinh học biển",
+    groupLabel: isEn
+      ? species?.categoryEn || "Marine Biological Traits"
+      : species?.categoryVi || "Đặc điểm sinh học biển",
     metrics: [
-      { label: "Kích thước cơ thể", value: species?.size || "Đang cập nhật", sub: "Biên độ phát triển trưởng thành", color: "text-cyan-400" },
-      { label: "Tầng phân bố", value: species?.depth || "Đang cập nhật", sub: "Dải độ sâu sinh sống thực tế", color: "text-indigo-400" },
-      { label: "Nhóm phân loại", value: species?.taxonomy?.family || species?.categoryVi || "Đang cập nhật", sub: "Hồ sơ định danh sinh học", color: "text-emerald-400" },
-      { label: "Dinh dưỡng", value: species?.diet ? "Tập tính riêng" : "Đang cập nhật", sub: species?.diet || "Đang bổ sung dữ liệu", color: "text-amber-400" },
+      {
+        label: isEn ? "Body Size" : "Kích thước cơ thể",
+        value: species?.size || updatingLabel,
+        sub: isEn ? "Adult size range" : "Biên độ phát triển trưởng thành",
+        color: "text-cyan-400",
+      },
+      {
+        label: isEn ? "Depth Range" : "Tầng phân bố",
+        value: species?.depth || updatingLabel,
+        sub: isEn ? "Observed depth zone" : "Dải độ sâu sinh sống thực tế",
+        color: "text-indigo-400",
+      },
+      {
+        label: isEn ? "Taxonomy Group" : "Nhóm phân loại",
+        value:
+          (isEn
+            ? species?.taxonomy?.family || species?.categoryEn
+            : species?.taxonomy?.family || species?.categoryVi) || updatingLabel,
+        sub: isEn ? "Identification profile" : "Hồ sơ định danh sinh học",
+        color: "text-emerald-400",
+      },
+      {
+        label: isEn ? "Diet Strategy" : "Dinh dưỡng",
+        value: species?.diet ? (isEn ? "Specialized" : "Tập tính riêng") : updatingLabel,
+        sub:
+          species?.diet || (isEn ? "Supplementary data" : "Đang bổ sung dữ liệu"),
+        color: "text-amber-400",
+      },
     ],
     systems: [
       {
@@ -913,17 +955,21 @@ function getSpeciesAnatomyProfile(species) {
         nameEn: "Natural Habitat Adaptation",
         icon: Compass,
         color: "cyan",
-        headline: `${displayName} phát triển các đặc điểm hình thái phù hợp với dải độ sâu ${species?.depth || "biển tự nhiên"}`,
+        headline: isEn
+          ? `${displayName} evolved specialized morphological traits adapted to depth range of ${species?.depth || "natural marine waters"}`
+          : `${displayName} phát triển các đặc điểm hình thái phù hợp với dải độ sâu ${species?.depth || "biển tự nhiên"}`,
         details: [
           {
-            title: "Cân bằng áp suất và độ mặn",
-            desc: `Cơ thể điều hòa áp suất thẩm thấu phù hợp với môi trường ${species?.eastSeaZone || "nước mặn đại dương"}.`,
+            title: isEn ? "Osmoregulation & Pressure" : "Cân bằng áp suất và độ mặn",
+            desc: isEn
+              ? `Physiological osmoregulation adapted to ${species?.eastSeaZone || "marine environment"}.`
+              : `Cơ thể điều hòa áp suất thẩm thấu phù hợp với môi trường ${species?.eastSeaZone || "nước mặn đại dương"}.`,
           },
           {
-            title: "Chiến lược kiếm ăn",
+            title: isEn ? "Foraging Behavior" : "Chiến lược kiếm ăn",
             desc: species?.diet
-              ? `Nguồn dinh dưỡng ghi nhận: ${species.diet}.`
-              : "Tối ưu hóa tiêu thụ năng lượng theo chu kỳ thủy triều và dòng chảy.",
+              ? (isEn ? `Recorded nutrition: ${species.diet}.` : `Nguồn dinh dưỡng ghi nhận: ${species.diet}.`)
+              : (isEn ? "Energy optimization tuned with marine currents." : "Tối ưu hóa tiêu thụ năng lượng theo chu kỳ thủy triều và dòng chảy."),
           },
         ],
       },
@@ -933,6 +979,7 @@ function getSpeciesAnatomyProfile(species) {
 
 export function AnatomySection({ species }) {
   const { language, t } = useLanguage();
+  const isEn = language === "en";
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [tabSelection, setTabSelection] = useState({ speciesId: null, idx: 0 });
   const currentSpeciesId = species?.id ?? null;
@@ -967,8 +1014,8 @@ export function AnatomySection({ species }) {
   const resolvedModel3dUrl = species?.model3dUrl || species?.model3D || (isShark ? "/models/shark.glb" : null);
 
   const anatomyProfile = useMemo(() => {
-    return getSpeciesAnatomyProfile(species);
-  }, [species]);
+    return getSpeciesAnatomyProfile(species, isEn);
+  }, [species, isEn]);
 
   if (!species) {
     return null;
@@ -1010,7 +1057,7 @@ export function AnatomySection({ species }) {
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
             <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
-              {t("speciesDetail.anatomyTitle") || "Cấu trúc giải phẫu & sinh lý học"}
+              {t("speciesDetail.anatomyTitle") || (isEn ? "Anatomy & Physiology" : "Cấu trúc giải phẫu & sinh lý học")}
             </h2>
             <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
               {anatomyProfile.groupLabel}
@@ -1021,7 +1068,12 @@ export function AnatomySection({ species }) {
         {/* Trạng thái mô hình 3D */}
         <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#112d4e] border border-white/15 text-slate-300 text-xs font-medium shrink-0">
           <Box size={14} className="text-sky-400" />
-          <span>Mô hình 3D: Đang cập nhật</span>
+          <span>
+            {t(
+              "speciesDetail.model3dUpdating",
+              isEn ? "3D Model: Updating" : "Mô hình 3D: Đang cập nhật"
+            )}
+          </span>
         </span>
       </div>
 
@@ -1076,7 +1128,7 @@ export function AnatomySection({ species }) {
             <SystemIcon size={20} />
           </div>
           <p className="text-xs md:text-sm text-slate-200 leading-relaxed font-medium">
-            {currentSystem.headline}
+            {isEn ? (currentSystem.headlineEn || currentSystem.headline) : (currentSystem.headlineVi || currentSystem.headline)}
           </p>
         </div>
 
@@ -1092,11 +1144,11 @@ export function AnatomySection({ species }) {
                   {idx + 1}
                 </span>
                 <h4 className="text-sm font-semibold text-white leading-snug">
-                  {detail.title}
+                  {isEn ? (detail.titleEn || detail.title) : (detail.titleVi || detail.title)}
                 </h4>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed pl-7 flex-1">
-                {detail.desc}
+                {isEn ? (detail.descEn || detail.desc) : (detail.descVi || detail.desc)}
               </p>
             </div>
           ))}
@@ -1107,8 +1159,12 @@ export function AnatomySection({ species }) {
           <div className="p-3.5 rounded-xl bg-blue-950/20 border border-blue-500/20 flex items-start gap-2.5 text-xs text-slate-300">
             <Info size={15} className="text-cyan-400 shrink-0 mt-0.5" />
             <p className="leading-relaxed text-slate-300/90">
-              <span className="font-semibold text-cyan-300 mr-1.5">Ghi nhận sinh học:</span>
-              "{species.fullBioHighlightsVi[activeSystemTab % species.fullBioHighlightsVi.length]?.content || species.descVi}"
+              <span className="font-semibold text-cyan-300 mr-1.5">
+                {isEn ? "Biological Note:" : "Ghi nhận sinh học:"}
+              </span>
+              "{isEn
+                ? (species.fullBioHighlightsEn?.[activeSystemTab % (species.fullBioHighlightsEn?.length || 1)]?.content || species.descEn || species.description)
+                : (species.fullBioHighlightsVi[activeSystemTab % species.fullBioHighlightsVi.length]?.content || species.descVi || species.description)}"
             </p>
           </div>
         )}

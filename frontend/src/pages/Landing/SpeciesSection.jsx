@@ -4,6 +4,7 @@ import { useLanguage } from "../../hooks/useLanguage";
 import { SPECIES_DATA } from "../../mocks/speciesMock";
 import { fetchSpeciesList } from "../../services/speciesApi";
 import { FishHidden } from "../../assets/Images";
+import { getLocalizedCategory, getLocalizedSpeciesName } from "../../utils/speciesFormatters";
 
 export default function SpeciesSection() {
   const navigate = useNavigate();
@@ -20,24 +21,25 @@ export default function SpeciesSection() {
             id: s.id,
             slug: s.slug || s.id,
             tagVi: s.group?.name || "Sinh vật biển",
-            tagEn: s.group?.name || "Marine Life",
+            tagEn: getLocalizedCategory(s.group?.name, "en"),
             nameVi: s.commonName,
-            nameEn: s.commonName,
+            nameEn: getLocalizedSpeciesName(s, "en"),
             sciName: s.scientificName,
             image: s.image,
             stats: [
               {
-                val: s.sizeMaxCm ? `${(s.sizeMaxCm / 100).toFixed(1)}m` : "Đang cập nhật",
+                val: s.sizeMaxCm ? `${(s.sizeMaxCm / 100).toFixed(1)}m` : null,
                 labelVi: "Chiều dài",
                 labelEn: "Length",
               },
               {
-                val: s.weightMaxKg ? `${s.weightMaxKg}kg` : "Đang cập nhật",
+                val: s.weightMaxKg ? `${s.weightMaxKg}kg` : null,
                 labelVi: "Cân nặng",
                 labelEn: "Weight",
               },
               {
-                val: s.lifespanYears ? `${s.lifespanYears} năm` : "Đang cập nhật",
+                val: s.lifespanYears ? s.lifespanYears : null,
+                isYears: true,
                 labelVi: "Tuổi thọ",
                 labelEn: "Lifespan",
               },
@@ -122,16 +124,28 @@ export default function SpeciesSection() {
 
                     {/* Key Stats Grid */}
                     <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10">
-                      {s.stats.map((st, idx) => (
-                        <div key={idx} className="text-center">
-                          <p className="text-xl md:text-2xl font-black text-pacific-cyan font-heading whitespace-nowrap">
-                            {st.val}
-                          </p>
-                          <p className="text-xs text-pacific-text-muted mt-1">
-                            {language === "en" ? st.labelEn : st.labelVi}
-                          </p>
-                        </div>
-                      ))}
+                      {s.stats.map((st, idx) => {
+                        const displayVal = st.val
+                          ? st.isYears
+                            ? language === "en"
+                              ? `${st.val} yrs`
+                              : `${st.val} năm`
+                            : st.val
+                          : language === "en"
+                          ? "Updating"
+                          : "Đang cập nhật";
+
+                        return (
+                          <div key={idx} className="text-center">
+                            <p className="text-xl md:text-2xl font-black text-pacific-cyan font-heading whitespace-nowrap">
+                              {displayVal}
+                            </p>
+                            <p className="text-xs text-pacific-text-muted mt-1">
+                              {language === "en" ? st.labelEn : st.labelVi}
+                            </p>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 

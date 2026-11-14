@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { X, Lock, Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import axios from "axios";
+import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 
 export function ForgotPasswordModal({ isOpen, onClose }) {
+  const { t, language } = useLanguage();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null); // { type: 'success' | 'error', text: string }
@@ -21,14 +24,20 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
       const res = await axios.post("/api/auth/forgot-password", { email });
       setStatusMessage({
         type: "success",
-        text: res.data?.message || "Đã gửi hướng dẫn khôi phục tới email của bạn!",
+        text: localizeMessage(
+          res.data?.message,
+          language,
+          t("auth.resetEmailSent", "Đã gửi hướng dẫn khôi phục tới email của bạn!")
+        ),
       });
     } catch (err) {
       console.error("Forgot password error:", err);
       // Fallback message for demo/backend integration
-      const errorMsg =
-        err.response?.data?.message ||
-        "Không thể gửi email khôi phục. Vui lòng thử lại sau!";
+      const errorMsg = localizeMessage(
+        err,
+        language,
+        t("auth.resetEmailFailed", "Không thể gửi email khôi phục. Vui lòng thử lại sau!")
+      );
       setStatusMessage({
         type: "error",
         text: errorMsg,
@@ -66,10 +75,10 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
 
         {/* Header Text */}
         <h2 className="text-2xl font-black text-white text-center mb-1">
-          Khôi phục mật khẩu
+          {t("auth.forgotPasswordTitle", "Khôi phục mật khẩu")}
         </h2>
         <p className="text-xs sm:text-sm text-white/70 text-center mb-6">
-          Nhập địa chỉ email đã đăng ký của bạn.
+          {t("auth.forgotPasswordSubtitle", "Nhập địa chỉ email đã đăng ký của bạn.")}
         </p>
 
         {/* Status Notification */}
@@ -94,7 +103,7 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-xs font-semibold text-white/90 mb-2">
-              Địa chỉ email
+              {t("auth.email", "Địa chỉ email")}
             </label>
             <div className="relative flex items-center">
               <Mail
@@ -119,7 +128,7 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
               onClick={onClose}
               className="px-6 py-2.5 rounded-xl font-bold text-[#1e2a56] bg-white hover:bg-slate-100 active:scale-95 transition-all text-sm cursor-pointer shadow-md"
             >
-              Quay lại
+              {t("auth.back", "Quay lại")}
             </button>
 
             <button
@@ -130,10 +139,10 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
               {isLoading ? (
                 <>
                   <Loader2 size={16} className="animate-spin" />
-                  <span>Đang gửi...</span>
+                  <span>{t("auth.sending", "Đang gửi...")}</span>
                 </>
               ) : (
-                "Xác nhận"
+                t("auth.submit", "Xác nhận")
               )}
             </button>
           </div>

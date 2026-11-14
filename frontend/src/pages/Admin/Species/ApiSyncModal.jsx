@@ -1258,7 +1258,7 @@ export default function ApiSyncModal({ isOpen, onClose, onSyncAll }) {
                         Tất cả sinh vật đã được đồng bộ dữ liệu thành công!
                       </p>
                       <p className="text-xs opacity-80">
-                        Cơ sở dữ liệu Pacific đã có đầy đủ hình ảnh & thông số
+                        Cơ sở dữ liệu hệ thống đã có đầy đủ hình ảnh & thông số
                         phân loại sinh học.
                       </p>
                     </div>

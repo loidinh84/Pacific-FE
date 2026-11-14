@@ -141,7 +141,7 @@ export default function AdminLayout() {
           <Link to="/admin" className="flex items-center gap-3 group">
             <img
               src={systemSettings?.general?.logoUrl || Images.Logo}
-              alt="Pacific Logo"
+              alt={systemSettings?.general?.websiteName || "Logo"}
               className="w-8 h-8 object-contain group-hover:scale-105 transition-transform"
             />
             <span
@@ -225,7 +225,7 @@ export default function AdminLayout() {
                       {currentUser.username || "Admin 1"}
                     </p>
                     <p className="text-[11px] text-slate-400 font-sans not-italic">
-                      {currentUser.email || "admin@pacific.org"}
+                      {currentUser.email || "admin@domain.org"}
                     </p>
                   </div>
                   <Link

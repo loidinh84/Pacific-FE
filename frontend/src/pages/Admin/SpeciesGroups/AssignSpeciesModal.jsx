@@ -222,7 +222,7 @@ export default function AssignSpeciesModal({
                 : "bg-slate-50 border-slate-200"
             }`}
           >
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2.5 px-1">
+            <h3 className="text-xs font-bold text-slate-300 mb-2.5 px-1">
               Chọn nhóm cần gán
             </h3>
 

@@ -68,15 +68,19 @@ export default function GeneralTab({
               <input
                 type="text"
                 value={formData.general.websiteName}
-                onChange={(e) =>
-                  updateSection("general", "websiteName", e.target.value)
-                }
+                onChange={(e) => {
+                  const val = e.target.value;
+                  updateSection("general", "websiteName", val);
+                  if (val.trim()) {
+                    document.title = val.trim();
+                  }
+                }}
                 className={`w-full px-3.5 py-2.5 rounded-xl text-xs sm:text-sm border outline-none font-medium transition-colors ${
                   isDark
                     ? "bg-[#0b1329] border-white/15 text-white focus:border-cyan-400"
                     : "bg-white border-slate-300 text-slate-900 focus:border-blue-500"
                 }`}
-                placeholder="Pacific Ocean Portal"
+                placeholder="Ví dụ: Biển Đông, Pacific Ocean..."
               />
               <p className="text-[11px] text-slate-400 mt-1">
                 Xuất hiện ở góc trên bên trái thanh điều hướng và thẻ tiêu đề
@@ -185,7 +189,7 @@ export default function GeneralTab({
                     <span>Logo tùy chỉnh</span>
                   </>
                 ) : (
-                  <span>Logo Pacific mặc định</span>
+                  <span>Logo mặc định</span>
                 )}
               </span>
             </div>
@@ -233,15 +237,15 @@ export default function GeneralTab({
                 />
               </div>
               <span className="text-slate-300 font-medium">
-                https://pacific.org
+                https://{((formData.general.websiteName || "ocean").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "d").toLowerCase().replace(/[^a-z0-9]/g, "") || "portal")}.org
               </span>
               <span className="text-slate-500">› portal › explore</span>
             </div>
 
             {/* Title row */}
             <h4 className="text-sm md:text-base font-semibold text-blue-400 hover:underline cursor-pointer truncate">
-              {formData.general.websiteName || "Pacific Ocean Portal"} | Tra
-              cứu sinh vật biển Biển Đông
+              {formData.general.websiteName || "Cổng thông tin sinh vật biển"} | Tra
+              cứu sinh vật biển {formData.general.websiteName || "Biển Đông"}
             </h4>
 
             {/* Description snippet */}
@@ -302,7 +306,7 @@ export default function GeneralTab({
                     ? "bg-[#0b1329] border-white/15 text-white focus:border-cyan-400"
                     : "bg-white border-slate-300 text-slate-900 focus:border-blue-500"
                 }`}
-                placeholder="admin@pacific.org"
+                placeholder="admin@domain.org"
               />
             </div>
           </div>

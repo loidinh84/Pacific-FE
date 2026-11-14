@@ -13,7 +13,9 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import { useLanguage } from "../../../hooks/useLanguage";
 import { useToast } from "../../../hooks/useToast";
+import { localizeMessage } from "../../../utils/errorTranslator";
 import ToastContainer from "../../../hooks/ToastContainer";
 import ConfirmModal from "../Species/ConfirmModal";
 import {
@@ -43,6 +45,8 @@ const formatRelativeTime = (dateStr) => {
 
 export default function FeedbackManagement() {
   const { isDark } = useTheme();
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const { toasts, showToast, removeToast } = useToast();
 
   const [feedbackList, setFeedbackList] = useState([]);
@@ -102,15 +106,22 @@ export default function FeedbackManagement() {
           setStats(res.data.stats);
         }
       } else {
-        showToast("Không thể tải danh sách ý kiến đóng góp", "error");
+        showToast(isEn ? "Unable to load feedback list" : "Không thể tải danh sách ý kiến đóng góp", "error");
       }
     } catch (err) {
       console.error("Lỗi khi tải ý kiến đóng góp:", err);
-      showToast(err.response?.data?.message || "Lỗi kết nối máy chủ", "error");
+      showToast(
+        localizeMessage(
+          err,
+          language,
+          isEn ? "Server connection error" : "Lỗi kết nối máy chủ"
+        ),
+        "error"
+      );
     } finally {
       setIsLoading(false);
     }
-  }, [page, limit, debouncedSearch, userTypeFilter, showToast]);
+  }, [page, limit, debouncedSearch, userTypeFilter, showToast, isEn, language]);
 
   useEffect(() => {
     loadFeedback();
@@ -132,16 +143,30 @@ export default function FeedbackManagement() {
     try {
       const res = await deleteAdminFeedback(confirmModal.id);
       if (res?.success) {
-        showToast("Đã xóa ý kiến đóng góp thành công", "success");
+        showToast(isEn ? "Feedback deleted successfully" : "Đã xóa ý kiến đóng góp thành công", "success");
         setConfirmModal({ isOpen: false, id: null, isLoading: false });
         loadFeedback();
       } else {
-        showToast(res?.message || "Xóa thất bại", "error");
+        showToast(
+          localizeMessage(
+            res?.message,
+            language,
+            isEn ? "Deletion failed" : "Xóa thất bại"
+          ),
+          "error"
+        );
         setConfirmModal((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (err) {
       console.error("Lỗi khi xóa ý kiến:", err);
-      showToast(err.response?.data?.message || "Lỗi khi xóa ý kiến", "error");
+      showToast(
+        localizeMessage(
+          err,
+          language,
+          isEn ? "Error deleting feedback" : "Lỗi khi xóa ý kiến"
+        ),
+        "error"
+      );
       setConfirmModal((prev) => ({ ...prev, isLoading: false }));
     }
   };

@@ -163,17 +163,30 @@ export function ConservationAndThreatsSection({ species, language = "vi" }) {
       );
     }
     if (statusCode === "CR" || statusCode === "EN") {
-      return "Nhóm I - Nghiêm cấm khai thác vì mục đích thương mại";
+      return isEn
+        ? "Group I - Strictly prohibited from commercial exploitation"
+        : "Nhóm I - Nghiêm cấm khai thác vì mục đích thương mại";
     }
-    return "Nhóm II - Hạn chế khai thác, bảo vệ theo mùa";
-  }, [species, statusCode]);
+    return isEn
+      ? "Group II - Restricted exploitation & seasonal protection"
+      : "Nhóm II - Hạn chế khai thác, bảo vệ theo mùa";
+  }, [species, statusCode, isEn]);
 
   const citesText = useMemo(() => {
-    if (species.citesAppendix) return `Phụ lục ${species.citesAppendix}`;
-    if (statusCode === "CR" || statusCode === "EN")
-      return "Phụ lục I - Nghiêm cấm buôn bán quốc tế";
-    return "Phụ lục II - Kiểm soát nghiêm ngặt lưu thông";
-  }, [species, statusCode]);
+    if (species.citesAppendix) {
+      return isEn
+        ? `CITES Appendix ${species.citesAppendix}`
+        : `Phụ lục ${species.citesAppendix}`;
+    }
+    if (statusCode === "CR" || statusCode === "EN") {
+      return isEn
+        ? "Appendix I - Commercial international trade prohibited"
+        : "Phụ lục I - Nghiêm cấm buôn bán quốc tế";
+    }
+    return isEn
+      ? "Appendix II - International trade strictly regulated"
+      : "Phụ lục II - Kiểm soát nghiêm ngặt lưu thông";
+  }, [species, statusCode, isEn]);
 
   // 4 mối đe dọa chính: Rút ngắn câu chữ, bỏ ngoặc đơn
   const threats = useMemo(

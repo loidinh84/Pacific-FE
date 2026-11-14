@@ -461,7 +461,7 @@ export default function AddEditNewsModal({
   ];
 
   const sourceTypeOptions = [
-    { value: "internal", label: "Bài viết nội bộ Pacific" },
+    { value: "internal", label: "Bài viết nội bộ hệ thống" },
     { value: "external", label: "Dẫn nguồn báo chí / tổ chức chính thống" },
   ];
 

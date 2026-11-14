@@ -153,7 +153,7 @@ export default function SpeciesView3D() {
       >
         <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-5 space-y-3">
           <div>
-            <p className="text-white/40 text-[10px] uppercase tracking-widest mb-0.5 font-medium">
+            <p className="text-white/40 text-[10px] mb-0.5 font-medium">
               {t("speciesDetail.species")}
             </p>
             <p className="text-cyan-300 text-xs font-semibold italic leading-snug">
@@ -167,11 +167,11 @@ export default function SpeciesView3D() {
 
           <div className="flex gap-3 pt-1">
             <div className="flex-1 bg-white/5 rounded-lg px-2 py-1.5 text-center">
-              <p className="text-[9px] text-white/40 uppercase tracking-wider">{t("speciesDetail.depthZone")}</p>
+              <p className="text-[9px] text-white/40">{t("speciesDetail.depthZone")}</p>
               <p className="text-white text-[11px] font-bold mt-0.5">{species.depth}</p>
             </div>
             <div className="flex-1 bg-white/5 rounded-lg px-2 py-1.5 text-center">
-              <p className="text-[9px] text-white/40 uppercase tracking-wider">{t("speciesDetail.class")}</p>
+              <p className="text-[9px] text-white/40">{t("speciesDetail.class")}</p>
               <p className="text-white text-[11px] font-bold mt-0.5">
                 {language === "en" ? species.categoryEn : species.categoryVi}
               </p>
@@ -198,7 +198,7 @@ export default function SpeciesView3D() {
         }`}
       >
         <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-5 space-y-3">
-          <p className="text-white/50 text-[10px] uppercase tracking-widest font-semibold">
+          <p className="text-white/50 text-[10px] font-semibold">
             {t("speciesDetail.bioFeatures")}
           </p>
 

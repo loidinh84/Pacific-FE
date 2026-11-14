@@ -104,7 +104,7 @@ export function NewsCard({ article, variant = "default", style }) {
           {isExternal ? (
             `${t("news.via")} ${article.source?.name}`
           ) : (
-            article.author?.full_name || "Pacific"
+            article.author?.full_name || t("news.sourceInternal", "Ban biên tập")
           )}
         </p>
         <h3 className="text-lg font-extrabold text-white font-heading leading-snug line-clamp-2 group-hover:text-cyan-300 transition-colors mb-2">

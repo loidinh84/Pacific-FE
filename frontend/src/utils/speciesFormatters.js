@@ -86,3 +86,135 @@ export function formatConservationVi(conservationStatus, vietnamRedListStatus) {
   return rawName || vietnamRedListStatus || "Chưa đánh giá (NE)";
 }
 
+// Ánh xạ tên tiếng Anh cho nhóm phân loại sinh vật
+export function getLocalizedCategory(categoryViOrSlug, language = "vi") {
+  if (!categoryViOrSlug) return language === "en" ? "Marine Life" : "Sinh vật biển";
+  if (language === "vi") return categoryViOrSlug;
+
+  const lower = String(categoryViOrSlug).toLowerCase();
+  if (
+    lower.includes("ca-bien") ||
+    lower.includes("cá biển") ||
+    (lower.includes("cá") && !lower.includes("heo") && !lower.includes("voi") && !lower.includes("sụn"))
+  ) {
+    return "Marine Fishes";
+  }
+  if (lower.includes("cá sụn") || lower.includes("cartilage") || lower.includes("ca-sun")) {
+    return "Cartilaginous Fishes";
+  }
+  if (
+    lower.includes("dong-vat-co-vu") ||
+    lower.includes("có vú") ||
+    lower.includes("thú biển") ||
+    lower.includes("mammal")
+  ) {
+    return "Marine Mammals";
+  }
+  if (lower.includes("bo-sat") || lower.includes("bò sát") || lower.includes("reptile")) {
+    return "Marine Reptiles";
+  }
+  if (
+    lower.includes("than-mem") ||
+    lower.includes("thân mềm") ||
+    lower.includes("khong-xuong-song") ||
+    lower.includes("không xương sống") ||
+    lower.includes("mollusk") ||
+    lower.includes("invertebrate")
+  ) {
+    return "Mollusks & Invertebrates";
+  }
+  if (
+    lower.includes("san-ho") ||
+    lower.includes("san hô") ||
+    lower.includes("thich-ty") ||
+    lower.includes("thích ty") ||
+    lower.includes("thực vật") ||
+    lower.includes("coral") ||
+    lower.includes("plant")
+  ) {
+    return "Corals & Marine Plants";
+  }
+  if (
+    lower.includes("bien-sau") ||
+    lower.includes("biển sâu") ||
+    lower.includes("phát quang") ||
+    lower.includes("deep sea") ||
+    lower.includes("deep-sea")
+  ) {
+    return "Deep Sea Life";
+  }
+  if (lower.includes("da gai") || lower.includes("da-gai") || lower.includes("echinoderm")) {
+    return "Echinoderms";
+  }
+  if (lower.includes("giáp xác") || lower.includes("giap-xac") || lower.includes("crustacean")) {
+    return "Crustaceans";
+  }
+  if (lower.includes("phù du") || lower.includes("plankton")) {
+    return "Plankton & Microbes";
+  }
+  return categoryViOrSlug;
+}
+
+// Bảng tra cứu tên tiếng Anh theo danh pháp khoa học và tên phổ biến
+export const KNOWN_SPECIES_EN_NAMES = {
+  "makaira mazara": "Indo-Pacific Blue Marlin",
+  "makaira nigricans": "Atlantic Blue Marlin",
+  "acropora millepora": "Staghorn Cluster Coral",
+  "haliotis diversicolor": "Nine-Hole Abalone",
+  "haliotis asinina": "Donkey's Ear Abalone",
+  "gigantocypris agassizii": "Giant Pelagic Ostracod",
+  "dugong dugon": "Dugong",
+  "planktonic ecosystem": "Marine Plankton",
+  "amphiprion ocellaris": "Ocellaris Clownfish",
+  "chelonia mydas": "Green Sea Turtle",
+  "carcharodon carcharias": "Great White Shark",
+  "thunnus orientalis": "Pacific Bluefin Tuna",
+  "rhincodon typus": "Whale Shark",
+  "enteroctopus dofleini": "Giant Pacific Octopus",
+  "tursiops truncatus": "Common Bottlenose Dolphin",
+  "balaenoptera musculus": "Blue Whale",
+  "nautilus pompilius": "Chambered Nautilus",
+  "mobula birostris": "Oceanic Manta Ray",
+  "galeocerdo cuvier": "Tiger Shark",
+  "taeniura lymma": "Bluespotted Ribbontail Ray",
+  "plectropomus leopardus": "Leopard Coral Grouper",
+  "rhinecanthus aculeatus": "Lagoon Triggerfish",
+  "caranx ignobilis": "Giant Trevally",
+  "glaucus atlanticus": "Blue Dragon Sea Slug",
+  "odontodactylus scyllarus": "Peacock Mantis Shrimp",
+  "lysmata amboinensis": "Scarlet Skunk Cleaner Shrimp",
+  "lagenodelphis hosei": "Fraser's Dolphin",
+  "syringammina fragilissima": "Giant Xenophyophore",
+  "bathyphysa conifera": "Flying Spaghetti Monster",
+};
+
+export function getLocalizedSpeciesName(species, language = "vi") {
+  if (!species) return "";
+  const nameVi = species.nameVi || species.commonName || "";
+  if (language === "vi") return nameVi;
+
+  // Nếu đã có nameEn hợp lệ và khác nameVi
+  if (species.nameEn && species.nameEn !== nameVi) {
+    return species.nameEn;
+  }
+
+  // Tra cứu qua danh pháp khoa học
+  const sciKey = (species.sciName || species.scientificName || "").toLowerCase().trim();
+  if (sciKey && KNOWN_SPECIES_EN_NAMES[sciKey]) {
+    return KNOWN_SPECIES_EN_NAMES[sciKey];
+  }
+
+  // Tra cứu qua slug hoặc id
+  const slugKey = String(species.slug || species.id || "").toLowerCase();
+  if (slugKey.includes("ca-co-xanh") || slugKey.includes("blue-marlin")) return "Indo-Pacific Blue Marlin";
+  if (slugKey.includes("san-ho-canh")) return "Staghorn Cluster Coral";
+  if (slugKey.includes("bao-ngu-chin-lo")) return "Nine-Hole Abalone";
+  if (slugKey.includes("bao-ngu-vanh-dai")) return "Donkey's Ear Abalone";
+  if (slugKey.includes("giap-xac-boi-khong-lo") || slugKey.includes("gigantocypris")) return "Giant Pelagic Ostracod";
+  if (slugKey.includes("bo-bien") || slugKey.includes("dugong")) return "Dugong";
+  if (slugKey.includes("phu-du") || slugKey.includes("plankton")) return "Marine Plankton";
+
+  return species.nameEn || nameVi || species.scientificName || "";
+}
+
+

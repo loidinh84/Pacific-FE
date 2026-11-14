@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaFacebookF, FaYoutube, FaInstagram } from "react-icons/fa";
 import { CheckCircle2, Send, Loader2, AlertCircle, Clock } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 import { submitFeedback } from "../../services/feedbackApi";
 import * as Images from "../../assets/Images";
 
@@ -75,12 +76,14 @@ export default function Footer() {
       }, 4000);
     } catch (err) {
       console.error("Gửi ý kiến thất bại:", err);
-      const serverMsg = err.response?.data?.message;
       setErrorMessage(
-        serverMsg ||
-          (isEn
+        localizeMessage(
+          err,
+          language,
+          isEn
             ? "Could not send feedback, please try again."
-            : "Không thể gửi ý kiến, vui lòng thử lại sau.")
+            : "Không thể gửi ý kiến, vui lòng thử lại sau."
+        )
       );
       setTimeout(() => setErrorMessage(""), 5000);
     } finally {
@@ -117,7 +120,7 @@ export default function Footer() {
           <Link to="/" className="flex items-center gap-3 mb-4">
             <img
               src={systemSettings?.general?.logoUrl || Images.Logo}
-              alt="Pacific Logo"
+              alt={brandName || "Logo"}
               className="w-8 h-8 object-contain"
             />
             <span className="font-heading text-2xl font-black text-white tracking-tight">
@@ -292,7 +295,7 @@ export default function Footer() {
       {/* Copyright Bar - Centered & Focused on Biển Đông */}
       <div className="max-w-7xl mx-auto px-6 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs text-white/50 text-center">
         <p className="flex items-center gap-1.5">
-          <span>&copy; {currentYear} Pacific.</span>
+          <span>&copy; {currentYear} {brandName}.</span>
           <span>{isEn ? "All rights reserved." : "Tất cả quyền được bảo lưu."}</span>
         </p>
         <span className="text-white/20 hidden sm:inline">•</span>

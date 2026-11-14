@@ -16,7 +16,9 @@ import {
   Eye,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import { useLanguage } from "../../../hooks/useLanguage";
 import { useToast } from "../../../hooks/useToast";
+import { localizeMessage } from "../../../utils/errorTranslator";
 import ToastContainer from "../../../hooks/ToastContainer";
 import ConfirmModal from "../Species/ConfirmModal";
 import AddEditNewsModal from "./AddEditNewsModal";
@@ -43,6 +45,8 @@ const formatDate = (dateStr) => {
 
 export default function NewsManagement() {
   const { isDark } = useTheme();
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const { toasts, showToast, removeToast } = useToast();
 
   const [articles, setArticles] = useState([]);
@@ -152,18 +156,18 @@ export default function NewsManagement() {
             }));
           }
           if (isManualRefresh) {
-            showToast("Đã làm mới danh sách bài viết!", "success");
+            showToast(isEn ? "Refreshed articles list!" : "Đã làm mới danh sách bài viết!", "success");
           }
         }
       } catch (err) {
         console.error("Lỗi tải tin tức admin:", err);
-        showToast("Không thể tải danh sách bài viết.", "error");
+        showToast(isEn ? "Unable to load articles." : "Không thể tải danh sách bài viết.", "error");
       } finally {
         setIsLoading(false);
         setIsRefreshing(false);
       }
     },
-    [pagination.page, pagination.limit, debouncedSearch, categoryFilter, statusFilter, featuredFilter, showToast],
+    [pagination.page, pagination.limit, debouncedSearch, categoryFilter, statusFilter, featuredFilter, showToast, isEn],
   );
 
   useEffect(() => {
@@ -177,7 +181,7 @@ export default function NewsManagement() {
       if (editingArticle) {
         const res = await updateAdminNews(editingArticle.id, formData);
         if (res?.success) {
-          showToast("Cập nhật bài viết thành công!", "success");
+          showToast(isEn ? "Article updated successfully!" : "Cập nhật bài viết thành công!", "success");
           setIsModalOpen(false);
           setEditingArticle(null);
           loadArticles();
@@ -185,14 +189,21 @@ export default function NewsManagement() {
       } else {
         const res = await createAdminNews(formData);
         if (res?.success) {
-          showToast("Thêm bài viết mới thành công!", "success");
+          showToast(isEn ? "New article added successfully!" : "Thêm bài viết mới thành công!", "success");
           setIsModalOpen(false);
           loadArticles();
         }
       }
     } catch (err) {
       console.error("Lỗi lưu bài viết:", err);
-      showToast(err.response?.data?.message || "Không thể lưu bài viết.", "error");
+      showToast(
+        localizeMessage(
+          err,
+          language,
+          isEn ? "Unable to save article." : "Không thể lưu bài viết."
+        ),
+        "error"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -203,7 +214,14 @@ export default function NewsManagement() {
     try {
       const res = await toggleAdminNewsFeatured(id);
       if (res?.success) {
-        showToast(res.message, "success");
+        showToast(
+          localizeMessage(
+            res.message,
+            language,
+            isEn ? "Updated featured status!" : "Cập nhật trạng thái nổi bật!"
+          ),
+          "success"
+        );
         setArticles((prev) =>
           prev.map((a) =>
             a.id === id ? { ...a, is_featured: res.data.is_featured } : a,
@@ -212,7 +230,7 @@ export default function NewsManagement() {
       }
     } catch (err) {
       console.error("Lỗi bật/tắt nổi bật:", err);
-      showToast("Không thể thay đổi trạng thái nổi bật.", "error");
+      showToast(isEn ? "Unable to toggle featured status." : "Không thể thay đổi trạng thái nổi bật.", "error");
     }
   };
 
@@ -222,13 +240,13 @@ export default function NewsManagement() {
     try {
       const res = await deleteAdminNews(deletingArticle.id);
       if (res?.success) {
-        showToast("Đã xóa bài viết thành công!", "success");
+        showToast(isEn ? "Article deleted successfully!" : "Đã xóa bài viết thành công!", "success");
         setDeletingArticle(null);
         loadArticles();
       }
     } catch (err) {
       console.error("Lỗi xóa bài viết:", err);
-      showToast("Không thể xóa bài viết.", "error");
+      showToast(isEn ? "Unable to delete article." : "Không thể xóa bài viết.", "error");
     }
   };
 

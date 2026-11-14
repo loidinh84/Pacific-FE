@@ -10,6 +10,7 @@ import {
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
 import { changeAdminPassword, updateAdminSettings } from "../../../services/adminProfileApi";
 import { useLanguage } from "../../../hooks/useLanguage";
+import { localizeMessage } from "../../../utils/errorTranslator";
 
 export default function SettingsTab({
   isDark = true,
@@ -101,7 +102,11 @@ export default function SettingsTab({
       });
 
       setPassSuccess(
-        res.message || (isEn ? "Password updated successfully." : "Đổi mật khẩu thành công.")
+        localizeMessage(
+          res.message,
+          language,
+          isEn ? "Password updated successfully." : "Đổi mật khẩu thành công."
+        )
       );
       setCurrentPassword("");
       setNewPassword("");
@@ -109,10 +114,11 @@ export default function SettingsTab({
       setTimeout(() => setPassSuccess(""), 4000);
     } catch (err) {
       console.error("Đổi mật khẩu lỗi:", err);
-      const msg =
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        (isEn ? "Could not update password." : "Không thể đổi mật khẩu.");
+      const msg = localizeMessage(
+        err,
+        language,
+        isEn ? "Could not update password." : "Không thể đổi mật khẩu."
+      );
       setPassError(msg);
     } finally {
       setIsChangingPass(false);

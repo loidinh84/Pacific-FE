@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { User, Mail, Lock, Edit3, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { changeEmail, changePassword } from "../../services/userService";
+import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 
 export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) {
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
   // State for Email Change Card
   const [newEmail, setNewEmail] = useState("");
   const [emailCurrentPassword, setEmailCurrentPassword] = useState("");
@@ -25,14 +29,24 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
     setEmailSuccess("");
 
     if (!newEmail || !emailCurrentPassword) {
-      setEmailError("Vui lòng nhập đầy đủ Email mới và Mật khẩu hiện tại");
+      setEmailError(
+        isEn
+          ? "Please enter both your new email and current password"
+          : "Vui lòng nhập đầy đủ Email mới và Mật khẩu hiện tại"
+      );
       return;
     }
 
     setIsEmailLoading(true);
     try {
       const res = await changeEmail({ newEmail, currentPassword: emailCurrentPassword });
-      setEmailSuccess(res.message || "Thay đổi email thành công!");
+      setEmailSuccess(
+        localizeMessage(
+          res.message,
+          language,
+          isEn ? "Email updated successfully!" : "Thay đổi email thành công!"
+        )
+      );
       setNewEmail("");
       setEmailCurrentPassword("");
 
@@ -41,7 +55,11 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
         onProfileUpdated({ ...user, email: res.email || newEmail });
       }
     } catch (err) {
-      const msg = err.response?.data?.error || err.response?.data?.message || "Đổi email thất bại!";
+      const msg = localizeMessage(
+        err,
+        language,
+        isEn ? "Failed to change email!" : "Đổi email thất bại!"
+      );
       setEmailError(msg);
     } finally {
       setIsEmailLoading(false);
@@ -55,29 +73,49 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
     setPasswordSuccess("");
 
     if (!oldPassword || !newPassword || !confirmPassword) {
-      setPasswordError("Vui lòng điền đầy đủ các trường mật khẩu");
+      setPasswordError(
+        isEn
+          ? "Please fill in all password fields"
+          : "Vui lòng điền đầy đủ các trường mật khẩu"
+      );
       return;
     }
 
     if (newPassword.length < 6) {
-      setPasswordError("Mật khẩu mới phải có ít nhất 6 ký tự");
+      setPasswordError(
+        isEn
+          ? "New password must be at least 6 characters"
+          : "Mật khẩu mới phải có ít nhất 6 ký tự"
+      );
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setPasswordError("Xác nhận mật khẩu mới không khớp");
+      setPasswordError(
+        isEn ? "Confirm password does not match" : "Xác nhận mật khẩu mới không khớp"
+      );
       return;
     }
 
     setIsPasswordLoading(true);
     try {
       const res = await changePassword({ oldPassword, newPassword, confirmPassword });
-      setPasswordSuccess(res.message || "Đổi mật khẩu thành công!");
+      setPasswordSuccess(
+        localizeMessage(
+          res.message,
+          language,
+          isEn ? "Password changed successfully!" : "Đổi mật khẩu thành công!"
+        )
+      );
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      const msg = err.response?.data?.error || err.response?.data?.message || "Đổi mật khẩu thất bại!";
+      const msg = localizeMessage(
+        err,
+        language,
+        isEn ? "Failed to change password!" : "Đổi mật khẩu thất bại!"
+      );
       setPasswordError(msg);
     } finally {
       setIsPasswordLoading(false);
@@ -86,10 +124,10 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
 
   // Format date helper
   const formatDateDisplay = (dateString) => {
-    if (!dateString) return "Chưa cập nhật";
+    if (!dateString) return isEn ? "Not updated" : "Chưa cập nhật";
     try {
       const d = new Date(dateString);
-      return d.toLocaleDateString("vi-VN", {
+      return d.toLocaleDateString(isEn ? "en-US" : "vi-VN", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
@@ -106,14 +144,14 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
         <div className="flex items-center justify-between pb-5 border-b border-white/10 mb-6">
           <h2 className="text-lg font-bold text-white font-heading flex items-center gap-2.5">
             <User size={20} className="text-pacific-cyan" />
-            <span>Thông tin hồ sơ</span>
+            <span>{isEn ? "Profile Information" : "Thông tin hồ sơ"}</span>
           </h2>
           <button
             onClick={onOpenEditModal}
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-semibold text-white transition-all active:scale-95 cursor-pointer"
           >
             <Edit3 size={14} className="text-pacific-cyan" />
-            <span>Chỉnh sửa</span>
+            <span>{isEn ? "Edit Profile" : "Chỉnh sửa"}</span>
           </button>
         </div>
 
@@ -139,9 +177,11 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
           {/* User Fields List */}
           <div className="md:col-span-9 space-y-3.5">
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-              <span className="sm:col-span-3 text-xs font-semibold text-white/60">Họ tên:</span>
+              <span className="sm:col-span-3 text-xs font-semibold text-white/60">
+                {isEn ? "Full Name:" : "Họ tên:"}
+              </span>
               <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-white">
-                {user?.fullName || <span className="text-white/40 italic">Chưa cập nhật</span>}
+                {user?.fullName || <span className="text-white/40 italic">{isEn ? "Not updated" : "Chưa cập nhật"}</span>}
               </div>
             </div>
 
@@ -153,22 +193,28 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-              <span className="sm:col-span-3 text-xs font-semibold text-white/60">Ngày sinh:</span>
+              <span className="sm:col-span-3 text-xs font-semibold text-white/60">
+                {isEn ? "Date of Birth:" : "Ngày sinh:"}
+              </span>
               <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-white">
                 {formatDateDisplay(user?.dateOfBirth)}
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-              <span className="sm:col-span-3 text-xs font-semibold text-white/60">Số điện thoại:</span>
+              <span className="sm:col-span-3 text-xs font-semibold text-white/60">
+                {isEn ? "Phone Number:" : "Số điện thoại:"}
+              </span>
               <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-white">
-                {user?.phoneNumber || <span className="text-white/40 italic">Chưa cập nhật</span>}
+                {user?.phoneNumber || <span className="text-white/40 italic">{isEn ? "Not updated" : "Chưa cập nhật"}</span>}
               </div>
             </div>
 
             {user?.bio && (
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-start">
-                <span className="sm:col-span-3 text-xs font-semibold text-white/60 pt-2">Tiểu sử:</span>
+                <span className="sm:col-span-3 text-xs font-semibold text-white/60 pt-2">
+                  {isEn ? "Biography:" : "Tiểu sử:"}
+                </span>
                 <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-normal text-white/85 leading-relaxed">
                   {user.bio}
                 </div>
@@ -182,7 +228,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
       <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8">
         <h2 className="text-lg font-bold text-white font-heading mb-6 flex items-center gap-2.5">
           <Mail size={20} className="text-pacific-cyan" />
-          <span>Thay đổi email</span>
+          <span>{isEn ? "Change Email" : "Thay đổi email"}</span>
         </h2>
 
         {emailError && (
@@ -201,32 +247,38 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
 
         <form onSubmit={handleChangeEmail} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/60">Email hiện tại:</label>
+            <label className="sm:col-span-3 text-xs font-semibold text-white/60">
+              {isEn ? "Current Email:" : "Email hiện tại:"}
+            </label>
             <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white/60 select-none">
               {user?.email || "..."}
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">Email mới:</label>
+            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+              {isEn ? "New Email:" : "Email mới:"}
+            </label>
             <input
               type="email"
               required
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
-              placeholder="Nhập địa chỉ email mới"
+              placeholder={isEn ? "Enter new email address" : "Nhập địa chỉ email mới"}
               className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">Mật khẩu hiện tại:</label>
+            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+              {isEn ? "Current Password:" : "Mật khẩu hiện tại:"}
+            </label>
             <input
               type="password"
               required
               value={emailCurrentPassword}
               onChange={(e) => setEmailCurrentPassword(e.target.value)}
-              placeholder="Nhập mật khẩu hiện tại để xác nhận"
+              placeholder={isEn ? "Enter current password to verify" : "Nhập mật khẩu hiện tại để xác nhận"}
               className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
             />
           </div>
@@ -240,10 +292,10 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
               {isEmailLoading ? (
                 <>
                   <Loader2 size={15} className="animate-spin" />
-                  <span>Đang xử lý...</span>
+                  <span>{isEn ? "Processing..." : "Đang xử lý..."}</span>
                 </>
               ) : (
-                <span>Thay đổi</span>
+                <span>{isEn ? "Update Email" : "Thay đổi"}</span>
               )}
             </button>
           </div>
@@ -254,7 +306,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
       <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8">
         <h2 className="text-lg font-bold text-white font-heading mb-6 flex items-center gap-2.5">
           <Lock size={20} className="text-pacific-cyan" />
-          <span>Thay đổi mật khẩu</span>
+          <span>{isEn ? "Change Password" : "Thay đổi mật khẩu"}</span>
         </h2>
 
         {passwordError && (
@@ -273,37 +325,43 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
 
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">Mật khẩu cũ:</label>
+            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+              {isEn ? "Old Password:" : "Mật khẩu cũ:"}
+            </label>
             <input
               type="password"
               required
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              placeholder="Nhập mật khẩu hiện tại"
+              placeholder={isEn ? "Enter current password" : "Nhập mật khẩu hiện tại"}
               className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">Mật khẩu mới:</label>
+            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+              {isEn ? "New Password:" : "Mật khẩu mới:"}
+            </label>
             <input
               type="password"
               required
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)"
+              placeholder={isEn ? "New password (at least 6 characters)" : "Nhập mật khẩu mới (ít nhất 6 ký tự)"}
               className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">Xác nhận mật khẩu mới:</label>
+            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+              {isEn ? "Confirm New Password:" : "Xác nhận mật khẩu mới:"}
+            </label>
             <input
               type="password"
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Nhập lại mật khẩu mới"
+              placeholder={isEn ? "Re-enter new password" : "Nhập lại mật khẩu mới"}
               className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
             />
           </div>
@@ -317,10 +375,10 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
               {isPasswordLoading ? (
                 <>
                   <Loader2 size={15} className="animate-spin" />
-                  <span>Đang lưu...</span>
+                  <span>{isEn ? "Saving..." : "Đang lưu..."}</span>
                 </>
               ) : (
-                <span>Lưu thay đổi</span>
+                <span>{isEn ? "Save New Password" : "Lưu thay đổi"}</span>
               )}
             </button>
           </div>

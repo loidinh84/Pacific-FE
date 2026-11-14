@@ -41,13 +41,13 @@ export default function PermissionsTab({
             <div className="flex items-center gap-2">
               <h3 className="text-base sm:text-lg font-bold font-heading text-white">
                 Vai trò quản trị:{" "}
-                <span className="text-cyan-400 uppercase tracking-wider">
+                <span className="text-cyan-400 font-semibold">
                   {role === "super_admin" ? "Super Admin (Toàn quyền)" : "Admin (Quản trị vận hành)"}
                 </span>
               </h3>
             </div>
             <p className="text-xs text-slate-300 mt-0.5">
-              Ma trận phân quyền xác định các chức năng và dữ liệu bạn được phép truy cập trên hệ sinh thái Pacific.
+              Ma trận phân quyền xác định các chức năng và dữ liệu bạn được phép truy cập trên hệ thống quản trị.
             </p>
           </div>
         </div>

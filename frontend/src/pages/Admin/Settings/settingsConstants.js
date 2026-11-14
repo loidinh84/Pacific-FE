@@ -1,37 +1,37 @@
 export const SOCIAL_PRESETS = [
   {
     name: "Facebook",
-    placeholder: "https://facebook.com/pacific.ocean",
+    placeholder: "https://facebook.com/trang.chinh.thuc",
     color: "text-blue-400",
   },
   {
     name: "Instagram",
-    placeholder: "https://instagram.com/pacific.ocean",
+    placeholder: "https://instagram.com/trang.chinh.thuc",
     color: "text-pink-400",
   },
   {
     name: "YouTube",
-    placeholder: "https://youtube.com/@pacific.ocean",
+    placeholder: "https://youtube.com/@kenh_chinh_thuc",
     color: "text-red-400",
   },
   {
     name: "TikTok",
-    placeholder: "https://tiktok.com/@pacific.ocean",
+    placeholder: "https://tiktok.com/@kenh_chinh_thuc",
     color: "text-cyan-400",
   },
   {
     name: "X (Twitter)",
-    placeholder: "https://x.com/pacific_ocean",
+    placeholder: "https://x.com/trang_chinh_thuc",
     color: "text-sky-400",
   },
   {
     name: "GitHub",
-    placeholder: "https://github.com/pacific-ocean",
+    placeholder: "https://github.com/to_chuc",
     color: "text-purple-400",
   },
   {
     name: "Zalo",
-    placeholder: "https://zalo.me/pacific",
+    placeholder: "https://zalo.me/oa_id",
     color: "text-blue-300",
   },
   { name: "Khác", placeholder: "https://...", color: "text-slate-400" },
@@ -132,26 +132,26 @@ export const VALID_TABS = [
 
 export const DEFAULT_FORM_DATA = {
   general: {
-    websiteName: "Pacific Ocean Portal",
+    websiteName: "Cổng thông tin sinh vật biển",
     seoDescription:
-      "Cổng thông tin & tra cứu sinh vật biển Biển Đông chuẩn khoa học",
-    contactEmail: "admin@pacific.org",
+      "Cổng thông tin & tra cứu sinh vật biển chuẩn khoa học",
+    contactEmail: "admin@domain.org",
     logoUrl: "",
     socialLinks: [
       {
         id: "1",
         platform: "Facebook",
-        url: "https://facebook.com/pacific.ocean",
+        url: "https://facebook.com",
       },
       {
         id: "2",
         platform: "Instagram",
-        url: "https://instagram.com/pacific.ocean",
+        url: "https://instagram.com",
       },
       {
         id: "3",
         platform: "YouTube",
-        url: "https://youtube.com/@pacific.ocean",
+        url: "https://youtube.com",
       },
     ],
   },

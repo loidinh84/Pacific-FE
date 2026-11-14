@@ -11,6 +11,7 @@ import {
   fetchNewsCategories,
 } from "../../services/newsApi";
 import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 import { setPageMeta } from "./newsUtils";
 import { RefreshCw, Newspaper, AlertCircle, Loader2 } from "lucide-react";
 
@@ -43,8 +44,13 @@ export default function News() {
 
   // Set Page SEO Title & Meta
   useEffect(() => {
+    let brandName = "Pacific";
+    try {
+      const saved = localStorage.getItem("pacific_system_settings");
+      if (saved) brandName = JSON.parse(saved)?.general?.websiteName || brandName;
+    } catch (_) {}
     setPageMeta(
-      `${t("news.pageTitle")} | Pacific`,
+      `${t("news.pageTitle")} | ${brandName}`,
       t("news.metaDescription")
     );
   }, [t, language]);
@@ -104,8 +110,13 @@ export default function News() {
         console.error("Lỗi khi tải bài viết:", err);
         if (!append) {
           setError(
-            err.response?.data?.message ||
-              "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại kết nối mạng."
+            localizeMessage(
+              err,
+              language,
+              language === "en"
+                ? "Unable to connect to the server. Please check your network connection."
+                : "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại kết nối mạng."
+            )
           );
         }
       } finally {

@@ -20,6 +20,8 @@ import {
   formatWeightRange,
   formatDepthRange,
   formatConservationVi,
+  getLocalizedSpeciesName,
+  getLocalizedCategory,
 } from "../../utils/speciesFormatters";
 
 const MOCK_SLUG_MAP = {
@@ -35,7 +37,7 @@ export default function SpeciesDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const searchBackUrl = location.state?.fromSearch || "/search";
 
   const resolvedId = MOCK_SLUG_MAP[id] || id;
@@ -129,14 +131,14 @@ export default function SpeciesDetail() {
               code: apiData.code,
               sourceApiId: apiData.sourceApiId || null,
               nameVi: apiData.commonName,
-              nameEn: apiData.commonName,
+              nameEn: localSpecies?.nameEn || getLocalizedSpeciesName(apiData, "en"),
               sciName: apiData.scientificName,
               image: primaryImage,
               gallery: gallery,
               descVi: apiData.description,
-              descEn: apiData.description,
+              descEn: localSpecies?.descEn || apiData.description,
               introHeaderVi: apiData.description,
-              introHeaderEn: apiData.description,
+              introHeaderEn: localSpecies?.introHeaderEn || apiData.description,
               depth: formattedDepth,
               size: formattedSize,
               weight: formattedWeight,
@@ -152,7 +154,7 @@ export default function SpeciesDetail() {
               diet: apiData.diet,
               category: apiData.group?.slug || apiData.group?.name || "",
               categoryVi: apiData.group?.name || "",
-              categoryEn: apiData.group?.name || "",
+              categoryEn: localSpecies?.categoryEn || getLocalizedCategory(apiData.group?.name, "en"),
               model3dUrl: apiData.model_3d_url || apiData.model3dUrl || null,
               fullBioHighlightsVi: localSpecies?.fullBioHighlightsVi || null,
               fullBioHighlightsEn: localSpecies?.fullBioHighlightsEn || null,
@@ -205,7 +207,7 @@ export default function SpeciesDetail() {
           <div className="w-full h-[260px] sm:h-[360px] rounded-2xl bg-white/[0.04] border border-white/10 mb-10 flex flex-col items-center justify-center gap-3">
             <div className="w-9 h-9 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
             <span className="text-xs text-slate-300 font-medium">
-              Đang tải dữ liệu sinh vật Biển Đông...
+              {t("speciesDetail.loadingSpecies", "Đang tải dữ liệu sinh vật Biển Đông...")}
             </span>
           </div>
 
@@ -227,9 +229,14 @@ export default function SpeciesDetail() {
               <Compass size={28} className="text-cyan-400/70" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">Không tìm thấy sinh vật</h2>
+              <h2 className="text-xl font-bold text-white">
+                {t("speciesDetail.notFoundTitle", "Không tìm thấy sinh vật")}
+              </h2>
               <p className="text-sm text-slate-300 mt-1.5 leading-relaxed">
-                Sinh vật này không tồn tại trong danh mục hoặc đường dẫn chưa chính xác.
+                {t(
+                  "speciesDetail.notFoundDesc",
+                  "Sinh vật này không tồn tại trong danh mục hoặc đường dẫn chưa chính xác."
+                )}
               </p>
             </div>
             <button
@@ -237,7 +244,7 @@ export default function SpeciesDetail() {
               className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-semibold cursor-pointer transition-all inline-flex items-center gap-2 text-white shadow-md shadow-blue-900/30"
             >
               <ArrowLeft size={16} />
-              <span>Quay lại tìm kiếm</span>
+              <span>{t("speciesDetail.backToSearch", "Quay lại tìm kiếm")}</span>
             </button>
           </div>
         </main>

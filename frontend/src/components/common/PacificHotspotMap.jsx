@@ -116,7 +116,7 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between mb-4">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pacific-cyan/20 border border-pacific-cyan/40 text-pacific-cyan text-xs font-bold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pacific-cyan/20 border border-pacific-cyan/40 text-pacific-cyan text-xs font-bold">
               <MapPin size={13} />
               {modalSpot.depth}
             </span>
@@ -136,8 +136,11 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
             </h3>
           </div>
 
-          <p className="text-sm text-pacific-cyan font-medium mb-3">
-            📍 {location} • <span className="text-pacific-blue-light">{tag}</span>
+          <p className="text-sm text-pacific-cyan font-medium mb-3 flex items-center gap-1.5">
+            <MapPin size={14} className="text-pacific-cyan shrink-0" />
+            <span>{location}</span>
+            <span className="text-white/40">•</span>
+            <span className="text-pacific-blue-light">{tag}</span>
           </p>
 
           <p className="text-sm text-white/85 leading-relaxed mb-6">
@@ -230,7 +233,7 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
                             {/* Tooltip khi rê chuột */}
                             {isHovered && (
                               <div className="absolute bottom-7 left-1/2 -translate-x-1/2 w-52 p-3.5 rounded-2xl bg-pacific-figma-dark/95 border border-pacific-cyan/50 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] z-40 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
-                                <div className="flex items-center gap-1.5 text-pacific-cyan text-[10px] font-bold uppercase mb-1">
+                                <div className="flex items-center gap-1.5 text-pacific-cyan text-[10px] font-bold mb-1">
                                   <MapPin size={12} />
                                   <span>{spot.depth}</span>
                                 </div>
@@ -238,7 +241,7 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
                                   {name}
                                 </p>
                                 <p className="text-[10px] text-pacific-blue-pale line-clamp-1 mb-1.5">
-                                  {spot.tagVi}
+                                  {language === "en" ? spot.tagEn : spot.tagVi}
                                 </p>
                                 <span className="text-[9px] text-cyan-400 font-semibold underline underline-offset-2">
                                   {language === "en" ? "Click to view details →" : "Nhấp để xem chi tiết →"}
@@ -296,7 +299,7 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
 
                 {isHovered && (
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-48 p-3 rounded-xl bg-pacific-figma-dark/95 border border-pacific-cyan/40 backdrop-blur-xl shadow-2xl z-30 animate-in fade-in zoom-in-95 duration-200 pointer-events-none">
-                    <div className="flex items-center gap-1.5 text-pacific-cyan text-[10px] font-bold uppercase mb-1">
+                    <div className="flex items-center gap-1.5 text-pacific-cyan text-[10px] font-bold mb-1">
                       <MapPin size={12} />
                       <span>{spot.depth}</span>
                     </div>

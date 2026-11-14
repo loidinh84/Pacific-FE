@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Heart, Compass, Loader2, Sparkles, Calendar, Shield } from "lucide-react";
+import { ArrowLeft, User, Heart, Compass, Loader2, Sparkles, Calendar } from "lucide-react";
 import Navbar from "../../components/layout/Navbar";
 import GeneralTab from "./GeneralTab";
 import FavoritesTab from "./FavoritesTab";
 import ExploredTab from "./ExploredTab";
 import EditProfileModal from "./EditProfileModal";
 import { fetchMyProfile, fetchMyStats } from "../../services/userService";
+import { useLanguage } from "../../hooks/useLanguage";
 
 export default function ProfileLayout() {
   const navigate = useNavigate();
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
   const [activeTab, setActiveTab] = useState("general"); // 'general' | 'favorites' | 'explored'
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState(null);
@@ -50,9 +53,9 @@ export default function ProfileLayout() {
   };
 
   const navItems = [
-    { id: "general", label: "Tổng quát", icon: User },
-    { id: "favorites", label: "Sinh vật yêu thích", icon: Heart },
-    { id: "explored", label: "Đã khám phá", icon: Compass },
+    { id: "general", label: t("profile.tabGeneral", "Thông tin chung"), icon: User },
+    { id: "favorites", label: t("profile.tabFavorites", "Sinh vật yêu thích"), icon: Heart },
+    { id: "explored", label: t("profile.tabExplored", "Vùng biển đã khám phá"), icon: Compass },
   ];
 
   return (
@@ -70,7 +73,9 @@ export default function ProfileLayout() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh]">
             <Loader2 size={40} className="text-pacific-cyan animate-spin mb-4" />
-            <p className="text-sm font-medium text-white/70">Đang tải thông tin hồ sơ của bạn...</p>
+            <p className="text-sm font-medium text-white/70">
+              {isEn ? "Loading profile information..." : "Đang tải thông tin hồ sơ của bạn..."}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -82,14 +87,14 @@ export default function ProfileLayout() {
                 className="inline-flex items-center gap-2 text-xs font-semibold text-white/70 hover:text-white transition-colors cursor-pointer group"
               >
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                <span>Hồ sơ cá nhân</span>
+                <span>{t("profile.pageTitle", "Hồ sơ cá nhân")}</span>
               </Link>
 
               {/* Sidebar Menu Container */}
               <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-5">
                 <div>
-                  <h3 className="text-[11px] font-bold text-white/40 uppercase tracking-wider mb-3 px-3">
-                    Cài đặt
+                  <h3 className="text-[11px] font-bold text-white/50 mb-3 px-3">
+                    {isEn ? "Settings" : "Cài đặt"}
                   </h3>
                   <nav className="space-y-1.5">
                     {navItems.map((item) => {
@@ -116,31 +121,37 @@ export default function ProfileLayout() {
                 {/* Mini Stats Card */}
                 {stats && (
                   <div className="pt-4 border-t border-white/10">
-                    <h4 className="text-[11px] font-bold text-white/40 uppercase tracking-wider mb-3 px-1 flex items-center gap-1.5">
+                    <h4 className="text-[11px] font-bold text-white/50 mb-3 px-1 flex items-center gap-1.5">
                       <Sparkles size={13} className="text-amber-400" />
-                      <span>Thành tích của bạn</span>
+                      <span>{isEn ? "Your Achievements" : "Thành tích của bạn"}</span>
                     </h4>
                     <div className="grid grid-cols-2 gap-2 text-center">
                       <div className="p-2.5 bg-white/5 rounded-xl border border-white/5">
                         <span className="block text-base font-black text-rose-400 font-heading">
                           {stats.totalFavorites || 0}
                         </span>
-                        <span className="text-[10px] text-white/50 font-medium">Yêu thích</span>
+                        <span className="text-[10px] text-white/50 font-medium">
+                          {t("profile.statFavorites", "Yêu thích")}
+                        </span>
                       </div>
                       <div className="p-2.5 bg-white/5 rounded-xl border border-white/5">
                         <span className="block text-base font-black text-pacific-cyan font-heading">
                           {stats.totalLocationsExplored || 0}
                         </span>
-                        <span className="text-[10px] text-white/50 font-medium">Khám phá</span>
+                        <span className="text-[10px] text-white/50 font-medium">
+                          {t("profile.statExplored", "Khám phá")}
+                        </span>
                       </div>
                     </div>
 
                     <div className="mt-2.5 p-2 bg-white/5 rounded-xl border border-white/5 flex items-center justify-between text-[11px] px-3">
                       <span className="text-white/50 flex items-center gap-1.5">
                         <Calendar size={13} className="text-indigo-400" />
-                        Gắn bó:
+                        {isEn ? "Joined:" : "Gắn bó:"}
                       </span>
-                      <span className="font-bold text-white">{stats.memberDays || 1} ngày</span>
+                      <span className="font-bold text-white">
+                        {stats.memberDays || 1} {isEn ? "days" : "ngày"}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -152,9 +163,9 @@ export default function ProfileLayout() {
               {/* Header Title */}
               <div className="mb-6 flex items-center justify-between">
                 <h1 className="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight">
-                  {activeTab === "general" && "Thông tin chung"}
-                  {activeTab === "favorites" && "Sinh vật yêu thích"}
-                  {activeTab === "explored" && "Địa điểm đã khám phá"}
+                  {activeTab === "general" && t("profile.tabGeneral", "Thông tin chung")}
+                  {activeTab === "favorites" && t("profile.tabFavorites", "Sinh vật yêu thích")}
+                  {activeTab === "explored" && t("profile.tabExplored", "Địa điểm đã khám phá")}
                 </h1>
               </div>
 

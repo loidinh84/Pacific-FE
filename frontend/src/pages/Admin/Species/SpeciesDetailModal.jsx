@@ -207,7 +207,7 @@ export default function SpeciesDetailModal({
                       }}
                     />
                     <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-[11px] text-white/90">
-                      Nguồn: {current.source_api_id || species.source || "Pacific DB"}
+                      Nguồn: {current.source_api_id || species.source || "Cơ sở dữ liệu nội bộ"}
                     </div>
                   </div>
 

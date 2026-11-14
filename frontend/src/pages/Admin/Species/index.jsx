@@ -57,7 +57,7 @@ function mapSpeciesFromApi(item) {
       "Sinh vật biển",
     gbifId: item.slug || String(item.id),
     slug: item.slug || "",
-    source: item.source_api_id || "Pacific DB",
+    source: item.source_api_id || "Cơ sở dữ liệu nội bộ",
     location: cleanLabel(item.ocean_zones?.name) || "Tầng mặt",
     oceanZone: cleanLabel(item.ocean_zones?.name) || item.oceanZone || "Tầng mặt",
     conservation: CONSERVATION_VI_MAP[cCode] || cleanLabel(item.conservation_statuses?.name) || "Ít lo ngại",
@@ -706,7 +706,7 @@ export default function SpeciesManagement() {
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `pacific_sinh_vat_${new Date().toISOString().slice(0, 10)}.csv`,
+      `danh_sach_sinh_vat_${new Date().toISOString().slice(0, 10)}.csv`,
     );
     document.body.appendChild(link);
     link.click();

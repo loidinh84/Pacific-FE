@@ -31,7 +31,9 @@ export const OCEAN_ZONES = [
     temp: "26–30°C",
     light: "100%",
     visibility: "Tốt (>30m)",
+    visibilityEn: "Good (>30m)",
     oxygen: "Cao (7–8 mg/L)",
+    oxygenEn: "High (7–8 mg/L)",
   },
   {
     id: "twilight",
@@ -53,7 +55,9 @@ export const OCEAN_ZONES = [
     temp: "5–15°C",
     light: "1%",
     visibility: "Yếu (<5m)",
+    visibilityEn: "Poor (<5m)",
     oxygen: "Thấp (2–4 mg/L)",
+    oxygenEn: "Low (2–4 mg/L)",
   },
   {
     id: "midnight",
@@ -75,7 +79,9 @@ export const OCEAN_ZONES = [
     temp: "2–5°C",
     light: "0%",
     visibility: "Không có",
+    visibilityEn: "None",
     oxygen: "Rất thấp (1–2 mg/L)",
+    oxygenEn: "Very low (1–2 mg/L)",
   },
   {
     id: "abyss",
@@ -97,7 +103,9 @@ export const OCEAN_ZONES = [
     temp: "1–2°C",
     light: "0%",
     visibility: "Không có",
+    visibilityEn: "None",
     oxygen: "Cực thấp (<1 mg/L)",
+    oxygenEn: "Extremely low (<1 mg/L)",
   },
 ];
 

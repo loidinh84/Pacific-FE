@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import { X, Camera, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { updateMyProfile, updateAvatar } from "../../services/userService";
+import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 
 export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
   const [fullName, setFullName] = useState("");
   const [bio, setBio] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -97,7 +101,9 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
       localStorage.setItem("pacific_user", JSON.stringify(newSavedUser));
       window.dispatchEvent(new Event("pacific_auth_change"));
 
-      setSuccessMessage("Cập nhật thông tin thành công!");
+      setSuccessMessage(
+        isEn ? "Profile updated successfully!" : "Cập nhật thông tin thành công!"
+      );
       if (onProfileUpdated) {
         onProfileUpdated(res.user);
       }
@@ -107,7 +113,11 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
       }, 1000);
     } catch (err) {
       console.error("Cập nhật hồ sơ lỗi:", err);
-      const msg = err.response?.data?.error || err.response?.data?.message || "Không thể cập nhật hồ sơ!";
+      const msg = localizeMessage(
+        err,
+        language,
+        isEn ? "Unable to update profile!" : "Không thể cập nhật hồ sơ!"
+      );
       setErrorMessage(msg);
     } finally {
       setIsLoading(false);
@@ -120,8 +130,12 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/[0.04]">
           <div>
-            <h2 className="text-lg font-bold text-white font-heading tracking-tight">Chỉnh sửa hồ sơ cá nhân</h2>
-            <p className="text-xs text-cyan-200/70 mt-0.5 font-medium">Cập nhật thông tin tài khoản của bạn</p>
+            <h2 className="text-lg font-bold text-white font-heading tracking-tight">
+              {t("profile.editModalTitle", isEn ? "Edit Profile Information" : "Chỉnh sửa hồ sơ cá nhân")}
+            </h2>
+            <p className="text-xs text-cyan-200/70 mt-0.5 font-medium">
+              {isEn ? "Update your personal account details" : "Cập nhật thông tin tài khoản của bạn"}
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -162,7 +176,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
                 className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center rounded-2xl cursor-pointer transition-opacity text-white text-[10px] font-semibold gap-1"
               >
                 <Camera size={18} />
-                <span>Đổi ảnh</span>
+                <span>{isEn ? "Change" : "Đổi ảnh"}</span>
               </label>
               <input
                 id="avatar-file-input"
@@ -173,25 +187,29 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">Ảnh đại diện</p>
-              <p className="text-xs text-white/50 mb-2">Hỗ trợ JPG, PNG, WEBP (tối đa 5MB)</p>
+              <p className="text-sm font-semibold text-white">{isEn ? "Profile Avatar" : "Ảnh đại diện"}</p>
+              <p className="text-xs text-white/50 mb-2">
+                {isEn ? "Supports JPG, PNG, WEBP (max 5MB)" : "Hỗ trợ JPG, PNG, WEBP (tối đa 5MB)"}
+              </p>
               <label
                 htmlFor="avatar-file-input"
                 className="inline-block px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-xs font-semibold text-white transition-all cursor-pointer"
               >
-                Tải ảnh mới
+                {isEn ? "Upload Photo" : "Tải ảnh mới"}
               </label>
             </div>
           </div>
 
           {/* Họ tên */}
           <div>
-            <label className="block text-xs font-semibold text-slate-200 mb-1.5">Họ và tên</label>
+            <label className="block text-xs font-semibold text-slate-200 mb-1.5">
+              {isEn ? "Full Name" : "Họ và tên"}
+            </label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Nhập họ và tên đầy đủ"
+              placeholder={isEn ? "Enter your full name" : "Nhập họ và tên đầy đủ"}
               className="w-full px-4 py-2.5 bg-[#0e1732] border border-white/20 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-white placeholder:text-white/40 focus:outline-none transition-all"
             />
           </div>
@@ -199,7 +217,9 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
           {/* Tiểu sử */}
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <label className="block text-xs font-semibold text-slate-200">Tiểu sử (Bio)</label>
+              <label className="block text-xs font-semibold text-slate-200">
+                {isEn ? "Biography (Bio)" : "Tiểu sử (Bio)"}
+              </label>
               <span className="text-[11px] text-white/40">{bio.length}/500</span>
             </div>
             <textarea
@@ -207,26 +227,34 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               maxLength={500}
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Giới thiệu đôi nét về niềm đam mê đại dương của bạn..."
+              placeholder={
+                isEn
+                  ? "Tell us about your passion for ocean biodiversity..."
+                  : "Giới thiệu đôi nét về niềm đam mê đại dương của bạn..."
+              }
               className="w-full px-4 py-2.5 bg-[#0e1732] border border-white/20 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-white placeholder:text-white/40 focus:outline-none transition-all resize-none"
             />
           </div>
 
           {/* Số điện thoại */}
           <div>
-            <label className="block text-xs font-semibold text-slate-200 mb-1.5">Số điện thoại</label>
+            <label className="block text-xs font-semibold text-slate-200 mb-1.5">
+              {isEn ? "Phone Number" : "Số điện thoại"}
+            </label>
             <input
               type="text"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder="Ví dụ: 0912345678"
+              placeholder={isEn ? "E.g: +84912345678" : "Ví dụ: 0912345678"}
               className="w-full px-4 py-2.5 bg-[#0e1732] border border-white/20 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-white placeholder:text-white/40 focus:outline-none transition-all"
             />
           </div>
 
           {/* Ngày sinh */}
           <div>
-            <label className="block text-xs font-semibold text-slate-200 mb-1.5">Ngày sinh</label>
+            <label className="block text-xs font-semibold text-slate-200 mb-1.5">
+              {isEn ? "Date of Birth" : "Ngày sinh"}
+            </label>
             <input
               type="date"
               value={dateOfBirth}
@@ -242,7 +270,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               onClick={onClose}
               className="px-4 py-2 rounded-xl text-xs font-semibold text-white/70 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
             >
-              Hủy
+              {t("profile.btnCancel", isEn ? "Cancel" : "Hủy")}
             </button>
             <button
               type="submit"
@@ -252,10 +280,10 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               {isLoading ? (
                 <>
                   <Loader2 size={15} className="animate-spin" />
-                  <span>Đang lưu...</span>
+                  <span>{isEn ? "Saving..." : "Đang lưu..."}</span>
                 </>
               ) : (
-                <span>Lưu thay đổi</span>
+                <span>{t("profile.btnSave", isEn ? "Save Changes" : "Lưu thay đổi")}</span>
               )}
             </button>
           </div>

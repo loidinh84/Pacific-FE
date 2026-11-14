@@ -114,7 +114,7 @@ export default function SpeciesDissection3D() {
           </button>
 
           {/* 3D Lab Badge */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 backdrop-blur-md text-cyan-300 text-xs font-bold tracking-wide uppercase">
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 backdrop-blur-md text-cyan-300 text-xs font-bold tracking-wide">
             <Box size={14} className="text-cyan-400 animate-pulse" />
             <span>
               {language === "vi" ? "Phòng Giải Phẫu 3D" : "3D Dissection Room"}
@@ -149,7 +149,7 @@ export default function SpeciesDissection3D() {
 
       {/* ── LEFT SYSTEM FILTER BAR ── */}
       <div className="absolute top-20 left-6 z-20 flex flex-col gap-2 pointer-events-auto">
-        <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1 px-1">
+        <p className="text-[10px] text-slate-400 font-semibold mb-1 px-1">
           {language === "vi" ? "Hệ Cơ Quan" : "Organ Systems"}
         </p>
         {systemsPresent.map((key) => {
@@ -196,7 +196,7 @@ export default function SpeciesDissection3D() {
           <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-3">
             <div>
               <span
-                className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider mb-1"
+                className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold mb-1"
                 style={{
                   backgroundColor: activeSysCfg.color + "25",
                   color: activeSysCfg.color,
@@ -239,8 +239,8 @@ export default function SpeciesDissection3D() {
 
           {/* Biological Description */}
           <div>
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold mb-1">
-              {language === "vi" ? "Mô Tả Sinh Học" : "Biological Description"}
+            <p className="text-[10px] text-slate-500 font-semibold mb-1">
+              {language === "vi" ? "Mô tả sinh học" : "Biological Description"}
             </p>
             <p className="text-xs text-slate-300 leading-relaxed">
               {language === "en"
@@ -252,8 +252,8 @@ export default function SpeciesDissection3D() {
           {/* Medical Data */}
           {selectedOrgan.medicalData && (
             <div className="space-y-2 pt-2 border-t border-white/10">
-              <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">
-                {language === "vi" ? "Dữ Liệu Y Khoa" : "Medical Data"}
+              <p className="text-[10px] text-slate-500 font-semibold">
+                {language === "vi" ? "Dữ liệu y khoa" : "Medical Data"}
               </p>
 
               {selectedOrgan.medicalData.weightEstimate && (
@@ -317,8 +317,8 @@ export default function SpeciesDissection3D() {
       <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10 pointer-events-none text-center">
         <span className="text-[10px] text-cyan-300/80 bg-slate-900/60 px-3 py-1 rounded-full border border-cyan-500/20 backdrop-blur-md">
           {language === "vi"
-            ? "🖱️ Kéo để xoay 360° • Cuộn để zoom • Click bộ phận để xem chi tiết"
-            : "🖱️ Drag to rotate 360° • Scroll to zoom • Click organ for details"}
+            ? "Kéo để xoay 360° • Cuộn để zoom • Click bộ phận để xem chi tiết"
+            : "Drag to rotate 360° • Scroll to zoom • Click organ for details"}
         </span>
       </div>
     </div>

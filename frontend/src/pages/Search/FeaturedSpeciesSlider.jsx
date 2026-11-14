@@ -6,6 +6,7 @@ import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { fetchSpeciesList } from "../../services/speciesApi";
 import { FishHidden } from "../../assets/Images";
 import * as Icons from "../../assets/Icons";
+import { getLocalizedCategory, getLocalizedSpeciesName } from "../../utils/speciesFormatters";
 
 export function FeaturedSpeciesSlider({ initialSpecies = null }) {
   const navigate = useNavigate();
@@ -112,12 +113,12 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
               id: s.id,
               slug: s.slug || s.id,
               categoryVi: s.group?.name || "Sinh vật biển",
-              categoryEn: s.group?.name || "Marine Life",
+              categoryEn: getLocalizedCategory(s.group?.name, "en"),
               statusVi: s.vietnamRedListStatus || "Ít quan tâm",
               statusEn: s.vietnamRedListStatus || "Least Concern",
               statusType,
               nameVi: s.commonName,
-              nameEn: s.commonName,
+              nameEn: getLocalizedSpeciesName(s, "en"),
               sciName: s.scientificName,
               descVi: s.description || `Sinh vật phân bố tại vùng biển ${s.eastSeaZone || "Biển Đông"}.`,
               descEn: s.description || `Species found in ${s.eastSeaZone || "East Sea"}.`,
@@ -192,10 +193,10 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
         style={{ scrollbarWidth: "none", scrollBehavior: isDragging ? "auto" : "smooth" }}
       >
         {featuredList.map((s) => {
-          const categoryName = language === "en" ? s.categoryEn : s.categoryVi;
+          const categoryName = getLocalizedCategory(s.categoryVi || s.categoryEn, language);
           const statusName = language === "en" ? s.statusEn : s.statusVi;
-          const name = language === "en" ? s.nameEn : s.nameVi;
-          const desc = language === "en" ? s.descEn : s.descVi;
+          const name = getLocalizedSpeciesName(s, language);
+          const desc = language === "en" ? (s.descEn || s.descVi) : s.descVi;
 
           return (
             <div

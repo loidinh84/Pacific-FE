@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Compass, MapPin, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchMyExplored } from "../../services/userService";
+import { useLanguage } from "../../hooks/useLanguage";
 
 export default function ExploredTab() {
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
   const [explored, setExplored] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 12, total: 0, totalPages: 1 });
   const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +23,7 @@ export default function ExploredTab() {
       }
     } catch (err) {
       console.error("Lỗi khi tải danh sách địa điểm khám phá:", err);
-      setError("Không thể tải danh sách địa điểm đã khám phá!");
+      setError(isEn ? "Failed to load explored locations!" : "Không thể tải danh sách địa điểm đã khám phá!");
     } finally {
       setIsLoading(false);
     }
@@ -35,14 +38,18 @@ export default function ExploredTab() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-white font-heading flex items-center gap-2.5">
           <MapPin size={22} className="text-pacific-cyan" />
-          <span>Địa điểm đã khám phá ({pagination.total})</span>
+          <span>
+            {t("profile.tabExplored", "Địa điểm đã khám phá")} ({pagination.total})
+          </span>
         </h2>
       </div>
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 bg-[#1b254b]/50 border border-white/10 rounded-3xl">
           <Loader2 size={32} className="text-pacific-cyan animate-spin mb-3" />
-          <p className="text-xs text-white/60">Đang tải nhật ký thám hiểm đại dương...</p>
+          <p className="text-xs text-white/60">
+            {isEn ? "Loading ocean expedition journal..." : "Đang tải nhật ký thám hiểm đại dương..."}
+          </p>
         </div>
       ) : error ? (
         <div className="p-6 bg-rose-500/10 border border-rose-500/30 rounded-3xl text-center text-rose-200 text-sm">
@@ -53,16 +60,21 @@ export default function ExploredTab() {
           <div className="w-16 h-16 rounded-2xl bg-pacific-blue-bright/10 border border-pacific-blue-bright/20 flex items-center justify-center text-pacific-cyan mb-4">
             <Compass size={28} />
           </div>
-          <h3 className="text-base font-bold text-white mb-1">Chưa có dấu chân thám hiểm</h3>
+          <h3 className="text-base font-bold text-white mb-1">
+            {t("profile.emptyExplored", "Chưa có dấu chân thám hiểm")}
+          </h3>
           <p className="text-xs text-white/50 max-w-sm mb-5">
-            Bạn chưa bắt đầu hành trình khám phá các vùng biển kỳ thú. Hãy bước vào bản đồ đại dương để mở khóa những vùng biển mới!
+            {t(
+              "profile.emptyExploredDesc",
+              "Bạn chưa bắt đầu hành trình khám phá các vùng biển kỳ thú. Hãy bước vào bản đồ đại dương để mở khóa những vùng biển mới!"
+            )}
           </p>
           <Link
             to="/"
             className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all"
           >
             <Compass size={16} />
-            <span>Thám hiểm bản đồ biển</span>
+            <span>{isEn ? "Explore Marine Map" : "Thám hiểm bản đồ biển"}</span>
           </Link>
         </div>
       ) : (

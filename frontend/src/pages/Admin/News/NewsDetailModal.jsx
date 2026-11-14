@@ -236,7 +236,7 @@ export default function NewsDetailModal({
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Layers size={15} className="text-cyan-400" />
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <p className="text-xs font-semibold text-slate-400">
                   Bộ sưu tập ảnh ({article.gallery.length})
                 </p>
               </div>
@@ -272,7 +272,7 @@ export default function NewsDetailModal({
                   : "bg-sky-50/60 border-slate-200 text-slate-700"
               }`}
             >
-              <p className="text-xs font-semibold text-sky-400 uppercase tracking-wider mb-1">
+              <p className="text-xs font-semibold text-sky-400 mb-1.5">
                 Tóm tắt nội dung
               </p>
               <p className="text-xs sm:text-sm leading-relaxed italic">
@@ -283,7 +283,7 @@ export default function NewsDetailModal({
 
           {/* Nội dung toàn văn */}
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-slate-400">
               Nội dung bài viết
             </p>
             {article.content || article.clean_content ? (

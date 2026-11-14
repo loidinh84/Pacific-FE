@@ -75,8 +75,13 @@ export default function NewsDetail() {
   // SEO Title & Meta
   useEffect(() => {
     if (article) {
+      let brandName = "Pacific";
+      try {
+        const saved = localStorage.getItem("pacific_system_settings");
+        if (saved) brandName = JSON.parse(saved)?.general?.websiteName || brandName;
+      } catch (_) {}
       setPageMeta(
-        `${article.title} | ${t("news.pageTitle")} Pacific`,
+        `${article.title} | ${t("news.pageTitle")} - ${brandName}`,
         article.excerpt || t("news.metaDescription")
       );
     }

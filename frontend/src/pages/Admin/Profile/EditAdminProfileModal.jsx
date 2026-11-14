@@ -2,6 +2,7 @@ import { useState } from "react";
 import { X, Camera, Loader2, AlertCircle, CheckCircle2, Lock } from "lucide-react";
 import { updateAdminProfile, updateAdminAvatar } from "../../../services/adminProfileApi";
 import { useLanguage } from "../../../hooks/useLanguage";
+import { localizeMessage } from "../../../utils/errorTranslator";
 
 export default function EditAdminProfileModal(props) {
   if (!props.isOpen) return null;
@@ -171,10 +172,11 @@ function EditAdminProfileModalContent({
       }, 1000);
     } catch (err) {
       console.error("Cập nhật hồ sơ Admin lỗi:", err);
-      const msg =
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        (isEn ? "Could not update profile!" : "Không thể cập nhật hồ sơ!");
+      const msg = localizeMessage(
+        err,
+        language,
+        isEn ? "Could not update profile!" : "Không thể cập nhật hồ sơ!"
+      );
       setErrorMessage(msg);
     } finally {
       setIsLoading(false);
@@ -314,7 +316,7 @@ function EditAdminProfileModalContent({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@pacific.org"
+              placeholder="admin@domain.org"
               className="w-full px-4 py-2.5 bg-[#0e1732] border border-white/20 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-white placeholder:text-white/40 focus:outline-none transition-all"
             />
           </div>

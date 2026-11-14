@@ -2,7 +2,7 @@ export function SectionHeader({ badge, title, subtitle, className = "" }) {
   return (
     <div className={`text-center mb-16 ${className}`} data-aos="fade-up">
       {badge && (
-        <span className="inline-block px-3 py-1 bg-pacific-blue-bright/20 border border-pacific-blue-bright/40 text-pacific-blue-light text-xs font-semibold rounded-full uppercase tracking-wider mb-4">
+        <span className="inline-block px-3.5 py-1 bg-pacific-blue-bright/20 border border-pacific-blue-bright/40 text-pacific-blue-light text-xs font-semibold rounded-full tracking-wide mb-4">
           {badge}
         </span>
       )}

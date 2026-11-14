@@ -12,8 +12,10 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
+import { useLanguage } from "../../../hooks/useLanguage";
 import { useToast } from "../../../hooks/useToast";
 import ToastContainer from "../../../hooks/ToastContainer";
+import { localizeMessage } from "../../../utils/errorTranslator";
 import {
   fetchAdminRelationships,
   createAdminRelationship,
@@ -206,6 +208,8 @@ function CustomSelect({
 
 export default function RelationshipsManagement() {
   const { isDark } = useTheme();
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const { toasts, showSuccess, showError } = useToast();
 
   const [relationships, setRelationships] = useState([]);
@@ -348,15 +352,21 @@ export default function RelationshipsManagement() {
           description: formData.description,
           ecologicalImpact: formData.ecologicalImpact,
         });
-        showSuccess("Cập nhật mối quan hệ thành công");
+        showSuccess(isEn ? "Relationship updated successfully" : "Cập nhật mối quan hệ thành công");
       } else {
         await createAdminRelationship(formData);
-        showSuccess("Tạo mối quan hệ mới thành công");
+        showSuccess(isEn ? "New relationship created successfully" : "Tạo mối quan hệ mới thành công");
       }
       setIsModalOpen(false);
       loadData();
     } catch (err) {
-      showError(err.response?.data?.message || err.message || "Thao tác thất bại");
+      showError(
+        localizeMessage(
+          err,
+          language,
+          isEn ? "Operation failed" : "Thao tác thất bại"
+        )
+      );
     } finally {
       setSubmitting(false);
     }
@@ -367,11 +377,17 @@ export default function RelationshipsManagement() {
     setDeleting(true);
     try {
       await deleteAdminRelationship(deleteTarget.id);
-      showSuccess("Đã xóa mối quan hệ thành công");
+      showSuccess(isEn ? "Relationship deleted successfully" : "Đã xóa mối quan hệ thành công");
       setDeleteTarget(null);
       loadData();
     } catch (err) {
-      showError("Xóa mối quan hệ thất bại");
+      showError(
+        localizeMessage(
+          err,
+          language,
+          isEn ? "Failed to delete relationship" : "Xóa mối quan hệ thất bại"
+        )
+      );
     } finally {
       setDeleting(false);
     }

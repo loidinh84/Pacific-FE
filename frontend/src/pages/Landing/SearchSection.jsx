@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronDown, Search } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { CATEGORIES_DATA, HABITATS_DATA } from "../../mocks/speciesMock";
+import { getLocalizedCategory } from "../../utils/speciesFormatters";
 import { fetchSpeciesGroups } from "../../services/speciesApi";
 import * as Images from "../../assets/Images";
 
@@ -26,11 +27,16 @@ export default function SearchSection() {
               labelVi: "Tất cả nhóm sinh vật",
               labelEn: "All Species Groups",
             },
-            ...res.data.map((g) => ({
-              value: g.slug || g.id,
-              labelVi: g.name,
-              labelEn: g.name,
-            })),
+            ...res.data.map((g) => {
+              const matchedMock = CATEGORIES_DATA.find(
+                (c) => c.value === g.slug || c.value === g.id
+              );
+              return {
+                value: g.slug || g.id,
+                labelVi: g.name,
+                labelEn: matchedMock?.labelEn || getLocalizedCategory(g.name, "en"),
+              };
+            }),
           ];
           setCategories(apiCats);
         }
@@ -139,7 +145,7 @@ export default function SearchSection() {
                 <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.06)_0%,transparent_70%)] animate-pulse-glow" />
                 <img
                   src={Images.BanDo5DaiDuong}
-                  alt="Pacific Ocean Map"
+                  alt="Ocean Map"
                   className="w-full h-full object-contain animate-float-slow filter drop-shadow-[0_10px_30px_rgba(255,255,255,0.15)]"
                 />
               </div>

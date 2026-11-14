@@ -122,7 +122,7 @@ export default function Navbar() {
         <Link to="/" className="flex items-center gap-3">
           <img
             src={systemSettings?.general?.logoUrl || Images.Logo}
-            alt="Pacific Logo"
+            alt={systemSettings?.general?.websiteName || "Logo"}
             className="w-8 h-8 object-contain"
           />
           <span className="font-heading text-2xl font-bold text-white tracking-tight">

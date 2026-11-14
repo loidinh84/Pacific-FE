@@ -5,6 +5,14 @@ import { CreatureAccentCard } from "../../components/species/CreatureAccentCard"
 export function LoginBrandPanel() {
   const { t } = useLanguage();
 
+  const brandName = (() => {
+    try {
+      const saved = localStorage.getItem("pacific_system_settings");
+      if (saved) return JSON.parse(saved)?.general?.websiteName || "Pacific";
+    } catch (_) {}
+    return "Pacific";
+  })();
+
   return (
     <div className="md:col-span-5 bg-gradient-to-br from-pacific-navy-mid/80 via-pacific-navy/90 to-pacific-darkest/90 p-8 md:p-10 flex flex-col justify-between relative overflow-hidden border-b md:border-b-0 md:border-r border-white/10">
       <div className="absolute top-0 right-0 w-64 h-64 bg-pacific-blue-bright/20 rounded-full blur-3xl pointer-events-none" />
@@ -12,8 +20,8 @@ export function LoginBrandPanel() {
 
       {/* Top Branding */}
       <div className="relative z-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pacific-blue-bright/15 border border-pacific-blue-bright/30 text-pacific-blue-light text-xs font-semibold uppercase tracking-wider mb-6">
-          &nbsp; Pacific
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-pacific-blue-bright/15 border border-pacific-blue-bright/30 text-pacific-blue-light text-xs font-semibold mb-6">
+          {brandName}
         </div>
         <h2 className="text-2xl lg:text-3xl font-black text-white font-heading leading-tight mb-3">
           {t("auth.brandTitle")}

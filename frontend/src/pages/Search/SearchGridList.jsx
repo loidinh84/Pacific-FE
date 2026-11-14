@@ -12,6 +12,7 @@ import { NoFound, FishHidden } from "../../assets/Images";
 import { getStoredToken } from "../../utils/auth";
 import { toggleSpeciesFavorite } from "../../services/speciesApi";
 import { fetchMyFavoriteIds } from "../../services/userService";
+import { getLocalizedCategory, getLocalizedSpeciesName } from "../../utils/speciesFormatters";
 
 export function SearchGridList({
   speciesList,
@@ -176,11 +177,10 @@ export function SearchGridList({
           {/* 3 Columns Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
             {currentItems.map((s) => {
-              const categoryName =
-                language === "en" ? s.categoryEn : s.categoryVi;
+              const categoryName = getLocalizedCategory(s.categoryVi || s.categoryEn, language);
               const statusName = language === "en" ? s.statusEn : s.statusVi;
-              const name = language === "en" ? s.nameEn : s.nameVi;
-              const desc = language === "en" ? s.descEn : s.descVi;
+              const name = getLocalizedSpeciesName(s, language);
+              const desc = language === "en" ? (s.descEn || s.descVi) : s.descVi;
               const isFav = favorites.has(String(s.id)) || (s.slug && favorites.has(String(s.slug)));
 
               return (

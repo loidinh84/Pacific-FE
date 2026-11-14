@@ -118,6 +118,9 @@ export default function SystemSettings() {
             api: { ...prev.api, ...(res.data.api || {}) },
             security: { ...prev.security, ...(res.data.security || {}) },
           }));
+          if (res.data.general) {
+            updateDocumentMetaSEO(res.data.general);
+          }
         }
       } catch (err) {
         console.warn(
@@ -233,7 +236,7 @@ export default function SystemSettings() {
     updateSection("general", "logoUrl", "");
     updateDocumentFavicon(Images.Logo);
     if (logoInputRef.current) logoInputRef.current.value = "";
-    showToast("Đã đặt lại về logo Pacific mặc định", "info");
+    showToast("Đã đặt lại về logo mặc định", "info");
   };
 
   // Reset Tab Defaults Handlers
@@ -241,26 +244,26 @@ export default function SystemSettings() {
     setFormData((prev) => ({
       ...prev,
       general: {
-        websiteName: "Pacific Ocean - Bách khoa toàn thư sinh vật biển",
+        websiteName: "Cổng thông tin sinh vật biển",
         seoDescription:
-          "Hệ thống số hóa sinh vật biển toàn diện, cung cấp dữ liệu tương tác 3D và bảo tồn hệ sinh thái Biển Đông.",
-        contactEmail: "admin@pacific.org",
+          "Hệ thống số hóa sinh vật biển toàn diện, cung cấp dữ liệu tương tác 3D và bảo tồn hệ sinh thái đại dương.",
+        contactEmail: "admin@domain.org",
         logoUrl: "",
         socialLinks: [
           {
             id: "1",
             platform: "Facebook",
-            url: "https://facebook.com/pacific.ocean",
+            url: "https://facebook.com",
           },
           {
             id: "2",
             platform: "Instagram",
-            url: "https://instagram.com/pacific.ocean",
+            url: "https://instagram.com",
           },
           {
             id: "3",
             platform: "YouTube",
-            url: "https://youtube.com/@pacific.ocean",
+            url: "https://youtube.com",
           },
         ],
       },

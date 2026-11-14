@@ -2,8 +2,12 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 
 export function SocialLoginButtons() {
+  const { language } = useLanguage();
+
   const handleGoogleSuccess = async (tokenResponse) => {
     try {
       const res = await axios.post("/api/auth/google", {
@@ -18,7 +22,15 @@ export function SocialLoginButtons() {
       }
     } catch (err) {
       console.error("Google login error:", err);
-      alert(err.response?.data?.message || "Đăng nhập bằng Google thất bại. Vui lòng thử lại!");
+      alert(
+        localizeMessage(
+          err,
+          language,
+          language === "en"
+            ? "Google login failed. Please try again!"
+            : "Đăng nhập bằng Google thất bại. Vui lòng thử lại!"
+        )
+      );
     }
   };
 
@@ -30,7 +42,11 @@ export function SocialLoginButtons() {
   const handleGithubLogin = () => {
     const githubClientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
     if (!githubClientId) {
-      alert("Chưa cấu hình VITE_GITHUB_CLIENT_ID trong file .env!");
+      alert(
+        language === "en"
+          ? "VITE_GITHUB_CLIENT_ID is not configured in .env!"
+          : "Chưa cấu hình VITE_GITHUB_CLIENT_ID trong file .env!"
+      );
       return;
     }
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&scope=user:email`;

@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Send, Trash2, ShieldCheck, MessageSquare, Loader2 } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 import { getClientEffectiveUser } from "../../utils/auth";
 import { useToast } from "../../hooks/useToast";
 import ToastContainer from "../../hooks/ToastContainer";
@@ -14,17 +15,26 @@ import {
 } from "../../services/speciesCommentsApi";
 
 // Định dạng thời gian tương đối
-const formatRelativeTime = (dateStr) => {
-  if (!dateStr) return "Vừa xong";
+const formatRelativeTime = (dateStr, isEn = false) => {
+  if (!dateStr) return isEn ? "Just now" : "Vừa xong";
   const now = new Date();
   const date = new Date(dateStr);
   const diffInSeconds = Math.floor((now - date) / 1000);
 
-  if (diffInSeconds < 60) return "Vừa xong";
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} phút trước`;
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
-  return date.toLocaleDateString("vi-VN", {
+  if (diffInSeconds < 60) return isEn ? "Just now" : "Vừa xong";
+  if (diffInSeconds < 3600) {
+    const mins = Math.floor(diffInSeconds / 60);
+    return isEn ? `${mins}m ago` : `${mins} phút trước`;
+  }
+  if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return isEn ? `${hours}h ago` : `${hours} giờ trước`;
+  }
+  if (diffInSeconds < 604800) {
+    const days = Math.floor(diffInSeconds / 86400);
+    return isEn ? `${days}d ago` : `${days} ngày trước`;
+  }
+  return date.toLocaleDateString(isEn ? "en-US" : "vi-VN", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -32,7 +42,8 @@ const formatRelativeTime = (dateStr) => {
 };
 
 export function SpeciesComments({ speciesId }) {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
   const navigate = useNavigate();
   const { toasts, showToast, removeToast } = useToast();
 
@@ -72,11 +83,11 @@ export function SpeciesComments({ speciesId }) {
       }
     } catch (err) {
       console.error("Lỗi khi tải bình luận sinh vật:", err);
-      showToast("Không thể tải bình luận lúc này.", "error");
+      showToast(isEn ? "Unable to load comments right now." : "Không thể tải bình luận lúc này.", "error");
     } finally {
       setIsLoading(false);
     }
-  }, [speciesId, showToast]);
+  }, [speciesId, showToast, isEn]);
 
   useEffect(() => {
     loadComments();
@@ -98,14 +109,18 @@ export function SpeciesComments({ speciesId }) {
       if (res?.success && res.data) {
         setCommentsList((prev) => [res.data, ...prev]);
         setCommentText("");
-        showToast("Đã gửi bình luận thành công!", "success");
+        showToast(isEn ? "Comment posted successfully!" : "Đã gửi bình luận thành công!", "success");
       } else {
-        showToast(res?.message || "Không thể gửi bình luận", "error");
+        showToast(res?.message || (isEn ? "Unable to post comment" : "Không thể gửi bình luận"), "error");
       }
     } catch (err) {
       console.error("Lỗi gửi bình luận:", err);
       showToast(
-        err.response?.data?.message || "Lỗi khi gửi bình luận. Vui lòng thử lại!",
+        localizeMessage(
+          err,
+          language,
+          isEn ? "Error posting comment. Please try again!" : "Lỗi khi gửi bình luận. Vui lòng thử lại!"
+        ),
         "error"
       );
     } finally {
@@ -121,13 +136,27 @@ export function SpeciesComments({ speciesId }) {
       const res = await deleteSpeciesComment(deleteModal.commentId);
       if (res?.success) {
         setCommentsList((prev) => prev.filter((c) => c.id !== deleteModal.commentId));
-        showToast("Đã xóa bình luận thành công.", "info");
+        showToast(isEn ? "Comment deleted successfully." : "Đã xóa bình luận thành công.", "info");
       } else {
-        showToast(res?.message || "Không thể xóa bình luận này.", "error");
+        showToast(
+          localizeMessage(
+            res?.message,
+            language,
+            isEn ? "Unable to delete this comment." : "Không thể xóa bình luận này."
+          ),
+          "error"
+        );
       }
     } catch (err) {
       console.error("Lỗi xóa bình luận:", err);
-      showToast("Có lỗi xảy ra khi xóa bình luận.", "error");
+      showToast(
+        localizeMessage(
+          err,
+          language,
+          isEn ? "An error occurred while deleting comment." : "Có lỗi xảy ra khi xóa bình luận."
+        ),
+        "error"
+      );
     } finally {
       setIsDeleting(false);
       setDeleteModal({ isOpen: false, commentId: null });
@@ -143,10 +172,14 @@ export function SpeciesComments({ speciesId }) {
 
       <ConfirmModal
         isOpen={deleteModal.isOpen}
-        title="Xác nhận xóa bình luận"
-        message="Bạn có chắc chắn muốn gỡ bỏ bình luận này khỏi trang sinh vật? Thao tác này sẽ cập nhật ngay lập tức trên hệ thống."
-        confirmText="Xác nhận xóa"
-        cancelText="Hủy bỏ"
+        title={isEn ? "Delete Comment" : "Xác nhận xóa bình luận"}
+        message={
+          isEn
+            ? "Are you sure you want to remove this comment from the species page? This action will take effect immediately."
+            : "Bạn có chắc chắn muốn gỡ bỏ bình luận này khỏi trang sinh vật? Thao tác này sẽ cập nhật ngay lập tức trên hệ thống."
+        }
+        confirmText={isEn ? "Delete" : "Xác nhận xóa"}
+        cancelText={isEn ? "Cancel" : "Hủy bỏ"}
         variant="danger"
         isLoading={isDeleting}
         onConfirm={handleConfirmDelete}
@@ -162,16 +195,18 @@ export function SpeciesComments({ speciesId }) {
             </div>
             <div>
               <h2 className="text-lg md:text-xl font-bold text-white font-heading">
-                {t("speciesDetail.commentsTitle") || "Họ nói gì về sinh vật này?"}
+                {t("speciesDetail.commentsTitle") || (isEn ? "What people say about this species" : "Họ nói gì về sinh vật này?")}
               </h2>
               <p className="text-xs text-slate-300">
-                Ý kiến và trao đổi từ cộng đồng người yêu đại dương
+                {isEn
+                  ? "Community discussions and observations from ocean enthusiasts"
+                  : "Ý kiến và trao đổi từ cộng đồng người yêu đại dương"}
               </p>
             </div>
           </div>
 
           <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-500/20 border border-sky-400/30 text-sky-300">
-            {commentsList.length} bình luận
+            {commentsList.length} {isEn ? (commentsList.length === 1 ? "comment" : "comments") : "bình luận"}
           </span>
         </div>
 
@@ -185,8 +220,10 @@ export function SpeciesComments({ speciesId }) {
               placeholder={
                 currentUser
                   ? t("speciesDetail.commentPlaceholder") ||
-                    "Nhập ý kiến của bạn về loài sinh vật này..."
-                  : "Đăng nhập để chia sẻ cảm nghĩ của bạn..."
+                    (isEn
+                      ? "Share your insights about this marine species..."
+                      : "Nhập ý kiến của bạn về loài sinh vật này...")
+                  : (isEn ? "Log in to share your thoughts..." : "Đăng nhập để chia sẻ cảm nghĩ của bạn...")
               }
               className="flex-1 bg-[#112d4e] border border-white/20 text-white placeholder:text-white/40 text-xs md:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition-colors"
             />
@@ -199,11 +236,11 @@ export function SpeciesComments({ speciesId }) {
                 {isSubmitting ? (
                   <>
                     <Loader2 size={15} className="animate-spin" />
-                    <span>Đang gửi...</span>
+                    <span>{isEn ? "Sending..." : "Đang gửi..."}</span>
                   </>
                 ) : (
                   <>
-                    <span>{t("speciesDetail.btnSendComment") || "Gửi đánh giá"}</span>
+                    <span>{t("speciesDetail.btnSendComment") || (isEn ? "Post Comment" : "Gửi đánh giá")}</span>
                     <Send size={14} />
                   </>
                 )}
@@ -213,7 +250,7 @@ export function SpeciesComments({ speciesId }) {
                 to="/login"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs md:text-sm font-bold transition-all cursor-pointer shrink-0 active:scale-95"
               >
-                <span>Đăng nhập</span>
+                <span>{t("nav.login", isEn ? "Log In" : "Đăng nhập")}</span>
               </Link>
             )}
           </div>
@@ -224,12 +261,16 @@ export function SpeciesComments({ speciesId }) {
           {isLoading ? (
             <div className="flex items-center justify-center py-8 text-cyan-400 gap-2">
               <Loader2 size={20} className="animate-spin" />
-              <span className="text-xs text-slate-400">Đang tải bình luận...</span>
+              <span className="text-xs text-slate-400">
+                {isEn ? "Loading comments..." : "Đang tải bình luận..."}
+              </span>
             </div>
           ) : commentsList.length === 0 ? (
             <p className="text-center text-white/50 text-xs md:text-sm py-6 italic">
               {t("speciesDetail.noComments") ||
-                "Chưa có nhận xét gì về sinh vật này! Hãy là người đầu tiên chia sẻ cảm nghĩ."}
+                (isEn
+                  ? "No comments on this species yet! Be the first to share your thoughts."
+                  : "Chưa có nhận xét gì về sinh vật này! Hãy là người đầu tiên chia sẻ cảm nghĩ.")}
             </p>
           ) : (
             <div className="space-y-3.5">
@@ -276,14 +317,14 @@ export function SpeciesComments({ speciesId }) {
                           {isAuthorAdmin && (
                             <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center gap-1">
                               <ShieldCheck size={11} />
-                              <span>Quản trị viên</span>
+                              <span>{isEn ? "Administrator" : "Quản trị viên"}</span>
                             </span>
                           )}
 
                           <span className="text-white/30 text-xs">•</span>
 
                           <span className="text-[11px] text-white/50">
-                            {formatRelativeTime(c.createdAt)}
+                            {formatRelativeTime(c.createdAt || c.created_at, isEn)}
                           </span>
                         </div>
                       </div>
@@ -292,7 +333,7 @@ export function SpeciesComments({ speciesId }) {
                         <button
                           onClick={() => setDeleteModal({ isOpen: true, commentId: c.id })}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/15 transition-all cursor-pointer opacity-70 hover:opacity-100"
-                          title="Xóa bình luận này"
+                          title={isEn ? "Delete this comment" : "Xóa bình luận này"}
                         >
                           <Trash2 size={14} />
                         </button>

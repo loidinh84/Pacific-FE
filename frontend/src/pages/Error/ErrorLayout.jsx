@@ -2,16 +2,23 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Home, ArrowLeft, RefreshCw, LogIn } from "lucide-react";
 import ErrorBackground from "../../assets/Images/ErrorBackground.png";
+import { useLanguage } from "../../hooks/useLanguage";
 
 export default function ErrorLayout({
   code = "404",
   watermark = null,
-  title = "Không tìm thấy trang",
+  title = null,
   actions = [],
   customAction = null,
 }) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const displayWatermark = watermark || code;
+  const displayTitle =
+    title ||
+    (code === "OOPS"
+      ? t("errors.unexpectedError", "Ứng dụng gặp sự cố ngoài ý muốn")
+      : t("errors.error404Title", "Không tìm thấy trang"));
 
   return (
     <div className="relative min-h-screen w-full bg-[#102144] overflow-hidden flex flex-col items-center justify-center px-4 select-none">
@@ -42,7 +49,7 @@ export default function ErrorLayout({
 
         {/* Tiêu đề lỗi */}
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-wide mb-8 px-4">
-          {title}
+          {displayTitle}
         </h1>
 
         {/* Nút thao tác */}
@@ -55,7 +62,7 @@ export default function ErrorLayout({
               className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 hover:border-cyan-400/50 text-white text-sm sm:text-base font-medium transition-all shadow-sm hover:shadow-cyan-500/10 active:scale-95"
             >
               <Home size={18} className="text-cyan-400" />
-              <span>Về trang chủ</span>
+              <span>{t("errors.btnHome", "Về trang chủ")}</span>
             </Link>
           )}
 
@@ -72,7 +79,7 @@ export default function ErrorLayout({
               className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 hover:border-cyan-400/50 text-white text-sm sm:text-base font-medium transition-all shadow-sm hover:shadow-cyan-500/10 active:scale-95 cursor-pointer"
             >
               <ArrowLeft size={18} className="text-cyan-400" />
-              <span>Quay trở lại</span>
+              <span>{t("errors.btnBack", "Quay trở lại")}</span>
             </button>
           )}
 
@@ -82,7 +89,7 @@ export default function ErrorLayout({
               className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white text-sm sm:text-base font-medium transition-all shadow-md active:scale-95"
             >
               <LogIn size={18} />
-              <span>Đăng nhập</span>
+              <span>{t("nav.login", "Đăng nhập")}</span>
             </Link>
           )}
 
@@ -93,7 +100,7 @@ export default function ErrorLayout({
               className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 hover:border-cyan-400/50 text-white text-sm sm:text-base font-medium transition-all shadow-sm hover:shadow-cyan-500/10 active:scale-95 cursor-pointer"
             >
               <RefreshCw size={18} className="text-cyan-400" />
-              <span>Tải lại trang</span>
+              <span>{t("errors.btnRetry", "Tải lại trang")}</span>
             </button>
           )}
         </div>

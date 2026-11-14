@@ -21,7 +21,6 @@ export default class ErrorBoundary extends React.Component {
         <ErrorLayout
           code="OOPS"
           watermark="ERROR"
-          title="Ứng dụng gặp sự cố ngoài ý muốn"
           actions={["retry", "home"]}
         />
       );

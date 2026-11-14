@@ -186,10 +186,10 @@ export default function OverviewTab({
             <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
               {admin?.fullName || admin?.username}
             </h2>
-            <p className="text-xs font-bold uppercase tracking-wider text-cyan-400">
+            <p className="text-xs font-bold text-cyan-400">
               {admin?.role === "super_admin"
-                ? (isEn ? "SUPER ADMIN" : "QUẢN TRỊ VIÊN CẤP CAO")
-                : (isEn ? "ADMIN" : "QUẢN TRỊ VIÊN")}
+                ? (isEn ? "Super Admin" : "Quản trị viên cấp cao")
+                : (isEn ? "Admin" : "Quản trị viên")}
             </p>
           </div>
 
@@ -197,7 +197,7 @@ export default function OverviewTab({
           <div className="pt-1">
             <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 tracking-wide">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              {isEn ? "ACTIVE" : "ĐANG HOẠT ĐỘNG"}
+              {isEn ? "Active" : "Đang hoạt động"}
             </span>
           </div>
         </div>
@@ -222,9 +222,9 @@ export default function OverviewTab({
               <span className="text-slate-200 font-medium">
                 {isEn ? "Email Verification" : "Xác thực Email"}
               </span>
-              <span className="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5 tracking-wide">
+              <span className="text-emerald-400 font-semibold text-xs flex items-center gap-1.5 tracking-wide">
                 <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                {isEn ? "Completed" : "HOÀN TẤT"}
+                {isEn ? "Completed" : "Hoàn tất"}
               </span>
             </div>
 
@@ -234,14 +234,14 @@ export default function OverviewTab({
                 {isEn ? "Phone Verification" : "Xác thực Số Điện Thoại"}
               </span>
               {admin?.phoneNumber ? (
-                <span className="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5 tracking-wide">
+                <span className="text-emerald-400 font-semibold text-xs flex items-center gap-1.5 tracking-wide">
                   <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                  {isEn ? "Completed" : "HOÀN TẤT"}
+                  {isEn ? "Completed" : "Hoàn tất"}
                 </span>
               ) : (
-                <span className="text-slate-400 font-medium text-xs uppercase flex items-center gap-1.5 tracking-wide">
+                <span className="text-slate-400 font-medium text-xs flex items-center gap-1.5 tracking-wide">
                   <span className="w-2 h-2 rounded-full bg-slate-500"></span>
-                  {isEn ? "Not Updated" : "CHƯA CẬP NHẬT"}
+                  {isEn ? "Not updated" : "Chưa cập nhật"}
                 </span>
               )}
             </div>
@@ -288,8 +288,8 @@ export default function OverviewTab({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
             {/* Field 1: Username */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                {isEn ? "Username" : "TÊN ĐĂNG NHẬP"}
+              <label className="text-xs font-semibold text-slate-300">
+                {isEn ? "Username" : "Tên đăng nhập"}
               </label>
               <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-mono font-medium shadow-inner">
                 @{admin?.username}
@@ -298,8 +298,8 @@ export default function OverviewTab({
 
             {/* Field 2: Full Name */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                {isEn ? "Full Name" : "HỌ VÀ TÊN"}
+              <label className="text-xs font-semibold text-slate-300">
+                {isEn ? "Full Name" : "Họ và tên"}
               </label>
               <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
                 {admin?.fullName || (isEn ? "Not set" : "Chưa cập nhật")}
@@ -308,8 +308,8 @@ export default function OverviewTab({
 
             {/* Field 3: Phone Number */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                {isEn ? "Phone Number" : "SỐ ĐIỆN THOẠI"}
+              <label className="text-xs font-semibold text-slate-300">
+                {isEn ? "Phone Number" : "Số điện thoại"}
               </label>
               <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
                 {admin?.phoneNumber || (isEn ? "Not set" : "Chưa cập nhật")}
@@ -318,8 +318,8 @@ export default function OverviewTab({
 
             {/* Field 4: Email */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                {isEn ? "Email" : "EMAIL"}
+              <label className="text-xs font-semibold text-slate-300">
+                {isEn ? "Email" : "Email"}
               </label>
               <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
                 {admin?.email}
@@ -328,8 +328,8 @@ export default function OverviewTab({
 
             {/* Field 5: Date of Birth */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                {isEn ? "Date of Birth" : "NGÀY SINH"}
+              <label className="text-xs font-semibold text-slate-300">
+                {isEn ? "Date of Birth" : "Ngày sinh"}
               </label>
               <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
                 {formatDate(admin?.dateOfBirth)}
@@ -338,8 +338,8 @@ export default function OverviewTab({
 
             {/* Field 6: Role / Status */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                {isEn ? "Role" : "VAI TRÒ"}
+              <label className="text-xs font-semibold text-slate-300">
+                {isEn ? "Role" : "Vai trò"}
               </label>
               <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium shadow-inner">
                 {admin?.role === "super_admin"
@@ -352,8 +352,8 @@ export default function OverviewTab({
           {/* Bio / Description note */}
           {admin?.bio && (
             <div className="space-y-2 pt-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                {isEn ? "Bio & Notes" : "TIỂU SỬ & GHI CHÚ"}
+              <label className="text-xs font-semibold text-slate-300">
+                {isEn ? "Bio & Notes" : "Tiểu sử & Ghi chú"}
               </label>
               <div className="w-full px-4 py-3 bg-[#17244c]/90 border border-white/15 rounded-xl text-sm text-white font-medium leading-relaxed shadow-inner">
                 {admin.bio}

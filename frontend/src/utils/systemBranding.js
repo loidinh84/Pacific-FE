@@ -22,6 +22,12 @@ export const updateDocumentMetaSEO = ({ websiteName, seoDescription, logoUrl } =
   try {
     // 1. Cập nhật Title & OpenGraph Title
     if (websiteName) {
+      document.title = websiteName;
+      const titleTag = document.querySelector("title");
+      if (titleTag) {
+        titleTag.textContent = websiteName;
+      }
+
       let ogTitle = document.querySelector("meta[property='og:title']");
       if (!ogTitle) {
         ogTitle = document.createElement("meta");

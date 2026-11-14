@@ -767,12 +767,16 @@ export function SpeciesDetailHero({ species }) {
           ) : (
             <div
               className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-white/40 text-xs font-medium cursor-not-allowed"
-              title="Mô hình 3D cho loài này đang được cập nhật"
+              title={
+                isEn
+                  ? "3D model for this species is updating"
+                  : "Mô hình 3D cho loài này đang được cập nhật"
+              }
             >
               <Box size={14} className="text-white/30" />
               <span>
                 {t("speciesDetail.model3dUpdating") ||
-                  "Mô hình 3D: Đang cập nhật"}
+                  (isEn ? "3D Model: Updating" : "Mô hình 3D: Đang cập nhật")}
               </span>
             </div>
           )}
@@ -786,13 +790,17 @@ export function SpeciesDetailHero({ species }) {
                   ? "bg-cyan-500/20 border-cyan-400 text-cyan-300"
                   : "bg-white/5 hover:bg-white/12 border-white/15 text-white/90 hover:text-white"
               }`}
-              title="Phát tín hiệu âm thanh sinh vật"
+              title={
+                isEn
+                  ? "Play marine creature sound"
+                  : "Phát tín hiệu âm thanh sinh vật"
+              }
             >
               {isPlayingAudio ? (
                 <>
                   <VolumeX size={15} className="text-cyan-400 animate-bounce" />
                   <span className="text-cyan-300 font-bold">
-                    {t("speciesDetail.audioPlaying") || "Đang phát"}
+                    {t("speciesDetail.audioPlaying") || (isEn ? "Playing" : "Đang phát")}
                   </span>
                   <span className="flex gap-0.5 ml-0.5">
                     <span className="w-1 h-3 bg-cyan-400 animate-pulse rounded-full" />
@@ -803,14 +811,14 @@ export function SpeciesDetailHero({ species }) {
               ) : (
                 <>
                   <Volume2 size={15} className="text-cyan-400" />
-                  <span>{t("speciesDetail.audioBtn") || "Âm thanh"}</span>
+                  <span>{t("speciesDetail.audioBtn") || (isEn ? "Sound" : "Âm thanh")}</span>
                 </>
               )}
             </button>
           ) : (
             <div className="inline-flex items-center gap-1.5 text-xs text-white/40 px-3 py-2.5 rounded-xl border border-white/5 bg-white/[0.02]">
               <VolumeX size={14} />
-              <span>{t("speciesDetail.noAudio") || "Không có âm thanh"}</span>
+              <span>{t("speciesDetail.noAudio") || (isEn ? "No Audio" : "Không có âm thanh")}</span>
             </div>
           )}
 
@@ -822,19 +830,19 @@ export function SpeciesDetailHero({ species }) {
                 ? "bg-rose-500/15 border-rose-400/50 text-rose-300"
                 : "bg-white/5 hover:bg-white/10 border-white/15 text-white/80 hover:text-white"
             }`}
-            title="Lưu vào danh sách yêu thích"
+            title={isEn ? "Save to favorites" : "Lưu vào danh sách yêu thích"}
           >
             {isFavorited ? (
               <>
                 <Favorited className="w-4 h-4 text-rose-400" />
                 <span className="text-rose-300">
-                  {t("speciesDetail.btnFavorited") || "Đã lưu"}
+                  {t("speciesDetail.btnFavorited") || (isEn ? "Favorited" : "Đã lưu")}
                 </span>
               </>
             ) : (
               <>
                 <Favorite className="w-4 h-4 text-white/70" />
-                <span>{t("speciesDetail.btnFavorite") || "Yêu thích"}</span>
+                <span>{t("speciesDetail.btnFavorite") || (isEn ? "Favorite" : "Yêu thích")}</span>
               </>
             )}
           </button>
@@ -843,19 +851,19 @@ export function SpeciesDetailHero({ species }) {
           <button
             onClick={handleShare}
             className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white/80 hover:text-white text-xs font-semibold transition-all cursor-pointer"
-            title="Sao chép liên kết chia sẻ"
+            title={isEn ? "Copy link to share" : "Sao chép liên kết chia sẻ"}
           >
             {isCopied ? (
               <>
                 <Check size={14} className="text-emerald-400" />
                 <span className="text-emerald-300 font-bold">
-                  {t("speciesDetail.copied") || "Đã chép"}
+                  {t("speciesDetail.copied") || (isEn ? "Copied" : "Đã chép")}
                 </span>
               </>
             ) : (
               <>
                 <Share2 size={14} className="text-slate-300" />
-                <span>{t("speciesDetail.share") || "Chia sẻ"}</span>
+                <span>{t("speciesDetail.share") || (isEn ? "Share" : "Chia sẻ")}</span>
               </>
             )}
           </button>
@@ -874,7 +882,7 @@ export function SpeciesDetailHero({ species }) {
               {t("speciesDetail.maxSize") || "Kích thước tối đa"}
             </span>
             <span className="text-white font-bold text-sm sm:text-base mt-0.5 block truncate">
-              {size || "Đang cập nhật"}
+              {size || (isEn ? "Updating" : "Đang cập nhật")}
             </span>
           </div>
         </div>

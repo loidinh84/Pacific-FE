@@ -4,12 +4,13 @@ import { Link, useNavigate, useLocation, useSearchParams } from "react-router-do
 import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import axios from "axios";
 import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 import { FloatingInput } from "../../components/ui/FloatingInput";
 import { SocialLoginButtons } from "../../components/ui/SocialLoginButtons";
 import { ForgotPasswordModal } from "../../components/auth/ForgotPasswordModal";
 
 export function LoginForm() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -38,7 +39,7 @@ export function LoginForm() {
 
       setIsLoading(true);
       setErrorMessage("");
-      setSuccessMessage("Đang xác thực tài khoản GitHub...");
+      setSuccessMessage(t("auth.githubAuthLoading", "Đang xác thực tài khoản GitHub..."));
 
       axios
         .post("/api/auth/github", { code })
@@ -48,7 +49,13 @@ export function LoginForm() {
             localStorage.setItem("pacific_user", JSON.stringify(res.data.user));
             window.dispatchEvent(new Event("pacific_auth_change"));
           }
-          setSuccessMessage(res.data?.message || "Đăng nhập GitHub thành công!");
+          setSuccessMessage(
+            localizeMessage(
+              res.data?.message,
+              language,
+              t("auth.githubLoginSuccess", "Đăng nhập GitHub thành công!")
+            )
+          );
           setTimeout(() => {
             const userRole = res.data?.user?.role;
             if (userRole === "admin" || userRole === "super_admin") {
@@ -60,15 +67,16 @@ export function LoginForm() {
         })
         .catch((err) => {
           console.error("GitHub auth error:", err);
-          const msg =
-            err.response?.data?.message || "Đăng nhập bằng GitHub thất bại!";
+          const msg = localizeMessage(
+            err,
+            language,
+            t("auth.githubLoginFailed", "Đăng nhập bằng GitHub thất bại!")
+          );
           setErrorMessage(msg);
         })
         .finally(() => setIsLoading(false));
     }
-  }, [searchParams, navigate]);
-
-
+  }, [searchParams, navigate, t, language]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,7 +94,13 @@ export function LoginForm() {
         window.dispatchEvent(new Event("pacific_auth_change"));
       }
 
-      setSuccessMessage(res.data?.message || "Đăng nhập thành công!");
+      setSuccessMessage(
+        localizeMessage(
+          res.data?.message,
+          language,
+          language === "en" ? "Login successful!" : "Đăng nhập thành công!"
+        )
+      );
 
       setTimeout(() => {
         const userRole = res.data?.user?.role;
@@ -99,7 +113,11 @@ export function LoginForm() {
 
     } catch (err) {
       console.error("Login error:", err);
-      const msg = err.response?.data?.message || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!";
+      const msg = localizeMessage(
+        err,
+        language,
+        t("auth.loginFailed", "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!")
+      );
       setErrorMessage(msg);
     } finally {
       setIsLoading(false);
@@ -135,7 +153,7 @@ export function LoginForm() {
         <FloatingInput
           id="login-email"
           type="text"
-          label="Email hoặc Tên đăng nhập"
+          label={t("auth.emailOrUsername", "Email hoặc Tên đăng nhập")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -188,7 +206,7 @@ export function LoginForm() {
           {isLoading ? (
             <>
               <Loader2 size={18} className="animate-spin" />
-              <span>Đang đăng nhập...</span>
+              <span>{t("auth.loggingIn", "Đang đăng nhập...")}</span>
             </>
           ) : (
             t("auth.btnLogin")
@@ -197,7 +215,7 @@ export function LoginForm() {
 
         <div className="relative flex items-center justify-center my-0.5">
           <div className="w-full border-t border-white/10" />
-          <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-white/40 uppercase tracking-wider">
+          <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-white/50">
             {t("auth.orLoginWith")}
           </span>
         </div>

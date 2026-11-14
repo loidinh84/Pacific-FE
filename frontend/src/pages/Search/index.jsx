@@ -11,6 +11,7 @@ import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { useLanguage } from "../../hooks/useLanguage";
 import { searchSemantic } from "../../services/ecosystemApi";
 import { fetchSpeciesList } from "../../services/speciesApi";
+import { getLocalizedCategory, getLocalizedSpeciesName } from "../../utils/speciesFormatters";
 
 const STATUS_RANK = {
   CR: 1,
@@ -106,12 +107,12 @@ export default function Search() {
                 slug: s.slug || s.id,
                 category: s.group?.slug || s.group?.name || "",
                 categoryVi: s.group?.name || "Sinh vật biển",
-                categoryEn: s.group?.name || "Marine Life",
+                categoryEn: getLocalizedCategory(s.group?.name, "en"),
                 statusVi: s.vietnamRedListStatus || "Ít quan tâm",
                 statusEn: s.vietnamRedListStatus || "Least Concern",
                 statusType,
                 nameVi: s.commonName,
-                nameEn: s.commonName,
+                nameEn: getLocalizedSpeciesName(s, "en"),
                 sciName: s.scientificName,
                 descVi:
                   s.description ||
@@ -220,7 +221,7 @@ export default function Search() {
 
         const categoryEn =
           matchedCatalog?.categoryEn ||
-          categoryVi;
+          getLocalizedCategory(categoryVi, "en");
 
         const realDescVi =
           matchedCatalog?.descVi ||
@@ -237,7 +238,7 @@ export default function Search() {
           id: matchedCatalog?.id || item.id,
           slug: item.slug || matchedCatalog?.slug || item.id,
           nameVi: matchedCatalog?.nameVi || item.commonName,
-          nameEn: matchedCatalog?.nameEn || item.commonName,
+          nameEn: matchedCatalog?.nameEn || getLocalizedSpeciesName(item, "en"),
           sciName: matchedCatalog?.sciName || item.scientificName,
           categoryVi,
           categoryEn,

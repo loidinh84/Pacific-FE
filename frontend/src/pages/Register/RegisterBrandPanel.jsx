@@ -11,8 +11,8 @@ export function RegisterBrandPanel() {
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-pacific-teal/20 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pacific-blue-bright/15 border border-pacific-blue-bright/30 text-pacific-blue-light text-xs font-semibold uppercase tracking-wider mb-6">
-          &nbsp; {t("auth.registerBadge")}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-pacific-blue-bright/15 border border-pacific-blue-bright/30 text-pacific-blue-light text-xs font-semibold mb-6">
+          {t("auth.registerBadge")}
         </div>
         <h2 className="text-2xl lg:text-3xl font-black text-white font-heading leading-tight mb-3">
           {t("auth.registerBrandTitle")}

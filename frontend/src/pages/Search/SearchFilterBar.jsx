@@ -3,6 +3,7 @@ import { ArrowUpDown, ShieldAlert, Waves, ChevronLeft, ChevronRight } from "luci
 import { useLanguage } from "../../hooks/useLanguage";
 import { CATEGORIES_DATA } from "../../mocks/speciesMock";
 import { fetchSpeciesGroups } from "../../services/speciesApi";
+import { getLocalizedCategory } from "../../utils/speciesFormatters";
 
 // Rút gọn nhãn danh mục để thanh lọc gọn gàng, thoáng đãng và không bị tràn
 const getCategoryShortLabel = (label, lang) => {
@@ -38,11 +39,16 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
       .then((res) => {
         if (!isMounted) return;
         if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
-          const apiCats = res.data.map((g) => ({
-            value: g.slug || g.id,
-            labelVi: g.name,
-            labelEn: g.name,
-          }));
+          const apiCats = res.data.map((g) => {
+            const matchedMock = CATEGORIES_DATA.find(
+              (c) => c.value === g.slug || c.value === g.id
+            );
+            return {
+              value: g.slug || g.id,
+              labelVi: g.name,
+              labelEn: matchedMock?.labelEn || getLocalizedCategory(g.name, "en"),
+            };
+          });
           setCategories(apiCats);
         }
       })

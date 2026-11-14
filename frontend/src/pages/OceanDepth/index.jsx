@@ -206,7 +206,15 @@ function FixedRuler({ depth }) {
       </div>
 
       {/* Chân thước đo: Tên vùng sâu nhất */}
-      <div className="od-ruler-footer" onClick={() => scrollToDepth(5016)} title="Đáy sâu nhất Biển Đông: Rãnh Manila (5,016m)">
+      <div
+        className="od-ruler-footer"
+        onClick={() => scrollToDepth(5016)}
+        title={
+          language === "en"
+            ? "Deepest point in East Sea: Manila Trench (5,016m)"
+            : "Đáy sâu nhất Biển Đông: Rãnh Manila (5,016m)"
+        }
+      >
         <span className="od-ruler-footer-label">5,016m MAX</span>
       </div>
     </aside>

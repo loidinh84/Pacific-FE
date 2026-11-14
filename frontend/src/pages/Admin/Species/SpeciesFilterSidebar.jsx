@@ -45,7 +45,7 @@ export default function SpeciesFilterSidebar({
         }`}
       >
         <div className="flex items-center justify-between">
-          <h2 className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+          <h2 className={`text-xs font-bold ${isDark ? "text-slate-300" : "text-slate-600"}`}>
             Tìm kiếm
           </h2>
           {searchTerm && (
@@ -88,7 +88,7 @@ export default function SpeciesFilterSidebar({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <Layers size={14} className="text-sky-400" />
-            <h2 className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+            <h2 className={`text-xs font-bold ${isDark ? "text-slate-300" : "text-slate-600"}`}>
               Nhóm sinh vật
             </h2>
           </div>
@@ -220,7 +220,7 @@ export default function SpeciesFilterSidebar({
         }`}
       >
         <div className="flex items-center justify-between">
-          <h2 className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+          <h2 className={`text-xs font-bold ${isDark ? "text-slate-300" : "text-slate-600"}`}>
             Tình trạng bảo tồn
           </h2>
           {selectedConservation !== "all" && (

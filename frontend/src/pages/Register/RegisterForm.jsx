@@ -3,11 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import axios from "axios";
 import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 import { FloatingInput } from "../../components/ui/FloatingInput";
 import { SocialLoginButtons } from "../../components/ui/SocialLoginButtons";
 
 export function RegisterForm() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -27,12 +28,12 @@ export function RegisterForm() {
     setSuccessMessage("");
 
     if (password !== confirmPassword) {
-      setErrorMessage("Mật khẩu xác nhận không trùng khớp!");
+      setErrorMessage(t("auth.passwordMismatch", "Mật khẩu xác nhận không trùng khớp!"));
       return;
     }
 
     if (password.length < 6) {
-      setErrorMessage("Mật khẩu phải có ít nhất 6 ký tự!");
+      setErrorMessage(t("auth.passwordMinLength", "Mật khẩu phải có ít nhất 6 ký tự!"));
       return;
     }
 
@@ -46,7 +47,13 @@ export function RegisterForm() {
       });
 
       setSuccessMessage(
-        res.data?.message || "Đăng ký tài khoản thành công! Đang chuyển sang trang Đăng nhập..."
+        localizeMessage(
+          res.data?.message,
+          language,
+          language === "en"
+            ? "Account registered successfully! Redirecting to login..."
+            : "Đăng ký tài khoản thành công! Đang chuyển sang trang Đăng nhập..."
+        )
       );
 
       setTimeout(() => {
@@ -54,9 +61,11 @@ export function RegisterForm() {
       }, 800);
     } catch (err) {
       console.error("Register error:", err);
-      const msg =
-        err.response?.data?.message ||
-        "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin!";
+      const msg = localizeMessage(
+        err,
+        language,
+        t("auth.registerFailed", "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin!")
+      );
       setErrorMessage(msg);
     } finally {
       setIsLoading(false);
@@ -155,7 +164,7 @@ export function RegisterForm() {
           {isLoading ? (
             <>
               <Loader2 size={18} className="animate-spin" />
-              <span>Đang đăng ký...</span>
+              <span>{t("auth.registering", "Đang đăng ký...")}</span>
             </>
           ) : (
             t("auth.btnRegister")
@@ -164,7 +173,7 @@ export function RegisterForm() {
 
         <div className="relative flex items-center justify-center my-0.5">
           <div className="w-full border-t border-white/10" />
-          <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-white/40 uppercase tracking-wider">
+          <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-white/50">
             {t("auth.orWith")}
           </span>
         </div>

@@ -53,10 +53,73 @@ function ScrollToTop() {
   return null;
 }
 
+const ROUTE_TITLES = {
+  "/": "",
+  "/search": "Tra cứu sinh vật",
+  "/ocean-depth": "Độ sâu đại dương",
+  "/knowledge-graph": "Đồ thị tri thức",
+  "/news": "Tin tức đại dương",
+  "/login": "Đăng nhập",
+  "/register": "Đăng ký",
+  "/forgot-password": "Quên mật khẩu",
+  "/reset-password": "Đặt lại mật khẩu",
+  "/profile": "Hồ sơ cá nhân",
+  "/admin/stats": "Thống kê hệ thống",
+  "/admin/species": "Quản lý sinh vật",
+  "/admin/groups": "Quản lý nhóm sinh vật",
+  "/admin/relationships": "Quan hệ sinh thái",
+  "/admin/locations": "Quản lý địa điểm",
+  "/admin/news": "Quản lý tin tức",
+  "/admin/users": "Quản lý người dùng",
+  "/admin/comments": "Quản lý bình luận",
+  "/admin/feedback": "Ý kiến đóng góp",
+  "/admin/settings": "Thiết lập hệ thống",
+  "/admin/profile": "Hồ sơ quản trị",
+};
+
+// Đồng bộ tiêu đề tab trình duyệt theo tuyến đường và tên website thời gian thực
+function DocumentTitleManager() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const updateTitle = () => {
+      let siteName = "Biển Đông";
+      try {
+        const saved = localStorage.getItem("pacific_system_settings");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed?.general?.websiteName) siteName = parsed.general.websiteName;
+        }
+      } catch (_) {}
+
+      if (pathname.startsWith("/news/") || pathname.startsWith("/species/")) {
+        return;
+      }
+
+      const pageTitle =
+        ROUTE_TITLES[pathname] ||
+        (pathname.startsWith("/admin") ? "Quản trị hệ thống" : "");
+
+      if (pageTitle) {
+        document.title = `${pageTitle} | ${siteName}`;
+      } else {
+        document.title = siteName;
+      }
+    };
+
+    updateTitle();
+    window.addEventListener("pacific_settings_update", updateTitle);
+    return () => window.removeEventListener("pacific_settings_update", updateTitle);
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <DocumentTitleManager />
       <ErrorBoundary>
         <Routes>
           {/* Tuyến đường công khai */}

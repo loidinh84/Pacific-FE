@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Loader2, Compass, ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchMyFavorites } from "../../services/userService";
+import { useLanguage } from "../../hooks/useLanguage";
 
 export default function FavoritesTab() {
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
   const [favorites, setFavorites] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 12, total: 0, totalPages: 1 });
   const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +23,7 @@ export default function FavoritesTab() {
       }
     } catch (err) {
       console.error("Lỗi khi tải danh sách yêu thích:", err);
-      setError("Không thể tải danh sách sinh vật yêu thích!");
+      setError(isEn ? "Failed to load favorite species!" : "Không thể tải danh sách sinh vật yêu thích!");
     } finally {
       setIsLoading(false);
     }
@@ -35,14 +38,18 @@ export default function FavoritesTab() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-white font-heading flex items-center gap-2.5">
           <Heart size={22} className="text-rose-400 fill-rose-400/20" />
-          <span>Sinh vật yêu thích ({pagination.total})</span>
+          <span>
+            {t("profile.tabFavorites", "Sinh vật yêu thích")} ({pagination.total})
+          </span>
         </h2>
       </div>
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 bg-[#1b254b]/50 border border-white/10 rounded-3xl">
           <Loader2 size={32} className="text-pacific-cyan animate-spin mb-3" />
-          <p className="text-xs text-white/60">Đang tải bộ sưu tập yêu thích...</p>
+          <p className="text-xs text-white/60">
+            {isEn ? "Loading favorite collection..." : "Đang tải bộ sưu tập yêu thích..."}
+          </p>
         </div>
       ) : error ? (
         <div className="p-6 bg-rose-500/10 border border-rose-500/30 rounded-3xl text-center text-rose-200 text-sm">
@@ -53,16 +60,21 @@ export default function FavoritesTab() {
           <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-4">
             <Heart size={28} />
           </div>
-          <h3 className="text-base font-bold text-white mb-1">Chưa có sinh vật yêu thích</h3>
+          <h3 className="text-base font-bold text-white mb-1">
+            {t("profile.emptyFavorites", "Chưa có sinh vật yêu thích")}
+          </h3>
           <p className="text-xs text-white/50 max-w-sm mb-5">
-            Bạn chưa lưu sinh vật nào vào danh sách yêu thích. Hãy khám phá bách khoa sinh vật và thả tim những loài bạn ấn tượng nhất!
+            {t(
+              "profile.emptyFavoritesDesc",
+              "Bạn chưa lưu sinh vật nào vào danh sách yêu thích. Hãy khám phá bách khoa sinh vật và thả tim những loài bạn ấn tượng nhất!"
+            )}
           </p>
           <Link
             to="/search"
             className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all"
           >
             <Compass size={16} />
-            <span>Khám phá sinh vật ngay</span>
+            <span>{t("profile.exploreNow", "Khám phá sinh vật ngay")}</span>
           </Link>
         </div>
       ) : (

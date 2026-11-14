@@ -4,6 +4,8 @@ import { Lock, Eye, EyeOff, Loader2, CheckCircle2, AlertCircle, ArrowLeft } from
 import axios from "axios";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
+import { useLanguage } from "../../hooks/useLanguage";
+import { localizeMessage } from "../../utils/errorTranslator";
 
 /* Background bubbles */
 const BUBBLES = [
@@ -16,6 +18,8 @@ const BUBBLES = [
 ];
 
 export default function ResetPassword() {
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
   const navigate = useNavigate();
@@ -34,7 +38,7 @@ export default function ResetPassword() {
     if (newPassword !== confirmPassword) {
       setStatus({
         type: "error",
-        message: "Mật khẩu xác nhận không khớp!",
+        message: t("resetPassword.errMismatch", "Mật khẩu xác nhận không khớp!"),
       });
       return;
     }
@@ -42,7 +46,7 @@ export default function ResetPassword() {
     if (newPassword.length < 6) {
       setStatus({
         type: "error",
-        message: "Mật khẩu phải có ít nhất 6 ký tự!",
+        message: t("resetPassword.errLength", "Mật khẩu phải có ít nhất 6 ký tự!"),
       });
       return;
     }
@@ -58,7 +62,13 @@ export default function ResetPassword() {
 
       setStatus({
         type: "success",
-        message: res.data?.message || "Đặt lại mật khẩu thành công! Đang chuyển hướng...",
+        message: localizeMessage(
+          res.data?.message,
+          language,
+          isEn
+            ? "Password reset successful! Redirecting to login..."
+            : "Đặt lại mật khẩu thành công! Đang chuyển hướng..."
+        ),
       });
 
       setTimeout(() => {
@@ -66,9 +76,16 @@ export default function ResetPassword() {
       }, 2000);
     } catch (err) {
       console.error("Reset password error:", err);
-      const errorMsg =
-        err.response?.data?.message ||
-        "Link đặt lại mật khẩu đã hết hạn hoặc không hợp lệ!";
+      const errorMsg = localizeMessage(
+        err,
+        language,
+        t(
+          "resetPassword.errMissingToken",
+          isEn
+            ? "Password reset link is invalid or has expired!"
+            : "Link đặt lại mật khẩu đã hết hạn hoặc không hợp lệ!"
+        )
+      );
       setStatus({
         type: "error",
         message: errorMsg,
@@ -106,10 +123,10 @@ export default function ResetPassword() {
           
           {/* Header Text */}
           <h1 className="text-2xl sm:text-3xl font-black text-white text-center mb-1">
-            Cập nhật mật khẩu mới
+            {t("resetPassword.title", "Cập nhật mật khẩu mới")}
           </h1>
           <p className="text-xs sm:text-sm text-white/70 text-center mb-8">
-            Hãy tạo 1 mật khẩu mạnh mẽ!
+            {t("resetPassword.subtitle", "Hãy tạo 1 mật khẩu mạnh mẽ!")}
           </p>
 
           {/* Status Alert */}
@@ -136,7 +153,7 @@ export default function ResetPassword() {
             {/* Input 1: Mật khẩu mới */}
             <div className="relative">
               <label className="block text-xs font-semibold text-white/90 mb-2">
-                Mật khẩu mới
+                {t("resetPassword.newPassword", "Mật khẩu mới")}
               </label>
               <div className="relative flex items-center">
                 <Lock
@@ -164,7 +181,7 @@ export default function ResetPassword() {
             {/* Input 2: Xác nhận mật khẩu mới */}
             <div className="relative">
               <label className="block text-xs font-semibold text-white/90 mb-2">
-                Xác nhận mật khẩu mới
+                {t("resetPassword.confirmPassword", "Xác nhận mật khẩu mới")}
               </label>
               <div className="relative flex items-center">
                 <Lock
@@ -198,10 +215,10 @@ export default function ResetPassword() {
               {isLoading ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  <span>Đang xử lý...</span>
+                  <span>{isEn ? "Updating password..." : "Đang xử lý..."}</span>
                 </>
               ) : (
-                "Xác nhận đổi mật khẩu"
+                <span>{t("resetPassword.btnSubmit", "Xác nhận đổi mật khẩu")}</span>
               )}
             </button>
           </form>
@@ -213,7 +230,7 @@ export default function ResetPassword() {
               className="inline-flex items-center gap-1.5 text-pacific-blue-light font-bold hover:underline transition-colors"
             >
               <ArrowLeft size={14} />
-              Quay lại đăng nhập
+              <span>{t("resetPassword.backToLogin", "Quay lại đăng nhập")}</span>
             </Link>
           </div>
         </div>

@@ -120,7 +120,7 @@ export default function SpeciesExpandedDetail({
                 <p className={`text-xs font-medium ${isDark ? "text-white/50" : "text-slate-500"}`}>
                   Nguồn dữ liệu:{" "}
                   <strong className={isDark ? "text-white/80" : "text-slate-800"}>
-                    {selectedSpecies.source || "Pacific DB"}
+                    {selectedSpecies.source || "Cơ sở dữ liệu nội bộ"}
                   </strong>
                 </p>
               </div>

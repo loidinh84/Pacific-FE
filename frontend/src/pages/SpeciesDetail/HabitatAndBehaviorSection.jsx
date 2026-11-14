@@ -323,10 +323,15 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
   // Phân vùng bảo tồn tại Việt Nam
   const localDistText = useMemo(() => {
     if (species.localDistribution) return species.localDistribution;
-    if (species.eastSeaZone)
-      return `Vùng phân bố trọng điểm: ${species.eastSeaZone}`;
-    return "Phân bố tại các rạn san hô và vùng biển tự nhiên của Việt Nam như Hoàng Sa, Trường Sa, Côn Đảo, Phú Quốc.";
-  }, [species]);
+    if (species.eastSeaZone) {
+      return isEn
+        ? `Key distribution zone: ${species.eastSeaZone}`
+        : `Vùng phân bố trọng điểm: ${species.eastSeaZone}`;
+    }
+    return isEn
+      ? "Distributed across coral reefs and natural marine waters of Vietnam such as Paracel, Spratly, Con Dao, and Phu Quoc."
+      : "Phân bố tại các rạn san hô và vùng biển tự nhiên của Việt Nam như Hoàng Sa, Trường Sa, Côn Đảo, Phú Quốc.";
+  }, [species, isEn]);
 
   return (
     <section className="relative py-14 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 font-sans overflow-hidden">
