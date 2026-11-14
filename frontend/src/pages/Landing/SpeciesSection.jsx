@@ -176,7 +176,7 @@ export default function SpeciesSection() {
               <div
                 key={s.id}
                 className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl p-6 md:p-8 shadow-xl border border-white/10 backdrop-blur-xl relative overflow-hidden group cursor-pointer hover:border-cyan-400/40 hover:shadow-cyan-500/10 transition-all duration-300"
-                data-aos={s.aos}
+                data-aos="fade-up"
                 data-aos-duration="900"
                 onClick={() => navigate(`/species/${s.slug || s.id}`)}
               >
@@ -254,7 +254,7 @@ export default function SpeciesSection() {
                           e.currentTarget.onerror = null;
                           e.currentTarget.src = FishHidden;
                         }}
-                        className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] group-hover:scale-108 transition-transform duration-500"
+                        className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
                   </div>

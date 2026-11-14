@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, Navigation, Compass, ExternalLink, ShieldCheck, Waves } from "lucide-react";
+import { MapPin, Navigation, Compass, ExternalLink } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import * as Images from "../../assets/Images";
 
@@ -70,7 +69,6 @@ const HIGHLIGHTED_LOCATIONS = [
 export default function LocationsShowcaseSection() {
   const { language } = useLanguage();
   const isEn = language === "en";
-  const [activeId, setActiveId] = useState("con-dao");
 
   return (
     <section id="marine-locations" className="bg-pacific-figma-dark/95 pt-16 pb-24 relative overflow-hidden border-t border-white/5">
@@ -107,35 +105,28 @@ export default function LocationsShowcaseSection() {
 
         {/* 4 Featured Locations Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {HIGHLIGHTED_LOCATIONS.map((loc, idx) => {
-            const isSelected = activeId === loc.id;
-            return (
-              <div
-                key={loc.id}
-                data-aos="fade-up"
-                data-aos-delay={idx * 100}
-                onMouseEnter={() => setActiveId(loc.id)}
-                className={`rounded-3xl p-5 bg-gradient-to-br from-white/[0.08] to-white/[0.02] border transition-all duration-300 group flex flex-col justify-between cursor-pointer ${
-                  isSelected
-                    ? "border-cyan-400/60 shadow-xl shadow-cyan-500/10 -translate-y-1.5"
-                    : "border-white/10 hover:border-white/30"
-                }`}
-              >
-                <div>
-                  {/* Image container */}
-                  <div className="w-full h-44 rounded-2xl overflow-hidden mb-4 relative bg-black/40">
-                    <img
-                      src={loc.image}
-                      alt={isEn ? loc.nameEn : loc.nameVi}
-                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                    
-                    {/* Badge on image */}
-                    <span className="absolute bottom-2.5 left-2.5 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-cyan-300 border border-cyan-400/30">
-                      {isEn ? loc.tagEn : loc.tagVi}
-                    </span>
-                  </div>
+          {HIGHLIGHTED_LOCATIONS.map((loc, idx) => (
+            <div
+              key={loc.id}
+              data-aos="fade-up"
+              data-aos-delay={idx * 100}
+              className="rounded-3xl p-5 bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-cyan-400/60 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between cursor-pointer"
+            >
+              <div>
+                {/* Image container */}
+                <div className="w-full h-44 rounded-2xl overflow-hidden mb-4 relative bg-black/40">
+                  <img
+                    src={loc.image}
+                    alt={isEn ? loc.nameEn : loc.nameVi}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                  
+                  {/* Badge on image */}
+                  <span className="absolute bottom-2.5 left-2.5 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-cyan-300 border border-cyan-400/30">
+                    {isEn ? loc.tagEn : loc.tagVi}
+                  </span>
+                </div>
 
                   {/* Location Info */}
                   <div className="space-y-2">
@@ -169,8 +160,7 @@ export default function LocationsShowcaseSection() {
                   </p>
                 </div>
               </div>
-            );
-          })}
+            ))}
         </div>
       </div>
     </section>

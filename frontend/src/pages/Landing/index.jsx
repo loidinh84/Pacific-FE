@@ -15,9 +15,9 @@ import "aos/dist/aos.css";
 export default function Landing() {
   useEffect(() => {
     AOS.init({
-      duration: 1000,
-      once: false,
-      mirror: true,
+      duration: 800,
+      once: true,
+      mirror: false,
       easing: "ease-out-cubic",
     });
   }, []);
