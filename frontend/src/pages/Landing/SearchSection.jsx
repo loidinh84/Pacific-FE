@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, Search, Sparkles, TrendingUp } from "lucide-react";
+import { ChevronDown, Search, TrendingUp } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { CATEGORIES_DATA, HABITATS_DATA } from "../../mocks/speciesMock";
 import { getLocalizedCategory } from "../../utils/speciesFormatters";
@@ -88,11 +88,6 @@ export default function SearchSection() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center relative z-10">
             {/* Form Column */}
             <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/30 uppercase mb-3">
-                <Sparkles size={12} />
-                <span>{isEn ? "Fast Taxonomy Query" : "Tra Cứu Sinh Học Nhanh"}</span>
-              </span>
-
               <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-2 font-heading">
                 {t("search.title")}
               </h2>
@@ -157,7 +152,7 @@ export default function SearchSection() {
                 {/* Submit Search Button */}
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25 transition-all cursor-pointer active:translate-y-0.5 mt-1"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold bg-pacific-teal hover:bg-pacific-teal-light text-white border border-cyan-400/20 shadow-md shadow-black/20 hover:shadow-cyan-950/40 transition-all cursor-pointer active:translate-y-0.5 mt-1"
                 >
                   <Search size={16} />
                   <span>{t("search.btnSearch")}</span>

@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import HeroSection from "./HeroSection";
-import CorePillarsSection from "./CorePillarsSection";
 import SpeciesSection from "./SpeciesSection";
 import LocationsShowcaseSection from "./LocationsShowcaseSection";
 import SearchSection from "./SearchSection";
@@ -33,7 +32,6 @@ export default function Landing() {
       {/* Nội dung các phần của trang Landing */}
       <main className="relative z-10 overflow-x-hidden">
         <HeroSection />
-        <CorePillarsSection />
         <SpeciesSection />
         <LocationsShowcaseSection />
         <SearchSection />

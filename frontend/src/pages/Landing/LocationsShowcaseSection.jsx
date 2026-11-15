@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin, Navigation, Compass, ExternalLink } from "lucide-react";
+import { MapPin, Navigation, ExternalLink } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import * as Images from "../../assets/Images";
 
@@ -80,10 +80,6 @@ export default function LocationsShowcaseSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14" data-aos="fade-up">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/30 uppercase mb-3">
-              <Compass size={13} />
-              <span>{isEn ? "Marine Protected Areas" : "Hải Trình & Khu Bảo Tồn"}</span>
-            </span>
             <h2 className="text-3xl md:text-5xl font-black text-white font-heading tracking-tight leading-tight">
               {isEn ? "Marine Protected Areas of the East Sea" : "Các Khu Bảo Tồn Biển Trọng Điểm"}
             </h2>
