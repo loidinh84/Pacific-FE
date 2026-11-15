@@ -1,6 +1,38 @@
-import { Search } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, RefreshCw } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { LightbulbIcon } from "../../assets/Icons";
+
+const SUGGESTION_GROUPS = [
+  [
+    { vi: "Thiên địch của sao biển gai", en: "Crown-of-thorns starfish predator" },
+    { vi: "Cộng sinh với hải quỳ", en: "Symbiosis with sea anemones" },
+    { vi: "Cực kỳ nguy cấp ở Côn Đảo", en: "Critically endangered at Con Dao" },
+    { vi: "Loài ăn cỏ biển Biển Đông", en: "East Sea seagrass grazers" },
+    { vi: "Sinh vật tạo nơi cư trú", en: "Habitat-forming species" },
+  ],
+  [
+    { vi: "Sinh vật biển sâu phát quang", en: "Bioluminescent deep-sea life" },
+    { vi: "Loài săn mồi đỉnh bảng", en: "Apex ocean predators" },
+    { vi: "Rạn san hô Hoàng Sa", en: "Paracel coral reefs" },
+    { vi: "Bò biển Dugong Phú Quốc", en: "Phu Quoc Dugong" },
+    { vi: "Rùa biển đẻ trứng", en: "Nesting sea turtles" },
+  ],
+  [
+    { vi: "Bạch tuộc đốm xanh có độc", en: "Venomous blue-ringed octopus" },
+    { vi: "Ngụy trang đáy biển", en: "Seafloor camouflage masters" },
+    { vi: "Động vật có vú biển Đông", en: "East Sea marine mammals" },
+    { vi: "Cá mập voi khổng lồ", en: "Giant whale sharks" },
+    { vi: "Hệ sinh thái thảm cỏ biển", en: "Seagrass bed ecosystem" },
+  ],
+  [
+    { vi: "Loài nguy cấp trong Sách Đỏ", en: "Red List endangered species" },
+    { vi: "Cá hề và hải quỳ", en: "Clownfish and sea anemones" },
+    { vi: "Khu bảo tồn biển Cù Lao Chàm", en: "Cu Lao Cham marine reserve" },
+    { vi: "Sinh vật tầng đáy Hadal", en: "Hadal zone organisms" },
+    { vi: "Loài di cư xa ngoài khơi", en: "Pelagic migratory species" },
+  ],
+];
 
 export function SearchHeroHeader({
   searchTerm,
@@ -9,6 +41,27 @@ export function SearchHeroHeader({
 }) {
   const { t, language } = useLanguage();
   const isEn = language === "en";
+
+  const [groupIndex, setGroupIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isRotating, setIsRotating] = useState(false);
+
+  // Tự động luân chuyển gợi ý sau mỗi 7 giây (tạm dừng khi người dùng đang rê chuột chọn từ)
+  useEffect(() => {
+    if (isHovered) return;
+    const timer = setInterval(() => {
+      setGroupIndex((prev) => (prev + 1) % SUGGESTION_GROUPS.length);
+    }, 7000);
+    return () => clearInterval(timer);
+  }, [isHovered]);
+
+  const handleNextGroup = () => {
+    setIsRotating(true);
+    setGroupIndex((prev) => (prev + 1) % SUGGESTION_GROUPS.length);
+    setTimeout(() => setIsRotating(false), 400);
+  };
+
+  const currentSuggestions = SUGGESTION_GROUPS[groupIndex];
 
   return (
     <div id="search-hero" className="text-center max-w-4xl mx-auto pt-24 pb-10 px-4">
@@ -47,33 +100,45 @@ export function SearchHeroHeader({
           </button>
         </div>
 
-        {/* Smart Question Suggestions Chips with SVG Lightbulb */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
-          <span className="text-amber-300 font-semibold flex items-center gap-1.5 mr-1 text-xs md:text-sm">
+        {/* Suggestion Chips with dynamic change & manual shuffle */}
+        <div
+          className="flex flex-wrap items-center justify-center gap-2 mt-4"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <span className="text-amber-300 font-semibold flex items-center gap-1.5 mr-1 text-xs md:text-sm select-none">
             <LightbulbIcon className="w-4 h-4 text-amber-400 stroke-current" />
-            <span>{isEn ? "Smart prompts:" : "Gợi ý truy vấn:"}</span>
+            <span>{isEn ? "Suggestions:" : "Gợi ý:"}</span>
           </span>
-          {[
-            "Thiên địch của sao biển gai",
-            "Cộng sinh với hải quỳ",
-            "Cực kỳ nguy cấp ở Côn Đảo",
-            "Loài ăn cỏ biển Biển Đông",
-            "Sinh vật tạo nơi cư trú",
-          ].map((chip) => (
-            <button
-              key={chip}
-              type="button"
-              onClick={() => {
-                setSearchTerm(chip);
-                if (onSearchSubmit) {
-                  setTimeout(() => onSearchSubmit({ preventDefault: () => {} }, chip), 10);
-                }
-              }}
-              className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-cyan-500/20 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-200 text-xs transition-all cursor-pointer"
-            >
-              {chip}
-            </button>
-          ))}
+          {currentSuggestions.map((item, idx) => {
+            const text = isEn ? item.en : item.vi;
+            return (
+              <button
+                key={`${groupIndex}-${idx}`}
+                type="button"
+                onClick={() => {
+                  setSearchTerm(text);
+                  if (onSearchSubmit) {
+                    setTimeout(() => onSearchSubmit({ preventDefault: () => {} }, text), 10);
+                  }
+                }}
+                className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-cyan-500/20 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-200 text-xs transition-all cursor-pointer animate-in fade-in zoom-in-95 duration-200"
+              >
+                {text}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            onClick={handleNextGroup}
+            title={isEn ? "Change suggestions" : "Đổi gợi ý khác"}
+            className="p-1.5 rounded-full text-slate-400 hover:text-amber-300 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-center ml-0.5 active:scale-90"
+          >
+            <RefreshCw
+              size={13}
+              className={`transition-transform duration-300 ${isRotating ? "rotate-180 text-amber-300" : ""}`}
+            />
+          </button>
         </div>
       </form>
     </div>
