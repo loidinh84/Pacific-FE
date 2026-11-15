@@ -1,29 +1,6 @@
-import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
-import {
-  CoralIcon,
-  SharkIcon,
-  TurtleIcon,
-  FishIcon,
-  JellyfishIcon,
-  WhaleIcon,
-  OctopusIcon,
-  SealIcon,
-  LightbulbIcon,
-} from "../../assets/Icons";
-
-// Danh sách loài luân chuyển với file icon SVG và màu sắc đặc trưng
-const ROTATING_SPECIES = [
-  { textVi: "San hô tạo rạn", textEn: "Staghorn Coral", Icon: CoralIcon, color: "text-rose-400", badgeBg: "bg-rose-500/10 border-rose-500/30" },
-  { textVi: "Cá mập voi", textEn: "Whale Shark", Icon: SharkIcon, color: "text-cyan-400", badgeBg: "bg-cyan-500/10 border-cyan-500/30" },
-  { textVi: "Đồi mồi dứa", textEn: "Green Sea Turtle", Icon: TurtleIcon, color: "text-emerald-400", badgeBg: "bg-emerald-500/10 border-emerald-500/30" },
-  { textVi: "Cá hề Nemo", textEn: "Clownfish", Icon: FishIcon, color: "text-amber-400", badgeBg: "bg-amber-500/10 border-amber-500/30" },
-  { textVi: "Sứa phát quang", textEn: "Bioluminescent Jellyfish", Icon: JellyfishIcon, color: "text-fuchsia-400", badgeBg: "bg-fuchsia-500/10 border-fuchsia-500/30" },
-  { textVi: "Cá voi xanh", textEn: "Blue Whale", Icon: WhaleIcon, color: "text-sky-400", badgeBg: "bg-sky-500/10 border-sky-500/30" },
-  { textVi: "Bạch tuộc đốm xanh", textEn: "Blue-ringed Octopus", Icon: OctopusIcon, color: "text-teal-400", badgeBg: "bg-teal-500/10 border-teal-500/30" },
-  { textVi: "Hải cẩu đốm", textEn: "Spotted Seal", Icon: SealIcon, color: "text-indigo-400", badgeBg: "bg-indigo-500/10 border-indigo-500/30" },
-];
+import { LightbulbIcon } from "../../assets/Icons";
 
 export function SearchHeroHeader({
   searchTerm,
@@ -32,51 +9,9 @@ export function SearchHeroHeader({
 }) {
   const { t, language } = useLanguage();
   const isEn = language === "en";
-  const [index, setIndex] = useState(0);
-  const [isChanging, setIsChanging] = useState(false);
-
-  // Hiệu ứng chuyển động mượt mà giữa các loài sinh vật biển
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIsChanging(true);
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % ROTATING_SPECIES.length);
-        setIsChanging(false);
-      }, 350);
-    }, 2800);
-    return () => clearInterval(timer);
-  }, []);
-
-  const current = ROTATING_SPECIES[index];
-  const CurrentIcon = current.Icon;
 
   return (
     <div id="search-hero" className="text-center max-w-4xl mx-auto pt-24 pb-10 px-4">
-      {/* Dynamic pill badge with SVG file icon & smooth morphing */}
-      <div className="flex items-center justify-center mb-4">
-        <div
-          className={`inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 shadow-lg ${current.badgeBg}`}
-        >
-          <div
-            className={`w-6 h-6 flex items-center justify-center transition-all duration-300 ${current.color} ${
-              isChanging ? "opacity-0 -translate-y-2 scale-75 rotate-12" : "opacity-100 translate-y-0 scale-100 rotate-0"
-            }`}
-          >
-            <CurrentIcon className="w-5 h-5 fill-none stroke-current" />
-          </div>
-          <span className="text-xs md:text-sm font-medium text-slate-300">
-            {isEn ? "Exploring marine fauna:" : "Khám phá sinh vật biển:"}
-          </span>
-          <span
-            className={`text-xs md:text-sm font-bold tracking-wide transition-all duration-300 ${current.color} ${
-              isChanging ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
-            }`}
-          >
-            {isEn ? current.textEn : current.textVi}
-          </span>
-        </div>
-      </div>
-
       {/* Title - prominent and sharp */}
       <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white font-heading tracking-tight mb-3">
         {t("searchPage.heroTitle")}
