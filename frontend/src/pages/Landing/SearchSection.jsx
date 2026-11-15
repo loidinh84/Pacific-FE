@@ -95,7 +95,7 @@ export default function SearchSection() {
   return (
     <section
       id="search-section"
-      className="bg-pacific-figma-dark/95 backdrop-blur-md pt-8 pb-20 relative overflow-hidden border-t border-white/5"
+      className="bg-pacific-figma-dark/95 backdrop-blur-md pt-8 pb-28 md:pb-32 relative border-t border-white/5"
     >
       <div className="max-w-6xl mx-auto px-6">
         <div
@@ -160,8 +160,8 @@ export default function SearchSection() {
                     </button>
 
                     {isCategoryOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-cyan-500/40 rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-                        <div className="max-h-64 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-cyan-500/30 rounded-xl shadow-[0_12px_28px_rgba(0,0,0,0.45)] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                        <div className="max-h-52 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
                           {categories.map((c) => {
                             const isSelected = String(c.value) === String(category);
                             const label = isEn ? c.labelEn : c.labelVi;
@@ -215,8 +215,8 @@ export default function SearchSection() {
                     </button>
 
                     {isHabitatOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-cyan-500/40 rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-                        <div className="max-h-64 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-cyan-500/30 rounded-xl shadow-[0_12px_28px_rgba(0,0,0,0.45)] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                        <div className="max-h-52 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
                           {HABITATS_DATA.map((h) => {
                             const isSelected = String(h.value) === String(habitat);
                             const label = isEn ? h.labelEn : h.labelVi;

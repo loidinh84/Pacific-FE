@@ -30,7 +30,7 @@ export default function Landing() {
       <Navbar />
 
       {/* Nội dung các phần của trang Landing */}
-      <main className="relative z-10 overflow-x-hidden">
+      <main className="relative z-20">
         <HeroSection />
         <SpeciesSection />
         <LocationsShowcaseSection />
