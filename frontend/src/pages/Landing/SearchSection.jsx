@@ -136,17 +136,28 @@ export default function SearchSection() {
 
                 {/* Dropdowns Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-30">
+                  {/* Backdrop Overlay when any dropdown is open */}
+                  {(isCategoryOpen || isHabitatOpen) && (
+                    <div
+                      className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-all duration-200"
+                      onClick={() => {
+                        setIsCategoryOpen(false);
+                        setIsHabitatOpen(false);
+                      }}
+                    />
+                  )}
+
                   {/* Category Custom Dropdown */}
-                  <div className="relative" ref={categoryRef}>
+                  <div className={`relative ${isCategoryOpen ? "z-50" : "z-20"}`} ref={categoryRef}>
                     <button
                       type="button"
                       onClick={() => {
                         setIsCategoryOpen(!isCategoryOpen);
                         setIsHabitatOpen(false);
                       }}
-                      className={`w-full py-3 px-4 bg-slate-900/80 hover:bg-slate-900 text-white border rounded-xl text-xs sm:text-sm font-medium cursor-pointer transition-all flex items-center justify-between gap-2 select-none ${
+                      className={`w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white border rounded-xl text-xs sm:text-sm font-medium cursor-pointer transition-all flex items-center justify-between gap-2 select-none ${
                         isCategoryOpen
-                          ? "border-cyan-400 ring-1 ring-cyan-400/30"
+                          ? "border-cyan-400 ring-2 ring-cyan-400/30"
                           : "border-white/15 hover:border-cyan-400/40"
                       }`}
                     >
@@ -160,7 +171,7 @@ export default function SearchSection() {
                     </button>
 
                     {isCategoryOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#0d1b34]/98 backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-cyan-500/40 rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
                         <div className="max-h-64 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
                           {categories.map((c) => {
                             const isSelected = String(c.value) === String(category);
@@ -192,16 +203,16 @@ export default function SearchSection() {
                   </div>
 
                   {/* Habitat Custom Dropdown */}
-                  <div className="relative" ref={habitatRef}>
+                  <div className={`relative ${isHabitatOpen ? "z-50" : "z-20"}`} ref={habitatRef}>
                     <button
                       type="button"
                       onClick={() => {
                         setIsHabitatOpen(!isHabitatOpen);
                         setIsCategoryOpen(false);
                       }}
-                      className={`w-full py-3 px-4 bg-slate-900/80 hover:bg-slate-900 text-white border rounded-xl text-xs sm:text-sm font-medium cursor-pointer transition-all flex items-center justify-between gap-2 select-none ${
+                      className={`w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white border rounded-xl text-xs sm:text-sm font-medium cursor-pointer transition-all flex items-center justify-between gap-2 select-none ${
                         isHabitatOpen
-                          ? "border-cyan-400 ring-1 ring-cyan-400/30"
+                          ? "border-cyan-400 ring-2 ring-cyan-400/30"
                           : "border-white/15 hover:border-cyan-400/40"
                       }`}
                     >
@@ -215,7 +226,7 @@ export default function SearchSection() {
                     </button>
 
                     {isHabitatOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#0d1b34]/98 backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-cyan-500/40 rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
                         <div className="max-h-64 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
                           {HABITATS_DATA.map((h) => {
                             const isSelected = String(h.value) === String(habitat);
@@ -281,9 +292,9 @@ export default function SearchSection() {
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
                 <div className="absolute inset-4 rounded-full bg-cyan-500/15 blur-3xl animate-pulse-glow pointer-events-none" />
                 <img
-                  src={Images.FishHidden}
+                  src={Images.FishSilhouette}
                   alt={isEn ? "Mystery Marine Life" : "Bóng sinh vật biển bí ẩn"}
-                  className="w-full h-full object-contain animate-float-slow filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)] select-none pointer-events-none"
+                  className="w-full h-full object-contain animate-float-slow filter drop-shadow-[0_15px_30px_rgba(34,211,238,0.35)] select-none pointer-events-none"
                 />
               </div>
             </div>
