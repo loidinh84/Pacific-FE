@@ -136,19 +136,8 @@ export default function SearchSection() {
 
                 {/* Dropdowns Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-30">
-                  {/* Backdrop Overlay when any dropdown is open */}
-                  {(isCategoryOpen || isHabitatOpen) && (
-                    <div
-                      className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-all duration-200"
-                      onClick={() => {
-                        setIsCategoryOpen(false);
-                        setIsHabitatOpen(false);
-                      }}
-                    />
-                  )}
-
                   {/* Category Custom Dropdown */}
-                  <div className={`relative ${isCategoryOpen ? "z-50" : "z-20"}`} ref={categoryRef}>
+                  <div className="relative" ref={categoryRef}>
                     <button
                       type="button"
                       onClick={() => {
@@ -203,7 +192,7 @@ export default function SearchSection() {
                   </div>
 
                   {/* Habitat Custom Dropdown */}
-                  <div className={`relative ${isHabitatOpen ? "z-50" : "z-20"}`} ref={habitatRef}>
+                  <div className="relative" ref={habitatRef}>
                     <button
                       type="button"
                       onClick={() => {
@@ -292,9 +281,9 @@ export default function SearchSection() {
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
                 <div className="absolute inset-4 rounded-full bg-cyan-500/15 blur-3xl animate-pulse-glow pointer-events-none" />
                 <img
-                  src={Images.FishSilhouette}
+                  src={Images.FishHidden}
                   alt={isEn ? "Mystery Marine Life" : "Bóng sinh vật biển bí ẩn"}
-                  className="w-full h-full object-contain animate-float-slow filter drop-shadow-[0_15px_30px_rgba(34,211,238,0.35)] select-none pointer-events-none"
+                  className="w-full h-full object-contain animate-float-slow filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)] select-none pointer-events-none"
                 />
               </div>
             </div>
