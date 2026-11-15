@@ -160,31 +160,33 @@ export default function SearchSection() {
                     </button>
 
                     {isCategoryOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#0d1b34]/98 backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl p-1.5 max-h-56 overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
-                        {categories.map((c) => {
-                          const isSelected = String(c.value) === String(category);
-                          const label = isEn ? c.labelEn : c.labelVi;
-                          return (
-                            <button
-                              key={c.value}
-                              type="button"
-                              onClick={() => {
-                                setCategory(c.value);
-                                setIsCategoryOpen(false);
-                              }}
-                              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs sm:text-sm text-left transition-colors cursor-pointer select-none ${
-                                isSelected
-                                  ? "bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-400/25"
-                                  : "text-slate-300 hover:text-white hover:bg-white/10"
-                              }`}
-                            >
-                              <span className="truncate">{label}</span>
-                              {isSelected && (
-                                <Check size={14} className="text-cyan-400 shrink-0" />
-                              )}
-                            </button>
-                          );
-                        })}
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#0d1b34]/98 backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                        <div className="max-h-64 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
+                          {categories.map((c) => {
+                            const isSelected = String(c.value) === String(category);
+                            const label = isEn ? c.labelEn : c.labelVi;
+                            return (
+                              <button
+                                key={c.value}
+                                type="button"
+                                onClick={() => {
+                                  setCategory(c.value);
+                                  setIsCategoryOpen(false);
+                                }}
+                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs sm:text-sm text-left transition-colors cursor-pointer select-none ${
+                                  isSelected
+                                    ? "bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-400/25"
+                                    : "text-slate-300 hover:text-white hover:bg-white/10"
+                                }`}
+                              >
+                                <span className="truncate">{label}</span>
+                                {isSelected && (
+                                  <Check size={14} className="text-cyan-400 shrink-0" />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -213,31 +215,33 @@ export default function SearchSection() {
                     </button>
 
                     {isHabitatOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#0d1b34]/98 backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl p-1.5 max-h-56 overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
-                        {HABITATS_DATA.map((h) => {
-                          const isSelected = String(h.value) === String(habitat);
-                          const label = isEn ? h.labelEn : h.labelVi;
-                          return (
-                            <button
-                              key={h.value}
-                              type="button"
-                              onClick={() => {
-                                setHabitat(h.value);
-                                setIsHabitatOpen(false);
-                              }}
-                              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs sm:text-sm text-left transition-colors cursor-pointer select-none ${
-                                isSelected
-                                  ? "bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-400/25"
-                                  : "text-slate-300 hover:text-white hover:bg-white/10"
-                              }`}
-                            >
-                              <span className="truncate">{label}</span>
-                              {isSelected && (
-                                <Check size={14} className="text-cyan-400 shrink-0" />
-                              )}
-                            </button>
-                          );
-                        })}
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#0d1b34]/98 backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                        <div className="max-h-64 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
+                          {HABITATS_DATA.map((h) => {
+                            const isSelected = String(h.value) === String(habitat);
+                            const label = isEn ? h.labelEn : h.labelVi;
+                            return (
+                              <button
+                                key={h.value}
+                                type="button"
+                                onClick={() => {
+                                  setHabitat(h.value);
+                                  setIsHabitatOpen(false);
+                                }}
+                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs sm:text-sm text-left transition-colors cursor-pointer select-none ${
+                                  isSelected
+                                    ? "bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-400/25"
+                                    : "text-slate-300 hover:text-white hover:bg-white/10"
+                                }`}
+                              >
+                                <span className="truncate">{label}</span>
+                                {isSelected && (
+                                  <Check size={14} className="text-cyan-400 shrink-0" />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </div>
