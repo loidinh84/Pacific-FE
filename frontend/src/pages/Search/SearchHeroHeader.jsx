@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, RefreshCw } from "lucide-react";
+import { Search } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { LightbulbIcon } from "../../assets/Icons";
 
@@ -44,22 +44,20 @@ export function SearchHeroHeader({
 
   const [groupIndex, setGroupIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [isRotating, setIsRotating] = useState(false);
+  const [isFading, setIsFading] = useState(false);
 
-  // Tự động luân chuyển gợi ý sau mỗi 7 giây (tạm dừng khi người dùng đang rê chuột chọn từ)
+  // Tự động luân chuyển gợi ý mượt mà (như TikTok / Shopee), tạm dừng khi hover
   useEffect(() => {
     if (isHovered) return;
-    const timer = setInterval(() => {
-      setGroupIndex((prev) => (prev + 1) % SUGGESTION_GROUPS.length);
-    }, 7000);
-    return () => clearInterval(timer);
+    const interval = setInterval(() => {
+      setIsFading(true);
+      setTimeout(() => {
+        setGroupIndex((prev) => (prev + 1) % SUGGESTION_GROUPS.length);
+        setIsFading(false);
+      }, 300);
+    }, 4500);
+    return () => clearInterval(interval);
   }, [isHovered]);
-
-  const handleNextGroup = () => {
-    setIsRotating(true);
-    setGroupIndex((prev) => (prev + 1) % SUGGESTION_GROUPS.length);
-    setTimeout(() => setIsRotating(false), 400);
-  };
 
   const currentSuggestions = SUGGESTION_GROUPS[groupIndex];
 
@@ -100,9 +98,9 @@ export function SearchHeroHeader({
           </button>
         </div>
 
-        {/* Suggestion Chips with dynamic change & manual shuffle */}
+        {/* Automatic rotating suggestion chips (TikTok / Shopee style) */}
         <div
-          className="flex flex-wrap items-center justify-center gap-2 mt-4"
+          className="flex flex-wrap items-center justify-center gap-2 mt-4 min-h-[34px]"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -110,35 +108,31 @@ export function SearchHeroHeader({
             <LightbulbIcon className="w-4 h-4 text-amber-400 stroke-current" />
             <span>{isEn ? "Suggestions:" : "Gợi ý:"}</span>
           </span>
-          {currentSuggestions.map((item, idx) => {
-            const text = isEn ? item.en : item.vi;
-            return (
-              <button
-                key={`${groupIndex}-${idx}`}
-                type="button"
-                onClick={() => {
-                  setSearchTerm(text);
-                  if (onSearchSubmit) {
-                    setTimeout(() => onSearchSubmit({ preventDefault: () => {} }, text), 10);
-                  }
-                }}
-                className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-cyan-500/20 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-200 text-xs transition-all cursor-pointer animate-in fade-in zoom-in-95 duration-200"
-              >
-                {text}
-              </button>
-            );
-          })}
-          <button
-            type="button"
-            onClick={handleNextGroup}
-            title={isEn ? "Change suggestions" : "Đổi gợi ý khác"}
-            className="p-1.5 rounded-full text-slate-400 hover:text-amber-300 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-center ml-0.5 active:scale-90"
+
+          <div
+            className={`inline-flex flex-wrap items-center justify-center gap-2 transition-all duration-300 ease-out ${
+              isFading ? "opacity-0 -translate-y-1 scale-95" : "opacity-100 translate-y-0 scale-100"
+            }`}
           >
-            <RefreshCw
-              size={13}
-              className={`transition-transform duration-300 ${isRotating ? "rotate-180 text-amber-300" : ""}`}
-            />
-          </button>
+            {currentSuggestions.map((item, idx) => {
+              const text = isEn ? item.en : item.vi;
+              return (
+                <button
+                  key={`${groupIndex}-${idx}`}
+                  type="button"
+                  onClick={() => {
+                    setSearchTerm(text);
+                    if (onSearchSubmit) {
+                      setTimeout(() => onSearchSubmit({ preventDefault: () => {} }, text), 10);
+                    }
+                  }}
+                  className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-cyan-500/20 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-200 text-xs transition-all cursor-pointer"
+                >
+                  {text}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </form>
     </div>
