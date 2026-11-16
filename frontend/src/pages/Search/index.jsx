@@ -195,82 +195,86 @@ export default function Search() {
         NE: { vi: "Chưa đánh giá", en: "Not Evaluated", type: "safe" },
       };
 
-      const mapped = semanticResults.data.map((item) => {
-        const itemClean = (item.commonName || "").toLowerCase().trim();
-        const sciClean = (item.scientificName || "").toLowerCase().trim();
+      const term = (searchTerm || semanticQuery || "").toLowerCase().trim();
 
-        const matchedCatalog = activeCatalog.find((c) => {
-          if (c.id === item.id || c.slug === item.slug) return true;
-          const cSci = (c.sciName || "").toLowerCase();
-          if (sciClean && cSci && (cSci.includes(sciClean) || sciClean.includes(cSci))) return true;
-          const cName = (c.nameVi || "").toLowerCase();
-          if (itemClean && cName && (cName.includes(itemClean) || itemClean.includes(cName))) return true;
-          return false;
+      // 1. Ưu tiên các loài khớp trực tiếp tên với từ khóa tìm kiếm
+      const directMatches = term
+        ? activeCatalog.filter((c) => {
+            const matchNameVi = (c.nameVi || "").toLowerCase().includes(term);
+            const matchNameEn = (c.nameEn || "").toLowerCase().includes(term);
+            const matchSci = (c.sciName || "").toLowerCase().includes(term);
+            return matchNameVi || matchNameEn || matchSci;
+          })
+        : [];
+
+      const directIds = new Set(directMatches.map((d) => String(d.id || d.slug)));
+
+      // 2. Chuyển đổi các loài ngữ nghĩa bổ sung (không trùng với loài đã khớp trực tiếp)
+      const mappedSemantic = semanticResults.data
+        .filter((item) => !directIds.has(String(item.id)) && !directIds.has(String(item.slug)))
+        .map((item) => {
+          const itemClean = (item.commonName || "").toLowerCase().trim();
+          const sciClean = (item.scientificName || "").toLowerCase().trim();
+
+          const matchedCatalog = activeCatalog.find((c) => {
+            if (c.id === item.id || c.slug === item.slug) return true;
+            const cSci = (c.sciName || "").toLowerCase();
+            if (sciClean && cSci && (cSci.includes(sciClean) || sciClean.includes(cSci))) return true;
+            const cName = (c.nameVi || "").toLowerCase();
+            if (itemClean && cName && (cName.includes(itemClean) || itemClean.includes(cName))) return true;
+            return false;
+          });
+
+          const statusInfo = statusMap[item.redList] || {
+            vi: matchedCatalog?.statusVi || "Ít quan tâm",
+            en: matchedCatalog?.statusEn || "Least Concern",
+            type: matchedCatalog?.statusType || "safe",
+          };
+
+          const categoryVi =
+            matchedCatalog?.categoryVi ||
+            item.groupName?.replace(/\(.*?\)/g, "").trim() ||
+            "Cá biển";
+
+          const categoryEn =
+            matchedCatalog?.categoryEn ||
+            getLocalizedCategory(categoryVi, "en");
+
+          const realDescVi =
+            matchedCatalog?.descVi ||
+            item.description ||
+            (item.diet ? `Tập tính ăn: ${item.diet}.` : "") ||
+            `Phân bố tự nhiên tại vùng biển ${item.zone || "Biển Đông"}.`;
+
+          const realDescEn =
+            matchedCatalog?.descEn ||
+            item.description ||
+            `Naturally distributed in ${item.zone || "East Sea"}.`;
+
+          return {
+            id: matchedCatalog?.id || item.id,
+            slug: item.slug || matchedCatalog?.slug || item.id,
+            nameVi: matchedCatalog?.nameVi || item.commonName,
+            nameEn: matchedCatalog?.nameEn || getLocalizedSpeciesName(item, "en"),
+            sciName: matchedCatalog?.sciName || item.scientificName,
+            categoryVi,
+            categoryEn,
+            statusVi: statusInfo.vi,
+            statusEn: statusInfo.en,
+            statusType: statusInfo.type,
+            descVi: realDescVi,
+            descEn: realDescEn,
+            image: matchedCatalog?.image || item.image,
+            depth: matchedCatalog?.depth || item.depth || "0 - 200m",
+            depthMax: matchedCatalog?.depthMax,
+            vietnamRedListStatus: item.redList || matchedCatalog?.vietnamRedListStatus,
+          };
         });
 
-        const statusInfo = statusMap[item.redList] || {
-          vi: matchedCatalog?.statusVi || "Ít quan tâm",
-          en: matchedCatalog?.statusEn || "Least Concern",
-          type: matchedCatalog?.statusType || "safe",
-        };
-
-        const categoryVi =
-          matchedCatalog?.categoryVi ||
-          item.groupName?.replace(/\(.*?\)/g, "").trim() ||
-          "Cá biển";
-
-        const categoryEn =
-          matchedCatalog?.categoryEn ||
-          getLocalizedCategory(categoryVi, "en");
-
-        const realDescVi =
-          matchedCatalog?.descVi ||
-          item.description ||
-          (item.diet ? `Tập tính ăn: ${item.diet}.` : "") ||
-          `Phân bố tự nhiên tại vùng biển ${item.zone || "Biển Đông"}.`;
-
-        const realDescEn =
-          matchedCatalog?.descEn ||
-          item.description ||
-          `Naturally distributed in ${item.zone || "East Sea"}.`;
-
-        return {
-          id: matchedCatalog?.id || item.id,
-          slug: item.slug || matchedCatalog?.slug || item.id,
-          nameVi: matchedCatalog?.nameVi || item.commonName,
-          nameEn: matchedCatalog?.nameEn || getLocalizedSpeciesName(item, "en"),
-          sciName: matchedCatalog?.sciName || item.scientificName,
-          categoryVi,
-          categoryEn,
-          statusVi: statusInfo.vi,
-          statusEn: statusInfo.en,
-          statusType: statusInfo.type,
-          descVi: realDescVi,
-          descEn: realDescEn,
-          image: matchedCatalog?.image || item.image,
-          depth: matchedCatalog?.depth || item.depth || "0 - 200m",
-          depthMax: matchedCatalog?.depthMax,
-          vietnamRedListStatus: item.redList || matchedCatalog?.vietnamRedListStatus,
-        };
-      });
-
-      return mapped.sort((a, b) => {
-        if (sortBy === "az") {
-          const nameA = language === "en" ? a.nameEn : a.nameVi;
-          const nameB = language === "en" ? b.nameEn : b.nameVi;
-          return nameA.localeCompare(nameB);
-        }
-        if (sortBy === "depth") {
-          return parseDepthMax(a) - parseDepthMax(b);
-        }
-        if (sortBy === "status") {
-          return getStatusRank(a) - getStatusRank(b);
-        }
-        return 0;
-      });
+      return [...directMatches, ...mappedSemantic];
     }
     return activeCatalog;
-  }, [semanticResults, activeCatalog, sortBy, language]);
+  }, [semanticResults, activeCatalog, sortBy, language, searchTerm, semanticQuery]);
 
   const executeSemanticSearch = async (queryText) => {
     const q = (queryText || searchTerm || "").trim();
