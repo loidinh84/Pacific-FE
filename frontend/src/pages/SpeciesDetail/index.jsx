@@ -12,6 +12,7 @@ import { SpeciesFacts } from "./SpeciesFacts";
 import { RelatedSpecies } from "./RelatedSpecies";
 import { SpeciesComments } from "./SpeciesComments";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
+import { CREATURE_PNGS } from "../../assets/creatures";
 import { useLanguage } from "../../hooks/useLanguage";
 import { recordSpeciesView } from "../../services/speciesCommentsApi";
 import { fetchSpeciesDetail } from "../../services/speciesApi";
@@ -24,13 +25,91 @@ import {
   getLocalizedCategory,
 } from "../../utils/speciesFormatters";
 
+const CREATURE_SLUG_TO_PNG_KEY = {
+  "bo-bien-dugong": "dugong",
+  "ca-he-ocellaris-nemo": "clownfish",
+  "doi-moi-rua-bien": "hawksbill-turtle",
+  "muc-la-dai-duong": "bigfin-squid",
+  "ca-map-voi-nham-voi": "whale-shark",
+  "ca-heo-dom-nhiet-doi": "spotted-dolphin",
+  "ca-co-gon": "sailfish",
+  "ca-nham-bua-dau-bua": "hammerhead-shark",
+  "ca-ngu-vay-vang-dai-duong": "yellowfin-tuna",
+  "ca-mat-trang-mola-mola": "ocean-sunfish",
+  "ca-duoi-o-hoa": "spotted-eagle-ray",
+  "ca-den-long-bien-sau": "lanternfish",
+  "bo-bien-khong-lo-giant-isopod": "giant-isopod",
+  "ca-riu-bac-bien-sau": "hatchetfish",
+  "muc-mat-choi-lac": "cockeyed-squid",
+  "muc-mat-lech": "cockeyed-squid",
+  "cockeyed-squid": "cockeyed-squid",
+  "cua-da-bien-sau": "deepsea-crab",
+  "ca-nham-ma-ghost-shark": "ghost-shark",
+  "ca-rong-den-bien-sau": "black-dragonfish",
+  "muc-thuy-tinh-glass-squid": "glass-squid",
+  "giap-xac-boi-khong-lo-gigantocypris": "gigantocypris",
+  "ca-can-cau-bien-sau-anglerfish": "anglerfish",
+  "giun-ong-mieng-lanh-haima": "haima-tubeworm",
+  "trai-bien-sau-haima": "haima-mussel",
+  "ca-rong-bien-sau-viperfish": "viperfish",
+  "muc-ma-ca-rong-bien-sau": "vampire-squid",
+  "bach-tuoc-dumbo": "dumbo-octopus",
+  "ca-ba-chan-tripod-fish": "tripod-fish",
+  "ca-duoi-chuot-bien-sau": "grenadier-fish",
+  "heo-bien-sau-sea-pig": "sea-pig",
+  "sao-gion-vuc-tham": "brittle-star",
+  "ca-oc-ranh-sau-hadal-snailfish": "hadal-snailfish",
+  "giap-xac-chan-hai-ranh-manila": "hadal-amphipod",
+};
+
+const getCreatureFallbackImage = (key = "") => {
+  const pngKey = CREATURE_SLUG_TO_PNG_KEY[key] || key;
+  return CREATURE_PNGS[pngKey] || null;
+};
+
 const MOCK_SLUG_MAP = {
+  // Aliases cũ
   "giant-octopus-3": "bach-tuoc-khong-lo",
   octopus: "bach-tuoc-khong-lo",
   "whale-shark": "ca-map-voi-nham-voi",
   "whale-shark-2": "ca-map-voi-nham-voi",
   "bluefin-tuna-1": "ca-ngu-vay-vang-dai-duong",
   "great-white-shark-1": "great-white-shark-1",
+
+  // 32 loài trong Độ Sâu Đại Dương (OceanDepth)
+  dugong: "bo-bien-dugong",
+  clownfish: "ca-he-ocellaris-nemo",
+  "hawksbill-turtle": "doi-moi-rua-bien",
+  "bigfin-squid": "muc-la-dai-duong",
+  "spotted-dolphin": "ca-heo-dom-nhiet-doi",
+  sailfish: "ca-co-gon",
+  "hammerhead-shark": "ca-nham-bua-dau-bua",
+  "yellowfin-tuna": "ca-ngu-vay-vang-dai-duong",
+  "ocean-sunfish": "ca-mat-trang-mola-mola",
+  "spotted-eagle-ray": "ca-duoi-o-hoa",
+  lanternfish: "ca-den-long-bien-sau",
+  "giant-isopod": "bo-bien-khong-lo-giant-isopod",
+  hatchetfish: "ca-riu-bac-bien-sau",
+  "cockeyed-squid": "muc-mat-choi-lac",
+  "muc-mat-lech": "muc-mat-choi-lac",
+  "muc-mat-choi-lac": "muc-mat-choi-lac",
+  "deepsea-crab": "cua-da-bien-sau",
+  "ghost-shark": "ca-nham-ma-ghost-shark",
+  "black-dragonfish": "ca-rong-den-bien-sau",
+  "glass-squid": "muc-thuy-tinh-glass-squid",
+  gigantocypris: "giap-xac-boi-khong-lo-gigantocypris",
+  anglerfish: "ca-can-cau-bien-sau-anglerfish",
+  "haima-tubeworm": "giun-ong-mieng-lanh-haima",
+  "haima-mussel": "trai-bien-sau-haima",
+  viperfish: "ca-rong-bien-sau-viperfish",
+  "vampire-squid": "muc-ma-ca-rong-bien-sau",
+  "dumbo-octopus": "bach-tuoc-dumbo",
+  "tripod-fish": "ca-ba-chan-tripod-fish",
+  "grenadier-fish": "ca-duoi-chuot-bien-sau",
+  "sea-pig": "heo-bien-sau-sea-pig",
+  "brittle-star": "sao-gion-vuc-tham",
+  "hadal-snailfish": "ca-oc-ranh-sau-hadal-snailfish",
+  "hadal-amphipod": "giap-xac-chan-hai-ranh-manila",
 };
 
 export default function SpeciesDetail() {
@@ -97,22 +176,30 @@ export default function SpeciesDetail() {
             return;
           }
 
-          // Ưu tiên ảnh thật từ API cơ sở dữ liệu (media do thợ lặn chụp), sau đó mới tới mock cục bộ
+          // Ưu tiên ảnh thật từ API cơ sở dữ liệu (media do thợ lặn chụp), sau đó mới tới mock cục bộ hoặc ảnh PNG chất lượng cao
+          const fallbackPng = getCreatureFallbackImage(resolvedId) || getCreatureFallbackImage(id);
+          const apiGallery = apiData.media?.map((m) => m.url).filter(Boolean) || [];
           const primaryImage =
             apiData.media?.find((m) => m.isPrimary)?.url ||
             apiData.media?.[0]?.url ||
             localSpecies?.image ||
+            fallbackPng ||
             null;
 
-          const apiGallery = apiData.media?.map((m) => m.url).filter(Boolean) || [];
-          const gallery =
-            localSpecies?.gallery && localSpecies.gallery.length > 0
-              ? localSpecies.gallery
-              : apiGallery.length > 0
-              ? apiGallery
-              : primaryImage
-              ? [primaryImage]
-              : [];
+          let gallery = [];
+          if (apiGallery.length > 0) {
+            gallery = fallbackPng && !apiGallery.includes(fallbackPng)
+              ? [fallbackPng, ...apiGallery]
+              : apiGallery;
+          } else if (localSpecies?.gallery && localSpecies.gallery.length > 0) {
+            gallery = localSpecies.gallery;
+          } else if (fallbackPng) {
+            gallery = [fallbackPng];
+          } else if (primaryImage) {
+            gallery = [primaryImage];
+          } else {
+            gallery = [];
+          }
 
           const formattedSize = formatSizeRange(apiData.sizeMinCm, apiData.sizeMaxCm);
           const formattedWeight = formatWeightRange(apiData.weightMinKg, apiData.weightMaxKg);

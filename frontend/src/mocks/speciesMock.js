@@ -1,3 +1,4 @@
+import { CREATURE_PNGS } from "../assets/creatures";
 import * as Images from "../assets/Images";
 
 export const SPECIES_DATA = [
@@ -62,423 +63,161 @@ export const HABITATS_DATA = [
 ];
 
 export const SEARCH_SPECIES_CATALOG = [
+
+  // ── 32 Sinh vật Biển Đông (OceanDepth) ──
   {
-    id: "great-white-shark-1",
-    slug: "great-white-shark-1",
-    category: "cartilage-fish",
-    categoryVi: "Cá sụn",
-    categoryEn: "Cartilaginous Fish",
-    statusVi: "Sắp nguy cấp",
-    statusEn: "Vulnerable",
-    statusType: "warning",
-    nameVi: "Cá Mập Trắng Lớn",
-    nameEn: "Great White Shark",
-    sciName: "Carcharodon carcharias",
-    introHeaderVi:
-      'Tên khoa học: Carcharodon carcharias là loài cá săn mồi lớn nhất thế giới hiện nay, được mệnh danh là một trong những "hung thần" đỉnh cao của đại dương.',
-    introHeaderEn:
-      "Scientific name: Carcharodon carcharias is the largest predatory fish in the world today, known as one of the ultimate apex predators of the ocean.",
-    descVi:
-      "Cá mập trắng lớn là loài cá săn mồi đỉnh cao với khứu giác siêu nhạy và tốc độ bơi vượt trội.",
-    descEn:
-      "The great white shark is an apex predator with acute sense of smell and formidable speed.",
-    image: Images.SharkGallery1,
+    id: "dugong",
+    slug: "bo-bien-dugong",
+    category: "marine-mammal",
+    categoryVi: "Thú biển",
+    categoryEn: "Marine Mammals",
+    statusVi: "Cực kỳ nguy cấp",
+    statusEn: "Critically Endangered",
+    statusType: "danger",
+    nameVi: "Bò Biển (Dugong)",
+    nameEn: "Dugong (Sea Cow)",
+    sciName: "Dugong dugon",
+    introHeaderVi: "Biểu tượng quý hiếm gắn liền với các thảm cỏ biển tại Côn Đảo và Phú Quốc; nguồn gốc của truyền thuyết 'mỹ nhân ngư'.",
+    introHeaderEn: "Rare icon associated with seagrass meadows in Con Dao and Phu Quoc; mythical origin of the mermaid legend.",
+    descVi: "Biểu tượng quý hiếm gắn liền với các thảm cỏ biển tại Côn Đảo và Phú Quốc; nguồn gốc của truyền thuyết 'mỹ nhân ngư'.",
+    descEn: "Rare icon associated with seagrass meadows in Con Dao and Phu Quoc; mythical origin of the mermaid legend.",
+    depth: "0m - 20m",
+    size: "2.4m - 3.0m",
+    weight: "250kg - 400kg",
+    diet: "Cỏ biển (Halophila ovalis, Enhalus)",
+    image: CREATURE_PNGS["dugong"],
     gallery: [
-      Images.SharkGallery1,
-      Images.SharkGallery2,
-      Images.SharkGallery3,
-      Images.SharkGallery4,
+      CREATURE_PNGS["dugong"],
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Dugong.JPG/330px-Dugong.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/4/42/Dugong.JPG"
     ],
-    anatomyImage: Images.SharkAnatomy,
-    fullBioHighlightsVi: [
+    facts: [
       {
-        title: "Cơ chế máu nóng",
-        content:
-          "Thuộc họ cá mập Lamnidae, chúng có khả năng duy trì nhiệt độ cơ thể ấm hơn môi trường nước xung quanh. Đặc tính này giúp chúng di chuyển nhanh và săn mồi hiệu quả ở vùng nước lạnh.",
+            title: "Nàng tiên cá biển cả",
+            content: "Dáng bơi khoan thai và cách ôm con nhỏ cho bú của dugong là nguồn gốc truyện mỹ nhân ngư."
       },
       {
-        title: "Kích thước khổng lồ",
-        content:
-          "Chiều dài cơ thể có thể đạt tới 6 mét và trọng lượng lên đến 2 tấn.",
-      },
-      {
-        title: "Cấu tạo không xương",
-        content:
-          "Giống như các loài cá mập khác, toàn bộ hệ khung xương của cá mập trắng được cấu tạo từ sụn chứ không phải xương cứng. Da của chúng rất nhám do được phủ một lớp vảy nhỏ như răng sáp.",
-      },
-      {
-        title: "Hàm răng vô tận",
-        content:
-          "Chúng sở hữu bộ hàm có lực cắn cực mạnh với nhiều hàng răng sắc nhọn. Trong suốt vòng đời, một cá thể có thể thay thế tới 50.000 chiếc răng.",
-      },
-      {
-        title: "Tuổi thọ cao",
-        content:
-          "Các nghiên cứu khoa học cho thấy cá mập trắng có thể sống vượt quá 70 năm.",
-      },
-      {
-        title: "Địa bàn phân bố",
-        content:
-          "Tập trung chủ yếu tại các vùng biển ôn đới ven bờ tại Hoa Kỳ, Nam Phi, Úc, Nhật Bản, Chile và Địa Trung Hải. Chúng ưa thích nhiệt độ nước từ 12°C đến 24°C.",
-      },
-      {
-        title: "Săn mồi độc lập",
-        content:
-          "Thức ăn ưa thích của chúng là các loài động vật có vú biển giàu mỡ như hải cẩu, sư tử biển và cá voi nhỏ.",
-      },
-      {
-        title: "Khắc tinh duy nhất",
-        content:
-          "Dù là kẻ săn mồi hàng đầu, cá mập trắng vẫn phải khiếp sợ trước cá voi sát thủ (Orca). Orca với trí thông minh và chiến thuật săn mồi theo bầy đàn là loài duy nhất có thể hạ gục cá mập trắng.",
-      },
-    ],
-    fullBioHighlightsEn: [
-      {
-        title: "Regional Endothermy",
-        content:
-          "Belonging to the Lamnidae family, they maintain body temperatures higher than surrounding waters, enabling rapid bursts of speed.",
-      },
-      {
-        title: "Massive Size",
-        content:
-          "Can reach lengths of up to 6 meters (20 ft) and weights exceeding 2 metric tons.",
-      },
-      {
-        title: "Cartilaginous Skeleton",
-        content:
-          "Full skeletal structure is built of flexible cartilage rather than bone, with dermal denticles providing hydrodynamic skin texture.",
-      },
-      {
-        title: "Endless Teeth Replacement",
-        content:
-          "Powerful jaws with serrated triangular teeth, capable of cycling through up to 50,000 teeth in a lifetime.",
-      },
-      {
-        title: "Long Lifespan",
-        content:
-          "Scientific studies show Great White Sharks can live upwards of 70 years.",
-      },
-      {
-        title: "Global Distribution",
-        content:
-          "Inhabits coastal temperate oceans worldwide, preferring water temperatures between 12°C and 24°C.",
-      },
-      {
-        title: "Apex Hunting",
-        content:
-          "Prefers fatty marine mammals such as sea lions, seals, and small cetaceans.",
-      },
-      {
-        title: "Only Natural Predator",
-        content:
-          "Orcas (Killer Whales) are their only known natural predators, using coordinated team tactics.",
-      },
-    ],
-    anatomy: [
-      {
-        id: "a1",
-        x: 18,
-        y: 52,
-        labelVi: "Hàm răng cưa",
-        labelEn: "Serrated Jaws",
-        descVi:
-          "Bộ hàm có lực cắn cực đại với nhiều lớp răng hình tam giác sắc lẹm.",
-        descEn:
-          "Jaws with immense bite force and rows of serrated triangular teeth.",
-      },
-      {
-        id: "a2",
-        x: 23,
-        y: 44,
-        labelVi: "Não bộ & Thị giác",
-        labelEn: "Brain & Optic Lobe",
-        descVi:
-          "Thùy thị giác và khứu giác phát triển vượt trội, phát hiện giọt máu từ hàng km.",
-        descEn:
-          "Highly developed optic and olfactory lobes, detecting blood from miles away.",
-      },
-      {
-        id: "a3",
-        x: 29,
-        y: 56,
-        labelVi: "Khe mang",
-        labelEn: "Gill Slits",
-        descVi: "5 khe mang lớn lọc oxy liên tục khi bơi qua các dòng hải lưu.",
-        descEn:
-          "5 large gill slits extracting oxygen continuously while swimming.",
-      },
-      {
-        id: "a4",
-        x: 42,
-        y: 58,
-        labelVi: "Gan tích dầu ",
-        labelEn: "Liver ",
-        descVi:
-          "Gan chiếm tới 28% trọng lượng cơ thể, chứa dầu squalene giúp nổi tự nhiên.",
-        descEn:
-          "Huge oil-rich liver accounting for up to 28% body mass for buoyancy.",
-      },
-      {
-        id: "a5",
-        x: 53,
-        y: 59,
-        labelVi: "Dạ dày & Van xoắn",
-        labelEn: "Stomach & Spiral Valve",
-        descVi:
-          "Hệ tiêu hóa thích ứng tiêu hóa nhanh các con mồi giàu chất béo.",
-        descEn:
-          "Digestive system optimized for energy absorption from high-fat marine prey.",
-      },
-      {
-        id: "a6",
-        x: 52,
-        y: 42,
-        labelVi: "Cột sống sụn",
-        labelEn: "Vertebral Column",
-        descVi: "Cột sống bằng sụn đàn hồi dẻo dai giúp tăng tốc tức thời.",
-        descEn:
-          "Flexible cartilaginous spinal cord allowing rapid acceleration.",
-      },
-      {
-        id: "a7",
-        x: 86,
-        y: 52,
-        labelVi: "Vây đuôi hình lưỡi liềm",
-        labelEn: "Caudal Fin",
-        descVi:
-          "Vây đuôi đối xứng tạo lực đẩy bùng nổ lên tới 56 km/h khi phóng lên mặt nước.",
-        descEn:
-          "Symmetrical tail fin delivering explosive propulsion for surface breaches.",
-      },
-    ],
-    anatomyLayers: [
-      {
-        percent: 100,
-        labelVi: "Ngoại hình",
-        labelEn: "Exterior",
-        descVi: "Hình dạng bên ngoài — da, vây và đường nét cơ thể.",
-        descEn: "External appearance — skin, fins and body contour.",
-        filter: "none",
-        accent: "cyan",
-        hotspots: [
-          { id: "e1", x: 12, y: 50, labelVi: "Mõm nhọn", labelEn: "Pointed Snout", descVi: "Mõm hình nón nhọn tối ưu hóa khí động học, giảm lực cản nước khi lao vào con mồi.", descEn: "Cone-shaped snout minimizes hydrodynamic drag for high-speed strikes." },
-          { id: "e2", x: 32, y: 25, labelVi: "Vây lưng", labelEn: "Dorsal Fin", descVi: "Vây lưng lớn giúp ổn định hướng bơi và là dấu hiệu nhận dạng cá nhân.", descEn: "Large dorsal fin stabilizes swimming trajectory and enables individual ID." },
-          { id: "e3", x: 50, y: 65, labelVi: "Vây ngực", labelEn: "Pectoral Fins", descVi: "Cặp vây ngực dài tạo lực nâng như cánh máy bay, kiểm soát độ sâu lặn.", descEn: "Long pectoral fins generate lift like aircraft wings to control diving depth." },
-          { id: "e4", x: 88, y: 48, labelVi: "Vây đuôi", labelEn: "Caudal Fin", descVi: "Vây đuôi đối xứng hình lưỡi liềm tạo lực đẩy bùng nổ tới 56 km/h.", descEn: "Symmetrical crescent tail delivers explosive thrust up to 56 km/h." },
-          { id: "e5", x: 65, y: 55, labelVi: "Da vảy răng cưa", labelEn: "Dermal Denticles", descVi: "Bề mặt da phủ hàng triệu vảy nhỏ hình răng cưa giảm lực cản và tiếng ồn khi bơi.", descEn: "Millions of tooth-like denticles reduce drag and turbulence noise." }
-        ]
-      },
-      {
-        percent: 75,
-        labelVi: "Da & Giác quan",
-        labelEn: "Skin & Senses",
-        descVi: "Lớp da và hệ thống giác quan siêu nhạy bên dưới.",
-        descEn: "Skin layer and hyper-sensitive sensory systems beneath.",
-        filter: "sepia(0.55) saturate(1.4) brightness(1.05)",
-        accent: "amber",
-        hotspots: [
-          { id: "s1", x: 18, y: 44, labelVi: "Lỗ điện thụ cảm", labelEn: "Ampullae of Lorenzini", descVi: "Hàng trăm lỗ thụ cảm quanh mõm phát hiện điện sinh học cực nhỏ từ tim con mồi.", descEn: "Hundreds of jelly pores detect micro-volt bioelectric fields from prey heartbeats." },
-          { id: "s2", x: 50, y: 50, labelVi: "Đường bên", labelEn: "Lateral Line", descVi: "Hệ thống cơ quan nhận rung động áp suất nước kéo dài từ đầu đến đuôi.", descEn: "Pressure-wave receptor system running head to tail detects movement in water." },
-          { id: "s3", x: 30, y: 58, labelVi: "Khe mang", labelEn: "Gill Slits", descVi: "5 khe mang lớn trích xuất oxy từ nước biển liên tục trong khi bơi.", descEn: "5 large gill slits extract dissolved oxygen continuously while swimming." },
-          { id: "s4", x: 22, y: 38, labelVi: "Mắt & Màng mờ", labelEn: "Eye & Nictitating Membrane", descVi: "Mắt lớn thích nghi nhìn dưới nước, có màng mờ bảo vệ khi tấn công.", descEn: "Large eyes adapted for low-light vision, protected by nictitating membrane during attack." }
-        ]
-      },
-      {
-        percent: 50,
-        labelVi: "Cơ bắp",
-        labelEn: "Muscle Layer",
-        descVi: "Hệ cơ bắp mạnh mẽ tạo ra lực bơi và tốc độ tấn công.",
-        descEn: "Powerful muscle systems generating propulsion and attack velocity.",
-        filter: "hue-rotate(320deg) saturate(2.2) brightness(0.88) contrast(1.1)",
-        accent: "rose",
-        hotspots: [
-          { id: "m1", x: 20, y: 50, labelVi: "Cơ hàm", labelEn: "Jaw Muscles", descVi: "Cơ hàm cực mạnh tạo lực cắn ước tính 18,000 Newton — đủ xuyên qua thép mỏng.", descEn: "Massive jaw muscles deliver an estimated 18,000 N bite force — enough to pierce thin steel." },
-          { id: "m2", x: 45, y: 45, labelVi: "Cơ hông bơi", labelEn: "Epaxial Muscles", descVi: "Khối cơ epaxial dọc lưng cung cấp lực đẩy chính khi vẫy đuôi.", descEn: "Dorsal epaxial muscle blocks provide primary propulsive power during tail oscillation." },
-          { id: "m3", x: 72, y: 52, labelVi: "Cơ đuôi", labelEn: "Caudal Peduncle Muscles", descVi: "Cơ cuống đuôi đặc biệt cứng chắc, chuyển đổi năng lượng thành lực đẩy tối đa.", descEn: "Rigid caudal peduncle muscles convert stored energy into maximum thrust." },
-          { id: "m4", x: 50, y: 60, labelVi: "Cơ vây ngực", labelEn: "Pectoral Muscles", descVi: "Cơ vây ngực điều chỉnh góc vây để kiểm soát hướng lặn và độ sâu.", descEn: "Pectoral fin muscles adjust fin angle for precise depth and direction control." }
-        ]
-      },
-      {
-        percent: 25,
-        labelVi: "Nội tạng",
-        labelEn: "Internal Organs",
-        descVi: "Hệ thống nội tạng phức tạp duy trì sự sống và săn mồi.",
-        descEn: "Complex organ systems sustaining life and predatory function.",
-        filter: "hue-rotate(185deg) saturate(1.9) brightness(0.82) contrast(1.15)",
-        accent: "blue",
-        hotspots: [
-          { id: "o1", x: 18, y: 52, labelVi: "Hàm & Răng", labelEn: "Jaws & Teeth", descVi: "Hàm không gắn vào hộp sọ, đẩy ra ngoài khi đớp mồi. Trong vòng đời thay tới 50,000 răng.", descEn: "Jaws protrude during biting. Up to 50,000 teeth replaced over a lifetime." },
-          { id: "o2", x: 28, y: 42, labelVi: "Não & Khứu giác", labelEn: "Brain & Olfactory Lobe", descVi: "Thùy khứu giác chiếm 2/3 não bộ, phát hiện 1 giọt máu trong 100 lít nước biển.", descEn: "Olfactory lobe makes up 2/3 of brain; detects 1 blood drop in 100L seawater." },
-          { id: "o3", x: 42, y: 56, labelVi: "Gan tích dầu", labelEn: "Oil-Rich Liver", descVi: "Gan khổng lồ chiếm 28% khối lượng cơ thể, chứa dầu squalene giúp nổi tự nhiên.", descEn: "Massive liver (28% body mass) filled with squalene oil for natural buoyancy." },
-          { id: "o4", x: 55, y: 58, labelVi: "Dạ dày & Van xoắn", labelEn: "Stomach & Spiral Valve", descVi: "Van xoắn ruột tăng diện tích hấp thụ gấp 5 lần, tiêu hóa con mồi lớn trong vài ngày.", descEn: "Spiral intestinal valve quintuples absorption area; digests large prey over days." },
-          { id: "o5", x: 38, y: 48, labelVi: "Tim 2 ngăn", labelEn: "Two-Chamber Heart", descVi: "Tim 2 ngăn bơm máu giàu oxy qua mạng Rete Mirabile duy trì nhiệt độ cơ thể.", descEn: "Two-chamber heart pumps oxygenated blood through Rete Mirabile heat-exchange network." }
-        ]
-      },
-      {
-        percent: 0,
-        labelVi: "Xương sụn",
-        labelEn: "Cartilage Skeleton",
-        descVi: "Bộ khung xương sụn dẻo dai thay thế hoàn toàn xương cứng.",
-        descEn: "Flexible cartilaginous skeleton fully replacing rigid bone.",
-        filter: "grayscale(1) contrast(1.7) brightness(1.25) invert(0.08)",
-        accent: "slate",
-        hotspots: [
-          { id: "b1", x: 16, y: 48, labelVi: "Hộp sọ sụn", labelEn: "Chondrocranium", descVi: "Hộp sọ sụn bảo vệ não nhẹ hơn xương cứng 30%, giúp tăng tốc linh hoạt hơn.", descEn: "Cartilaginous braincase is 30% lighter than bone, enabling sharper acceleration." },
-          { id: "b2", x: 18, y: 56, labelVi: "Xương hàm sụn", labelEn: "Cartilage Jaw", descVi: "Hàm trên (palatoquadrate) và hàm dưới (Meckel's) làm từ sụn cứng hóa khoáng.", descEn: "Upper (palatoquadrate) and lower (Meckel's) jaws of mineralized cartilage." },
-          { id: "b3", x: 50, y: 42, labelVi: "Cột sống sụn", labelEn: "Vertebral Column", descVi: "Cột sống gồm hàng trăm đốt sụn xếp chồng, đàn hồi dẻo dai hơn xương cứng.", descEn: "Hundreds of stacked cartilage vertebrae — more elastic and flexible than bone." },
-          { id: "b4", x: 30, y: 28, labelVi: "Vòm mang sụn", labelEn: "Gill Arches", descVi: "5 cung mang sụn nâng đỡ khe mang và kiểm soát luồng nước qua hệ hô hấp.", descEn: "5 cartilage gill arches support gill slits and regulate respiratory water flow." }
-        ]
+            title: "Kẻ ăn cỏ đại dương",
+            content: "Mỗi ngày một con bò biển trưởng thành tiêu thụ tới 30-40kg cỏ biển tươi."
       }
-    ],
-    hasAudio: true,
-    audioLabelVi: "Tiếng rền săn mồi thủy âm",
-    audioLabelEn: "Hydroacoustic predatory rumble",
-    taxonomy: {
-      kingdom: "Animalia",
-      phylum: "Chordata",
-      class: "Chondrichthyes",
-      order: "Lamniformes",
-      family: "Lamnidae",
-      genus: "Carcharodon",
-      species: "C. carcharias",
-    },
-    scientificDossierVi: [
-      {
-        category: "Sinh lý học thích nghi nhiệt",
-        title: "Cơ chế máu nóng vùng",
-        desc: "Sở hữu mạng lưới mạch máu trao đổi nhiệt ngược dòng (Rete Mirabile), giúp duy trì nhiệt độ cơ bắp và dạ dày cao hơn môi trường nước từ 10°C - 14°C, tăng cường sức bền khi truy đuổi con mồi tại vùng nước sâu lạnh giá.",
-      },
-      {
-        category: "Hệ thống giác quan siêu nhạy",
-        title: "Thụ cảm điện trường & Đường bên",
-        desc: "Các lỗ thụ cảm điện trường phân bố dày đặc quanh mõm có thể phát hiện dòng điện sinh học cực nhỏ (chỉ 1 phần tỷ volt) phát ra từ cơ bắp hoặc nhịp tim của con mồi đang ẩn mình dưới đáy cát.",
-      },
-      {
-        category: "Cơ học hàm & Nha khoa sinh học",
-        title: "Bộ hàm động lực học",
-        desc: "Bộ hàm không gắn liền với hộp sọ mà liên kết bằng các dây chằng đàn hồi, cho phép cá mập đẩy hàm ra ngoài khi đớp mồi với lực cắn ước tính lên đến 18,000 Newton (~1.8 tấn lực).",
-      },
-      {
-        category: "Chiến thuật săn mồi & Sinh thái",
-        title: "Chiến thuật tấn công Polaris Breach",
-        desc: "Thường ẩn mình dưới vùng nước tối sâu thẳm, quan sát bóng con mồi ngược sáng trên mặt nước rồi phóng thẳng đứng với vận tốc lên tới 56 km/h, hất tung con mồi lên khỏi mặt nước.",
-      },
-    ],
-    scientificDossierEn: [
-      {
-        category: "Thermal Physiology",
-        title: "Regional Endothermy (Rete Mirabile)",
-        desc: "Counter-current heat exchange vascular network maintains internal muscle and stomach temperatures 10°C - 14°C above ambient water, maximizing power output in cold depths.",
-      },
-      {
-        category: "Advanced Sensory System",
-        title: "Electro-reception (Ampullae of Lorenzini)",
-        desc: "Hundreds of jelly-filled sensory pores detect microvolt bioelectric fields emitted by prey heartbeats and muscle twitches buried in sand.",
-      },
-      {
-        category: "Jaw Biomechanics",
-        title: "Kinetic Jaw Protrusion & Dentition",
-        desc: "Jaws dislocate and protrude forward during strikes, delivering an estimated bite force of 18,000 Newtons through rows of serrated enameloid teeth.",
-      },
-      {
-        category: "Trophic Ecology",
-        title: "Polaris Breach Ambush Strategy",
-        desc: "Stalks from deep oceanic darkness before executing vertical high-speed rushes up to 56 km/h to strike surface pinnipeds.",
-      },
-    ],
-    depth: "0 - 1200m",
-    size: "Kích thước: 6m",
-    sizeEn: "Size: 6m",
-    weight: "2 tấn",
-    weightEn: "2 tons",
-    lifespan: "70+ năm",
-    lifespanEn: "70+ years",
-    swimSpeed: "56 km/h",
-    isFeatured: true,
+],
+    isFeatured: false,
   },
+
   {
-    id: "bluefin-tuna-1",
-    slug: "ca-ngu-vay-vang-dai-duong",
+    id: "clownfish",
+    slug: "ca-he-ocellaris-nemo",
     category: "bony-fish",
     categoryVi: "Cá xương",
     categoryEn: "Bony Fish",
-    statusVi: "Nguy cấp",
-    statusEn: "Endangered",
-    statusType: "danger",
-    nameVi: "Cá Ngừ Vây Xanh",
-    nameEn: "Pacific Bluefin Tuna",
-    sciName: "Thunnus orientalis",
-    introHeaderVi:
-      "Tên khoa học: Thunnus orientalis là loài cá ngừ lớn nhất thế giới, một trong những tay bơi cự phách và bền bỉ nhất đại dương.",
-    introHeaderEn:
-      "Scientific name: Thunnus orientalis is the largest tuna species in the world, one of the ocean's fastest and most enduring swimmers.",
-    descVi:
-      "Loài cá ngừ lớn nhất, có khả năng di cư đường dài qua các vùng biển sâu và có giá trị kinh tế cao.",
-    descEn:
-      "Largest tuna species migrating across deep ocean waters with high economic value.",
-    image: "https://static.inaturalist.org/photos/756400191/large.jpg",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Cá Hề Nemo & Hải Quỳ",
+    nameEn: "Clownfish & Sea Anemone",
+    sciName: "Amphiprion ocellaris",
+    introHeaderVi: "Cư dân quen thuộc tại các rạn san hô vịnh Nha Trang và quần đảo Trường Sa, sống cộng sinh bảo vệ lẫn nhau với hải quỳ.",
+    introHeaderEn: "Familiar resident of coral reefs in Nha Trang Bay and Spratly Islands, living symbiotically with venomous sea anemones.",
+    descVi: "Cư dân quen thuộc tại các rạn san hô vịnh Nha Trang và quần đảo Trường Sa, sống cộng sinh bảo vệ lẫn nhau với hải quỳ.",
+    descEn: "Familiar resident of coral reefs in Nha Trang Bay and Spratly Islands, living symbiotically with venomous sea anemones.",
+    depth: "1m - 30m",
+    size: "0.08m - 0.15m",
+    weight: "0.05kg - 0.15kg",
+    diet: "Tảo biển, giáp xác nhỏ, xúc tu hải quỳ rụng",
+    image: CREATURE_PNGS["clownfish"],
     gallery: [
-      "https://static.inaturalist.org/photos/756400191/large.jpg",
-      "https://static.inaturalist.org/photos/756400197/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/754020687/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/754020722/large.jpg",
+      CREATURE_PNGS["clownfish"],
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Clown_fish_in_the_Andaman_Coral_Reef.jpg/330px-Clown_fish_in_the_Andaman_Coral_Reef.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/f/f6/Clown_fish_in_the_Andaman_Coral_Reef.jpg"
     ],
-    anatomyImage: Images.SharkAnatomy,
-    fullBioHighlightsVi: [
+    facts: [
       {
-        title: "Tốc độ đáng kinh ngạc",
-        content:
-          "Có thể bơi với tốc độ lên tới 70 km/h — một trong những loài cá bơi nhanh nhất đại dương.",
+            title: "Lớp nhầy miễn dịch",
+            content: "Nhờ lớp chất nhầy đặc biệt phủ khắp vảy, cá hề không bị chất độc tế bào châm của hải quỳ làm tổn thương."
       },
       {
-        title: "Hành trình di cư nghìn dặm",
-        content:
-          "Di cư quãng đường dài hàng ngàn km mỗi năm qua các dòng hải lưu đại dương phong phú dinh dưỡng.",
-      },
-      {
-        title: "Cơ chế máu nóng từng phần",
-        content:
-          "Duy trì thân nhiệt cao hơn nước xung quanh để cơ bắp hoạt động hiệu quả tối đa ở vùng nước lạnh.",
-      },
-      {
-        title: "Tầm quan trọng sinh thái",
-        content:
-          "Đóng vai trò quan trọng trong chuỗi thức ăn đại dương và đang được bảo vệ nghiêm ngặt.",
-      },
-    ],
-    fullBioHighlightsEn: [
-      {
-        title: "Blistering Speed",
-        content:
-          "Capable of swimming at speeds up to 70 km/h, among the fastest open-ocean fish.",
-      },
-      {
-        title: "Epic Migration",
-        content:
-          "Migrates thousands of miles across the Pacific between Asian and North American coasts.",
-      },
-      {
-        title: "Partial Warm-Bloodedness",
-        content:
-          "Maintains elevated muscle temperatures for peak swimming performance in cold depths.",
-      },
-      {
-        title: "Ecological Value",
-        content:
-          "Plays a vital top-tier predator role in open pelagic ecosystems.",
-      },
-    ],
-    depth: "0 - 550m",
-    size: "Kích thước: 3m",
-    sizeEn: "Size: 3m",
-    weight: "450kg",
-    weightEn: "450kg",
-    lifespan: "15-20 năm",
-    lifespanEn: "15-20 years",
-    isFeatured: true,
+            title: "Chuyển đổi giới tính",
+            content: "Tất cả cá hề sinh ra đều là giống đực; khi con cái đầu đàn chết đi, con đực lớn nhất sẽ đổi giới tính thành con cái."
+      }
+],
+    isFeatured: false,
   },
+
   {
-    id: "whale-shark-2",
+    id: "hawksbill-turtle",
+    slug: "doi-moi-rua-bien",
+    category: "reptile",
+    categoryVi: "Bò sát biển",
+    categoryEn: "Marine Reptiles",
+    statusVi: "Cực kỳ nguy cấp",
+    statusEn: "Critically Endangered",
+    statusType: "danger",
+    nameVi: "Đồi Mồi",
+    nameEn: "Hawksbill Turtle",
+    sciName: "Eretmochelys imbricata",
+    introHeaderVi: "Loài rùa biển có mai ngũ sắc tuyệt đẹp thường làm tổ ở các bãi cát miền Trung và các đảo san hô ngoài khơi Biển Đông.",
+    introHeaderEn: "Magnificent sea turtle with iridescent shells nesting on pristine central beaches and offshore coral islands.",
+    descVi: "Loài rùa biển có mai ngũ sắc tuyệt đẹp thường làm tổ ở các bãi cát miền Trung và các đảo san hô ngoài khơi Biển Đông.",
+    descEn: "Magnificent sea turtle with iridescent shells nesting on pristine central beaches and offshore coral islands.",
+    depth: "0m - 60m",
+    size: "0.7m - 1.0m",
+    weight: "50kg - 80kg",
+    diet: "Bọt biển (hải miên), sứa, giáp xác",
+    image: CREATURE_PNGS["hawksbill-turtle"],
+    gallery: [
+      CREATURE_PNGS["hawksbill-turtle"],
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Eretmochelys-imbricata-K%C3%A9lonia-2.JPG/330px-Eretmochelys-imbricata-K%C3%A9lonia-2.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/b/b0/Eretmochelys-imbricata-K%C3%A9lonia-2.JPG"
+    ],
+    facts: [
+      {
+            title: "Chiếc mỏ chim ưng",
+            content: "Chiếc mỏ khoằm sắc nhọn giúp chúng dễ dàng cạy và gặm nhấm bọt biển bám sâu trong kẽ rạn san hô."
+      },
+      {
+            title: "Mai ngũ sắc quý hiếm",
+            content: "Mai đồi mồi từng bị săn lùng làm đồ trang mỹ nghệ, nay được pháp luật Việt Nam và quốc tế bảo vệ tuyệt đối."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "bigfin-squid",
+    slug: "muc-la-dai-duong",
+    category: "mollusk",
+    categoryVi: "Thân mềm",
+    categoryEn: "Mollusks",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Mực Lá Biển Đông",
+    nameEn: "Bigfin Reef Squid",
+    sciName: "Sepioteuthis lessoniana",
+    introHeaderVi: "Loài động vật thân mềm thông minh có khả năng đổi màu ngụy trang tức thì, đối tượng đánh bắt đêm nổi tiếng của ngư dân duyên hải Việt Nam.",
+    introHeaderEn: "Highly intelligent cephalopod capable of instantaneous camouflage, celebrated target of nighttime offshore fisheries.",
+    descVi: "Loài động vật thân mềm thông minh có khả năng đổi màu ngụy trang tức thì, đối tượng đánh bắt đêm nổi tiếng của ngư dân duyên hải Việt Nam.",
+    descEn: "Highly intelligent cephalopod capable of instantaneous camouflage, celebrated target of nighttime offshore fisheries.",
+    depth: "0m - 100m",
+    size: "0.2m - 0.45m",
+    weight: "0.5kg - 2.5kg",
+    diet: "Cá nhỏ tầng mặt, tôm tép",
+    image: CREATURE_PNGS["bigfin-squid"],
+    gallery: [
+      CREATURE_PNGS["bigfin-squid"],
+      "https://upload.wikimedia.org/wikipedia/commons/3/3b/Calamar_de_arrecifes_%28Sepioteuthis_lessoniana%29%2C_Nosy_Iranja%2C_Madagascar%2C_2025-09-17%2C_DD_134.jpg"
+    ],
+    facts: [
+      {
+            title: "Vua đổi màu",
+            content: "Tế bào sắc tố chromatophore trên da cho phép mực lá biến đổi màu sắc và vân hoa trong chớp mắt."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "whale-shark",
     slug: "ca-map-voi-nham-voi",
     category: "cartilage-fish",
     categoryVi: "Cá sụn",
@@ -486,704 +225,962 @@ export const SEARCH_SPECIES_CATALOG = [
     statusVi: "Nguy cấp",
     statusEn: "Endangered",
     statusType: "danger",
-    nameVi: "Cá Mập Voi",
+    nameVi: "Cá Mập Voi (Cá Ông)",
     nameEn: "Whale Shark",
     sciName: "Rhincodon typus",
-    introHeaderVi:
-      "Tên khoa học: Rhincodon typus là loài cá lớn nhất còn tồn tại trên hành tinh, gã khổng lồ hiền lành của các đại dương ấm áp.",
-    introHeaderEn:
-      "Scientific name: Rhincodon typus is the largest known living fish species, a gentle giant of warm tropical oceans.",
-    descVi: "Gã khổng lồ hiền lành ăn vi sinh vật phù du lớn nhất đại dương.",
-    descEn:
-      "Gentle giant filter feeder and the largest fish species in the ocean.",
-    image: "https://static.inaturalist.org/photos/761401387/large.jpg",
+    introHeaderVi: "Loài cá lớn nhất hành tinh (dài tới 12–15m), hiền lành chỉ ăn phù du, được ngư dân miền Trung tôn kính phụng thờ là Cá Ông.",
+    introHeaderEn: "The largest fish on Earth (12-15m), gentle plankton feeder revered as 'Ca Ong' by Vietnamese coastal fishermen.",
+    descVi: "Loài cá lớn nhất hành tinh (dài tới 12–15m), hiền lành chỉ ăn phù du, được ngư dân miền Trung tôn kính phụng thờ là Cá Ông.",
+    descEn: "The largest fish on Earth (12-15m), gentle plankton feeder revered as 'Ca Ong' by Vietnamese coastal fishermen.",
+    depth: "0m - 200m",
+    size: "9m - 14m",
+    weight: "12,000kg - 19,000kg",
+    diet: "Sinh vật phù du, nhuyễn thể, cá con",
+    image: CREATURE_PNGS["whale-shark"],
     gallery: [
-      "https://static.inaturalist.org/photos/761401387/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/760658636/large.jpg",
-      "https://static.inaturalist.org/photos/760142860/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/759569382/large.jpg",
+      CREATURE_PNGS["whale-shark"],
+      "https://upload.wikimedia.org/wikipedia/commons/f/f6/Similan_Dive_Center_-_great_whale_shark.jpg"
     ],
-    anatomyImage: Images.SharkAnatomy,
-    fullBioHighlightsVi: [
+    facts: [
       {
-        title: "Kích thước vô địch",
-        content:
-          "Chiều dài lên đến 18-20 mét và nặng tới hơn 20 tấn — lớn hơn cả một chiếc xe buýt hai tầng.",
-      },
-      {
-        title: "Chế độ ăn hiền lành",
-        content:
-          "Mặc dù là cá mập, chúng chỉ ăn sinh vật phù du, tép và cá nhỏ bằng cách lọc nước qua mang.",
-      },
-      {
-        title: "Vân đốm độc nhất",
-        content:
-          "Hoa văn đốm trắng trên lưng mỗi con cá mập voi là duy nhất, không trùng lặp như dấu vân tay của con người.",
-      },
-      {
-        title: "Tuổi thọ thế kỷ",
-        content:
-          "Có thể sống từ 70 đến 150 năm, di chuyển chậm rãi qua các rạn san hô nhiệt đới.",
-      },
-    ],
-    fullBioHighlightsEn: [
-      {
-        title: "Colossal Dimensions",
-        content:
-          "Reaches lengths up to 18-20 meters and weighs over 20 metric tons.",
-      },
-      {
-        title: "Gentle Filter Feeding",
-        content:
-          "Feeds exclusively on plankton, krill, and small fish by filtering thousands of liters of seawater.",
-      },
-      {
-        title: "Unique Pattern Fingerprint",
-        content:
-          "Distinct star-like spot patterns on their back identify each individual uniquely.",
-      },
-      {
-        title: "Centennial Lifespan",
-        content:
-          "Can live 70 to 150 years, cruising peacefully across tropical reef habitats.",
-      },
-    ],
-    anatomy: [
-      {
-        id: "a1",
-        x: 78,
-        y: 42,
-        labelVi: "Miệng lọc",
-        labelEn: "Filter mouth",
-        descVi:
-          "Miệng rộng tới 1.5m, lọc hàng ngàn lít nước mỗi giờ để lấy thức ăn.",
-        descEn:
-          "Mouth up to 1.5m wide, filtering thousands of liters per hour for food.",
-      },
-      {
-        id: "a2",
-        x: 55,
-        y: 30,
-        labelVi: "Mang cá",
-        labelEn: "Gill slits",
-        descVi: "5 cặp mang lớn giúp lọc oxy và thức ăn cùng lúc.",
-        descEn:
-          "5 pairs of large gill slits filter oxygen and food simultaneously.",
-      },
-      {
-        id: "a3",
-        x: 35,
-        y: 50,
-        labelVi: "Vây lưng",
-        labelEn: "Dorsal fin",
-        descVi: "Vây lưng cao giúp ổn định khi bơi và nhận biết loài.",
-        descEn:
-          "Tall dorsal fin aids stability during swimming and species identification.",
-      },
-      {
-        id: "a4",
-        x: 18,
-        y: 38,
-        labelVi: "Vây đuôi",
-        labelEn: "Caudal fin",
-        descVi: "Vây đuôi hình lưỡi liềm tạo lực đẩy mạnh dù bơi chậm.",
-        descEn:
-          "Crescent-shaped tail fin generates strong thrust despite slow swimming.",
-      },
-      {
-        id: "a5",
-        x: 65,
-        y: 62,
-        labelVi: "Hoa văn đốm",
-        labelEn: "Spot pattern",
-        descVi:
-          "Hoa văn đốm trắng độc nhất vô nhị như vân tay, giúp nhận dạng cá thể.",
-        descEn:
-          "Unique white spot patterns like fingerprints enable individual identification.",
-      },
-    ],
-    anatomyLayers: [
-      {
-        percent: 100,
-        labelVi: "Ngoại hình",
-        labelEn: "Exterior",
-        descVi: "Hình dạng bên ngoài — da, vây và đường nét cơ thể.",
-        descEn: "External appearance — skin, fins and body contour.",
-        filter: "none",
-        accent: "cyan",
-        hotspots: [
-          { id: "e1", x: 78, y: 42, labelVi: "Miệng lọc khổng lồ", labelEn: "Giant Filter Mouth", descVi: "Miệng rộng 1.5m, lọc hàng ngàn lít nước mỗi giờ để lấy sinh vật phù du.", descEn: "1.5m-wide mouth filters thousands of liters per hour for plankton." },
-          { id: "e2", x: 35, y: 30, labelVi: "Vây lưng", labelEn: "Dorsal Fin", descVi: "Vây lưng cao đặc trưng giúp ổn định khi bơi và nhận dạng cá thể.", descEn: "Distinctive tall dorsal fin aids stability and individual identification." },
-          { id: "e3", x: 18, y: 38, labelVi: "Vây đuôi lưỡi liềm", labelEn: "Crescent Caudal Fin", descVi: "Vây đuôi hình lưỡi liềm tạo lực đẩy ổn định dù bơi tốc độ chậm.", descEn: "Crescent-shaped caudal fin generates steady thrust at low speeds." },
-          { id: "e4", x: 65, y: 62, labelVi: "Hoa văn đốm trắng", labelEn: "White Spot Pattern", descVi: "Mỗi cá thể có hoa văn đốm độc nhất như dấu vân tay con người.", descEn: "Each individual has unique white spot patterns like human fingerprints." }
-        ]
-      },
-      {
-        percent: 75,
-        labelVi: "Da & Giác quan",
-        labelEn: "Skin & Senses",
-        descVi: "Lớp da đặc biệt và hệ giác quan dưới da.",
-        descEn: "Specialized skin and sub-dermal sensory systems.",
-        filter: "sepia(0.5) saturate(1.3) brightness(1.05)",
-        accent: "amber",
-        hotspots: [
-          { id: "s1", x: 70, y: 44, labelVi: "Tấm lược mang", labelEn: "Gill Rakers", descVi: "Tấm lược dạng lưới tại mang giữ lại sinh vật phù du khi lọc nước.", descEn: "Mesh-like gill rakers trap plankton and small fish from filtered water." },
-          { id: "s2", x: 55, y: 30, labelVi: "Khe mang", labelEn: "Gill Slits", descVi: "5 cặp mang khổng lồ xử lý lượng nước khổng lồ liên tục khi bơi.", descEn: "5 massive gill pairs process enormous water volumes while swimming." },
-          { id: "s3", x: 40, y: 55, labelVi: "Da nhám vi tảo", labelEn: "Rough Denticled Skin", descVi: "Da phủ vảy răng cưa nhỏ (dermal denticles) giảm lực cản khi bơi.", descEn: "Skin covered in tiny dermal denticles that reduce hydrodynamic drag." }
-        ]
-      },
-      {
-        percent: 50,
-        labelVi: "Cơ bắp",
-        labelEn: "Muscle Layer",
-        descVi: "Hệ cơ bắp vận động mạnh mẽ bên dưới lớp da.",
-        descEn: "Powerful locomotion muscle system beneath the skin.",
-        filter: "hue-rotate(320deg) saturate(2) brightness(0.88) contrast(1.1)",
-        accent: "rose",
-        hotspots: [
-          { id: "m1", x: 50, y: 45, labelVi: "Cơ bơi lưng", labelEn: "Epaxial Swimming Muscles", descVi: "Khối cơ epaxial dọc sống lưng tạo chuyển động vẫy đuôi nhịp nhàng.", descEn: "Dorsal epaxial muscle blocks drive rhythmic tail oscillation for propulsion." },
-          { id: "m2", x: 25, y: 50, labelVi: "Cơ ngực", labelEn: "Pectoral Muscles", descVi: "Cơ vây ngực điều chỉnh góc vây để kiểm soát độ sâu và hướng bơi.", descEn: "Pectoral fin muscles adjust angle for precise depth and direction control." },
-          { id: "m3", x: 75, y: 50, labelVi: "Cơ cuống đuôi", labelEn: "Peduncle Muscles", descVi: "Cơ cuống đuôi cứng chắc chuyển đổi lực cơ thành lực đẩy hiệu quả.", descEn: "Rigid peduncle muscles efficiently convert muscle force to propulsion." }
-        ]
-      },
-      {
-        percent: 25,
-        labelVi: "Nội tạng",
-        labelEn: "Internal Organs",
-        descVi: "Hệ thống nội tạng duy trì cơ thể gã khổng lồ đại dương.",
-        descEn: "Organ systems sustaining this ocean giant.",
-        filter: "hue-rotate(185deg) saturate(1.8) brightness(0.82) contrast(1.15)",
-        accent: "blue",
-        hotspots: [
-          { id: "o1", x: 60, y: 52, labelVi: "Gan khổng lồ", labelEn: "Massive Liver", descVi: "Gan rất lớn lưu trữ dầu squalene giúp cơ thể nổi không tốn năng lượng.", descEn: "Enormous liver stores squalene oil enabling effortless passive buoyancy." },
-          { id: "o2", x: 45, y: 58, labelVi: "Dạ dày lọc", labelEn: "Filter Stomach", descVi: "Dạ dày xử lý lượng lớn sinh khối phù du được nuốt cùng nước biển.", descEn: "Stomach processes huge biomass of plankton swallowed with seawater." },
-          { id: "o3", x: 35, y: 44, labelVi: "Tim 2 ngăn", labelEn: "Two-Chamber Heart", descVi: "Tim bơm máu oxy đến toàn bộ cơ thể khổng lồ dài tới 18 mét.", descEn: "Heart pumps oxygenated blood throughout a body reaching 18 meters." }
-        ]
-      },
-      {
-        percent: 0,
-        labelVi: "Xương sụn",
-        labelEn: "Cartilage Skeleton",
-        descVi: "Bộ khung xương sụn nhẹ nâng đỡ cơ thể khổng lồ.",
-        descEn: "Lightweight cartilage skeleton supporting the giant body.",
-        filter: "grayscale(1) contrast(1.7) brightness(1.25) invert(0.08)",
-        accent: "slate",
-        hotspots: [
-          { id: "b1", x: 75, y: 45, labelVi: "Hộp sọ sụn", labelEn: "Chondrocranium", descVi: "Hộp sọ sụn nhẹ bảo vệ não và hệ giác quan của loài lớn nhất đại dương.", descEn: "Lightweight cartilage cranium protects the brain of the ocean's largest fish." },
-          { id: "b2", x: 50, y: 40, labelVi: "Cột sống sụn", labelEn: "Vertebral Column", descVi: "Hàng trăm đốt sụn tạo cột sống dẻo dai chịu được áp lực bơi liên tục.", descEn: "Hundreds of cartilage vertebrae form a flexible spine for continuous swimming." },
-          { id: "b3", x: 28, y: 38, labelVi: "Vây sụn", labelEn: "Fin Cartilage", descVi: "Các vây được nâng đỡ bởi tia sụn (ceratotrichia) linh hoạt thay cho xương.", descEn: "Fins supported by flexible ceratotrichia cartilage rays instead of bone." }
-        ]
+            title: "Vân đốm độc bản",
+            content: "Họa tiết đốm trắng trên lưng cá mập voi là duy nhất cho mỗi cá thể, giống như vân tay ở con người."
       }
-    ],
-    depth: "0 - 1900m",
-    size: "Kích thước: 18m",
-    sizeEn: "Size: 18m",
-    weight: "20 tấn",
-    weightEn: "20 tons",
-    lifespan: "70-150 năm",
-    lifespanEn: "70-150 years",
-    isFeatured: true,
-  },
-  {
-    id: "giant-octopus-3",
-    slug: "bach-tuoc-khong-lo",
-    category: "mollusk",
-    categoryVi: "Động vật thân mềm",
-    categoryEn: "Mollusk",
-    statusVi: "Ít quan tâm",
-    statusEn: "Least Concern",
-    statusType: "safe",
-    nameVi: "Bạch Tuộc Khổng Lồ",
-    nameEn: "Giant Pacific Octopus",
-    sciName: "Enteroctopus dofleini",
-    introHeaderVi:
-      "Tên khoa học: Enteroctopus dofleini là loài bạch tuộc lớn và thông minh nhất thế giới, bậc thầy ngụy trang dưới đáy biển sâu.",
-    introHeaderEn:
-      "Scientific name: Enteroctopus dofleini is the largest and most intelligent octopus species, the master of camouflage in the deep abyss.",
-    descVi: "Loài bạch tuộc thông minh bậc nhất với sải tay dài tới 6 mét.",
-    descEn:
-      "Highly intelligent octopus species with arm spans reaching up to 6 meters.",
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/761256498/large.jpg",
-    gallery: [
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/761256498/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/760546680/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/760546703/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/760155599/large.jpg",
-    ],
-    fullBioHighlightsVi: [
-      {
-        title: "Trí thông minh siêu việt",
-        content:
-          "Có khả năng mở nắp lọ, giải mê cung, sử dụng công cụ và nhận diện từng người chăm sóc khác nhau.",
-      },
-      {
-        title: "Bậc thầy biến hình",
-        content:
-          "Có thể thay đổi màu sắc và kết cấu bề mặt da chỉ trong một phần mười giây để hòa lẫn vào san hô và đá ngầm.",
-      },
-      {
-        title: "Hệ tuần hoàn 3 trái tim",
-        content:
-          "Sở hữu 3 trái tim và dòng máu màu xanh lam do chứa đồng (hemocyanin) giúp vận chuyển oxy tối ưu trong nước lạnh.",
-      },
-      {
-        title: "Sải tay khổng lồ",
-        content:
-          "Sải tay vươn dài tới 6 mét, trang bị hàng trăm giác hút có khả năng nếm và giữ chặt con mồi.",
-      },
-    ],
-    fullBioHighlightsEn: [
-      {
-        title: "Advanced Problem-Solving",
-        content:
-          "Capable of opening childproof jars, navigating complex mazes, and recognizing individual human handlers.",
-      },
-      {
-        title: "Dynamic Camouflage",
-        content:
-          "Can transform color and 3D skin texture within fractions of a second to match surroundings.",
-      },
-      {
-        title: "Three Hearts & Blue Blood",
-        content:
-          "Possesses three hearts and copper-rich blue hemocyanin blood for efficient oxygen transport in cold depths.",
-      },
-      {
-        title: "Massive Arm Reach",
-        content:
-          "Arm span reaching over 6 meters with hundreds of sensitive chemical-sensing suction cups.",
-      },
-    ],
-    depth: "0 - 1500m",
-    size: "Kích thước: 6m",
-    sizeEn: "Size: 6m",
-    weight: "50kg",
-    weightEn: "50kg",
-    lifespan: "3-5 năm",
-    lifespanEn: "3-5 years",
-    isFeatured: true,
-  },
-  {
-    id: "clownfish-4",
-    category: "bony-fish",
-    categoryVi: "Cá xương",
-    categoryEn: "Bony Fish",
-    statusVi: "Ít quan tâm",
-    statusEn: "Least Concern",
-    statusType: "safe",
-    nameVi: "Cá Hề San Hô",
-    nameEn: "Clown Anemonefish",
-    sciName: "Amphiprion ocellaris",
-    descVi:
-      "Sống cộng sinh tuyệt vời bên trong các bụi hải quỳ độc tại các rạn san hô.",
-    descEn:
-      "Symbiotic fish living safely among venomous sea anemones in coral reefs.",
-    depth: "1 - 15m",
-    size: "Kích thước: 11cm",
-    sizeEn: "Size: 11cm",
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/761506258/large.jpg",
-    gallery: [
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/761506258/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/761506276/large.jpg",
-      "https://static.inaturalist.org/photos/761402597/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/761179500/large.jpg",
-    ],
-    isFeatured: false,
-  },
-  {
-    id: "sea-turtle-5",
-    category: "turtle",
-    categoryVi: "Rùa biển",
-    categoryEn: "Sea Turtle",
-    statusVi: "Sắp nguy cấp",
-    statusEn: "Vulnerable",
-    statusType: "warning",
-    nameVi: "Rùa Xanh Biển Honu",
-    nameEn: "Green Sea Turtle",
-    sciName: "Chelonia mydas",
-    descVi:
-      "Biểu tượng may mắn của biển cả, di cư hàng ngàn dặm để trở về bãi cát đẻ trứng.",
-    descEn:
-      "Symbol of ocean longevity and navigation, migrating thousands of miles to nest.",
-    depth: "0 - 100m",
-    size: "Kích thước: 1.5m",
-    sizeEn: "Size: 1.5m",
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/761347192/large.jpg",
-    gallery: [
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/761347192/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/761747692/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/761555130/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/761542241/large.jpg",
-    ],
-    isFeatured: false,
-  },
-  {
-    id: "dolphin-6",
-    category: "mammal",
-    categoryVi: "Động vật có vú",
-    categoryEn: "Mammal",
-    statusVi: "Ít quan tâm",
-    statusEn: "Least Concern",
-    statusType: "safe",
-    nameVi: "Cá Heo Mỏ Vịt",
-    nameEn: "Bottlenose Dolphin",
-    sciName: "Tursiops gilli",
-    descVi:
-      "Loài động vật biển thông minh và thân thiện với khả năng định vị bằng siêu âm.",
-    descEn:
-      "Intelligent and friendly marine mammal capable of echolocation navigation.",
-    depth: "0 - 300m",
-    size: "Kích thước: 3.8m",
-    sizeEn: "Size: 3.8m",
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/761491490/large.jpg",
-    gallery: [
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/761491490/large.jpg",
-      "https://static.inaturalist.org/photos/761474801/large.jpg",
-      "https://static.inaturalist.org/photos/761474819/large.jpg",
-      "https://static.inaturalist.org/photos/761474806/large.jpg",
-    ],
-    isFeatured: false,
-  },
-  {
-    id: "blue-whale-7",
-    category: "mammal",
-    categoryVi: "Động vật có vú",
-    categoryEn: "Mammal",
-    statusVi: "Nguy cấp",
-    statusEn: "Endangered",
-    statusType: "danger",
-    nameVi: "Cá Voi Xanh Khổng Lồ",
-    nameEn: "Pacific Blue Whale",
-    sciName: "Balaenoptera musculus",
-    descVi:
-      "Động vật lớn nhất từng tồn tại trên Trái Đất với trái tim to bằng một chiếc ô tô.",
-    descEn:
-      "The largest animal ever known to have lived on Earth with a heart the size of a car.",
-    depth: "0 - 500m",
-    size: "Kích thước: 30m",
-    sizeEn: "Size: 30m",
-    image: "https://static.inaturalist.org/photos/208318926/large.jpeg",
-    gallery: [
-      "https://static.inaturalist.org/photos/208318926/large.jpeg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/75317002/large.jpeg",
-      "https://static.inaturalist.org/photos/459821035/large.jpeg",
-      "https://static.inaturalist.org/photos/194385336/large.jpg",
-    ],
-    isFeatured: false,
-  },
-  {
-    id: "chambered-nautilus-8",
-    category: "shellfish",
-    categoryVi: "Sò ốc",
-    categoryEn: "Shellfish",
-    statusVi: "Sắp nguy cấp",
-    statusEn: "Vulnerable",
-    statusType: "warning",
-    nameVi: "Ốc Vòi Voi Hóa Thạch Sống",
-    nameEn: "Chambered Nautilus",
-    sciName: "Nautilus pompilius",
-    descVi:
-      "Hóa thạch sống tồn tại suốt 500 triệu năm với vỏ xoắn ốc đối xứng hoàn hảo.",
-    descEn:
-      "Living fossil existing for 500 million years with a perfectly spiral shell.",
-    depth: "100 - 700m",
-    size: "Kích thước: 20cm",
-    sizeEn: "Size: 20cm",
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/760908706/large.jpg",
-    gallery: [
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/760908706/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/760908730/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/760639119/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/760639135/large.jpg",
-    ],
-    isFeatured: false,
-  },
-  {
-    id: "mantaray-9",
-    category: "cartilage-fish",
-    categoryVi: "Cá sụn",
-    categoryEn: "Cartilaginous Fish",
-    statusVi: "Sắp nguy cấp",
-    statusEn: "Vulnerable",
-    statusType: "warning",
-    nameVi: "Cá Đuối Khổng Lồ Manta",
-    nameEn: "Oceanic Manta Ray",
-    sciName: "Mobula birostris",
-    descVi:
-      "Loài cá đuối lớn nhất thế giới bơi lượn như cánh chim trong nước đại dương.",
-    descEn:
-      "The world's largest ray species gliding gracefully like underwater wings.",
-    depth: "0 - 1000m",
-    size: "Kích thước: 7m",
-    sizeEn: "Size: 7m",
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/755771238/large.jpg",
-    gallery: [
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/755771238/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/754349954/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/754349984/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/752882036/large.jpg",
-    ],
+],
     isFeatured: false,
   },
 
   {
-    id: "ca-map-ho-tiger-shark",
-    slug: "ca-map-ho-tiger-shark",
+    id: "spotted-dolphin",
+    slug: "ca-heo-dom-nhiet-doi",
+    category: "marine-mammal",
+    categoryVi: "Thú biển",
+    categoryEn: "Marine Mammals",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Cá Heo Đốm Nhiệt Đới",
+    nameEn: "Pantropical Spotted Dolphin",
+    sciName: "Stenella attenuata",
+    introHeaderVi: "Nhóm động vật có vú đại dương năng động, thường nhảy nhào lộn theo mũi tàu thuyền di chuyển qua bồn trũng Biển Đông.",
+    introHeaderEn: "Acrobatic marine mammal frequently seen bow-riding and leaping alongside vessels crossing the East Sea basin.",
+    descVi: "Nhóm động vật có vú đại dương năng động, thường nhảy nhào lộn theo mũi tàu thuyền di chuyển qua bồn trũng Biển Đông.",
+    descEn: "Acrobatic marine mammal frequently seen bow-riding and leaping alongside vessels crossing the East Sea basin.",
+    depth: "0m - 250m",
+    size: "1.8m - 2.5m",
+    weight: "90kg - 120kg",
+    diet: "Mực ống, cá chuồn tầng mặt",
+    image: CREATURE_PNGS["spotted-dolphin"],
+    gallery: [
+      CREATURE_PNGS["spotted-dolphin"],
+      "https://upload.wikimedia.org/wikipedia/commons/0/06/Pantropical_spotted_dolphin_swimming_off_the_coast_of_Costa_Rica.jpg"
+    ],
+    facts: [
+      {
+            title: "Đốm tăng theo tuổi",
+            content: "Khi mới sinh ra cá con không có đốm; các đốm trắng xám xuất hiện dần và đậm nét khi trưởng thành."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "sailfish",
+    slug: "ca-co-gon",
+    category: "bony-fish",
+    categoryVi: "Cá xương",
+    categoryEn: "Bony Fish",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Cá Buồm (Cá Cờ Gòn)",
+    nameEn: "Indo-Pacific Sailfish",
+    sciName: "Istiophorus platypterus",
+    introHeaderVi: "'Vận động viên điền kinh' nhanh nhất biển cả với tốc độ bơi rút lên tới 110 km/h, thợ săn thượng thặng ở thềm lục địa ngoài khơi.",
+    introHeaderEn: "Fastest sprinter of the oceans reaching speeds up to 110 km/h, elite apex predator along the outer continental shelf.",
+    descVi: "'Vận động viên điền kinh' nhanh nhất biển cả với tốc độ bơi rút lên tới 110 km/h, thợ săn thượng thặng ở thềm lục địa ngoài khơi.",
+    descEn: "Fastest sprinter of the oceans reaching speeds up to 110 km/h, elite apex predator along the outer continental shelf.",
+    depth: "0m - 200m",
+    size: "2.0m - 3.2m",
+    weight: "45kg - 90kg",
+    diet: "Cá trích, cá thu, mực ống",
+    image: CREATURE_PNGS["sailfish"],
+    gallery: [
+      CREATURE_PNGS["sailfish"],
+      "https://upload.wikimedia.org/wikipedia/commons/d/dc/Istiophorus_platypterus_101956558.jpg"
+    ],
+    facts: [
+      {
+            title: "Tốc độ tên lửa",
+            content: "Vây lưng hình cánh buồm có thể gập sát lưng để giảm tối đa lực cản khi phóng nước với tốc độ 110 km/h."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "hammerhead-shark",
+    slug: "ca-nham-bua-dau-bua",
     category: "cartilage-fish",
     categoryVi: "Cá sụn",
     categoryEn: "Cartilaginous Fish",
+    statusVi: "Cực kỳ nguy cấp",
+    statusEn: "Critically Endangered",
+    statusType: "danger",
+    nameVi: "Cá Nhám Búa",
+    nameEn: "Scalloped Hammerhead Shark",
+    sciName: "Sphyrna lewini",
+    introHeaderVi: "Chiếc đầu hình búa hoạt động như một ăng-ten cảm ứng điện trường cực nhạy để săn cá đuối vùi dưới đáy cát thềm lục địa.",
+    introHeaderEn: "Cephalofoil head operates as a hyper-sensitive electro-receptor array to detect rays buried beneath shelf sands.",
+    descVi: "Chiếc đầu hình búa hoạt động như một ăng-ten cảm ứng điện trường cực nhạy để săn cá đuối vùi dưới đáy cát thềm lục địa.",
+    descEn: "Cephalofoil head operates as a hyper-sensitive electro-receptor array to detect rays buried beneath shelf sands.",
+    depth: "0m - 275m",
+    size: "2.5m - 4.2m",
+    weight: "80kg - 160kg",
+    diet: "Cá đuối, mực ống, cá tầng đáy",
+    image: CREATURE_PNGS["hammerhead-shark"],
+    gallery: [
+      CREATURE_PNGS["hammerhead-shark"],
+      "https://upload.wikimedia.org/wikipedia/commons/3/36/Scalloped_hammerhead_shark_%28Sphyrna_lewini%29_Costa_Rica_%28cropped%29.jpg"
+    ],
+    facts: [
+      {
+            title: "Tầm nhìn 360 độ",
+            content: "Hai mắt ở hai đầu búa cho phép chúng quan sát toàn cảnh phía trên và phía dưới cùng một lúc."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "yellowfin-tuna",
+    slug: "ca-ngu-vay-vang-dai-duong",
+    category: "bony-fish",
+    categoryVi: "Cá xương",
+    categoryEn: "Bony Fish",
     statusVi: "Sắp bị đe dọa",
     statusEn: "Near Threatened",
     statusType: "warning",
-    nameVi: "Cá Mập Hổ",
-    nameEn: "Tiger Shark",
-    sciName: "Galeocerdo cuvier",
-    descVi: "Loài cá mập lớn săn mồi đỉnh cao với sọc vằn hổ đặc trưng và hàm răng răng cưa sắc bén cắn vỡ mai rùa biển.",
-    descEn: "Large apex predator with tiger stripes and powerful serrated teeth capable of cracking sea turtle shells.",
-    depth: "0 - 350m",
-    size: "3.2m - 5.5m",
-    sizeEn: "3.2m - 5.5m",
-    image: "https://static.inaturalist.org/photos/282712482/large.jpg",
+    nameVi: "Cá Ngừ Vây Vàng",
+    nameEn: "Yellowfin Tuna",
+    sciName: "Thunnus albacares",
+    introHeaderVi: "Kẻ du mục đại dương bơi không ngừng nghỉ dọc bồn trũng sâu, là nguồn hải sản xuất khẩu chủ lực của ngư dân miền Trung.",
+    introHeaderEn: "Relentless oceanic nomad roaming the deep basin, prized flagship catch of Central Vietnam's pelagic fleets.",
+    descVi: "Kẻ du mục đại dương bơi không ngừng nghỉ dọc bồn trũng sâu, là nguồn hải sản xuất khẩu chủ lực của ngư dân miền Trung.",
+    descEn: "Relentless oceanic nomad roaming the deep basin, prized flagship catch of Central Vietnam's pelagic fleets.",
+    depth: "1m - 250m",
+    size: "1.2m - 2.1m",
+    weight: "40kg - 180kg",
+    diet: "Cá trích, cá chuồn, mực",
+    image: CREATURE_PNGS["yellowfin-tuna"],
     gallery: [
-      "https://static.inaturalist.org/photos/282712482/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/564896125/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/44395517/large.jpeg",
-      "https://static.inaturalist.org/photos/329921956/large.jpg",
+      CREATURE_PNGS["yellowfin-tuna"],
+      "https://upload.wikimedia.org/wikipedia/commons/c/c3/Thunnus_albacares.png"
     ],
-    isFeatured: true,
+    facts: [
+      {
+            title: "Bơi liên tục cả đời",
+            content: "Cá ngừ phải bơi liên tục không ngừng để dòng nước luân chuyển qua mang lấy oxy, ngay cả khi ngủ."
+      }
+],
+    isFeatured: false,
   },
+
   {
-    id: "ca-duoi-dom-xanh",
-    slug: "ca-duoi-dom-xanh",
+    id: "ocean-sunfish",
+    slug: "ca-mat-trang-mola-mola",
+    category: "bony-fish",
+    categoryVi: "Cá xương",
+    categoryEn: "Bony Fish",
+    statusVi: "Sắp nguy cấp",
+    statusEn: "Vulnerable",
+    statusType: "warning",
+    nameVi: "Cá Mặt Trăng (Mola Mola)",
+    nameEn: "Ocean Sunfish",
+    sciName: "Mola mola",
+    introHeaderVi: "Cá xương nặng nhất thế giới; thi thoảng ngư dân vịnh Bắc Bộ và biển Quy Nhơn phát hiện chúng nổi nghiêng người phơi nắng ở tầng mặt.",
+    introHeaderEn: "Heaviest bony fish on Earth, occasionally spotted basking horizontally at the surface in the Gulf of Tonkin and Quy Nhon.",
+    descVi: "Cá xương nặng nhất thế giới; thi thoảng ngư dân vịnh Bắc Bộ và biển Quy Nhơn phát hiện chúng nổi nghiêng người phơi nắng ở tầng mặt.",
+    descEn: "Heaviest bony fish on Earth, occasionally spotted basking horizontally at the surface in the Gulf of Tonkin and Quy Nhon.",
+    depth: "0m - 400m",
+    size: "1.8m - 3.1m",
+    weight: "500kg - 2,000kg",
+    diet: "Sứa biển, động vật phù du thân mềm",
+    image: CREATURE_PNGS["ocean-sunfish"],
+    gallery: [
+      CREATURE_PNGS["ocean-sunfish"],
+      "https://upload.wikimedia.org/wikipedia/commons/9/98/Mola_mola.jpg"
+    ],
+    facts: [
+      {
+            title: "Kỷ lục đẻ trứng",
+            content: "Một con cá mặt trăng cái có thể đẻ tới 300 triệu quả trứng mỗi lần sinh sản, nhiều nhất thế giới động vật."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "spotted-eagle-ray",
+    slug: "ca-duoi-o-hoa",
     category: "cartilage-fish",
     categoryVi: "Cá sụn",
     categoryEn: "Cartilaginous Fish",
-    statusVi: "Ít quan tâm",
-    statusEn: "Least Concern",
-    statusType: "safe",
-    nameVi: "Cá Đuối Đốm Xanh",
-    nameEn: "Bluespotted Ribbontail Ray",
-    sciName: "Taeniura lymma",
-    descVi: "Cá đuối rạn san hô sặc sỡ với các đốm xanh lam neon phát sáng trên lưng và hai dải sọc xanh dọc đuôi.",
-    descEn: "Vibrant reef ray with electric blue spots across a golden-olive body and twin venomous tail spines.",
-    depth: "1 - 30m",
-    size: "25cm - 70cm",
-    sizeEn: "25cm - 70cm",
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/245496765/large.jpg",
-    gallery: [
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/245496765/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/185514557/large.jpg",
-      "https://static.inaturalist.org/photos/484419388/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/702509012/large.jpg",
-    ],
-    isFeatured: false,
-  },
-  {
-    id: "ca-song-cham-xanh",
-    slug: "ca-song-cham-xanh",
-    category: "bony-fish",
-    categoryVi: "Cá xương",
-    categoryEn: "Bony Fish",
-    statusVi: "Ít quan tâm",
-    statusEn: "Least Concern",
-    statusType: "safe",
-    nameVi: "Cá Song Chấm Xanh",
-    nameEn: "Leopard Coral Grouper",
-    sciName: "Plectropomus leopardus",
-    descVi: "Cá mú đỏ chấm xanh tuyệt đẹp rình mồi trên sườn rạn san hô, có tập tính hợp tác săn mồi cùng cá chình biển.",
-    descEn: "Brilliant coral reef predator known for its bright red-orange body and blue dots, cooperates with moray eels.",
-    depth: "3 - 100m",
-    size: "45cm - 120cm",
-    sizeEn: "45cm - 120cm",
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/180417836/large.jpg",
-    gallery: [
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/180417836/large.jpg",
-      "https://static.inaturalist.org/photos/216412385/large.jpeg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/638019253/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/368379613/large.jpg",
-    ],
-    isFeatured: false,
-  },
-  {
-    id: "ca-bo-picasso",
-    slug: "ca-bo-picasso",
-    category: "bony-fish",
-    categoryVi: "Cá xương",
-    categoryEn: "Bony Fish",
-    statusVi: "Ít quan tâm",
-    statusEn: "Least Concern",
-    statusType: "safe",
-    nameVi: "Cá Bò Picasso",
-    nameEn: "Lagoon Triggerfish",
-    sciName: "Rhinecanthus aculeatus",
-    descVi: "Hoa văn lập thể sặc sỡ, chuyên thổi nước lật ngửa cầu gai để ăn thịt và khóa gai vây lưng vào khe san hô khi ngủ.",
-    descEn: "Bold geometric patterned triggerfish that blows water to flip sea urchins and locks into coral crevices.",
-    depth: "0 - 50m",
-    size: "15cm - 30cm",
-    sizeEn: "15cm - 30cm",
-    image: "https://static.inaturalist.org/photos/453010014/large.jpg",
-    gallery: [
-      "https://static.inaturalist.org/photos/453010014/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/15052988/large.jpeg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/337224370/large.png",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/19515570/large.jpeg",
-    ],
-    isFeatured: false,
-  },
-  {
-    id: "ca-khe-khong-lo",
-    slug: "ca-khe-khong-lo",
-    category: "bony-fish",
-    categoryVi: "Cá xương",
-    categoryEn: "Bony Fish",
-    statusVi: "Ít quan tâm",
-    statusEn: "Least Concern",
-    statusType: "safe",
-    nameVi: "Cá Khế Khổng Lồ",
-    nameEn: "Giant Trevally",
-    sciName: "Caranx ignobilis",
-    descVi: "Cá săn mồi dũng mãnh mép rạn san hô với tốc độ bứt phá kinh ngạc, săn cá chuồn, mực và cả chim biển bay thấp.",
-    descEn: "Apex reef-edge predator famed for explosive speed, hunting flying fish, squid, and low-flying seabirds.",
-    depth: "5 - 100m",
-    size: "80cm - 170cm",
-    sizeEn: "80cm - 170cm",
-    image: "https://static.inaturalist.org/photos/477431221/large.jpg",
-    gallery: [
-      "https://static.inaturalist.org/photos/477431221/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/182697818/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/196621360/large.jpg",
-      "https://static.inaturalist.org/photos/10189914/large.jpg",
-    ],
-    isFeatured: false,
-  },
-  {
-    id: "ca-voi-xanh",
-    slug: "ca-voi-xanh",
-    category: "mammal",
-    categoryVi: "Động vật có vú",
-    categoryEn: "Mammals",
     statusVi: "Nguy cấp",
     statusEn: "Endangered",
     statusType: "danger",
-    nameVi: "Cá Voi Xanh",
-    nameEn: "Blue Whale",
-    sciName: "Balaenoptera musculus",
-    descVi: "Động vật lớn nhất từng tồn tại trên Trái Đất, dài tới 30 mét, ăn lọc hàng tấn sinh vật phù du và nhuyễn thể.",
-    descEn: "Largest animal ever known to inhabit Earth, reaching 30 meters, filter-feeding on plankton and krill.",
-    depth: "0 - 500m",
-    size: "22m - 30m",
-    sizeEn: "22m - 30m",
-    image: "https://static.inaturalist.org/photos/10705018/large.jpg",
+    nameVi: "Cá Đuối Ó Sao",
+    nameEn: "Spotted Eagle Ray",
+    sciName: "Aetobatus narinari",
+    introHeaderVi: "Lướt đi như cánh chim trên ranh giới cuối cùng của ánh sáng mặt trời trước khi bước vào màn đêm thăm thẳm.",
+    introHeaderEn: "Glides like a winged specter along the final frontiers of sunlight before descending into the permanent dark.",
+    descVi: "Lướt đi như cánh chim trên ranh giới cuối cùng của ánh sáng mặt trời trước khi bước vào màn đêm thăm thẳm.",
+    descEn: "Glides like a winged specter along the final frontiers of sunlight before descending into the permanent dark.",
+    depth: "1m - 80m",
+    size: "1.5m - 3.0m",
+    weight: "80kg - 230kg",
+    diet: "Sò, ốc, nghêu, cua đáy biển",
+    image: CREATURE_PNGS["spotted-eagle-ray"],
     gallery: [
-      "https://static.inaturalist.org/photos/10705018/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/632128913/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/29514019/large.jpeg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/29514021/large.jpeg",
+      CREATURE_PNGS["spotted-eagle-ray"],
+      "https://upload.wikimedia.org/wikipedia/commons/a/ad/Eagle_Ray_Turks_and_Caicos_Dec_15_2006.JPG"
     ],
-    isFeatured: true,
+    facts: [
+      {
+            title: "Phi thân khỏi mặt nước",
+            content: "Cá đuối ó sao có thói quen nhảy vút lên khỏi mặt biển tới vài mét để rũ sạch ký sinh trùng trên da."
+      }
+],
+    isFeatured: false,
   },
+
   {
-    id: "ca-heo-mui-chai",
-    slug: "ca-heo-mui-chai",
-    category: "mammal",
-    categoryVi: "Động vật có vú",
-    categoryEn: "Mammals",
+    id: "lanternfish",
+    slug: "ca-den-long-bien-sau",
+    category: "deep-sea",
+    categoryVi: "Sinh vật biển sâu",
+    categoryEn: "Deep Sea Life",
     statusVi: "Ít quan tâm",
     statusEn: "Least Concern",
     statusType: "safe",
-    nameVi: "Cá Heo Mũi Chai",
-    nameEn: "Common Bottlenose Dolphin",
-    sciName: "Tursiops truncatus",
-    descVi: "Thú biển thông minh sống theo bầy đàn gắn kết, sử dụng sóng siêu âm echolocation định vị săn đàn cá trích.",
-    descEn: "Highly intelligent social cetacean using echolocation clicks and whistles to coordinate pod hunting.",
-    depth: "0 - 300m",
-    size: "2m - 3.8m",
-    sizeEn: "2m - 3.8m",
-    image: "https://static.inaturalist.org/photos/67380747/large.jpeg",
+    nameVi: "Cá Đèn Lồng Biển Sâu",
+    nameEn: "Lanternfish",
+    sciName: "Diaphus sp. / Myctophidae",
+    introHeaderVi: "Chiếm sinh khối cực lớn trong lớp phản xạ âm thanh (DSL) của Biển Đông; ban đêm hàng triệu con bơi lên 50m để ăn phù du, rạng sáng lặn về vùng tối.",
+    introHeaderEn: "Dominates the Deep Scattering Layer biomass; millions migrate upwards each night to feed before retreating at dawn.",
+    descVi: "Chiếm sinh khối cực lớn trong lớp phản xạ âm thanh (DSL) của Biển Đông; ban đêm hàng triệu con bơi lên 50m để ăn phù du, rạng sáng lặn về vùng tối.",
+    descEn: "Dominates the Deep Scattering Layer biomass; millions migrate upwards each night to feed before retreating at dawn.",
+    depth: "200m - 1000m",
+    size: "0.05m - 0.15m",
+    weight: "0.01kg - 0.05kg",
+    diet: "Giáp xác chân chèo, giun phù du",
+    image: CREATURE_PNGS["lanternfish"],
     gallery: [
-      "https://static.inaturalist.org/photos/67380747/large.jpeg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/9280144/large.jpeg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/203547729/large.jpg",
-      "https://static.inaturalist.org/photos/10042839/large.jpeg",
+      CREATURE_PNGS["lanternfish"],
+      "https://upload.wikimedia.org/wikipedia/commons/b/b7/Myctophum_punctatum1.jpg"
     ],
+    facts: [
+      {
+            title: "Cuộc đại di cư lớn nhất hành tinh",
+            content: "Cùng hàng tỷ sinh vật tầng chạng vạng, chúng tạo nên cuộc di cư thẳng đứng tính theo sinh khối lớn nhất Trái Đất mỗi đêm."
+      }
+],
     isFeatured: false,
   },
+
   {
-    id: "sen-bien-rong-xanh",
-    slug: "sen-bien-rong-xanh",
+    id: "giant-isopod",
+    slug: "bo-bien-khong-lo-giant-isopod",
+    category: "crustacean",
+    categoryVi: "Giáp xác",
+    categoryEn: "Crustaceans",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Bọ Biển Khổng Lồ",
+    nameEn: "Giant Isopod",
+    sciName: "Bathynomus jamesi",
+    introHeaderVi: "'Quái vật tí hon' giáp xác đáy sâu cực kỳ nổi tiếng tại vùng biển Quảng Ngãi, Bình Định; ngư dân phải dùng bẫy đáy sâu chuyên biệt để đánh bắt.",
+    introHeaderEn: "Famed deep-sea benthic crustacean harvested by deep-trap fishermen off the coast of Quang Ngai and Binh Dinh.",
+    descVi: "'Quái vật tí hon' giáp xác đáy sâu cực kỳ nổi tiếng tại vùng biển Quảng Ngãi, Bình Định; ngư dân phải dùng bẫy đáy sâu chuyên biệt để đánh bắt.",
+    descEn: "Famed deep-sea benthic crustacean harvested by deep-trap fishermen off the coast of Quang Ngai and Binh Dinh.",
+    depth: "300m - 800m",
+    size: "0.2m - 0.45m",
+    weight: "0.8kg - 1.8kg",
+    diet: "Xác cá voi, xác cá chìm xuống bùn đáy",
+    image: CREATURE_PNGS["giant-isopod"],
+    gallery: [
+      CREATURE_PNGS["giant-isopod"],
+      "https://upload.wikimedia.org/wikipedia/commons/9/99/Bathynomus_giganteus_as_seen_by_remotely_operated_vehicle_%28ROV%29_Deep_Discoverer_at_a_depth_of_816_meters_at_South_Reed%2C_Gulf_of_Mexico%2C_2017-11-30.webm"
+    ],
+    facts: [
+      {
+            title: "Nhịn ăn 5 năm",
+            content: "Trong điều kiện nuôi nhốt tại Nhật Bản, một cá thể bọ biển đã nhịn ăn ròng rã suốt hơn 5 năm mà vẫn sống sót."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "hatchetfish",
+    slug: "ca-riu-bac-bien-sau",
+    category: "deep-sea",
+    categoryVi: "Sinh vật biển sâu",
+    categoryEn: "Deep Sea Life",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Cá Rìu Biển Sâu",
+    nameEn: "Half-naked Hatchetfish",
+    sciName: "Argyropelecus hemigymnus",
+    introHeaderVi: "Thân mỏng dẹt như lưỡi búa, dưới bụng có hàng đèn phát quang sinh học mô phỏng ánh sáng mặt trời rọi xuống nhằm 'tàng hình' khỏi kẻ săn mồi bên dưới.",
+    introHeaderEn: "Hatchet-thin silver body with counter-illuminating photophores on its belly that mimic downwelling sunlight to vanish.",
+    descVi: "Thân mỏng dẹt như lưỡi búa, dưới bụng có hàng đèn phát quang sinh học mô phỏng ánh sáng mặt trời rọi xuống nhằm 'tàng hình' khỏi kẻ săn mồi bên dưới.",
+    descEn: "Hatchet-thin silver body with counter-illuminating photophores on its belly that mimic downwelling sunlight to vanish.",
+    depth: "200m - 1000m",
+    size: "0.04m - 0.08m",
+    weight: "0.01kg - 0.03kg",
+    diet: "Giáp xác phù du, ấu trùng biển sâu",
+    image: CREATURE_PNGS["hatchetfish"],
+    gallery: [
+      CREATURE_PNGS["hatchetfish"],
+      "https://upload.wikimedia.org/wikipedia/commons/1/1b/ArgyropelecusAculeatus.jpg"
+    ],
+    facts: [
+      {
+            title: "Áo tàng hình quang học",
+            content: "Bằng cách điều chỉnh độ sáng dưới bụng trùng khít với ánh sáng le lói từ mặt trời chiếu xuống, bóng của chúng biến mất hoàn toàn."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "cockeyed-squid",
+    slug: "muc-mat-choi-lac",
     category: "mollusk",
-    categoryVi: "Động vật thân mềm",
+    categoryVi: "Thân mềm",
     categoryEn: "Mollusks",
     statusVi: "Ít quan tâm",
     statusEn: "Least Concern",
     statusType: "safe",
-    nameVi: "Sên Biển Rồng Xanh",
-    nameEn: "Blue Dragon Sea Slug",
-    sciName: "Glaucus atlanticus",
-    descVi: "Sên biển trôi nổi tí hon màu xanh dạ quang, ăn sứa độc và tích trữ nang gai độc để bảo vệ bản thân.",
-    descEn: "Pelagic blue sea slug floating on surface tension, feeding on venomous jellyfish and storing stinging cells.",
-    depth: "0 - 5m",
-    size: "2cm - 4cm",
-    sizeEn: "2cm - 4cm",
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/3001219/large.JPG",
+    nameVi: "Mực Mắt Chọi Lác",
+    nameEn: "Cockeyed Squid (Jewel Squid)",
+    sciName: "Histioteuthis pacifica",
+    introHeaderVi: "Sở hữu hai mắt bất đối xứng độc nhất: mắt trái to lồi màu vàng hướng lên để soi bóng con mồi ngược ánh sáng tầng mặt, mắt phải nhỏ màu xanh hướng xuống quét đáy đại dương tăm tối.",
+    introHeaderEn: "Indo-West Pacific representative of the asymmetric-eyed Histioteuthis: enormous yellow left eye scans upward for prey silhouettes, while the smaller right eye scans the dark depths below.",
+    descVi: "Sở hữu hai mắt bất đối xứng độc nhất: mắt trái to lồi màu vàng hướng lên để soi bóng con mồi ngược ánh sáng tầng mặt, mắt phải nhỏ màu xanh hướng xuống quét đáy đại dương tăm tối.",
+    descEn: "Indo-West Pacific representative of the asymmetric-eyed Histioteuthis: enormous yellow left eye scans upward for prey silhouettes, while the smaller right eye scans the dark depths below.",
+    depth: "300m - 1000m",
+    size: "0.15m - 0.35m",
+    weight: "0.15kg - 0.6kg",
+    diet: "Cá đèn lồng, tôm giáp xác biển sâu",
+    image: CREATURE_PNGS["cockeyed-squid"],
     gallery: [
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/3001219/large.JPG",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/240326676/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/574044999/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/58105709/large.jpg",
+      CREATURE_PNGS["cockeyed-squid"],
+      "https://upload.wikimedia.org/wikipedia/commons/7/70/Histioteuthis_NOAA.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/9/9a/Histioteuthis_reversa_%28Michael_Vecchione%2C_NOAA%29.JPG",
+      "https://static.inaturalist.org/photos/12259849/large.jpg"
     ],
+    facts: [
+      {
+            title: "Đôi mắt bất đối xứng độc nhất vô nhị",
+            content: "Mắt trái to gấp đôi mắt phải và có sắc tố vàng nhạy cảm, giúp phát hiện ánh sáng sinh học và bóng mồi ngược sáng cực tốt."
+      },
+      {
+            title: "Đèn phát quang toàn thân",
+            content: "Toàn bộ mặt bụng được nạm hàng trăm chấm phát quang photophore lấp lánh như trang sức."
+      }
+],
     isFeatured: false,
   },
+
   {
-    id: "tom-tit-bay-mau",
-    slug: "tom-tit-bay-mau",
-    category: "shellfish",
-    categoryVi: "Sò ốc",
-    categoryEn: "Shellfish",
+    id: "deepsea-crab",
+    slug: "cua-da-bien-sau",
+    category: "crustacean",
+    categoryVi: "Giáp xác",
+    categoryEn: "Crustaceans",
     statusVi: "Ít quan tâm",
     statusEn: "Least Concern",
     statusType: "safe",
-    nameVi: "Tôm Tít Bảy Màu",
-    nameEn: "Peacock Mantis Shrimp",
-    sciName: "Odontodactylus scyllarus",
-    descVi: "Vỏ rực rỡ như lông chim công, cú đấm càng búa đạt vận tốc 80 km/h làm vỡ vụn vỏ cua sò và thị giác tinh vi nhất hành tinh.",
-    descEn: "Vibrantly colored mantis shrimp wielding 80 km/h supersonic hammer clubs and the animal kingdom's most advanced eyes.",
-    depth: "3 - 40m",
-    size: "10cm - 18cm",
-    sizeEn: "10cm - 18cm",
-    image: "https://static.inaturalist.org/photos/30551110/large.jpeg",
+    nameVi: "Cua Đá Đỏ Sâu",
+    nameEn: "Deep-Sea Golden/Red Crab",
+    sciName: "Chaceon granulatus",
+    introHeaderVi: "Cua nước sâu vỏ gai sần sùi sống dọc sườn dốc lục địa Biển Đông, chuyên rà bùn tìm mảnh vụn thức ăn rơi từ tầng trên.",
+    introHeaderEn: "Rugged deep-water crab inhabiting the continental slopes of the East Sea, scavenging organic detritus falling from above.",
+    descVi: "Cua nước sâu vỏ gai sần sùi sống dọc sườn dốc lục địa Biển Đông, chuyên rà bùn tìm mảnh vụn thức ăn rơi từ tầng trên.",
+    descEn: "Rugged deep-water crab inhabiting the continental slopes of the East Sea, scavenging organic detritus falling from above.",
+    depth: "400m - 1200m",
+    size: "0.15m - 0.3m",
+    weight: "0.5kg - 1.5kg",
+    diet: "Mảnh vụn hữu cơ, xác động vật chìm",
+    image: CREATURE_PNGS["deepsea-crab"],
     gallery: [
-      "https://static.inaturalist.org/photos/30551110/large.jpeg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/256852794/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/150206418/large.jpeg",
-      "https://static.inaturalist.org/photos/30437316/large.jpg",
+      CREATURE_PNGS["deepsea-crab"],
+      "https://upload.wikimedia.org/wikipedia/commons/8/8c/Chaceon_affinis.jpg"
     ],
+    facts: [
+      {
+            title: "Bộ giáp chịu áp suất cao",
+            content: "Vỏ của cua đá biển sâu chứa nhiều khoáng chất vôi hóa đặc biệt giúp chúng không bị giòn gãy dưới áp lực nước hàng trăm atm."
+      }
+],
     isFeatured: false,
   },
+
   {
-    id: "tom-bac-si-van-do",
-    slug: "tom-bac-si-van-do",
-    category: "shellfish",
-    categoryVi: "Sò ốc",
-    categoryEn: "Shellfish",
+    id: "ghost-shark",
+    slug: "ca-nham-ma-ghost-shark",
+    category: "cartilage-fish",
+    categoryVi: "Cá sụn",
+    categoryEn: "Cartilaginous Fish",
     statusVi: "Ít quan tâm",
     statusEn: "Least Concern",
     statusType: "safe",
-    nameVi: "Tôm Bác Sĩ Vằn Đỏ",
-    nameEn: "Scarlet Skunk Cleaner Shrimp",
-    sciName: "Lysmata amboinensis",
-    descVi: "Chuyên gia làm sạch rạn san hô, vẫy râu trắng mời cá lớn ghé trạm và chui vào tận miệng cá mú, cá chình để gắp ký sinh trùng.",
-    descEn: "Coral reef cleaner shrimp waving white antennae to invite fish clients and picking parasites from mouth and gills.",
-    depth: "1 - 40m",
-    size: "4cm - 6cm",
-    sizeEn: "4cm - 6cm",
-    image: "https://static.inaturalist.org/photos/456099547/large.jpeg",
+    nameVi: "Cá Nhám Ma (Cá Mập Thỏ)",
+    nameEn: "Chimaera / Ghost Shark",
+    sciName: "Hydrolagus mitsukurii",
+    introHeaderVi: "'Hóa thạch sống' cổ xưa không xương cứng; có đôi mắt phát sáng phản chiếu màu xanh lục ma quái và cơ quan cảm thụ chuyển động ở đầu.",
+    introHeaderEn: "Ancient chimaera living fossil with eerie iridescent emerald eyes and complex lateral sensory lines across its skull.",
+    descVi: "'Hóa thạch sống' cổ xưa không xương cứng; có đôi mắt phát sáng phản chiếu màu xanh lục ma quái và cơ quan cảm thụ chuyển động ở đầu.",
+    descEn: "Ancient chimaera living fossil with eerie iridescent emerald eyes and complex lateral sensory lines across its skull.",
+    depth: "400m - 1500m",
+    size: "0.6m - 1.2m",
+    weight: "2kg - 8kg",
+    diet: "Động vật thân mềm đáy, cua, giun biển sâu",
+    image: CREATURE_PNGS["ghost-shark"],
     gallery: [
-      "https://static.inaturalist.org/photos/456099547/large.jpeg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/689497117/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/1649997/large.jpg",
-      "https://inaturalist-open-data.s3.amazonaws.com/photos/59985576/large.jpg",
+      CREATURE_PNGS["ghost-shark"],
+      "https://static.inaturalist.org/photos/468799518/large.png",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/388493602/large.jpg"
     ],
+    facts: [
+      {
+            title: "Hóa thạch sống 400 triệu năm",
+            content: "Nhóm cá toàn đầu (Holocephali) tách khỏi nhánh cá mập từ kỷ Devon, lưu giữ nhiều đặc điểm cổ sinh học nguyên thủy."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "black-dragonfish",
+    slug: "ca-rong-den-bien-sau",
+    category: "deep-sea",
+    categoryVi: "Sinh vật biển sâu",
+    categoryEn: "Deep Sea Life",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Cá Rồng Đen",
+    nameEn: "Black Dragonfish",
+    sciName: "Stomias nebulosus",
+    introHeaderVi: "Răng nanh trong suốt dài đến mức không khép vừa miệng, dưới cằm đung đưa sợi râu phát quang để bẫy những con cá tò mò.",
+    introHeaderEn: "Terrifying transparent needle fangs protruding past its jaws, dangling a glowing chin barbel to lure unsuspecting prey.",
+    descVi: "Răng nanh trong suốt dài đến mức không khép vừa miệng, dưới cằm đung đưa sợi râu phát quang để bẫy những con cá tò mò.",
+    descEn: "Terrifying transparent needle fangs protruding past its jaws, dangling a glowing chin barbel to lure unsuspecting prey.",
+    depth: "500m - 1500m",
+    size: "0.25m - 0.4m",
+    weight: "0.1kg - 0.35kg",
+    diet: "Cá con, giáp xác biển sâu",
+    image: CREATURE_PNGS["black-dragonfish"],
+    gallery: [
+      CREATURE_PNGS["black-dragonfish"],
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/184592314/large.jpg"
+    ],
+    facts: [
+      {
+            title: "Răng nano trong suốt",
+            content: "Răng nanh của cá rồng đen cấu tạo từ các hạt nano hydroxyapatite tán xạ ánh sáng, giúp răng vô hình trước con mồi."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "glass-squid",
+    slug: "muc-thuy-tinh-glass-squid",
+    category: "mollusk",
+    categoryVi: "Thân mềm",
+    categoryEn: "Mollusks",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Mực Thủy Tinh",
+    nameEn: "Glass Squid",
+    sciName: "Cranchia scabra",
+    introHeaderVi: "Toàn thân gần như trong suốt như pha lê để vô hình trước kẻ thù, chỉ phát sáng đôi mắt để giao tiếp và định hướng.",
+    introHeaderEn: "Crystal-clear transparent body rendering it nearly invisible in twilight waters, utilizing luminous ocular photophores.",
+    descVi: "Toàn thân gần như trong suốt như pha lê để vô hình trước kẻ thù, chỉ phát sáng đôi mắt để giao tiếp và định hướng.",
+    descEn: "Crystal-clear transparent body rendering it nearly invisible in twilight waters, utilizing luminous ocular photophores.",
+    depth: "500m - 2000m",
+    size: "0.1m - 0.25m",
+    weight: "0.05kg - 0.2kg",
+    diet: "Sinh vật phù du, giáp xác nhỏ",
+    image: CREATURE_PNGS["glass-squid"],
+    gallery: [
+      CREATURE_PNGS["glass-squid"],
+      "https://upload.wikimedia.org/wikipedia/commons/7/74/Cranchia_scabra.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/3/3b/Cranchia_scabra_-_NHM_1.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/174546799/large.jpg"
+    ],
+    facts: [
+      {
+            title: "Túi amoniac nổi",
+            content: "Khoang cơ thể chứa dung dịch amoniac loãng nhẹ hơn nước biển, giúp mực thủy tinh trôi nổi không cần tốn năng lượng bơi."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "gigantocypris",
+    slug: "giap-xac-boi-khong-lo-gigantocypris",
+    category: "crustacean",
+    categoryVi: "Giáp xác",
+    categoryEn: "Crustaceans",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Giáp Xác Bơi Khổng Lồ",
+    nameEn: "Giant Pelagic Ostracod",
+    sciName: "Gigantocypris agassizii",
+    introHeaderVi: "Kích thước bằng quả bóng bàn, toàn thân hình cầu cam hổ phách trong suốt với đôi mắt gương cầu lồi lớn nhất giới sinh vật để bắt trọn những photon ánh sáng le lói cuối cùng.",
+    introHeaderEn: "Orange ping-pong sized spherical ostracod equipped with enormous mirror parabolic eyes to capture the very last photons of light.",
+    descVi: "Kích thước bằng quả bóng bàn, toàn thân hình cầu cam hổ phách trong suốt với đôi mắt gương cầu lồi lớn nhất giới sinh vật để bắt trọn những photon ánh sáng le lói cuối cùng.",
+    descEn: "Orange ping-pong sized spherical ostracod equipped with enormous mirror parabolic eyes to capture the very last photons of light.",
+    depth: "800m - 2000m",
+    size: "0.02m - 0.035m",
+    weight: "0.005kg - 0.015kg",
+    diet: "Giáp xác chân chèo, giun mũi tên",
+    image: CREATURE_PNGS["gigantocypris"],
+    gallery: [
+      CREATURE_PNGS["gigantocypris"],
+      "https://upload.wikimedia.org/wikipedia/commons/b/b2/Gigantocypris.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/586467985/large.jpg"
+    ],
+    facts: [
+      {
+            title: "Đôi mắt gương parabol",
+            content: "Thay vì dùng thấu kính thủy tinh thể, Gigantocypris dùng gương cầu lồi phản xạ bên trong để hội tụ ánh sáng mờ nhạt."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "anglerfish",
+    slug: "ca-can-cau-bien-sau-anglerfish",
+    category: "deep-sea",
+    categoryVi: "Sinh vật biển sâu",
+    categoryEn: "Deep Sea Life",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Cá Cần Câu Quỷ (Anglerfish)",
+    nameEn: "Humpback Anglerfish",
+    sciName: "Melanocetus johnsonii",
+    introHeaderVi: "Chiếc mồi nhử phát quang sinh học (chứa vi khuẩn phát sáng) đung đưa trên đỉnh đầu; con đực có tập tính sống bám ký sinh vĩnh viễn vào con cái.",
+    introHeaderEn: "Bioluminescent esca lure glowing above its razor jaws; dwarfed males fuse permanently as parasites onto females.",
+    descVi: "Chiếc mồi nhử phát quang sinh học (chứa vi khuẩn phát sáng) đung đưa trên đỉnh đầu; con đực có tập tính sống bám ký sinh vĩnh viễn vào con cái.",
+    descEn: "Bioluminescent esca lure glowing above its razor jaws; dwarfed males fuse permanently as parasites onto females.",
+    depth: "1000m - 3000m",
+    size: "0.15m - 0.25m",
+    weight: "0.2kg - 0.7kg",
+    diet: "Cá biển sâu, mực con",
+    image: CREATURE_PNGS["anglerfish"],
+    gallery: [
+      CREATURE_PNGS["anglerfish"],
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Humpback_anglerfish.png/330px-Humpback_anglerfish.png"
+    ],
+    facts: [
+      {
+            title: "Ký sinh sinh sản",
+            content: "Con đực nhỏ bé cắn vào bụng con cái, dần dần hợp nhất hệ tuần hoàn và trở thành một túi chứa tinh trùng bám suốt đời."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "haima-tubeworm",
+    slug: "giun-ong-mieng-lanh-haima",
+    category: "deep-sea",
+    categoryVi: "Sinh vật biển sâu",
+    categoryEn: "Deep Sea Life",
+    statusVi: "Hiếm gặp",
+    statusEn: "Rare",
+    statusType: "warning",
+    nameVi: "Giun Ống Miệng Lạnh Haima",
+    nameEn: "Haima Cold Seep Tubeworm",
+    sciName: "Paraescarpia echinospica",
+    introHeaderVi: "Phát hiện chấn động tại hệ sinh thái Miệng phun lạnh Hải Mã (Haima Cold Seep) ở đáy Biển Đông; loài giun này không có miệng hay ruột, sống hoàn toàn nhờ vi khuẩn hóa tổng hợp khí mê-tan.",
+    introHeaderEn: "Groundbreaking discovery at the Haima Cold Seep in the East Sea; gutless tubeworms thriving purely on methane-synthesizing symbionts.",
+    descVi: "Phát hiện chấn động tại hệ sinh thái Miệng phun lạnh Hải Mã (Haima Cold Seep) ở đáy Biển Đông; loài giun này không có miệng hay ruột, sống hoàn toàn nhờ vi khuẩn hóa tổng hợp khí mê-tan.",
+    descEn: "Groundbreaking discovery at the Haima Cold Seep in the East Sea; gutless tubeworms thriving purely on methane-synthesizing symbionts.",
+    depth: "1200m - 3000m",
+    size: "0.5m - 2.0m",
+    weight: "0.1kg - 0.4kg",
+    diet: "Vi khuẩn hóa tổng hợp khí methane",
+    image: CREATURE_PNGS["haima-tubeworm"],
+    gallery: [
+      CREATURE_PNGS["haima-tubeworm"],
+      "https://upload.wikimedia.org/wikipedia/commons/4/48/Nur04505.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/9/96/Champ_de_vers_siboglinid%C3%A9s_%28Siboglinidae%29_%28Ifremer_00558-67007_-_20629%29.jpg"
+    ],
+    facts: [
+      {
+            title: "Sinh vật không ruột",
+            content: "Trong cơ thể có một cơ quan gọi là trophosome chứa hàng tỷ vi khuẩn ô-xy hóa khí methane nuôi sống cơ thể."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "haima-mussel",
+    slug: "trai-bien-sau-haima",
+    category: "mollusk",
+    categoryVi: "Thân mềm",
+    categoryEn: "Mollusks",
+    statusVi: "Hiếm gặp",
+    statusEn: "Rare",
+    statusType: "warning",
+    nameVi: "Trai Biển Sâu Bồn Trũng",
+    nameEn: "Haima Deep-Sea Mussel",
+    sciName: "Gigantidas haimaensis",
+    introHeaderVi: "Quần tụ thành từng thảm lớn ken đặc quanh các vết nứt rỉ khí mê-tan ở đáy sâu Biển Đông, phát triển tươi tốt mà không cần một tia nắng mặt trời nào.",
+    introHeaderEn: "Forms vast dense colonies around methane fissures on the deep seafloor, prospering independently of any sunlight.",
+    descVi: "Quần tụ thành từng thảm lớn ken đặc quanh các vết nứt rỉ khí mê-tan ở đáy sâu Biển Đông, phát triển tươi tốt mà không cần một tia nắng mặt trời nào.",
+    descEn: "Forms vast dense colonies around methane fissures on the deep seafloor, prospering independently of any sunlight.",
+    depth: "1000m - 3000m",
+    size: "0.08m - 0.18m",
+    weight: "0.05kg - 0.2kg",
+    diet: "Vi khuẩn cộng sinh ăn methane và hydro sulfide",
+    image: CREATURE_PNGS["haima-mussel"],
+    gallery: [
+      CREATURE_PNGS["haima-mussel"],
+      "https://upload.wikimedia.org/wikipedia/commons/7/7a/Gigantidas_tangaroa.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/9/9d/Bathymodiolus_childressi.jpg"
+    ],
+    facts: [
+      {
+            title: "Thảm sinh vật đáy biển",
+            content: "Hàng nghìn con xếp chồng lớp lên nhau tạo thành sinh cảnh cho tôm, cua và giáp xác biển sâu trú ẩn."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "viperfish",
+    slug: "ca-rong-bien-sau-viperfish",
+    category: "deep-sea",
+    categoryVi: "Sinh vật biển sâu",
+    categoryEn: "Deep Sea Life",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Cá Hổ Lục Biển Sâu (Viperfish)",
+    nameEn: "Sloane's Viperfish",
+    sciName: "Chauliodus sloani",
+    introHeaderVi: "Răng nanh nhọn hoắt uốn cong chạm đỉnh sọ, đốt sống cổ đầu tiên được tiến hóa thành lớp đệm hấp thụ xung lực khi đớp mồi với tốc độ cao.",
+    introHeaderEn: "Protruding curved fangs curving past its eyes, backed by a shock-absorbing modified first vertebra for violent strikes.",
+    descVi: "Răng nanh nhọn hoắt uốn cong chạm đỉnh sọ, đốt sống cổ đầu tiên được tiến hóa thành lớp đệm hấp thụ xung lực khi đớp mồi với tốc độ cao.",
+    descEn: "Protruding curved fangs curving past its eyes, backed by a shock-absorbing modified first vertebra for violent strikes.",
+    depth: "1000m - 2800m",
+    size: "0.2m - 0.35m",
+    weight: "0.1kg - 0.3kg",
+    diet: "Cá lồng đèn nhỏ, tôm biển sâu",
+    image: CREATURE_PNGS["viperfish"],
+    gallery: [
+      CREATURE_PNGS["viperfish"],
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Messina_Straits_Chauliodus_sloani.jpg/330px-Messina_Straits_Chauliodus_sloani.jpg"
+    ],
+    facts: [
+      {
+            title: "Răng nanh dài nhất theo tỉ lệ",
+            content: "Răng nanh của viperfish dài tới mức nó phải mở toạc hàm hơn 90 độ mới có thể ngậm mồi."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "vampire-squid",
+    slug: "muc-ma-ca-rong-bien-sau",
+    category: "mollusk",
+    categoryVi: "Thân mềm",
+    categoryEn: "Mollusks",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Mực Ma Cà Rồng Biển Đông",
+    nameEn: "South China Sea Vampire Squid",
+    sciName: "Vampyroteuthis pseudoinfernalis",
+    introHeaderVi: "Loài mới được Viện Hải Dương học Biển Đông (CAS) mô tả năm 2024, tách biệt khỏi V. infernalis qua phân tích ADN và hình thái. Giữa các xúc tu có lớp màng đen như áo choàng; không săn mồi sống mà thu nhặt 'tuyết biển' (mùn bã hữu cơ chìm từ tầng mặt) bằng tua xúc tu dài.",
+    introHeaderEn: "New species described by the South China Sea Institute of Oceanology (CAS) in 2024, split from V. infernalis via DNA and morphological analysis. Black webbed cloak between arms; passively collects sinking marine snow rather than actively hunting.",
+    descVi: "Loài mới được Viện Hải Dương học Biển Đông (CAS) mô tả năm 2024, tách biệt khỏi V. infernalis qua phân tích ADN và hình thái. Giữa các xúc tu có lớp màng đen như áo choàng; không săn mồi sống mà thu nhặt 'tuyết biển' (mùn bã hữu cơ chìm từ tầng mặt) bằng tua xúc tu dài.",
+    descEn: "New species described by the South China Sea Institute of Oceanology (CAS) in 2024, split from V. infernalis via DNA and morphological analysis. Black webbed cloak between arms; passively collects sinking marine snow rather than actively hunting.",
+    depth: "600m - 3000m",
+    size: "0.15m - 0.3m",
+    weight: "0.15kg - 0.5kg",
+    diet: "Tuyết biển (mùn bã hữu cơ chìm)",
+    image: CREATURE_PNGS["vampire-squid"],
+    gallery: [
+      CREATURE_PNGS["vampire-squid"],
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Vampyroteuthis_illustration.jpg/330px-Vampyroteuthis_illustration.jpg"
+    ],
+    facts: [
+      {
+            title: "Áo choàng gai nhọn",
+            content: "Khi bị tấn công, mực ma cà rồng lộn ngược lớp màng che kín đầu, để lộ hàng gai giả nhọn hoắt dọa kẻ săn mồi."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "dumbo-octopus",
+    slug: "bach-tuoc-dumbo",
+    category: "mollusk",
+    categoryVi: "Thân mềm",
+    categoryEn: "Mollusks",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Bạch Tuộc Tai Voi Dumbo",
+    nameEn: "Dumbo Octopus",
+    sciName: "Grimpoteuthis sp.",
+    introHeaderVi: "Hai vây bên đầu đập nhẹ nhàng như tai chú voi bay Dumbo, trôi lơ lửng sát lớp trầm tích mịn của bồn trũng trung tâm Biển Đông.",
+    introHeaderEn: "Flaps ear-like fins like Disney's flying elephant, hovering serenely above fine sediments of the central deep basin.",
+    descVi: "Hai vây bên đầu đập nhẹ nhàng như tai chú voi bay Dumbo, trôi lơ lửng sát lớp trầm tích mịn của bồn trũng trung tâm Biển Đông.",
+    descEn: "Flaps ear-like fins like Disney's flying elephant, hovering serenely above fine sediments of the central deep basin.",
+    depth: "1000m - 4000m",
+    size: "0.2m - 0.4m",
+    weight: "0.3kg - 1.2kg",
+    diet: "Giun biển sâu, giáp xác nhỏ",
+    image: CREATURE_PNGS["dumbo-octopus"],
+    gallery: [
+      CREATURE_PNGS["dumbo-octopus"],
+      "https://upload.wikimedia.org/wikipedia/commons/7/7d/Grimpoteuthis_discoveryi.jpg"
+    ],
+    facts: [
+      {
+            title: "Bạch tuộc bơi sâu nhất",
+            content: "Chi Grimpoteuthis là nhóm bạch tuộc sống sâu nhất từng được tàu ngầm ghi nhận (đạt tới hơn 4,000m)."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "tripod-fish",
+    slug: "ca-ba-chan-tripod-fish",
+    category: "deep-sea",
+    categoryVi: "Sinh vật biển sâu",
+    categoryEn: "Deep Sea Life",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Cá Ba Chân",
+    nameEn: "Tripod Fish",
+    sciName: "Bathypterois grallator",
+    introHeaderVi: "Đứng bất động trên 3 tia vây dài như chiếc kiềng 3 chân cắm vào nền bùn lỏng, quay mặt ngược dòng hải lưu ngầm để đợi thức ăn trôi vào miệng.",
+    introHeaderEn: "Stands motionless on three elongated fins propped like a tripod in fluid mud, facing deep currents to intercept drifting prey.",
+    descVi: "Đứng bất động trên 3 tia vây dài như chiếc kiềng 3 chân cắm vào nền bùn lỏng, quay mặt ngược dòng hải lưu ngầm để đợi thức ăn trôi vào miệng.",
+    descEn: "Stands motionless on three elongated fins propped like a tripod in fluid mud, facing deep currents to intercept drifting prey.",
+    depth: "1500m - 4700m",
+    size: "0.3m - 0.45m",
+    weight: "0.2kg - 0.5kg",
+    diet: "Giáp xác phù du trôi theo dòng đối lưu",
+    image: CREATURE_PNGS["tripod-fish"],
+    gallery: [
+      CREATURE_PNGS["tripod-fish"],
+      "https://static.inaturalist.org/photos/394043196/large.png"
+    ],
+    facts: [
+      {
+            title: "Chiếc kiềng ba chân tự nhiên",
+            content: "Tia vây bụng và vây đuôi kéo dài tới 1 mét, đóng vai trò như chân chống đỡ cơ thể không bị chìm vào lớp bùn nhão."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "grenadier-fish",
+    slug: "ca-duoi-chuot-bien-sau",
+    category: "deep-sea",
+    categoryVi: "Sinh vật biển sâu",
+    categoryEn: "Deep Sea Life",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Cá Đuôi Chuột Vực Sâu",
+    nameEn: "Abyssal Grenadier / Rattail",
+    sciName: "Coryphaenoides sp.",
+    introHeaderVi: "Kẻ dọn xác thấu thính của vùng bồn trũng; có khứu giác siêu nhạy ngửi được mùi xác cá voi hay động vật chìm xuống từ cách xa nhiều kilomet.",
+    introHeaderEn: "Keen-scented scavenger of the deep abyss, pinpointing whale falls and sunken organic matter across miles of barren ocean floor.",
+    descVi: "Kẻ dọn xác thấu thính của vùng bồn trũng; có khứu giác siêu nhạy ngửi được mùi xác cá voi hay động vật chìm xuống từ cách xa nhiều kilomet.",
+    descEn: "Keen-scented scavenger of the deep abyss, pinpointing whale falls and sunken organic matter across miles of barren ocean floor.",
+    depth: "1000m - 4000m",
+    size: "0.4m - 0.85m",
+    weight: "0.8kg - 3.5kg",
+    diet: "Xác cá, động vật thân mềm, tôm biển sâu",
+    image: CREATURE_PNGS["grenadier-fish"],
+    gallery: [
+      CREATURE_PNGS["grenadier-fish"],
+      "https://upload.wikimedia.org/wikipedia/commons/2/28/Coryphaenoides_acrolepis.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/6/65/Coryphaenoides_armatus_Puerto_Rico_April_2015.png"
+    ],
+    facts: [
+      {
+            title: "Khứu giác đại dương siêu việt",
+            content: "Mũi cá đuối chuột có cấu tạo đặc biệt phát hiện mùi đạm hữu cơ chìm từ cự ly hàng chục hải lý."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "sea-pig",
+    slug: "heo-bien-sau-sea-pig",
+    category: "echinoderm",
+    categoryVi: "Da gai",
+    categoryEn: "Echinoderms",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Heo Biển Sâu (Sea Pig)",
+    nameEn: "Sea Pig",
+    sciName: "Scotoplanes globosa",
+    introHeaderVi: "Một dạng hải sâm nước sâu có thân tròn mọng nước và các 'chân' ống bơm phồng bằng dịch lỏng, bước chậm chạp trên bùn đáy rãnh để hút chất hữu cơ.",
+    introHeaderEn: "Plump benthic sea cucumber strolling on hydraulic tube feet across abyssal mud plains to extract nutrient-rich sediments.",
+    descVi: "Một dạng hải sâm nước sâu có thân tròn mọng nước và các 'chân' ống bơm phồng bằng dịch lỏng, bước chậm chạp trên bùn đáy rãnh để hút chất hữu cơ.",
+    descEn: "Plump benthic sea cucumber strolling on hydraulic tube feet across abyssal mud plains to extract nutrient-rich sediments.",
+    depth: "3000m - 5016m",
+    size: "0.1m - 0.18m",
+    weight: "0.05kg - 0.15kg",
+    diet: "Chất hữu cơ trong bùn trầm tích",
+    image: CREATURE_PNGS["sea-pig"],
+    gallery: [
+      CREATURE_PNGS["sea-pig"],
+      "https://upload.wikimedia.org/wikipedia/commons/a/a3/Scotoplanes_globosa_and_crab_%28cropped%29.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/11309347/large.jpg"
+    ],
+    facts: [
+      {
+            title: "Chân thủy lực bơm dịch",
+            content: "Chân ống của heo biển di chuyển hoàn toàn bằng cách bơm nén dịch thể thủy tĩnh bên trong."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "brittle-star",
+    slug: "sao-gion-vuc-tham",
+    category: "echinoderm",
+    categoryVi: "Da gai",
+    categoryEn: "Echinoderms",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Sao Giòn Vực Thẳm",
+    nameEn: "Abyssal Brittle Star",
+    sciName: "Ophiura sarsii",
+    introHeaderVi: "Bám trên vách đá bazan dựng đứng của Rãnh Manila; cơ thể mềm dẻo với hàm lượng canxi đặc biệt giúp chúng không bị hòa tan dưới áp suất nước cực cao.",
+    introHeaderEn: "Clings to sheer basalt escarpments of the Manila Trench; unique mineralized calcite arms resist dissolution under extreme pressure.",
+    descVi: "Bám trên vách đá bazan dựng đứng của Rãnh Manila; cơ thể mềm dẻo với hàm lượng canxi đặc biệt giúp chúng không bị hòa tan dưới áp suất nước cực cao.",
+    descEn: "Clings to sheer basalt escarpments of the Manila Trench; unique mineralized calcite arms resist dissolution under extreme pressure.",
+    depth: "2500m - 5016m",
+    size: "0.05m - 0.12m",
+    weight: "0.02kg - 0.08kg",
+    diet: "Vụn xác sinh vật, mùn hữu cơ",
+    image: CREATURE_PNGS["brittle-star"],
+    gallery: [
+      CREATURE_PNGS["brittle-star"],
+      "https://upload.wikimedia.org/wikipedia/commons/3/31/Ophiura_sarsii.jpg",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/154202786/large.jpg"
+    ],
+    facts: [
+      {
+            title: "Tự rụng cánh để trốn",
+            content: "Khi bị kẻ thù tóm lấy cánh, sao giòn sẵn sàng bẻ gãy nhánh đó để chạy thoát và sau đó tái sinh lại nhánh mới."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "hadal-snailfish",
+    slug: "ca-oc-ranh-sau-hadal-snailfish",
+    category: "deep-sea",
+    categoryVi: "Sinh vật biển sâu",
+    categoryEn: "Deep Sea Life",
+    statusVi: "Hiếm gặp",
+    statusEn: "Rare",
+    statusType: "warning",
+    nameVi: "Cá Ốc Rãnh Sâu (Hadal Snailfish)",
+    nameEn: "Hadal Snailfish",
+    sciName: "Pseudoliparis amblystomopsis",
+    introHeaderVi: "Động vật có xương sống thích nghi ở độ sâu giới hạn của sự sống; thân mềm nhũn dạng thạch trong suốt không vảy, không bóng hơi và xương xốp để chịu áp lực nghẹt thở.",
+    introHeaderEn: "Deepest known vertebrate family; scaleless gelatinous body devoid of swim bladders and possessing porous bones to withstand crushing pressure.",
+    descVi: "Động vật có xương sống thích nghi ở độ sâu giới hạn của sự sống; thân mềm nhũn dạng thạch trong suốt không vảy, không bóng hơi và xương xốp để chịu áp lực nghẹt thở.",
+    descEn: "Deepest known vertebrate family; scaleless gelatinous body devoid of swim bladders and possessing porous bones to withstand crushing pressure.",
+    depth: "4000m - 5016m",
+    size: "0.15m - 0.25m",
+    weight: "0.1kg - 0.3kg",
+    diet: "Tôm giáp xác amphipod rãnh sâu",
+    image: CREATURE_PNGS["hadal-snailfish"],
+    gallery: [
+      CREATURE_PNGS["hadal-snailfish"],
+      "https://upload.wikimedia.org/wikipedia/commons/0/0b/Pseudoliparis_swirei.png",
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/18324426/large.jpeg"
+    ],
+    facts: [
+      {
+            title: "Giới hạn độ sâu của động vật có xương sống",
+            content: "Ở độ sâu quá 8,200m, áp lực thẩm thấu làm protein trong tế bào cá bị biến tính, khiến cá ốc là đỉnh cao giới hạn chịu đựng của cá."
+      }
+],
+    isFeatured: false,
+  },
+
+  {
+    id: "hadal-amphipod",
+    slug: "giap-xac-chan-hai-ranh-manila",
+    category: "crustacean",
+    categoryVi: "Giáp xác",
+    categoryEn: "Crustaceans",
+    statusVi: "Ít quan tâm",
+    statusEn: "Least Concern",
+    statusType: "safe",
+    nameVi: "Giáp Xác Chân Hai Rãnh Manila",
+    nameEn: "Hadal Amphipod (Manila Trench)",
+    sciName: "Paralicella caperesca",
+    introHeaderVi: "Chạm đáy Rãnh Manila – Điểm sâu nhất Biển Đông (5,016m)! Các loài Amphipoda thuộc họ Lysianassidae là những sinh vật đa dạng nhất ở vùng rãnh sâu Tây Thái Bình Dương, chịu áp suất trên 500 atm nhờ TMAO bảo vệ tế bào, gặm nhấm xác chết và mảnh hữu cơ chìm xuống đáy rãnh.",
+    introHeaderEn: "Touchdown at Manila Trench floor (5,016m) — Deepest Point of East Sea! Lysianassid amphipods (Paralicella spp.) are the dominant hadal scavengers of the western Pacific, surviving 500+ atm via TMAO piezolytes, devouring organic falls and carrion.",
+    descVi: "Chạm đáy Rãnh Manila – Điểm sâu nhất Biển Đông (5,016m)! Các loài Amphipoda thuộc họ Lysianassidae là những sinh vật đa dạng nhất ở vùng rãnh sâu Tây Thái Bình Dương, chịu áp suất trên 500 atm nhờ TMAO bảo vệ tế bào, gặm nhấm xác chết và mảnh hữu cơ chìm xuống đáy rãnh.",
+    descEn: "Touchdown at Manila Trench floor (5,016m) — Deepest Point of East Sea! Lysianassid amphipods (Paralicella spp.) are the dominant hadal scavengers of the western Pacific, surviving 500+ atm via TMAO piezolytes, devouring organic falls and carrion.",
+    depth: "4500m - 5016m",
+    size: "0.03m - 0.08m",
+    weight: "0.005kg - 0.02kg",
+    diet: "Xác động vật, cá chết chìm đáy rãnh",
+    image: CREATURE_PNGS["hadal-amphipod"],
+    gallery: [
+      CREATURE_PNGS["hadal-amphipod"],
+      "https://inaturalist-open-data.s3.amazonaws.com/photos/175894123/large.jpg"
+    ],
+    facts: [
+      {
+            title: "Chất chống áp lực TMAO",
+            content: "Tế bào tích tụ nồng độ Trimethylamine N-oxide (TMAO) cực cao để chống lại hiện tượng biến dạng phân tử protein dưới 500 atm."
+      }
+],
     isFeatured: false,
   },
 ];

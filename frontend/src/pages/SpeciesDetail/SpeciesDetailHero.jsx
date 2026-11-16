@@ -1202,6 +1202,11 @@ export function SpeciesDetailHero({ species }) {
                   alt={`${speciesName} - ảnh phóng to ${activeImageIdx + 1}`}
                   className="max-h-[72vh] md:max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.85)] border border-white/10 select-none pointer-events-none"
                   draggable={false}
+                  onError={(e) => {
+                    if (species?.image && e.currentTarget.src !== species.image) {
+                      e.currentTarget.src = species.image;
+                    }
+                  }}
                 />
               </div>
 
@@ -1246,6 +1251,11 @@ export function SpeciesDetailHero({ species }) {
                       src={img}
                       alt={`Thumbnail ${i + 1}`}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        if (species?.image && e.currentTarget.src !== species.image) {
+                          e.currentTarget.src = species.image;
+                        }
+                      }}
                     />
                   </button>
                 ))}
