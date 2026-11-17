@@ -19,7 +19,7 @@ export default function HeroSection() {
             data-aos-delay="100"
           >
             {t("hero.titleLine1")} <br />
-            <span className="bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan bg-clip-text text-transparent">
+            <span className="text-sky-300">
               {t("hero.titleLine2")}
             </span>
           </h1>
@@ -40,14 +40,14 @@ export default function HeroSection() {
           >
             <a
               href="#species"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-base font-semibold text-white bg-pacific-teal hover:bg-pacific-teal-light border border-cyan-400/30 shadow-md shadow-black/20 hover:shadow-cyan-950/40 active:translate-y-0.5 transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-medium text-white bg-sky-600 hover:bg-sky-500 border border-sky-400/30 shadow-sm active:translate-y-0.5 transition-colors cursor-pointer"
             >
               <Compass size={18} />
               <span>{t("hero.btnExplore")}</span>
             </a>
             <Link
               to="/search"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-base font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-medium text-white bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md transition-colors cursor-pointer"
             >
               <Search size={17} />
               <span>{t("hero.btnSearch")}</span>

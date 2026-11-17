@@ -118,10 +118,10 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
               {/* "Tất cả" Tab */}
               <button
                 onClick={() => setSelectedCategory("")}
-                className={`px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer shrink-0 ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer shrink-0 ${
                   selectedCategory === ""
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
-                    : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10"
+                    ? "bg-sky-600 text-white shadow-sm"
+                    : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
                 }`}
               >
                 {t("searchPage.allCategory")}
@@ -138,10 +138,10 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
                     key={c.value}
                     onClick={() => setSelectedCategory(c.value)}
                     title={rawLabel}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer shrink-0 ${
+                    className={`px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer shrink-0 ${
                       isSelected
-                        ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
-                        : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10"
+                        ? "bg-sky-600 text-white shadow-sm"
+                        : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
                     }`}
                   >
                     {shortLabel}
@@ -154,7 +154,7 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
             {canScrollRight && (
               <button
                 onClick={scrollRight}
-                className="hidden sm:flex absolute right-0 z-10 p-1.5 rounded-full bg-[#0a203c]/90 hover:bg-pacific-blue-bright/40 border border-pacific-blue-bright/40 text-pacific-blue-light hover:text-white transition-all cursor-pointer shrink-0 shadow-lg"
+                className="hidden sm:flex absolute right-0 z-10 p-1.5 rounded-full bg-[#0a203c]/90 hover:bg-white/20 border border-white/20 text-slate-200 hover:text-white transition-colors cursor-pointer shrink-0 shadow-md"
                 title="Lướt sang phải"
               >
                 <ChevronRight size={14} />
@@ -172,10 +172,10 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => setSortBy("az")}
-              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer ${
                 sortBy === "az"
-                  ? "bg-pacific-blue-bright/20 border border-pacific-blue-bright text-pacific-blue-light shadow-sm"
-                  : "bg-white/5 text-white/70 hover:bg-white/10 border border-white/10"
+                  ? "bg-sky-500/20 border border-sky-400/40 text-sky-200 shadow-sm"
+                  : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
               }`}
             >
               <ArrowUpDown size={13} />
@@ -184,10 +184,10 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
 
             <button
               onClick={() => setSortBy("depth")}
-              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer ${
                 sortBy === "depth"
-                  ? "bg-pacific-blue-bright/20 border border-pacific-blue-bright text-pacific-blue-light shadow-sm"
-                  : "bg-white/5 text-white/70 hover:bg-white/10 border border-white/10"
+                  ? "bg-sky-500/20 border border-sky-400/40 text-sky-200 shadow-sm"
+                  : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
               }`}
             >
               <Waves size={13} />
@@ -196,10 +196,10 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
 
             <button
               onClick={() => setSortBy("status")}
-              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer ${
                 sortBy === "status"
-                  ? "bg-pacific-blue-bright/20 border border-pacific-blue-bright text-pacific-blue-light shadow-sm"
-                  : "bg-white/5 text-white/70 hover:bg-white/10 border border-white/10"
+                  ? "bg-sky-500/20 border border-sky-400/40 text-sky-200 shadow-sm"
+                  : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
               }`}
             >
               <ShieldAlert size={13} />

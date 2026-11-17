@@ -759,14 +759,14 @@ export function SpeciesDetailHero({ species }) {
               onClick={() =>
                 navigate(`/species/${species.slug || species.id}/3d`)
               }
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all cursor-pointer border border-cyan-400/40 hover:border-cyan-300 shadow-md shadow-cyan-950/30"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium transition-colors cursor-pointer border border-sky-400/30 shadow-sm"
             >
-              <Box size={16} className="text-cyan-200" />
+              <Box size={16} className="text-sky-200" />
               <span>{t("speciesDetail.btnView3D") || "Xem mô hình 3D"}</span>
             </button>
           ) : (
             <div
-              className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-white/40 text-xs font-medium cursor-not-allowed"
+              className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg border border-white/10 bg-white/[0.03] text-white/40 text-xs font-medium cursor-not-allowed"
               title={
                 isEn
                   ? "3D model for this species is updating"
@@ -785,9 +785,9 @@ export function SpeciesDetailHero({ species }) {
           {hasSound ? (
             <button
               onClick={handleAudioToggle}
-              className={`inline-flex items-center gap-2 text-xs font-semibold px-3.5 py-2.5 rounded-xl border transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-2 text-xs font-medium px-3.5 py-2.5 rounded-lg border transition-colors cursor-pointer ${
                 isPlayingAudio
-                  ? "bg-cyan-500/20 border-cyan-400 text-cyan-300"
+                  ? "bg-sky-500/20 border-sky-400/40 text-sky-200"
                   : "bg-white/5 hover:bg-white/12 border-white/15 text-white/90 hover:text-white"
               }`}
               title={
@@ -798,19 +798,19 @@ export function SpeciesDetailHero({ species }) {
             >
               {isPlayingAudio ? (
                 <>
-                  <VolumeX size={15} className="text-cyan-400 animate-bounce" />
-                  <span className="text-cyan-300 font-bold">
+                  <VolumeX size={15} className="text-sky-400" />
+                  <span className="text-sky-200 font-medium">
                     {t("speciesDetail.audioPlaying") || (isEn ? "Playing" : "Đang phát")}
                   </span>
-                  <span className="flex gap-0.5 ml-0.5">
-                    <span className="w-1 h-3 bg-cyan-400 animate-pulse rounded-full" />
-                    <span className="w-1 h-4 bg-cyan-300 animate-pulse delay-75 rounded-full" />
-                    <span className="w-1 h-2 bg-cyan-400 animate-pulse delay-150 rounded-full" />
+                  <span className="flex gap-0.5 ml-0.5 items-center">
+                    <span className="w-1 h-3 bg-sky-400 rounded-full" />
+                    <span className="w-1 h-4 bg-sky-300 rounded-full" />
+                    <span className="w-1 h-2 bg-sky-400 rounded-full" />
                   </span>
                 </>
               ) : (
                 <>
-                  <Volume2 size={15} className="text-cyan-400" />
+                  <Volume2 size={15} className="text-sky-400" />
                   <span>{t("speciesDetail.audioBtn") || (isEn ? "Sound" : "Âm thanh")}</span>
                 </>
               )}

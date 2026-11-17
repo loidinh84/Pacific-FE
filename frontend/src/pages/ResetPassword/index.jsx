@@ -210,7 +210,7 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 mt-2 rounded-xl font-bold text-white bg-pacific-blue-bright hover:bg-sky-500 active:scale-98 transition-all text-base cursor-pointer shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full py-2.5 mt-2 rounded-lg font-medium text-white bg-sky-600 hover:bg-sky-500 active:translate-y-0.5 transition-colors text-sm cursor-pointer shadow-sm flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>

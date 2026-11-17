@@ -1,33 +1,18 @@
 import { Search } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 
-export function NewsHero({
-  searchTerm,
-  setSearchTerm,
-  onSearchSubmit,
-}) {
+export function NewsHero({ searchTerm, setSearchTerm, onSearchSubmit }) {
   const { t } = useLanguage();
 
   return (
-    <div id="news-hero" className="text-center max-w-4xl mx-auto pt-24 pb-10 px-4">
-      {/* Badge */}
-      <div className="flex items-center justify-center mb-4">
-        <div className="inline-flex items-center px-4 py-1.5 rounded-full border border-cyan-400/30 bg-cyan-500/10 backdrop-blur-md">
-          <span className="text-xs md:text-sm font-semibold tracking-wide text-cyan-200">
-            {t("news.heroBadge")}
-          </span>
-        </div>
-      </div>
-
+    <div
+      id="news-hero"
+      className="text-center max-w-4xl mx-auto pt-24 pb-10 px-4"
+    >
       {/* Main Title */}
-      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white font-heading tracking-tight mb-4">
+      <h1 className="text-3xl sm:text-4xl md:text-3xl lg:text-5xl font-bold text-white font-heading tracking-tight mb-4">
         {t("news.heroTitle")}
       </h1>
-
-      {/* Description */}
-      <p className="text-base md:text-lg text-slate-200/90 max-w-2xl mx-auto mb-8 font-medium leading-relaxed">
-        {t("news.heroDesc")}
-      </p>
 
       {/* Search Bar */}
       <form
@@ -48,7 +33,7 @@ export function NewsHero({
           />
           <button
             type="submit"
-            className="absolute right-2 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-sm font-bold transition-all cursor-pointer active:translate-y-0.5"
+            className="absolute right-2 px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer active:translate-y-0.5 shadow-sm"
           >
             {t("searchPage.btnSearch") || "Tìm kiếm"}
           </button>

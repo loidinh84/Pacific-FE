@@ -287,7 +287,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
             <button
               type="submit"
               disabled={isEmailLoading}
-              className="px-6 py-2.5 bg-gradient-to-r from-pacific-blue-bright to-pacific-teal hover:brightness-110 active:scale-95 rounded-xl text-xs font-bold text-white transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
+              className="px-5 py-2 bg-sky-600 hover:bg-sky-500 active:translate-y-0.5 rounded-lg text-xs font-medium text-white transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-60 shadow-sm"
             >
               {isEmailLoading ? (
                 <>
@@ -370,7 +370,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
             <button
               type="submit"
               disabled={isPasswordLoading}
-              className="px-6 py-2.5 bg-gradient-to-r from-pacific-blue-bright to-pacific-teal hover:brightness-110 active:scale-95 rounded-xl text-xs font-bold text-white transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
+              className="px-5 py-2 bg-sky-600 hover:bg-sky-500 active:translate-y-0.5 rounded-lg text-xs font-medium text-white transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-60 shadow-sm"
             >
               {isPasswordLoading ? (
                 <>

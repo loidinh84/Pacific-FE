@@ -71,7 +71,7 @@ export default function ExploredTab() {
           </p>
           <Link
             to="/"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium transition-colors shadow-sm"
           >
             <Compass size={16} />
             <span>{isEn ? "Explore Marine Map" : "Thám hiểm bản đồ biển"}</span>

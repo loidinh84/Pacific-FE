@@ -33,9 +33,9 @@ export function NewsFilterBar({
         <div className="flex items-center gap-2.5 overflow-x-auto pb-3 lg:pb-0 custom-scrollbar-thin">
           <button
             onClick={() => setSelectedCategory("")}
-            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
               !selectedCategory
-                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/20"
+                ? "bg-sky-600 text-white shadow-sm"
                 : "bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
             }`}
           >
@@ -58,9 +58,9 @@ export function NewsFilterBar({
                 <button
                   key={cat.id || cat.slug}
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer flex items-center gap-1.5 ${
                     isSelected
-                      ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/20"
+                      ? "bg-sky-600 text-white shadow-sm"
                       : "bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
                   }`}
                 >
@@ -107,7 +107,7 @@ export function NewsFilterBar({
                       }}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30"
+                          ? "bg-sky-500/20 text-sky-200 border border-sky-400/30"
                           : "text-white/80 hover:text-white hover:bg-white/10 border border-transparent"
                       }`}
                     >

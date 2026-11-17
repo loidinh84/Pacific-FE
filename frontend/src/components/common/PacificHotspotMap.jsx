@@ -158,7 +158,7 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
             <a
               href="#species"
               onClick={() => setModalSpot(null)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-pacific-cyan to-pacific-blue-bright hover:from-pacific-cyan/90 hover:to-pacific-blue-bright/90 text-pacific-figma-dark font-bold text-xs shadow-lg shadow-pacific-cyan/30 transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs shadow-sm transition-colors cursor-pointer"
             >
               <span>{language === "en" ? "Explore Species" : "Khám phá sinh vật"}</span>
               <ExternalLink size={14} />

@@ -193,7 +193,7 @@ export default function Navbar() {
                       }}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-gradient-to-r from-pacific-blue-bright/20 to-pacific-teal/20 text-pacific-cyan border border-pacific-blue-bright/30"
+                          ? "bg-sky-500/20 text-sky-200 border border-sky-400/30"
                           : "text-white/80 hover:text-white hover:bg-white/10 border border-transparent"
                       }`}
                     >
@@ -204,7 +204,7 @@ export default function Navbar() {
                         <span>{lang.label}</span>
                       </div>
                       {isSelected && (
-                        <Check size={14} className="text-pacific-cyan" />
+                        <Check size={14} className="text-sky-300" />
                       )}
                     </button>
                   );
@@ -220,7 +220,7 @@ export default function Navbar() {
                 onClick={() => setIsUserOpen(!isUserOpen)}
                 className="flex items-center gap-2.5 px-3.5 py-1.5 bg-white/10 hover:bg-white/15 border border-white/20 hover:border-white/30 rounded-full text-white text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow-sm"
               >
-                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan flex items-center justify-center text-white text-[11px] font-bold shadow-sm">
+                <div className="w-6 h-6 rounded-full bg-sky-600 flex items-center justify-center text-white text-[11px] font-bold shadow-sm">
                   {user.username?.charAt(0).toUpperCase() ||
                     user.email?.charAt(0).toUpperCase() ||
                     "U"}
@@ -232,7 +232,7 @@ export default function Navbar() {
                   size={13}
                   className={`transition-transform duration-200 ${
                     isUserOpen
-                      ? "rotate-180 text-pacific-blue-bright"
+                      ? "rotate-180 text-sky-300"
                       : "text-white/60"
                   }`}
                 />
@@ -313,7 +313,7 @@ export default function Navbar() {
               {/* Register Button */}
               <Link
                 to="/register"
-                className="px-5 py-2.5 rounded-full text-sm font-semibold border border-white/40 text-white hover:bg-white/10 transition-all cursor-pointer inline-block"
+                className="px-4 py-2 rounded-lg text-sm text-slate-300 hover:text-white transition-colors cursor-pointer inline-block"
               >
                 {t("nav.register")}
               </Link>
@@ -321,7 +321,7 @@ export default function Navbar() {
               {/* Login Button */}
               <Link
                 to="/login"
-                className="px-5 py-2.5 rounded-full text-sm font-semibold bg-blue-500 text-white hover:bg-blue-400 transition-all cursor-pointer inline-block active:translate-y-0.5"
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-sky-600 text-white hover:bg-sky-500 transition-colors cursor-pointer inline-block active:translate-y-0.5 shadow-sm"
               >
                 {t("nav.login")}
               </Link>
@@ -393,14 +393,14 @@ export default function Navbar() {
                 <Link
                   to="/register"
                   onClick={() => setIsMobileOpen(false)}
-                  className="flex-1 py-3 rounded-xl text-sm font-semibold border border-white/30 text-white hover:bg-white/10 transition-all text-center"
+                  className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-white/20 text-slate-200 hover:bg-white/10 transition-colors text-center"
                 >
                   {t("nav.register")}
                 </Link>
                 <Link
                   to="/login"
                   onClick={() => setIsMobileOpen(false)}
-                  className="flex-1 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-pacific-blue-bright to-pacific-teal text-white transition-all text-center"
+                  className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-sky-600 hover:bg-sky-500 text-white transition-colors text-center shadow-sm"
                 >
                   {t("nav.login")}
                 </Link>

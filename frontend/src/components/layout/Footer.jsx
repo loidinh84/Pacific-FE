@@ -268,7 +268,7 @@ export default function Footer() {
               <button
                 type="submit"
                 disabled={isSubmitting || !feedback.trim() || cooldown > 0}
-                className="py-2.5 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer active:translate-y-0.5 shadow-md shadow-cyan-950/40 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="py-2.5 px-4 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

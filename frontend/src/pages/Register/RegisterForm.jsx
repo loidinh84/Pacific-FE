@@ -159,7 +159,7 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pacific-blue-bright via-pacific-teal to-pacific-cyan hover:from-sky-600 hover:via-indigo-400 hover:to-cyan-600 hover:brightness-110 active:translate-y-0.5 transition-all duration-300 cursor-pointer text-base mt-1 flex items-center justify-center gap-2 disabled:opacity-60"
+          className="w-full py-2.5 rounded-lg font-medium text-white bg-sky-600 hover:bg-sky-500 active:translate-y-0.5 transition-colors cursor-pointer text-sm mt-1 flex items-center justify-center gap-2 disabled:opacity-60 shadow-sm"
         >
           {isLoading ? (
             <>
