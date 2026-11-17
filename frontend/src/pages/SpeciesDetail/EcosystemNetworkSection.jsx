@@ -753,7 +753,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {/* Thanh công cụ khoa học phía trên đồ thị */}
         <div className="px-5 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02] backdrop-blur-md">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
+            <span className="w-2 h-2 rounded-full bg-cyan-400" />
             <span className="text-xs font-bold text-white tracking-wider">
               {viewMode === "orbit"
                 ? isEn
@@ -1048,7 +1048,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
                   {/* Nhãn loài trung tâm kèm huy hiệu Sách Đỏ - Đặt ngay sát đáy quả cầu */}
                   <div className="mt-2.5 whitespace-nowrap px-3.5 py-1.5 rounded-full bg-[#030d1a]/95 border border-cyan-400/50 shadow-lg flex items-center gap-2 backdrop-blur-md">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+                    <span className="w-2 h-2 rounded-full bg-cyan-400" />
                     <span className="text-xs sm:text-sm font-bold text-white tracking-wide">
                       {centerNode.name}
                     </span>
@@ -1219,7 +1219,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
             {/* Hướng dẫn thao tác góc dưới */}
             <div className="absolute bottom-3 left-4 text-[11px] text-slate-400 flex items-center gap-2 bg-[#04101e]/85 px-3 py-1 rounded-full border border-white/10 backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
               <span>
                 {isEn
                   ? "Click any orb or filter tag to inspect trophic relationships"
@@ -1329,7 +1329,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
               {/* ĐẦU NỐI DÒNG NĂNG LƯỢNG TRUYỀN LÊN: LINDEMAN 10% RULE */}
               <div className="flex flex-col items-center justify-center py-1">
                 <div className="flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-900/90 border border-rose-500/30 text-rose-300 shadow-md">
-                  <span className="inline-block animate-bounce text-xs">▲</span>
+                  <span className="inline-block text-xs">▲</span>
                   <span className="font-mono text-[11px] font-bold">
                     {isEn
                       ? "~10% Biomass Transfer (Lindeman's 10% Rule)"
@@ -1425,7 +1425,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
               {/* ĐẦU NỐI DÒNG NĂNG LƯỢNG TRUYỀN LÊN: CON MỒI -> BẬC TRUNG */}
               <div className="flex flex-col items-center justify-center py-1">
                 <div className="flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-900/90 border border-amber-500/30 text-amber-300 shadow-md">
-                  <span className="inline-block animate-bounce text-xs">▲</span>
+                  <span className="inline-block text-xs">▲</span>
                   <span className="font-mono text-[11px] font-bold">
                     {isEn
                       ? "Primary Trophic Fuel & Forage Abundance"

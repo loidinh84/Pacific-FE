@@ -191,7 +191,7 @@ export function DissectionScene3D({
           fallback={
             <Html center zIndexRange={[100, 0]}>
               <div className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-slate-900/90 border border-cyan-500/40 text-cyan-300 font-bold text-xs backdrop-blur-md shadow-2xl">
-                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+                <span className="w-2 h-2 rounded-full bg-cyan-400" />
                 <span>Đang tải mô hình 3D Cá Mập...</span>
               </div>
             </Html>

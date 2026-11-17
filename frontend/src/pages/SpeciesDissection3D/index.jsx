@@ -115,7 +115,7 @@ export default function SpeciesDissection3D() {
 
           {/* 3D Lab Badge */}
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 backdrop-blur-md text-cyan-300 text-xs font-bold tracking-wide">
-            <Box size={14} className="text-cyan-400 animate-pulse" />
+            <Box size={14} className="text-cyan-400" />
             <span>
               {language === "vi" ? "Phòng Giải Phẫu 3D" : "3D Dissection Room"}
             </span>
@@ -126,7 +126,7 @@ export default function SpeciesDissection3D() {
             onClick={() => setXrayMode((v) => !v)}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border backdrop-blur-md text-xs font-semibold transition-all cursor-pointer ${
               xrayMode
-                ? "bg-cyan-500/20 border-cyan-400/60 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+                ? "bg-cyan-500/20 border-cyan-400/60 text-cyan-300 shadow-sm"
                 : "bg-white/10 border-white/15 text-slate-300 hover:bg-white/20"
             }`}
           >

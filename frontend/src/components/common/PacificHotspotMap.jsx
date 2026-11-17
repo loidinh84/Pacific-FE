@@ -218,12 +218,8 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
                           onClick={() => setModalSpot(spot)}
                         >
                           <div className="relative flex items-center justify-center cursor-pointer group/pin -translate-x-1/2 -translate-y-1/2">
-                            {/* Vòng quét radar xanh cyan */}
-                            <span className="absolute w-8 h-8 rounded-full bg-pacific-cyan/40 animate-ping" />
-                            <span className="absolute w-5 h-5 rounded-full bg-pacific-blue-bright/60 animate-pulse" />
-                            
-                            {/* Nút tâm điểm phát sáng */}
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-pacific-cyan to-white border-2 border-pacific-figma-dark shadow-[0_0_16px_rgba(34,211,238,1)] hover:scale-135 transition-transform" />
+                            {/* Nút tâm điểm vị trí */}
+                            <div className="w-3.5 h-3.5 rounded-full bg-cyan-400 border-2 border-[#07162c] shadow-md group-hover/pin:scale-125 group-hover/pin:bg-cyan-300 transition-all" />
 
                             {/* Nhãn tên địa danh hiển thị trực tiếp dưới điểm */}
                             <div className="absolute top-5 whitespace-nowrap px-2.5 py-0.5 rounded-full bg-pacific-figma-dark/85 backdrop-blur-sm border border-pacific-cyan/40 text-[10px] font-bold text-cyan-200 shadow-lg pointer-events-none group-hover/pin:border-pacific-cyan group-hover/pin:text-white transition-all">
@@ -293,9 +289,7 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
               onClick={() => setModalSpot(spot)}
             >
               <div className="relative flex items-center justify-center cursor-pointer group/pin -translate-x-1/2 -translate-y-1/2">
-                <span className="absolute w-6 h-6 rounded-full bg-pacific-cyan/50 animate-ping" />
-                <span className="absolute w-4 h-4 rounded-full bg-pacific-blue-bright/70 animate-pulse" />
-                <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-r from-pacific-cyan to-pacific-blue-bright border-2 border-white shadow-[0_0_14px_rgba(34,211,238,1)] hover:scale-125 transition-transform" />
+                <div className="w-3 h-3 rounded-full bg-cyan-400 border-2 border-[#07162c] shadow-md group-hover/pin:scale-125 group-hover/pin:bg-cyan-300 transition-all" />
 
                 {isHovered && (
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-48 p-3 rounded-xl bg-pacific-figma-dark/95 border border-pacific-cyan/40 backdrop-blur-xl shadow-2xl z-30 animate-in fade-in zoom-in-95 duration-200 pointer-events-none">

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
-import { LightbulbIcon } from "../../assets/Icons";
 
 const SUGGESTION_GROUPS = [
   [
@@ -92,21 +91,20 @@ export function SearchHeroHeader({
           />
           <button
             type="submit"
-            className="absolute right-1.5 px-5 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-lg text-xs md:text-sm font-semibold transition-all cursor-pointer active:translate-y-0.5 shadow-md shadow-cyan-900/40"
+            className="absolute right-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer active:translate-y-0.5 shadow-sm"
           >
             {t("searchPage.btnSearch")}
           </button>
         </div>
 
-        {/* Compact automatic rotating suggestion chips */}
+        {/* Compact suggestion chips */}
         <div
           className="flex items-center justify-center flex-wrap gap-1.5 mt-3 min-h-[30px]"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-400/10 border border-amber-400/25 text-amber-300 font-medium text-[11px] select-none shrink-0">
-            <LightbulbIcon className="w-3 h-3 text-amber-400 stroke-current" />
-            <span>{isEn ? "Suggestions:" : "Gợi ý:"}</span>
+          <span className="text-xs text-slate-400 font-normal select-none shrink-0 mr-1">
+            {isEn ? "Suggestions:" : "Gợi ý:"}
           </span>
 
           <div

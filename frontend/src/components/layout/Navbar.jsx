@@ -426,7 +426,7 @@ export default function Navbar() {
               className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto"
             >
               <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#0c1830]/95 backdrop-blur-2xl border border-amber-500/50 text-white shadow-2xl shadow-cyan-950/70 text-xs">
-                <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping shrink-0" />
+                <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                 <div className="text-left">
                   <div className="font-bold text-amber-300 flex items-center gap-1.5">
                     <Eye size={13} />

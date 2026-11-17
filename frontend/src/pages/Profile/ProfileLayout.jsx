@@ -62,7 +62,7 @@ export default function ProfileLayout() {
     <div className="min-h-screen bg-pacific-figma-dark text-white flex flex-col font-sans selection:bg-pacific-cyan selection:text-black relative overflow-hidden">
       {/* Background Ambient Sunbeams & Ocean Lighting */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.25)_0%,rgba(6,182,212,0.1)_40%,transparent_75%)] pointer-events-none" />
-      <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-pacific-blue-bright/15 blur-[140px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-pacific-blue-bright/10 blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 -right-20 w-96 h-96 rounded-full bg-indigo-500/15 blur-[150px] pointer-events-none" />
 
       {/* Top Main Navbar */}

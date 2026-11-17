@@ -542,7 +542,7 @@ export default function KnowledgeGraph() {
           {/* Thanh trạng thái phía trên canvas */}
           <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2 pointer-events-auto">
             <span className="px-3 py-1.5 rounded-full bg-cyan-950/85 border border-cyan-500/40 text-cyan-300 text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-cyan-400" />
               <span>{isEn ? "Force-directed simulation" : "Mô phỏng trọng lực sinh thái"}</span>
             </span>
 

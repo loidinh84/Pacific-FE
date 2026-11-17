@@ -431,7 +431,8 @@ export default function Search() {
           setSortBy={handleSortChange}
         />
 
-        <FeaturedSpeciesSlider />
+        {/* Chỉ hiển thị slider sinh vật tiêu biểu khi người dùng chưa nhập từ khóa tìm kiếm */}
+        {!searchTerm && !urlQuery && !semanticQuery && <FeaturedSpeciesSlider />}
 
         {/* ── DANH SÁCH SINH VẬT ĐÃ HỢP NHẤT TÌM KIẾM NGỮ NGHĨA ── */}
         <SearchGridList

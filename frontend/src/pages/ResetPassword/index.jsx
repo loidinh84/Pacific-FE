@@ -99,8 +99,8 @@ export default function ResetPassword() {
     <div className="min-h-screen bg-pacific-figma-dark flex flex-col justify-between relative overflow-hidden">
       {/* Background Sunbeams & Glows */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.25)_0%,rgba(6,182,212,0.1)_35%,transparent_70%)] pointer-events-none" />
-      <div className="absolute top-1/3 left-10 w-96 h-96 rounded-full bg-pacific-blue-bright/15 blur-[120px] pointer-events-none animate-pulse-glow" />
-      <div className="absolute bottom-1/3 right-10 w-96 h-96 rounded-full bg-pacific-teal/15 blur-[120px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute top-1/3 left-10 w-96 h-96 rounded-full bg-pacific-blue-bright/10 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/3 right-10 w-96 h-96 rounded-full bg-pacific-teal/10 blur-[120px] pointer-events-none" />
 
       {/* Floating Bubbles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
