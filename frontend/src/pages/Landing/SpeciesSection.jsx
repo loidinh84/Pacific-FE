@@ -187,7 +187,7 @@ export default function SpeciesSection() {
                   {/* Right Column: Image with floating glow */}
                   <div className="lg:col-span-5 flex justify-center items-center">
                     <div className="relative w-full max-w-sm aspect-square flex justify-center items-center p-4">
-                      <div className="absolute inset-4 rounded-full bg-cyan-500/10 blur-2xl group-hover:bg-cyan-400/20 transition-all pointer-events-none" />
+                      <div className="absolute inset-4 rounded-full bg-cyan-500/10 blur-xl pointer-events-none" />
                       <img
                         src={s.image || FishHidden}
                         alt={name}
@@ -196,7 +196,7 @@ export default function SpeciesSection() {
                           e.currentTarget.onerror = null;
                           e.currentTarget.src = FishHidden;
                         }}
-                        className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.35)]"
                       />
                     </div>
                   </div>

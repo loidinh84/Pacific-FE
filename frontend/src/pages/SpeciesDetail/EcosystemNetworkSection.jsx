@@ -1032,7 +1032,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                   <div className="absolute -inset-1 rounded-full bg-cyan-400/10 blur-md pointer-events-none" />
 
                   {/* Quả cầu avatar tròn tinh tế */}
-                  <div className="relative w-24 h-24 md:w-26 md:h-26 rounded-full overflow-hidden border-2 border-cyan-400/90 bg-[#091b30] shadow-[0_0_25px_rgba(56,189,248,0.35)]">
+                  <div className="relative w-24 h-24 md:w-26 md:h-26 rounded-full overflow-hidden border-2 border-sky-400/80 bg-[#091b30] shadow-md">
                     {centerNode.image ? (
                       <img
                         src={centerNode.image}

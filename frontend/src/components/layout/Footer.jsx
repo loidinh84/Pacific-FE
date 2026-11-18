@@ -132,45 +132,45 @@ export default function Footer() {
           </p>
 
           {/* Social Icons with cohesive brand colors & glowing hovers */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <a
               href="https://facebook.com"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-[#1877F2]/10 border border-[#1877F2]/30 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2] hover:shadow-[0_0_12px_rgba(24,119,242,0.4)] transition-all duration-300"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
               title="Facebook"
             >
-              <FaFacebookF size={14} />
+              <FaFacebookF size={13} />
             </a>
             <a
               href="https://youtube.com"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-[#FF0000]/10 border border-[#FF0000]/30 flex items-center justify-center text-[#FF0000] hover:bg-[#FF0000] hover:text-white hover:border-[#FF0000] hover:shadow-[0_0_12px_rgba(255,0,0,0.4)] transition-all duration-300"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
               title="YouTube"
             >
-              <FaYoutube size={16} />
+              <FaYoutube size={14} />
             </a>
             <a
               href="https://instagram.com"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-[#E4405F]/10 border border-[#E4405F]/30 flex items-center justify-center text-[#E4405F] hover:bg-gradient-to-tr hover:from-[#F58529] hover:via-[#DD2A7B] hover:to-[#8134AF] hover:text-white hover:border-transparent hover:shadow-[0_0_12px_rgba(225,48,108,0.4)] transition-all duration-300"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
               title="Instagram"
             >
-              <FaInstagram size={15} />
+              <FaInstagram size={14} />
             </a>
             <a
               href="https://zalo.me"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-[#0068FF]/10 border border-[#0068FF]/30 flex items-center justify-center hover:bg-[#0068FF] hover:border-[#0068FF] hover:shadow-[0_0_12px_rgba(0,104,255,0.4)] transition-all duration-300 p-1.5 group"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors p-1.5"
               title="Zalo"
             >
               <img
                 src={Images.Zalo}
                 alt="Zalo"
-                className="w-full h-full object-contain rounded-full transition-transform group-hover:scale-110"
+                className="w-full h-full object-contain rounded-full opacity-70 hover:opacity-100 transition-opacity"
               />
             </a>
           </div>

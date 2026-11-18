@@ -510,12 +510,12 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
         isDark ? "bg-black/40 text-white" : "bg-slate-900/40 text-slate-800"
       }`}
     >
-      {/* Theme-Aware Glassmorphism Modal Card */}
+      {/* Theme-Aware Modal Card */}
       <div
-        className={`w-full max-w-2xl backdrop-blur-2xl border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300 ${
+        className={`w-full max-w-2xl backdrop-blur-2xl border rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300 ${
           isDark
-            ? "bg-[#0d1730]/90 border-cyan-500/30 text-white shadow-[0_25px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(6,182,212,0.15)]"
-            : "bg-white/95 border-slate-200 text-slate-900 shadow-2xl"
+            ? "bg-[#0d1730] border-white/15 text-white"
+            : "bg-white border-slate-200 text-slate-900 shadow-2xl"
         }`}
       >
         {/* Modal Header */}

@@ -19,10 +19,10 @@ export default function ConfirmDeleteModal({
       }`}
     >
       <div
-        className={`relative w-full max-w-sm rounded-3xl border p-6 shadow-2xl transition-all ${
+        className={`relative w-full max-w-sm rounded-2xl border p-6 shadow-2xl transition-all ${
           isDark
-            ? "bg-[#142247]/95 border-rose-500/40 text-white shadow-[0_25px_60px_rgba(0,0,0,0.7),0_0_35px_rgba(244,63,94,0.18)]"
-            : "bg-white border-slate-300 text-slate-900 shadow-2xl"
+            ? "bg-[#142247] border-rose-500/30 text-white shadow-2xl"
+            : "bg-white border-slate-200 text-slate-900 shadow-2xl"
         }`}
       >
         <div className="flex flex-col items-center text-center">

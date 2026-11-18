@@ -186,7 +186,7 @@ export function SearchGridList({
               return (
                 <div
                   key={s.id}
-                  className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 group cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1"
+                  className="bg-[#183c66] hover:bg-[#1a426f] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-colors duration-200 group cursor-pointer shadow-sm"
                   onClick={() =>
                     navigate(`/species/${s.slug || s.id}`, {
                       state: { fromSearch: `${location.pathname}${location.search}` },
@@ -223,7 +223,7 @@ export function SearchGridList({
                           e.currentTarget.onerror = null;
                           e.currentTarget.src = FishHidden;
                         }}
-                        className="w-full h-full object-contain drop-shadow-[0_8px_18px_rgba(0,0,0,0.55)] group-hover:scale-105 transition-transform duration-400 relative z-10"
+                        className="w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] relative z-10"
                       />
                     </div>
 

@@ -1007,7 +1007,7 @@ export function SpeciesDetailHero({ species }) {
 
                   if (isCenter) {
                     containerStyle =
-                      "z-20 w-[84%] sm:w-[76%] md:w-[68%] h-[220px] sm:h-[320px] md:h-[400px] scale-100 opacity-100 border-2 border-cyan-400/50 shadow-[0_12px_36px_rgba(0,0,0,0.45)] cursor-zoom-in";
+                      "z-20 w-[84%] sm:w-[76%] md:w-[68%] h-[220px] sm:h-[320px] md:h-[400px] scale-100 opacity-100 border border-white/20 shadow-2xl cursor-zoom-in";
                     if (dragOffset !== 0) {
                       centerTransform = {
                         transform: `rotate(${dragOffset * 0.02}deg)`,
@@ -1200,7 +1200,7 @@ export function SpeciesDetailHero({ species }) {
                   transition={{ duration: 0.22 }}
                   src={images[activeImageIdx]}
                   alt={`${speciesName} - ảnh phóng to ${activeImageIdx + 1}`}
-                  className="max-h-[72vh] md:max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.85)] border border-white/10 select-none pointer-events-none"
+                  className="max-h-[72vh] md:max-h-[78vh] max-w-full object-contain rounded-2xl shadow-2xl border border-white/10 select-none pointer-events-none"
                   draggable={false}
                 />
               </div>

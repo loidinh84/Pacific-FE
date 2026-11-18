@@ -125,8 +125,8 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 animate-in fade-in duration-150">
-      <div className="relative w-full max-w-lg bg-[#142247]/95 border border-cyan-400/40 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.7),0_0_35px_rgba(6,182,212,0.18)] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-150">
+      <div className="relative w-full max-w-lg bg-[#142247] border border-white/15 rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/[0.04]">
           <div>
@@ -275,7 +275,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
             <button
               type="submit"
               disabled={isLoading}
-              className="px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-[0_4px_14px_rgba(37,99,235,0.4)] active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
+              className="px-5 py-2.5 rounded-lg text-xs font-medium text-white bg-sky-600 hover:bg-sky-500 shadow-sm active:translate-y-0.5 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-60"
             >
               {isLoading ? (
                 <>

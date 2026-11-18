@@ -184,10 +184,10 @@ function EditAdminProfileModalContent({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/30 animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/50 backdrop-blur-sm animate-in fade-in duration-150">
       <div
-        className={`relative w-full max-w-xl rounded-3xl border shadow-[0_25px_60px_rgba(0,0,0,0.7),0_0_35px_rgba(6,182,212,0.18)] overflow-hidden flex flex-col max-h-[90vh] ${
-          isDark ? "bg-[#142247]/95 border-cyan-400/40 text-white" : "bg-white border-slate-300 text-slate-900"
+        className={`relative w-full max-w-xl rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${
+          isDark ? "bg-[#142247] border-white/15 text-white" : "bg-white border-slate-200 text-slate-900"
         }`}
       >
         {/* Header */}
@@ -407,7 +407,7 @@ function EditAdminProfileModalContent({
             <button
               type="submit"
               disabled={isLoading}
-              className="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-[0_4px_14px_rgba(37,99,235,0.4)] active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="px-5 py-2.5 rounded-lg text-xs sm:text-sm font-medium text-white bg-sky-600 hover:bg-sky-500 shadow-sm active:translate-y-0.5 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isLoading && <Loader2 size={15} className="animate-spin" />}
               <span>

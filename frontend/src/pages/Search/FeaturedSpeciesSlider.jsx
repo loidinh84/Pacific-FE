@@ -201,7 +201,7 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
           return (
             <div
               key={s.id}
-              className="flex-shrink-0 w-56 bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 group shadow-sm hover:shadow-lg hover:shadow-sky-950/40 hover:-translate-y-1.5 relative hover:z-10 select-none"
+              className="flex-shrink-0 w-64 bg-[#183c66] hover:bg-[#1a426f] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-colors duration-200 group shadow-sm select-none"
               onClick={(e) => {
                 if (hasMovedRef.current) {
                   e.preventDefault();
@@ -213,7 +213,7 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
             >
               {/* Header Tags */}
               <div className="flex items-center justify-between gap-1.5 mb-3">
-                <span className="px-2 py-0.5 rounded-md bg-sky-500/20 border border-sky-400/30 text-sky-200 text-[10px] font-semibold leading-tight truncate max-w-[90px]">
+                <span className="px-2 py-0.5 rounded-md bg-sky-500/20 border border-sky-400/30 text-sky-200 text-[10px] font-semibold leading-tight truncate">
                   {categoryName}
                 </span>
                 <span
@@ -242,7 +242,7 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = FishHidden;
                   }}
-                  className="w-full h-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-400 relative z-10 select-none pointer-events-none"
+                  className="w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)] relative z-10 select-none pointer-events-none"
                 />
               </div>
 

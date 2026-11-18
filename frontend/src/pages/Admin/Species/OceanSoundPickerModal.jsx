@@ -172,9 +172,9 @@ export default function OceanSoundPickerModal({
 
       {/* Slide-over Right Panel */}
       <div
-        className={`w-full max-w-lg h-full border-l flex flex-col shadow-xl animate-in slide-in-from-right duration-300 ${
+        className={`w-full max-w-lg h-full border-l flex flex-col shadow-2xl animate-in slide-in-from-right duration-300 ${
           isDark
-            ? "bg-[#0b1329] border-cyan-500/30 text-white shadow-[0_0_50px_rgba(0,0,0,0.8)]"
+            ? "bg-[#0b1329] border-white/15 text-white shadow-2xl"
             : "bg-white border-slate-200 text-slate-900 shadow-xl"
         }`}
       >
@@ -325,8 +325,8 @@ export default function OceanSoundPickerModal({
                   className={`p-3.5 rounded-2xl border transition-all space-y-2.5 ${
                     isSelected
                       ? isDark
-                        ? "bg-cyan-950/40 border-cyan-500/60 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
-                        : "bg-cyan-50 border-cyan-400 shadow-sm"
+                        ? "bg-sky-950/40 border-sky-400/40 shadow-sm"
+                        : "bg-sky-50 border-sky-400 shadow-sm"
                       : isDark
                         ? "bg-white/5 border-white/10 hover:border-cyan-500/30"
                         : "bg-white border-slate-200 hover:border-slate-300"

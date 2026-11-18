@@ -160,7 +160,7 @@ export default function SearchSection() {
                     </button>
 
                     {isCategoryOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-cyan-500/30 rounded-xl shadow-[0_12px_28px_rgba(0,0,0,0.45)] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-white/15 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
                         <div className="max-h-52 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
                           {categories.map((c) => {
                             const isSelected = String(c.value) === String(category);
@@ -215,7 +215,7 @@ export default function SearchSection() {
                     </button>
 
                     {isHabitatOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-cyan-500/30 rounded-xl shadow-[0_12px_28px_rgba(0,0,0,0.45)] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-white/15 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
                         <div className="max-h-52 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
                           {HABITATS_DATA.map((h) => {
                             const isSelected = String(h.value) === String(habitat);
@@ -279,11 +279,11 @@ export default function SearchSection() {
             {/* Mystery Fish Visual */}
             <div className="lg:col-span-5 flex justify-center items-center">
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
-                <div className="absolute inset-4 rounded-full bg-cyan-500/15 blur-3xl animate-pulse-glow pointer-events-none" />
+                <div className="absolute inset-4 rounded-full bg-cyan-500/10 blur-2xl pointer-events-none" />
                 <img
                   src={Images.FishHidden}
                   alt={isEn ? "Mystery Marine Life" : "Bóng sinh vật biển bí ẩn"}
-                  className="w-full h-full object-contain animate-float-slow filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)] select-none pointer-events-none"
+                  className="w-full h-full object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.35)] select-none pointer-events-none"
                 />
               </div>
             </div>

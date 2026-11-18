@@ -172,10 +172,10 @@ export default function AssignSpeciesModal({
       }`}
     >
       <div
-        className={`relative w-full max-w-5xl rounded-3xl border shadow-2xl overflow-hidden transition-all flex flex-col max-h-[85vh] ${
+        className={`relative w-full max-w-5xl rounded-2xl border shadow-2xl overflow-hidden transition-all flex flex-col max-h-[85vh] ${
           isDark
-            ? "bg-[#142247]/95 border-cyan-400/40 text-white shadow-[0_25px_60px_rgba(0,0,0,0.7),0_0_35px_rgba(6,182,212,0.18)]"
-            : "bg-white border-slate-300 text-slate-900 shadow-2xl"
+            ? "bg-[#142247] border-white/15 text-white shadow-2xl"
+            : "bg-white border-slate-200 text-slate-900 shadow-2xl"
         }`}
       >
         {/* Header */}
@@ -238,8 +238,8 @@ export default function AssignSpeciesModal({
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer text-left ${
                       isSelected
                         ? isDark
-                          ? "bg-gradient-to-r from-cyan-500/35 to-blue-600/35 border border-cyan-400 text-white font-bold shadow-[0_0_15px_rgba(6,182,212,0.25)]"
-                          : "bg-cyan-100 border border-cyan-400 text-cyan-900 font-bold shadow-sm"
+                          ? "bg-sky-500/20 border border-sky-400/40 text-white font-medium shadow-sm"
+                          : "bg-sky-100 border border-sky-400 text-sky-900 font-medium shadow-sm"
                         : isDark
                         ? "bg-white/[0.03] hover:bg-white/[0.08] text-slate-200 border border-white/10"
                         : "bg-white hover:bg-slate-100 text-slate-800 border border-slate-200"
@@ -381,7 +381,7 @@ export default function AssignSpeciesModal({
             type="button"
             onClick={handleSave}
             disabled={isSaving || isLoadingSpecies}
-            className="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-[0_4px_14px_rgba(37,99,235,0.4)] active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+            className="px-5 py-2.5 rounded-lg text-xs sm:text-sm font-medium bg-sky-600 hover:bg-sky-500 text-white transition-colors shadow-sm active:translate-y-0.5 cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
           >
             {isSaving && <Loader2 size={14} className="animate-spin" />}
             <span>Lưu thay đổi</span>

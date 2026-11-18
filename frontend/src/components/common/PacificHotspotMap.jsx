@@ -112,7 +112,7 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
         onClick={() => setModalSpot(null)}
       >
         <div
-          className="relative w-full max-w-lg bg-pacific-figma-dark/95 border border-pacific-cyan/40 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-[0_0_60px_rgba(14,165,233,0.35)] animate-in zoom-in-95 duration-200"
+          className="relative w-full max-w-lg bg-[#0c1830] border border-white/15 rounded-2xl p-6 md:p-8 backdrop-blur-2xl shadow-2xl animate-in zoom-in-95 duration-200"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between mb-4">
@@ -228,7 +228,7 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
 
                             {/* Tooltip khi rê chuột */}
                             {isHovered && (
-                              <div className="absolute bottom-7 left-1/2 -translate-x-1/2 w-52 p-3.5 rounded-2xl bg-pacific-figma-dark/95 border border-pacific-cyan/50 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] z-40 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
+                              <div className="absolute bottom-7 left-1/2 -translate-x-1/2 w-52 p-3.5 rounded-xl bg-[#0c1830]/95 border border-white/20 backdrop-blur-xl shadow-xl z-40 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
                                 <div className="flex items-center gap-1.5 text-pacific-cyan text-[10px] font-bold mb-1">
                                   <MapPin size={12} />
                                   <span>{spot.depth}</span>

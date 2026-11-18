@@ -222,10 +222,10 @@ function CustomCategorySelect({ options, value, onChange, isDark }) {
 
       {open && (
         <div
-          className={`absolute left-0 right-0 top-full mt-1.5 z-50 rounded-2xl border shadow-2xl overflow-y-auto max-h-56 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden p-1.5 space-y-1 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-2xl ${
+          className={`absolute left-0 right-0 top-full mt-1.5 z-50 rounded-xl border shadow-xl overflow-y-auto max-h-56 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden p-1.5 space-y-1 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-2xl ${
             isDark
-              ? "bg-[#0c1630]/98 border-cyan-500/30 text-white shadow-[0_15px_40px_rgba(0,0,0,0.8),0_0_25px_rgba(6,182,212,0.15)]"
-              : "bg-white/98 border-slate-200 text-slate-900 shadow-xl"
+              ? "bg-[#0c1630] border-white/15 text-white shadow-xl"
+              : "bg-white border-slate-200 text-slate-900 shadow-xl"
           }`}
         >
           {options.map((opt) => {
@@ -665,12 +665,12 @@ export default function ApiSyncModal({ isOpen, onClose, onSyncAll }) {
         </div>
       )}
 
-      {/* Main Glassmorphism Modal Card */}
+      {/* Main Modal Card */}
       <div
-        className={`w-full max-w-3xl backdrop-blur-2xl border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300 ${
+        className={`w-full max-w-3xl backdrop-blur-2xl border rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300 ${
           isDark
-            ? "bg-[#0c1630]/95 border-cyan-500/30 text-white shadow-[0_25px_70px_rgba(0,0,0,0.8),0_0_45px_rgba(6,182,212,0.18)]"
-            : "bg-white/95 border-slate-200 text-slate-900 shadow-2xl"
+            ? "bg-[#0c1630] border-white/15 text-white"
+            : "bg-white border-slate-200 text-slate-900 shadow-2xl"
         }`}
       >
         {/* ── 1. MODAL HEADER ── */}
@@ -1124,11 +1124,11 @@ export default function ApiSyncModal({ isOpen, onClose, onSyncAll }) {
 
                         <div className="flex items-center gap-2">
                           {api.status === "ok" ? (
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] shrink-0" />
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
                           ) : api.status === "slow" ? (
-                            <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24] shrink-0" />
+                            <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                           ) : (
-                            <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_#f43f5e] shrink-0" />
+                            <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
                           )}
                           <span
                             className={`text-[11px] font-medium leading-tight line-clamp-1 ${
