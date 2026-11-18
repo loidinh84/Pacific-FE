@@ -14,7 +14,8 @@ const vi = {
   hero: {
     titleLine1: "Khám Phá",
     titleLine2: "Biển Đông",
-    description: "Hành trình trải nghiệm vẻ đẹp bí ẩn và hệ sinh thái đa dạng của vùng biển chiến lược quan trọng nhất Đông Nam Á.",
+    description:
+      "Khám phá hệ sinh thái đa dạng và dữ liệu sinh học các loài sinh vật tại vùng Biển Đông Việt Nam.",
     btnExplore: "Khám phá ngay",
     btnSearch: "Tìm kiếm sinh vật",
     stat1Title: "Diện tích",
@@ -34,7 +35,8 @@ const vi = {
   // Search Page
   searchPage: {
     heroTitle: "Sinh Vật Biển Đông",
-    heroDesc: "Khám phá hàng ngàn loài sinh vật kỳ diệu sống dưới lòng vùng biển chiến lược quan trọng của Đông Nam Á",
+    heroDesc:
+      "Tra cứu thông tin phân loại học, độ sâu và chuỗi thức ăn sinh thái tại Biển Đông.",
     searchPlaceholder: "Tìm tên sinh vật, tên khoa học, họ...",
     btnSearch: "Tìm kiếm",
     quickStat1: "3,500+",
@@ -68,8 +70,10 @@ const vi = {
   about: {
     badge: "Về Biển Đông",
     title: "Vùng Biển Chiến Lược Quan Trọng Nhất Đông Nam Á",
-    desc1: "Biển Đông trải dài hơn 3.447 triệu km², là vùng biển bán kín với hệ sinh thái phong phú từ các rạn san hô Hoàng Sa, Trường Sa đến những vực sâu bí ẩn.",
-    desc2: "Sứ mệnh của chúng tôi là kết nối cộng đồng yêu thiên nhiên, lan tỏa kiến thức bảo tồn sinh vật biển Đông và xây dựng ý thức bảo vệ môi trường biển.",
+    desc1:
+      "Biển Đông trải dài hơn 3.447 triệu km², là vùng biển bán kín với hệ sinh thái phong phú từ các rạn san hô Hoàng Sa, Trường Sa đến những vực sâu bí ẩn.",
+    desc2:
+      "Sứ mệnh của chúng tôi là kết nối cộng đồng yêu thiên nhiên, lan tỏa kiến thức bảo tồn sinh vật biển Đông và xây dựng ý thức bảo vệ môi trường biển.",
     stat1Title: "Diện tích",
     stat1Value: "3.447 triệu km²",
     stat2Title: "Sinh vật",
@@ -79,14 +83,16 @@ const vi = {
   },
   // Footer
   footer: {
-    brandDesc: "Khám phá thế giới đại dương kỳ diệu, nơi lưu giữ vô số bí ẩn và hệ sinh vật tuyệt vời của vùng Biển Đông Việt Nam.",
+    brandDesc:
+      "Khám phá thế giới đại dương kỳ diệu, nơi lưu giữ vô số bí ẩn và hệ sinh vật tuyệt vời của vùng Biển Đông Việt Nam.",
     exploreTitle: "Khám phá",
     legalTitle: "Chính sách & Điều khoản",
     privacyPolicy: "Bảo mật thông tin",
     termsOfUse: "Điều khoản sử dụng",
     contentPolicy: "Chính sách nội dung",
     contactTitle: "Đóng góp ý kiến",
-    contactDesc: "Gửi góp ý hoặc báo lỗi để giúp chúng tôi hoàn thiện trang web tốt hơn!",
+    contactDesc:
+      "Gửi góp ý hoặc báo lỗi để giúp chúng tôi hoàn thiện trang web tốt hơn!",
     feedbackPlaceholder: "Nhập ý kiến đóng góp hoặc phản hồi của bạn...",
     btnSendFeedback: "Gửi ý kiến",
     copyright: "Tất cả quyền được bảo lưu.",
@@ -113,10 +119,12 @@ const vi = {
     registerNow: "Đăng ký ngay",
     loginNow: "Đăng nhập ngay",
     brandTitle: "Khám phá thế giới đại dương kỳ diệu",
-    brandDesc: "Trải nghiệm trọn vẹn hành trình tìm hiểu hàng trăm sinh vật biển phong phú.",
+    brandDesc:
+      "Trải nghiệm trọn vẹn hành trình tìm hiểu hàng trăm sinh vật biển phong phú.",
     registerBadge: "Gia nhập đại dương",
     registerBrandTitle: "Bắt đầu hành trình đại dương ngay hôm nay",
-    registerBrandDesc: "Tạo tài khoản miễn phí để lưu giữ lịch sử trắc nghiệm và theo dõi tiến trình khám phá sinh vật biển.",
+    registerBrandDesc:
+      "Tạo tài khoản miễn phí để lưu giữ lịch sử trắc nghiệm và theo dõi tiến trình khám phá sinh vật biển.",
     feature1: "Tra cứu đa dạng",
     feature1Sub: "Dữ liệu hàng trăm loài sinh vật",
     feature2: "Trắc nghiệm sinh động",
@@ -142,7 +150,8 @@ const vi = {
     loginFailed: "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!",
     registerFailed: "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin!",
     invalidCredentials: "Email hoặc mật khẩu không chính xác!",
-    accountLocked: "Tài khoản của bạn đã bị khóa! Vui lòng liên hệ quản trị viên.",
+    accountLocked:
+      "Tài khoản của bạn đã bị khóa! Vui lòng liên hệ quản trị viên.",
     githubAuthLoading: "Đang xác thực tài khoản GitHub...",
     githubLoginSuccess: "Đăng nhập GitHub thành công!",
     githubLoginFailed: "Đăng nhập bằng GitHub thất bại!",
@@ -188,7 +197,8 @@ const vi = {
     viewMore: "Xem thêm",
     viewLess: "Rút gọn",
     notFoundTitle: "Không tìm thấy sinh vật",
-    notFoundDesc: "Sinh vật này không tồn tại trong danh mục hoặc đường dẫn chưa chính xác.",
+    notFoundDesc:
+      "Sinh vật này không tồn tại trong danh mục hoặc đường dẫn chưa chính xác.",
     backToSearch: "Quay lại tìm kiếm",
     loadingSpecies: "Đang tải dữ liệu sinh vật Biển Đông...",
     updating: "Đang cập nhật",
@@ -207,7 +217,8 @@ const vi = {
     visPoor: "Kém",
     visNone: "Không",
     heroTitle: "Thám Hiểm Độ Sâu Biển Đông",
-    heroSubtitle: "Cuộn chuột xuống để bắt đầu hành trình lặn sâu vào lòng Biển Đông. Khám phá sinh vật kỳ bí và những điểm đọc đáo của vùng biển chiến lược quan trọng nhất Đông Nam Á — từ mặt nước đến Rãnh Manila sâu 5,016m.",
+    heroSubtitle:
+      "Cuộn chuột xuống để bắt đầu hành trình lặn sâu vào lòng Biển Đông. Khám phá sinh vật kỳ bí và những điểm đọc đáo của vùng biển chiến lược quan trọng nhất Đông Nam Á — từ mặt nước đến Rãnh Manila sâu 5,016m.",
     scrollDown: "Cuộn xuống",
     seaLevel: "Mực nước biển (0m)",
     clickDetail: "Nhấn để xem chi tiết",
@@ -215,10 +226,9 @@ const vi = {
   // News
   news: {
     pageTitle: "Tin tức Đại dương",
-    metaDescription: "Tin tức mới nhất về bảo tồn, khám phá và nghiên cứu đại dương, sinh vật biển và Biển Đông.",
-    heroBadge: "Bản tin đại dương",
+    metaDescription:
+      "Tin tức mới nhất về bảo tồn, khám phá và nghiên cứu đại dương, sinh vật biển và Biển Đông.",
     heroTitle: "Tin Tức Đại Dương",
-    heroDesc: "Cập nhật những câu chuyện mới nhất về bảo tồn, khám phá và nghiên cứu sinh vật biển — từ ban biên tập và các nguồn tin uy tín.",
     searchPlaceholder: "Tìm bài viết theo tiêu đề, nội dung...",
     statArticles: "Bài viết",
     statSources: "Nguồn tin",
@@ -249,7 +259,8 @@ const vi = {
     copied: "Đã sao chép!",
     relatedTitle: "Bài viết liên quan",
     externalNoticeTitle: "Bài viết từ nguồn bên ngoài",
-    externalNoticeDesc: "Hệ thống chỉ hiển thị phần tóm tắt để tôn trọng bản quyền. Hãy đọc toàn bộ bài viết tại trang gốc.",
+    externalNoticeDesc:
+      "Hệ thống chỉ hiển thị phần tóm tắt để tôn trọng bản quyền. Hãy đọc toàn bộ bài viết tại trang gốc.",
     readOriginal: "Đọc bài gốc tại",
     notFoundTitle: "Không tìm thấy bài viết",
     notFoundDesc: "Bài viết có thể đã bị gỡ hoặc đường dẫn không chính xác.",
@@ -276,7 +287,8 @@ const vi = {
   knowledgeGraph: {
     badge: "Hệ thống tri thức sinh thái Biển Đông",
     title: "Đồ thị tri thức đa dạng sinh thái Biển Đông",
-    subtitle: "Mô hình hóa chuỗi thức ăn, quan hệ cộng sinh tương hỗ và cấu trúc sinh cảnh của các loài sinh vật đặc trưng tại 8 Khu bảo tồn biển (MPAs) Việt Nam.",
+    subtitle:
+      "Mô hình hóa chuỗi thức ăn, quan hệ cộng sinh tương hỗ và cấu trúc sinh cảnh của các loài sinh vật đặc trưng tại 8 Khu bảo tồn biển (MPAs) Việt Nam.",
     statSpecies: "Loài",
     statLinks: "Liên kết",
     statThreatened: "Nguy cấp",
@@ -291,7 +303,8 @@ const vi = {
     legendHerbivore: "Ăn cỏ",
     legendSymbiosis: "Cộng sinh",
     legendHabitat: "Sinh cảnh",
-    canvasTip: "* Kéo chuột để di chuyển • Cuộn để Zoom • Click vào sinh vật để mở bảng phân tích sinh thái",
+    canvasTip:
+      "* Kéo chuột để di chuyển • Cuộn để Zoom • Click vào sinh vật để mở bảng phân tích sinh thái",
     drawerTitle: "Hồ sơ quan hệ sinh thái",
     redListPrefix: "Sách Đỏ:",
     identifierCode: "Mã định danh:",
@@ -304,7 +317,8 @@ const vi = {
     predatorsFallback: "Thiên địch",
     symbiosisSection: "Cộng sinh & Tương hỗ",
     emptyTitle: "Không tìm thấy sinh vật phù hợp với bộ lọc",
-    emptyDesc: "Hãy thử chọn 'Tất cả vùng biển' hoặc đặt lại bộ lọc để hiển thị toàn bộ mạng lưới sinh thái.",
+    emptyDesc:
+      "Hãy thử chọn 'Tất cả vùng biển' hoặc đặt lại bộ lọc để hiển thị toàn bộ mạng lưới sinh thái.",
   },
   // Hồ sơ cá nhân người dùng
   profile: {
@@ -330,10 +344,12 @@ const vi = {
     adminRole: "Quản trị viên",
     activeStatus: "Hoạt động",
     emptyFavorites: "Chưa có sinh vật yêu thích nào",
-    emptyFavoritesDesc: "Hãy khám phá danh mục sinh vật Biển Đông và lưu lại những loài bạn quan tâm!",
+    emptyFavoritesDesc:
+      "Hãy khám phá danh mục sinh vật Biển Đông và lưu lại những loài bạn quan tâm!",
     exploreNow: "Khám phá ngay",
     emptyExplored: "Chưa khám phá địa điểm nào",
-    emptyExploredDesc: "Thám hiểm bản đồ tương tác để mở khóa các khu bảo tồn và vùng biển tự nhiên!",
+    emptyExploredDesc:
+      "Thám hiểm bản đồ tương tác để mở khóa các khu bảo tồn và vùng biển tự nhiên!",
     editModalTitle: "Cập nhật thông tin hồ sơ",
     avatarUrl: "Ảnh đại diện (URL)",
     btnSave: "Lưu thay đổi",
@@ -352,7 +368,8 @@ const vi = {
     btnSubmit: "Xác nhận đổi mật khẩu",
     submitting: "Đang cập nhật mật khẩu...",
     successTitle: "Đổi mật khẩu thành công!",
-    successDesc: "Mật khẩu của bạn đã được cập nhật thành công. Hãy đăng nhập lại để tiếp tục khám phá.",
+    successDesc:
+      "Mật khẩu của bạn đã được cập nhật thành công. Hãy đăng nhập lại để tiếp tục khám phá.",
     backToLogin: "Quay lại Đăng nhập",
     errMismatch: "Mật khẩu xác nhận không khớp!",
     errLength: "Mật khẩu phải có ít nhất 6 ký tự!",
@@ -362,17 +379,23 @@ const vi = {
   // Các trang lỗi
   errors: {
     error404Title: "Bạn đã lạc vào vùng chưa được khám phá",
-    error404Desc: "Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển sang tọa độ khác.",
+    error404Desc:
+      "Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển sang tọa độ khác.",
     error403Title: "Khu vực giới hạn truy cập",
-    error403Desc: "Bạn không có quyền hạn truy cập vào vùng biển hoặc phân hệ này.",
+    error403Desc:
+      "Bạn không có quyền hạn truy cập vào vùng biển hoặc phân hệ này.",
     error401Title: "Yêu cầu đăng nhập tài khoản",
-    error401Desc: "Phiên làm việc đã hết hạn hoặc bạn cần đăng nhập để tiếp tục thám hiểm.",
+    error401Desc:
+      "Phiên làm việc đã hết hạn hoặc bạn cần đăng nhập để tiếp tục thám hiểm.",
     error500Title: "Sóng dữ làm gián đoạn máy chủ",
-    error500Desc: "Hệ thống đang gặp sự cố tạm thời. Đội ngũ kỹ thuật viên đang khắc phục.",
+    error500Desc:
+      "Hệ thống đang gặp sự cố tạm thời. Đội ngũ kỹ thuật viên đang khắc phục.",
     error503Title: "Hệ thống đang bảo trì",
-    error503Desc: "Hệ thống đang nâng cấp để mang lại trải nghiệm khám phá đại dương tốt hơn.",
+    error503Desc:
+      "Hệ thống đang nâng cấp để mang lại trải nghiệm khám phá đại dương tốt hơn.",
     errorOfflineTitle: "Mất kết nối biển khơi",
-    errorOfflineDesc: "Thiết bị của bạn đang ngoại tuyến. Vui lòng kiểm tra lại kết nối mạng Internet.",
+    errorOfflineDesc:
+      "Thiết bị của bạn đang ngoại tuyến. Vui lòng kiểm tra lại kết nối mạng Internet.",
     unexpectedError: "Ứng dụng gặp sự cố ngoài ý muốn",
     btnHome: "Về trang chủ",
     btnBack: "Quay lại",

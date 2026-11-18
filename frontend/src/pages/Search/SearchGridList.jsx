@@ -228,12 +228,24 @@ export function SearchGridList({
                     </div>
 
                     {/* Info */}
-                    <h3 className="text-base font-bold text-white font-heading group-hover:text-sky-300 transition-colors mb-0.5 line-clamp-1">
-                      {name}
-                    </h3>
+                    <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                      <h3 className="text-base font-bold text-white font-heading group-hover:text-sky-300 transition-colors line-clamp-1">
+                        {name}
+                      </h3>
+                      {s.role && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-sky-500/15 border border-sky-400/25 text-sky-200">
+                          {s.role}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-[10px] text-slate-400 italic mb-2">
                       {s.sciName}
                     </p>
+                    {s.semanticReason ? (
+                      <p className="text-[11px] text-sky-200/90 bg-sky-500/10 border border-sky-400/20 rounded-md p-1.5 mb-2 leading-relaxed">
+                        {s.semanticReason}
+                      </p>
+                    ) : null}
                     <p className="text-xs text-white/60 leading-relaxed line-clamp-2 mb-3">
                       {desc}
                     </p>

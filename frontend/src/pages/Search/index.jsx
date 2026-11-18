@@ -199,12 +199,17 @@ export default function Search() {
 
       // 1. Ưu tiên các loài khớp trực tiếp tên với từ khóa tìm kiếm
       const directMatches = term
-        ? activeCatalog.filter((c) => {
-            const matchNameVi = (c.nameVi || "").toLowerCase().includes(term);
-            const matchNameEn = (c.nameEn || "").toLowerCase().includes(term);
-            const matchSci = (c.sciName || "").toLowerCase().includes(term);
-            return matchNameVi || matchNameEn || matchSci;
-          })
+        ? activeCatalog
+            .filter((c) => {
+              const matchNameVi = (c.nameVi || "").toLowerCase().includes(term);
+              const matchNameEn = (c.nameEn || "").toLowerCase().includes(term);
+              const matchSci = (c.sciName || "").toLowerCase().includes(term);
+              return matchNameVi || matchNameEn || matchSci;
+            })
+            .map((c) => ({
+              ...c,
+              role: "Khớp từ khóa",
+            }))
         : [];
 
       const directIds = new Set(directMatches.map((d) => String(d.id || d.slug)));
@@ -268,6 +273,8 @@ export default function Search() {
             depth: matchedCatalog?.depth || item.depth || "0 - 200m",
             depthMax: matchedCatalog?.depthMax,
             vietnamRedListStatus: item.redList || matchedCatalog?.vietnamRedListStatus,
+            role: item.role,
+            semanticReason: item.semanticReason,
           };
         });
 
