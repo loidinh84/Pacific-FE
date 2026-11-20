@@ -734,13 +734,18 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
                 </div>
 
                 <div>
-                  <label className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-white/80" : "text-slate-700"}`}>
-                    Phân vùng Biển Đông
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className={`text-sm font-semibold ${isDark ? "text-white/80" : "text-slate-700"}`}>
+                      Phân vùng phân bố
+                    </label>
+                    <span className="text-[11px] text-slate-400 font-normal">
+                      Xác thực từ UNESCO OBIS & WoRMS
+                    </span>
+                  </div>
                   <input
                     type="text"
                     list="east-sea-zones-datalist"
-                    placeholder="VD: Quần đảo Hoàng Sa, Trường Sa, Côn Đảo..."
+                    placeholder="Tự động đồng bộ từ OBIS/WoRMS hoặc chọn phân vùng chuẩn..."
                     value={formData.geoZone}
                     onChange={(e) => setFormData({ ...formData, geoZone: e.target.value })}
                     className={`w-full px-3.5 py-2.5 rounded-xl text-sm focus:outline-none transition-all ${
