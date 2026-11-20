@@ -55,7 +55,7 @@ export function SpeciesDistributionSpecs({ species, language = "vi" }) {
               <MapPin size={16} className="text-sky-400 shrink-0" />
               <div>
                 <span className="text-slate-400 text-xs block">
-                  {isEn ? "East Sea Zone" : "Vùng phân bố Biển Đông"}
+                  {isEn ? "Distribution Zone" : "Vùng phân bố"}
                 </span>
                 <span className="text-white font-semibold">
                   {zoneName}
@@ -63,12 +63,12 @@ export function SpeciesDistributionSpecs({ species, language = "vi" }) {
               </div>
             </div>
 
-            {/* Tọa độ địa lý */}
+            {/* Tọa độ */}
             <div className="flex items-center gap-2 border-l border-white/10 pl-4 sm:pl-6">
               <Compass size={16} className="text-teal-400 shrink-0" />
               <div>
                 <span className="text-slate-400 text-xs block">
-                  {isEn ? "Coordinates" : "Tọa độ địa lý"}
+                  {isEn ? "Coordinates" : "Tọa độ"}
                 </span>
                 <span className="text-cyan-200 font-mono font-medium text-xs">
                   {zoneInfo.lat}, {zoneInfo.lng}
@@ -76,13 +76,13 @@ export function SpeciesDistributionSpecs({ species, language = "vi" }) {
               </div>
             </div>
 
-            {/* Sinh cảnh sống */}
+            {/* Môi trường sống */}
             {habitatText && (
               <div className="flex items-center gap-2 border-l border-white/10 pl-4 sm:pl-6 hidden lg:flex">
                 <Waves size={16} className="text-slate-400 shrink-0" />
                 <div>
                   <span className="text-slate-400 text-xs block">
-                    {isEn ? "Habitat" : "Sinh cảnh sống"}
+                    {isEn ? "Habitat" : "Môi trường sống"}
                   </span>
                   <span className="text-slate-300">
                     {habitatText}
