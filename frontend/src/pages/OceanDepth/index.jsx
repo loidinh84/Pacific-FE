@@ -477,7 +477,7 @@ export default function OceanDepth() {
           key={`c-${c.id}`}
           className="od-node od-creature-item"
           style={{ top: `${top}px`, left: `${left}%` }}
-          onClick={() => navigate(`/species/${c.id}`)}
+          onClick={() => navigate(`/species/${c.slug || c.id}`)}
           title={`${name} (${c.depth}m) - ${loc(c.descVi, c.descEn)}`}
         >
           <img

@@ -191,6 +191,7 @@ export const CREATURES_BY_DEPTH = [
   // ── 0m – 200m: VÙNG ÁNH SÁNG (EPIPELAGIC) ──
   {
     id: "dugong",
+    slug: "bo-bien-dugong",
     depth: 5,
     left: 18,
     nameVi: "Bò Biển (Dugong)",
@@ -202,6 +203,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "clownfish",
+    slug: "ca-he-ocellaris-nemo",
     depth: 15,
     left: 74,
     nameVi: "Cá Hề Nemo & Hải Quỳ",
@@ -213,6 +215,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "hawksbill-turtle",
+    slug: "doi-moi-rua-bien",
     depth: 30,
     left: 36,
     nameVi: "Đồi Mồi",
@@ -224,6 +227,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "bigfin-squid",
+    slug: "muc-la-dai-duong",
     depth: 45,
     left: 60,
     nameVi: "Mực Lá Biển Đông",
@@ -235,6 +239,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "whale-shark",
+    slug: "ca-map-voi-nham-voi",
     depth: 65,
     left: 80,
     nameVi: "Cá Mập Voi (Cá Ông)",
@@ -246,6 +251,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "spotted-dolphin",
+    slug: "ca-heo-dom-nhiet-doi",
     depth: 85,
     left: 22,
     nameVi: "Cá Heo Đốm Nhiệt Đới",
@@ -257,6 +263,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "sailfish",
+    slug: "ca-co-gon",
     depth: 110,
     left: 52,
     nameVi: "Cá Buồm (Cá Cờ Gòn)",
@@ -268,6 +275,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "hammerhead-shark",
+    slug: "ca-nham-bua-dau-bua",
     depth: 135,
     left: 78,
     nameVi: "Cá Nhám Búa",
@@ -279,6 +287,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "yellowfin-tuna",
+    slug: "ca-ngu-vay-vang-dai-duong",
     depth: 155,
     left: 26,
     nameVi: "Cá Ngừ Vây Vàng",
@@ -290,6 +299,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "ocean-sunfish",
+    slug: "ca-mat-trang-mola-mola",
     depth: 175,
     left: 66,
     nameVi: "Cá Mặt Trăng (Mola Mola)",
@@ -301,6 +311,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "spotted-eagle-ray",
+    slug: "ca-duoi-o-hoa",
     depth: 195,
     left: 42,
     nameVi: "Cá Đuối Ó Sao",
@@ -314,6 +325,7 @@ export const CREATURES_BY_DEPTH = [
   // ── 200m – 1,000m: VÙNG CHẠNG VẠNG (MESOPELAGIC) ──
   {
     id: "lanternfish",
+    slug: "ca-den-long-bien-sau",
     depth: 240,
     left: 18,
     nameVi: "Cá Đèn Lồng Biển Sâu",
@@ -325,6 +337,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "giant-isopod",
+    slug: "bo-bien-khong-lo-giant-isopod",
     depth: 360,
     left: 75,
     nameVi: "Bọ Biển Khổng Lồ",
@@ -336,6 +349,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "hatchetfish",
+    slug: "ca-riu-bac-bien-sau",
     depth: 460,
     left: 35,
     nameVi: "Cá Rìu Biển Sâu",
@@ -347,6 +361,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "cockeyed-squid",
+    slug: "muc-mat-choi-lac",
     depth: 560,
     left: 62,
     nameVi: "Mực Mắt Chọi Lác",
@@ -358,6 +373,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "deepsea-crab",
+    slug: "cua-da-bien-sau",
     depth: 670,
     left: 20,
     nameVi: "Cua Đá Đỏ Sâu",
@@ -369,6 +385,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "ghost-shark",
+    slug: "ca-nham-ma-ghost-shark",
     depth: 760,
     left: 78,
     nameVi: "Cá Nhám Ma (Cá Mập Thỏ)",
@@ -380,6 +397,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "black-dragonfish",
+    slug: "ca-rong-den-bien-sau",
     depth: 870,
     left: 34,
     nameVi: "Cá Rồng Đen",
@@ -391,6 +409,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "glass-squid",
+    slug: "muc-thuy-tinh-glass-squid",
     depth: 950,
     left: 68,
     nameVi: "Mực Thủy Tinh",
@@ -402,6 +421,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "gigantocypris",
+    slug: "giap-xac-boi-khong-lo-gigantocypris",
     depth: 990,
     left: 25,
     nameVi: "Giáp Xác Bơi Khổng Lồ",
@@ -415,6 +435,7 @@ export const CREATURES_BY_DEPTH = [
   // ── 1,000m – 4,000m: VÙNG NỬA ĐÊM (BATHYPELAGIC) ──
   {
     id: "anglerfish",
+    slug: "ca-can-cau-bien-sau-anglerfish",
     depth: 1150,
     left: 76,
     nameVi: "Cá Cần Câu Quỷ (Anglerfish)",
@@ -426,6 +447,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "haima-tubeworm",
+    slug: "giun-ong-mieng-lanh-haima",
     depth: 1380,
     left: 28,
     nameVi: "Giun Ống Miệng Lạnh Haima",
@@ -437,6 +459,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "haima-mussel",
+    slug: "trai-bien-sau-haima",
     depth: 1450,
     left: 64,
     nameVi: "Trai Biển Sâu Bồn Trũng",
@@ -448,6 +471,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "viperfish",
+    slug: "ca-rong-bien-sau-viperfish",
     depth: 1850,
     left: 22,
     nameVi: "Cá Hổ Lục Biển Sâu (Viperfish)",
@@ -459,6 +483,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "vampire-squid",
+    slug: "muc-ma-ca-rong-bien-sau",
     depth: 2300,
     left: 78,
     nameVi: "Mực Ma Cà Rồng Biển Đông",
@@ -470,6 +495,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "dumbo-octopus",
+    slug: "bach-tuoc-dumbo",
     depth: 2850,
     left: 36,
     nameVi: "Bạch Tuộc Tai Voi Dumbo",
@@ -481,6 +507,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "tripod-fish",
+    slug: "ca-ba-chan-tripod-fish",
     depth: 3300,
     left: 66,
     nameVi: "Cá Ba Chân",
@@ -492,6 +519,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "grenadier-fish",
+    slug: "ca-duoi-chuot-bien-sau",
     depth: 3850,
     left: 25,
     nameVi: "Cá Đuôi Chuột Vực Sâu",
@@ -505,6 +533,7 @@ export const CREATURES_BY_DEPTH = [
   // ── 4,000m – 5,016m: TẦNG THẲM & RÃNH MANILA (ABYSSOPELAGIC) ──
   {
     id: "sea-pig",
+    slug: "heo-bien-sau-sea-pig",
     depth: 4200,
     left: 76,
     nameVi: "Heo Biển Sâu (Sea Pig)",
@@ -516,6 +545,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "brittle-star",
+    slug: "sao-gion-vuc-tham",
     depth: 4550,
     left: 22,
     nameVi: "Sao Giòn Vực Thẳm",
@@ -527,6 +557,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "hadal-snailfish",
+    slug: "ca-oc-ranh-sau-hadal-snailfish",
     depth: 4850,
     left: 68,
     nameVi: "Cá Ốc Rãnh Sâu (Hadal Snailfish)",
@@ -538,6 +569,7 @@ export const CREATURES_BY_DEPTH = [
   },
   {
     id: "hadal-amphipod",
+    slug: "giap-xac-chan-hai-ranh-manila",
     depth: 5016,
     left: 20,
     nameVi: "Giáp Xác Chân Hai Rãnh Manila",

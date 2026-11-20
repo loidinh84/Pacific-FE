@@ -101,7 +101,7 @@ export default function KnowledgeGraph() {
 
     const fetchGraph = async () => {
       try {
-        const params = {};
+        const params = { limit: 500 };
         if (selectedZone) params.zone = selectedZone;
         if (selectedRedList) params.redList = selectedRedList;
         if (selectedType && selectedType !== "all") params.type = selectedType;
@@ -127,12 +127,21 @@ export default function KnowledgeGraph() {
     };
   }, [selectedZone, selectedRedList, selectedType]);
 
-  // Bộ lọc tìm kiếm tên loài thời gian thực
+  // Bộ lọc tìm kiếm tên loài thời gian thực (Ego-Network: hiển thị loài tìm kiếm + tất cả các mắt xích liên kết)
   const filteredGraph = useMemo(() => {
-    if (!searchQuery.trim()) return graphData;
+    if (!searchQuery.trim()) {
+      return {
+        ...graphData,
+        isSearchActive: false,
+        searchTargetNodes: [],
+        connectedNeighborCount: 0,
+      };
+    }
+
     const q = searchQuery.toLowerCase().trim();
 
-    const matchedNodes = graphData.nodes.filter(
+    // 1. Tìm các node khớp trực tiếp với từ khóa tìm kiếm
+    const directMatchedNodes = graphData.nodes.filter(
       (n) =>
         n.name.toLowerCase().includes(q) ||
         (n.scientificName && n.scientificName.toLowerCase().includes(q)) ||
@@ -140,15 +149,55 @@ export default function KnowledgeGraph() {
         (n.code && n.code.toLowerCase().includes(q))
     );
 
-    const matchedNodeIds = new Set(matchedNodes.map((n) => n.id));
+    if (directMatchedNodes.length === 0) {
+      return {
+        nodes: [],
+        links: [],
+        isSearchActive: true,
+        searchTargetNodes: [],
+        connectedNeighborCount: 0,
+      };
+    }
 
-    const matchedLinks = graphData.links.filter(
-      (l) => matchedNodeIds.has(l.source) && matchedNodeIds.has(l.target)
+    const directMatchedIds = new Set(directMatchedNodes.map((n) => n.id.toString()));
+
+    // 2. Lấy tất cả các liên kết liên quan trực tiếp đến các node tìm kiếm (source HOẶC target là node tìm kiếm)
+    const primaryLinks = graphData.links.filter(
+      (l) => directMatchedIds.has(l.source.toString()) || directMatchedIds.has(l.target.toString())
+    );
+
+    // 3. Tập hợp các ID mắt xích hàng xóm (1st-degree neighbors)
+    const neighborIds = new Set();
+    for (const l of primaryLinks) {
+      const src = l.source.toString();
+      const tgt = l.target.toString();
+      if (!directMatchedIds.has(src)) neighborIds.add(src);
+      if (!directMatchedIds.has(tgt)) neighborIds.add(tgt);
+    }
+
+    // 4. Tập hợp toàn bộ Node thuộc mạng lưới vệ tinh
+    const allRelevantIds = new Set([...directMatchedIds, ...neighborIds]);
+    const nodesMap = new Map(graphData.nodes.map((n) => [n.id.toString(), n]));
+
+    const nodes = Array.from(allRelevantIds)
+      .map((id) => nodesMap.get(id))
+      .filter(Boolean)
+      .map((n) => ({
+        ...n,
+        isSearchTarget: directMatchedIds.has(n.id.toString()),
+      }));
+
+    // 5. Lấy tất cả các liên kết giữa các node trong mạng lưới này
+    const links = graphData.links.filter(
+      (l) => allRelevantIds.has(l.source.toString()) && allRelevantIds.has(l.target.toString())
     );
 
     return {
-      nodes: matchedNodes,
-      links: matchedLinks,
+      nodes,
+      links,
+      isSearchActive: true,
+      searchTargetNodes: directMatchedNodes,
+      connectedNeighborCount: neighborIds.size,
     };
   }, [graphData, searchQuery]);
 
@@ -228,17 +277,24 @@ export default function KnowledgeGraph() {
     }));
 
     const chartNodes = nodes.map((node) => {
+      const isTarget = node.isSearchTarget;
       const isCR = node.redList === "CR";
       const isEN = node.redList === "EN";
       const isVU = node.redList === "VU";
 
-      const borderColor = isCR
+      const defaultBorder = isCR
         ? "#f43f5e"
         : isEN
         ? "#f97316"
         : isVU
         ? "#f59e0b"
         : GROUP_COLOR_MAP[node.groupId] || "#38bdf8";
+
+      const borderColor = isTarget ? "#38bdf8" : defaultBorder;
+      const borderWidth = isTarget ? 4.5 : isCR ? 3.5 : isEN ? 2.5 : 2;
+      const shadowBlur = isTarget ? 28 : isCR ? 18 : 10;
+      const shadowColor = isTarget ? "#38bdf8" : borderColor;
+      const symbolSize = isTarget ? 64 : isCR ? 50 : isEN ? 46 : 40;
 
       // Rút gọn tên hiển thị trực tiếp trên nút để tránh tràn chữ và che khuất liên kết
       const displayName = (node.name || "").split("(")[0].trim();
@@ -250,26 +306,26 @@ export default function KnowledgeGraph() {
         category: Math.min(categories.length - 1, Math.max(0, (node.groupId || 1) - 1)),
         // Hiển thị ảnh đại diện cho từng sinh vật biển
         symbol: node.image ? `image://${node.image}` : "circle",
-        symbolSize: isCR ? 50 : isEN ? 46 : 40,
+        symbolSize,
         itemStyle: {
           borderColor,
-          borderWidth: isCR ? 3.5 : isEN ? 2.5 : 2,
-          shadowBlur: isCR ? 18 : 10,
-          shadowColor: borderColor,
+          borderWidth,
+          shadowBlur,
+          shadowColor,
         },
         label: {
           show: true,
           position: "bottom",
-          distance: 9,
-          color: "#f1f5f9",
-          fontSize: 12,
-          fontWeight: "600",
-          backgroundColor: "rgba(7, 19, 36, 0.88)",
-          padding: [4, 8],
+          distance: isTarget ? 11 : 9,
+          color: isTarget ? "#38bdf8" : "#f1f5f9",
+          fontSize: isTarget ? 13 : 12,
+          fontWeight: isTarget ? "800" : "600",
+          backgroundColor: isTarget ? "rgba(14, 165, 233, 0.28)" : "rgba(7, 19, 36, 0.88)",
+          padding: isTarget ? [5, 10] : [4, 8],
           borderRadius: 6,
-          borderColor: "rgba(56, 189, 248, 0.3)",
-          borderWidth: 1,
-          formatter: "{b}",
+          borderColor: isTarget ? "#38bdf8" : "rgba(56, 189, 248, 0.3)",
+          borderWidth: isTarget ? 1.5 : 1,
+          formatter: isTarget ? "★ {b}" : "{b}",
         },
         raw: node,
       };
@@ -356,9 +412,9 @@ export default function KnowledgeGraph() {
           edgeSymbolSize: [4, 8],
           cursor: "pointer",
           force: {
-            repulsion: 680,
-            edgeLength: [135, 250],
-            gravity: 0.08,
+            repulsion: filteredGraph.isSearchActive ? 460 : 680,
+            edgeLength: filteredGraph.isSearchActive ? [110, 190] : [135, 250],
+            gravity: filteredGraph.isSearchActive ? 0.12 : 0.08,
             friction: 0.6,
           },
           emphasis: {
@@ -532,6 +588,70 @@ export default function KnowledgeGraph() {
             <span>{isEn ? "Reset" : "Đặt lại"}</span>
           </button>
         </div>
+
+        {/* ─── BANNER MẠNG LƯỚI SINH THÁI VỆ TINH KHI TÌM KIẾM (EGO-NETWORK) ─── */}
+        {filteredGraph.isSearchActive && filteredGraph.searchTargetNodes?.length > 0 && (
+          <div className="mb-4 px-4 py-3 rounded-2xl bg-gradient-to-r from-sky-950/80 via-blue-900/60 to-slate-900/80 border border-sky-400/30 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 shadow-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-300 shrink-0">
+                <Sparkles size={18} className="animate-pulse" />
+              </div>
+              <div>
+                <div className="text-xs text-sky-300/80 uppercase font-semibold tracking-wider">
+                  {isEn ? "Ecosystem Ego-Network (Satellite Links)" : "Mạng Lưới Sinh Thái Vệ Tinh"}
+                </div>
+                <div className="text-sm font-medium text-white flex items-center gap-2 flex-wrap">
+                  <span>{isEn ? "Focus:" : "Trọng tâm:"}</span>
+                  <span className="font-bold text-sky-300">
+                    {filteredGraph.searchTargetNodes.map((n) => n.name).join(", ")}
+                  </span>
+                  <span className="text-slate-400">•</span>
+                  <span className="text-emerald-300 font-semibold">
+                    {isEn
+                      ? `${filteredGraph.connectedNeighborCount} connected ecological links`
+                      : `${filteredGraph.connectedNeighborCount} mắt xích sinh thái liên kết`}
+                  </span>
+                  <span className="text-slate-400 text-xs">({filteredGraph.links.length} đường tương tác)</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {filteredGraph.searchTargetNodes.length === 1 && (
+                <button
+                  onClick={() => setSelectedNode(filteredGraph.searchTargetNodes[0])}
+                  className="px-3 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-xs font-semibold text-sky-200 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Target size={13} />
+                  <span>{isEn ? "Inspect Profile" : "Xem hồ sơ loài"}</span>
+                </button>
+              )}
+              <button
+                onClick={() => setSearchQuery("")}
+                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-semibold text-slate-200 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <RotateCcw size={13} />
+                <span>{isEn ? "Full Ocean Graph" : "Xem toàn bộ mạng lưới"}</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Thông báo nếu không tìm thấy loài nào */}
+        {filteredGraph.isSearchActive && filteredGraph.nodes?.length === 0 && (
+          <div className="mb-4 px-4 py-3 rounded-2xl bg-amber-950/60 border border-amber-500/30 text-amber-200 text-sm flex items-center justify-between shadow-md">
+            <span>
+              {isEn
+                ? `No species found matching "${searchQuery}".`
+                : `Không tìm thấy loài nào khớp với từ khóa "${searchQuery}".`}
+            </span>
+            <button
+              onClick={() => setSearchQuery("")}
+              className="underline hover:text-white text-xs font-semibold ml-3 cursor-pointer"
+            >
+              {isEn ? "Clear search" : "Xóa tìm kiếm"}
+            </button>
+          </div>
+        )}
 
         {/* ─── 3. KHU VỰC VẼ CANVAS ECHARTS FORCE GRAPH ───────────────── */}
         <div
