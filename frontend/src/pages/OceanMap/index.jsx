@@ -11,7 +11,6 @@ import {
   EAST_SEA_ZONES,
   BASEMAP_PROVIDERS,
   CREATURE_MAP_CATEGORIES,
-  MARINE_CREATURE_PINS,
 } from "./oceanMapData";
 import { fetchMapDistribution } from "../../services/speciesApi";
 
@@ -25,6 +24,10 @@ export default function OceanMap() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [cursorCoords, setCursorCoords] = useState(null);
 
+  const [creaturesList, setCreaturesList] = useState([]);
+  const [zonesList, setZonesList] = useState(EAST_SEA_ZONES);
+  const [isLoading, setIsLoading] = useState(true);
+
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const tileLayerRef = useRef(null);
@@ -35,42 +38,27 @@ export default function OceanMap() {
   const zoneQuery = searchParams.get("zone");
   const speciesQuery = searchParams.get("species");
 
-  const [creaturesList, setCreaturesList] = useState(MARINE_CREATURE_PINS);
-  const [zonesList, setZonesList] = useState(EAST_SEA_ZONES);
-
-  // Tải danh sách phân bố sinh vật & khu bảo tồn động từ Backend Database
+  // Tải danh sách phân bố sinh vật & khu bảo tồn ĐỘNG 100% từ CSDL qua Backend API
   useEffect(() => {
     let isMounted = true;
-    fetchMapDistribution().then((res) => {
-      if (!isMounted || !res) return;
-      if (res.locations && res.locations.length > 0) {
-        setZonesList(res.locations);
-      }
-      if (res.species && res.species.length > 0) {
-        // Hợp nhất các sinh vật mới do Admin thêm từ CSDL vào danh sách hiển thị
-        const existingSlugs = new Set(MARINE_CREATURE_PINS.map((c) => c.slug));
-        const newSpeciesPins = res.species
-          .filter((sp) => !existingSlugs.has(sp.slug) && (sp.locations?.length > 0 || sp.zoneNameVi))
-          .map((sp) => ({
-            id: sp.slug,
-            slug: sp.slug,
-            nameVi: sp.nameVi,
-            nameEn: sp.nameEn,
-            sciName: sp.sciName,
-            groupId: sp.groupSlug || "fish",
-            categoryVi: "Sinh vật từ hệ thống",
-            zoneNameVi: sp.zoneNameVi || sp.locations?.[0]?.name || "Biển Đông",
-            depth: sp.depth,
-            lat: sp.locations?.[0]?.lat ?? 15.2,
-            lng: sp.locations?.[0]?.lng ?? 111.8,
-            image: sp.image || MARINE_CREATURE_PINS[0].image,
-          }));
-
-        if (newSpeciesPins.length > 0) {
-          setCreaturesList([...MARINE_CREATURE_PINS, ...newSpeciesPins]);
+    fetchMapDistribution()
+      .then((res) => {
+        if (!isMounted || !res) return;
+        if (res.locations && res.locations.length > 0) {
+          setZonesList(res.locations);
         }
-      }
-    });
+        if (res.species && res.species.length > 0) {
+          // Chỉ lấy các sinh vật đang hoạt động thực sự trong Database (Single Source of Truth)
+          setCreaturesList(res.species);
+        }
+      })
+      .catch((err) => {
+        console.warn("Lỗi tải phân bố sinh vật từ Database:", err);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+
     return () => {
       isMounted = false;
     };
@@ -436,7 +424,12 @@ export default function OceanMap() {
               }`}
             >
               <Fish size={14} className={showCreatures ? "text-sky-300" : "text-slate-400"} />
-              <span>{isEn ? `Marine Life (${creaturesList.length})` : `Sinh vật biển (${creaturesList.length})`}</span>
+              <span>
+                {isEn ? `Marine Life (${creaturesList.length})` : `Sinh vật biển (${creaturesList.length})`}
+              </span>
+              {isLoading && (
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse ml-0.5" />
+              )}
             </button>
 
             {/* Bộ chọn chế độ xem bản đồ */}
@@ -530,7 +523,9 @@ export default function OceanMap() {
                 className="bg-[#0b1b2d] border border-white/10 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500 cursor-pointer"
               >
                 <option value="" disabled>
-                  {isEn ? `Jump to Creature (${creaturesList.length})...` : `Đến vị trí sinh vật (${creaturesList.length} loài)...`}
+                  {isLoading
+                    ? isEn ? "Loading database species..." : "Đang đồng bộ sinh vật từ CSDL..."
+                    : isEn ? `Jump to Creature (${creaturesList.length})...` : `Đến vị trí sinh vật (${creaturesList.length} loài)...`}
                 </option>
                 {creaturesList.map((c) => (
                   <option key={c.id} value={c.id} className="bg-[#091b2e] text-white">
