@@ -60,7 +60,7 @@ export default function HeroSection() {
             data-aos="fade-up"
             data-aos-delay="500"
           >
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-cyan-400/30 transition-all">
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-white/20 transition-colors">
               <p className="text-xl sm:text-2xl md:text-3xl font-black text-cyan-300 font-heading whitespace-nowrap">
                 {t("hero.stat1Value")}
               </p>
@@ -68,7 +68,7 @@ export default function HeroSection() {
                 {t("hero.stat1Title")}
               </p>
             </div>
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-cyan-400/30 transition-all">
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-white/20 transition-colors">
               <p className="text-xl sm:text-2xl md:text-3xl font-black text-cyan-300 font-heading whitespace-nowrap flex items-baseline gap-1.5">
                 {(() => {
                   const val = t("hero.stat2Value");
@@ -90,7 +90,7 @@ export default function HeroSection() {
                 {t("hero.stat2Title")}
               </p>
             </div>
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-cyan-400/30 transition-all">
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-white/20 transition-colors">
               <p className="text-xl sm:text-2xl md:text-3xl font-black text-cyan-300 font-heading whitespace-nowrap">
                 {t("hero.stat3Value")}
               </p>

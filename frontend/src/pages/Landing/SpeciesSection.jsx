@@ -92,9 +92,6 @@ export default function SpeciesSection() {
       id="species"
       className="bg-pacific-figma-dark/90 backdrop-blur-md pt-16 pb-20 relative overflow-hidden border-t border-white/5"
     >
-      <div className="absolute top-1/3 right-0 w-80 h-80 rounded-full bg-pacific-cyan/5 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
-
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12" data-aos="fade-up">
@@ -117,7 +114,7 @@ export default function SpeciesSection() {
             return (
               <div
                 key={s.id}
-                className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl p-6 md:p-8 shadow-xl border border-white/10 backdrop-blur-xl relative overflow-hidden group cursor-pointer hover:border-cyan-400/40 hover:shadow-cyan-500/10 transition-all duration-300"
+                className="bg-white/[0.03] rounded-3xl p-6 md:p-8 shadow-md border border-white/10 backdrop-blur-xl relative overflow-hidden group cursor-pointer hover:border-white/20 hover:bg-white/[0.05] transition-colors"
                 data-aos="fade-up"
                 data-aos-duration="900"
                 onClick={() => navigate(`/species/${s.slug || s.id}`)}
@@ -184,10 +181,9 @@ export default function SpeciesSection() {
                     </div>
                   </div>
 
-                  {/* Right Column: Image with floating glow */}
+                  {/* Right Column: Image */}
                   <div className="lg:col-span-5 flex justify-center items-center">
                     <div className="relative w-full max-w-sm aspect-square flex justify-center items-center p-4">
-                      <div className="absolute inset-4 rounded-full bg-cyan-500/10 blur-xl pointer-events-none" />
                       <img
                         src={s.image || FishHidden}
                         alt={name}

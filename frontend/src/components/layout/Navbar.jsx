@@ -145,7 +145,7 @@ export default function Navbar() {
             <li key={index}>
               <a
                 href={link.href}
-                className="flex items-center gap-1 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full text-sm font-medium transition-all"
+                className="flex items-center gap-1 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg text-sm font-medium transition-colors"
               >
                 {link.label}
                 {link.hasDropdown && <ChevronDown size={13} />}
@@ -160,7 +160,7 @@ export default function Navbar() {
           <div className="relative" ref={langDropdownRef}>
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
-              className="flex items-center gap-2 px-3.5 py-2 text-white/90 hover:text-white bg-white/5 hover:bg-white/10 border border-white/15 rounded-full text-xs font-semibold cursor-pointer transition-all active:scale-95"
+              className="flex items-center gap-2 px-3 py-1.5 text-white/90 hover:text-white bg-white/5 hover:bg-white/10 border border-white/15 rounded-lg text-xs font-medium cursor-pointer transition-colors"
             >
               <span className="text-sm leading-none">
                 {currentLangObj.flag}
@@ -170,7 +170,7 @@ export default function Navbar() {
                 size={13}
                 className={`transition-transform duration-200 ${
                   isLangOpen
-                    ? "rotate-180 text-pacific-blue-bright"
+                    ? "rotate-180 text-sky-400"
                     : "text-white/60"
                 }`}
               />
@@ -354,9 +354,9 @@ export default function Navbar() {
                 <button
                   key={lang.code}
                   onClick={() => changeLanguage(lang.code)}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
                     language === lang.code
-                      ? "bg-pacific-blue-bright text-white shadow-md"
+                      ? "bg-sky-600 text-white shadow-sm"
                       : "bg-white/10 text-white/60 hover:text-white"
                   }`}
                 >
@@ -425,7 +425,7 @@ export default function Navbar() {
               aria-label="Chế độ xem trước của quản trị viên"
               className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto"
             >
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#0c1830]/95 backdrop-blur-2xl border border-amber-500/50 text-white shadow-2xl shadow-cyan-950/70 text-xs">
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#0c1830]/95 backdrop-blur-2xl border border-amber-500/50 text-white shadow-xl text-xs">
                 <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                 <div className="text-left">
                   <div className="font-bold text-amber-300 flex items-center gap-1.5">

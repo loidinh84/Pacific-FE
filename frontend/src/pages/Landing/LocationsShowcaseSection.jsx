@@ -72,10 +72,6 @@ export default function LocationsShowcaseSection() {
 
   return (
     <section id="marine-locations" className="bg-pacific-figma-dark/95 pt-16 pb-24 relative overflow-hidden border-t border-white/5">
-      {/* Background glow */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 rounded-full bg-cyan-500/10 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-blue-600/10 blur-[130px] pointer-events-none" />
-
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14" data-aos="fade-up">
@@ -92,7 +88,7 @@ export default function LocationsShowcaseSection() {
 
           <Link
             to="/search"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all self-start md:self-auto cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors self-start md:self-auto cursor-pointer"
           >
             <span>{isEn ? "Explore Marine Life" : "Xem sinh vật theo vùng"}</span>
             <ExternalLink size={15} />
@@ -106,7 +102,7 @@ export default function LocationsShowcaseSection() {
               key={loc.id}
               data-aos="fade-up"
               data-aos-delay={idx * 100}
-              className="rounded-3xl p-5 bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-cyan-400/60 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between cursor-pointer"
+              className="rounded-3xl p-5 bg-white/[0.04] border border-white/10 hover:border-white/20 hover:bg-white/[0.07] transition-colors group flex flex-col justify-between cursor-pointer"
             >
               <div>
                 {/* Image container */}

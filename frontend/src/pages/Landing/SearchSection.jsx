@@ -250,7 +250,7 @@ export default function SearchSection() {
                 {/* Submit Search Button */}
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold bg-pacific-teal hover:bg-pacific-teal-light text-white border border-cyan-400/20 shadow-md shadow-black/20 hover:shadow-cyan-950/40 transition-all cursor-pointer active:translate-y-0.5 mt-1"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-sm transition-colors cursor-pointer active:translate-y-0.5 mt-1"
                 >
                   <Search size={16} />
                   <span>{t("search.btnSearch")}</span>
@@ -279,7 +279,6 @@ export default function SearchSection() {
             {/* Mystery Fish Visual */}
             <div className="lg:col-span-5 flex justify-center items-center">
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
-                <div className="absolute inset-4 rounded-full bg-cyan-500/10 blur-2xl pointer-events-none" />
                 <img
                   src={Images.FishHidden}
                   alt={isEn ? "Mystery Marine Life" : "Bóng sinh vật biển bí ẩn"}
