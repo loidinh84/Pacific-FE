@@ -168,13 +168,15 @@ const BASEMAP_PROVIDERS = {
     labelEn: "Ocean Bathymetry",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, GEBCO, NOAA, National Geographic",
-    maxZoom: 13,
+    maxNativeZoom: 13,
+    maxZoom: 14,
   },
   satellite: {
     labelVi: "Vệ tinh viễn thám",
     labelEn: "Satellite Imagery",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, Maxar, Earthstar Geographics",
+    maxNativeZoom: 18,
     maxZoom: 18,
   },
   osm: {
@@ -182,7 +184,9 @@ const BASEMAP_PROVIDERS = {
     labelEn: "Coastline Map",
     url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     attribution: "&copy; OpenStreetMap contributors",
-    maxZoom: 18,
+    subdomains: ["a", "b", "c"],
+    maxNativeZoom: 19,
+    maxZoom: 19,
   },
 };
 
@@ -199,20 +203,41 @@ export default function OceanMap() {
   const tileLayerRef = useRef(null);
   const markersRef = useRef({});
 
-  const initialZoneQuery = searchParams.get("zone");
+  const zoneQuery = searchParams.get("zone");
+  const speciesQuery = searchParams.get("species");
 
   // Khởi tạo bản đồ Leaflet
   useEffect(() => {
-    if (!mapContainerRef.current || mapInstanceRef.current) return;
+    const container = mapContainerRef.current;
+    if (!container) return;
 
-    const map = L.map(mapContainerRef.current, {
-      center: [14.8, 111.5],
-      zoom: 6,
-      minZoom: 4,
-      maxZoom: 14,
-      scrollWheelZoom: true,
-      zoomControl: false,
-    });
+    // Tránh lỗi StrictMode React 18: Dọn dẹp map cũ và ID nếu còn lưu
+    if (mapInstanceRef.current) {
+      try {
+        mapInstanceRef.current.remove();
+      } catch (_) {}
+      mapInstanceRef.current = null;
+    }
+
+    if (container._leaflet_id) {
+      delete container._leaflet_id;
+    }
+    container.innerHTML = "";
+
+    let map;
+    try {
+      map = L.map(container, {
+        center: [14.8, 111.5],
+        zoom: 6,
+        minZoom: 4,
+        maxZoom: 14,
+        scrollWheelZoom: true,
+        zoomControl: false,
+      });
+    } catch (err) {
+      console.error("Lỗi khởi tạo Leaflet map:", err);
+      return;
+    }
 
     // Zoom control góc trên bên phải
     L.control.zoom({ position: "topright" }).addTo(map);
@@ -222,6 +247,7 @@ export default function OceanMap() {
     const tileLayer = L.tileLayer(provider.url, {
       attribution: provider.attribution,
       maxZoom: provider.maxZoom,
+      maxNativeZoom: provider.maxNativeZoom || provider.maxZoom,
     }).addTo(map);
     tileLayerRef.current = tileLayer;
 
@@ -229,12 +255,13 @@ export default function OceanMap() {
     map.on("mousemove", (e) => {
       const lat = e.latlng.lat.toFixed(3);
       const lng = e.latlng.lng.toFixed(3);
-      setCursorCoords(`${lat}° B, ${lng}° Đ`);
+      setCursorCoords(isEn ? `${lat}° N, ${lng}° E` : `${lat}° B, ${lng}° Đ`);
     });
 
     map.on("mouseout", () => setCursorCoords(null));
 
     // Thêm các marker gọn gàng (Quiet Nautical Pins)
+    markersRef.current = {};
     EAST_SEA_ZONES.forEach((zone) => {
       const pinHtml = `
         <div style="cursor:pointer; display:flex; align-items:center; justify-content:center; width:20px; height:20px;">
@@ -250,7 +277,7 @@ export default function OceanMap() {
       `;
 
       const icon = L.divIcon({
-        className: "nautical-pin",
+        className: "nautical-pin !bg-transparent !border-0",
         html: pinHtml,
         iconSize: [20, 20],
         iconAnchor: [10, 10],
@@ -270,11 +297,11 @@ export default function OceanMap() {
             ${zoneName}
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-top: 1px solid #e2e8f0; color: #475569;">
-            <span>Tọa độ</span>
+            <span>${isEn ? "Coordinates" : "Tọa độ"}</span>
             <span style="font-family: monospace; font-weight: 600; color: #0284c7;">${zone.coordText}</span>
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 2px 0; color: #475569;">
-            <span>Độ sâu</span>
+            <span>${isEn ? "Depth" : "Độ sâu"}</span>
             <span style="font-weight: 600; color: #0f172a;">${zone.depth}</span>
           </div>
           <div style="font-size: 11px; color: #334155; line-height: 1.45; margin-top: 6px; padding-top: 6px; border-top: 1px solid #e2e8f0;">
@@ -293,19 +320,34 @@ export default function OceanMap() {
 
     mapInstanceRef.current = map;
 
-    // Đảm bảo kích thước map render đầy đủ
+    // ResizeObserver tự động cập nhật map size khi container layout hoàn tất
+    const resizeObserver = new ResizeObserver(() => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize();
+      }
+    });
+    resizeObserver.observe(container);
+
+    // Đảm bảo kích thước map render đầy đủ & focus target nếu có
     const timer = setTimeout(() => {
       map.invalidateSize();
-    }, 200);
+
+      const targetZoneId = zoneQuery || (speciesQuery ? "hoang-sa" : null);
+      if (targetZoneId && markersRef.current[targetZoneId]) {
+        map.flyTo(markersRef.current[targetZoneId].getLatLng(), 8, { duration: 1.2 });
+        markersRef.current[targetZoneId].openPopup();
+      }
+    }, 250);
 
     return () => {
       clearTimeout(timer);
+      resizeObserver.disconnect();
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
     };
-  }, [isEn]);
+  }, [isEn, zoneQuery, speciesQuery]);
 
   // Xử lý chuyển đổi lớp bản đồ (Ocean, Satellite, Coastline)
   const handleLayerChange = (layerKey) => {
@@ -319,24 +361,13 @@ export default function OceanMap() {
     const newLayer = L.tileLayer(provider.url, {
       attribution: provider.attribution,
       maxZoom: provider.maxZoom,
+      maxNativeZoom: provider.maxNativeZoom || provider.maxZoom,
+      subdomains: provider.subdomains || "abc",
     }).addTo(mapInstanceRef.current);
 
     tileLayerRef.current = newLayer;
     setActiveLayer(layerKey);
   };
-
-  // Tự động focus tọa độ nếu truy cập từ URL param (?zone= hoặc ?species=)
-  useEffect(() => {
-    if (!mapInstanceRef.current) return;
-
-    if (initialZoneQuery) {
-      const found = EAST_SEA_ZONES.find((z) => z.id === initialZoneQuery);
-      if (found && markersRef.current[found.id]) {
-        mapInstanceRef.current.flyTo([found.lat, found.lng], 8, { duration: 1.2 });
-        markersRef.current[found.id].openPopup();
-      }
-    }
-  }, [initialZoneQuery]);
 
   return (
     <div className="min-h-screen bg-[#071322] text-white flex flex-col justify-between selection:bg-sky-500 selection:text-black">
@@ -382,11 +413,14 @@ export default function OceanMap() {
         </div>
 
         {/* Khung bản đồ toàn màn hình (Full-width, không có sidebar thừa) */}
-        <div className="rounded-2xl overflow-hidden border border-white/10 relative bg-[#061220] shadow-xl flex-1 h-[calc(100vh-210px)] min-h-[580px]">
+        <div
+          className="rounded-2xl overflow-hidden border border-white/10 relative bg-[#061220] shadow-xl w-full"
+          style={{ width: "100%", height: "640px", minHeight: "640px" }}
+        >
           <div
             ref={mapContainerRef}
             className="w-full h-full"
-            style={{ width: "100%", height: "100%", background: "#061220" }}
+            style={{ width: "100%", height: "640px", minHeight: "640px", background: "#061220" }}
           />
 
           {/* Thước đo tọa độ di chuột góc dưới bên trái */}
