@@ -11,7 +11,7 @@ import { ConservationAndThreatsSection } from "./ConservationAndThreatsSection";
 import { SpeciesFacts } from "./SpeciesFacts";
 import { RelatedSpecies } from "./RelatedSpecies";
 import { SpeciesComments } from "./SpeciesComments";
-import { SpeciesDistributionMap } from "./SpeciesDistributionMap";
+import { SpeciesDistributionSpecs } from "./SpeciesDistributionSpecs";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { CREATURE_PNGS } from "../../assets/creatures";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -358,8 +358,8 @@ export default function SpeciesDetail() {
         {/* 4. Sinh cảnh sống, Tầng nước & Tập tính sinh học Biển Đông */}
         <HabitatAndBehaviorSection species={species} language={language} />
 
-        {/* 4b. Phân bố địa lý & Tọa độ vùng sinh sống */}
-        <SpeciesDistributionMap species={species} language={language} />
+        {/* 4b. Thông số phân bố địa lý & Tọa độ vùng sinh sống */}
+        <SpeciesDistributionSpecs species={species} language={language} />
 
         {/* 5. Tình trạng bảo tồn Sách Đỏ, Khung pháp lý & Các mối đe dọa */}
         <ConservationAndThreatsSection species={species} language={language} />

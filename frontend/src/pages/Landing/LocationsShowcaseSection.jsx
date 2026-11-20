@@ -87,10 +87,10 @@ export default function LocationsShowcaseSection() {
           </div>
 
           <Link
-            to="/search"
+            to="/map"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors self-start md:self-auto cursor-pointer"
           >
-            <span>{isEn ? "Explore Marine Life" : "Xem sinh vật theo vùng"}</span>
+            <span>{isEn ? "Interactive East Sea Map" : "Mở Bản đồ Biển Đông"}</span>
             <ExternalLink size={15} />
           </Link>
         </div>

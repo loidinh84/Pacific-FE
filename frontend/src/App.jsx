@@ -11,6 +11,7 @@ import SpeciesView3D from "./pages/SpeciesView3D";
 import KnowledgeGraph from "./pages/KnowledgeGraph";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
+import OceanMap from "./pages/OceanMap";
 import { AdminRoute, ClientRoute, GuestRoute, UserProtectedRoute } from "./components/ProtectedRoute";
 import ProfileLayout from "./pages/Profile";
 
@@ -56,6 +57,7 @@ function ScrollToTop() {
 const ROUTE_TITLES = {
   "/": "",
   "/search": "Tra cứu sinh vật",
+  "/map": "Bản đồ Biển Đông",
   "/ocean-depth": "Độ sâu đại dương",
   "/knowledge-graph": "Đồ thị tri thức",
   "/news": "Tin tức đại dương",
@@ -187,6 +189,15 @@ function App() {
               </ClientRoute>
             }
           />
+          <Route
+            path="/map"
+            element={
+              <ClientRoute>
+                <OceanMap />
+              </ClientRoute>
+            }
+          />
+          <Route path="/ocean-map" element={<Navigate to="/map" replace />} />
           <Route path="/pages/news" element={<Navigate to="/news" replace />} />
           <Route path="/pages/News" element={<Navigate to="/news" replace />} />
 
