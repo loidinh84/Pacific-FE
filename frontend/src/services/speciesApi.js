@@ -522,5 +522,21 @@ export const getSpeciesFavoriteStatus = async (idOrSlug) => {
   }
 };
 
+/**
+ * Lấy danh sách phân bố sinh vật và địa điểm trên bản đồ Biển Đông từ Backend
+ */
+export const fetchMapDistribution = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/species/map-distribution`);
+    if (response.data && response.data.success) {
+      return response.data.data;
+    }
+    return null;
+  } catch (error) {
+    console.warn("Map distribution API fallback:", error.message);
+    return null;
+  }
+};
+
 
 

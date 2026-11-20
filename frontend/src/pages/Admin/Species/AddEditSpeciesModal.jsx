@@ -719,17 +719,49 @@ export default function AddEditSpeciesModal({ isOpen, onClose, onSave, editingSp
                 </div>
               </div>
 
-              <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-white/80" : "text-slate-700"}`}>
-                  Nhóm sinh vật
-                </label>
-                <CustomSelect
-                  options={groupOptions}
-                  value={formData.groupId}
-                  onChange={(val) => setFormData({ ...formData, groupId: val })}
-                  isDark={isDark}
-                  direction="down"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-white/80" : "text-slate-700"}`}>
+                    Nhóm sinh vật
+                  </label>
+                  <CustomSelect
+                    options={groupOptions}
+                    value={formData.groupId}
+                    onChange={(val) => setFormData({ ...formData, groupId: val })}
+                    isDark={isDark}
+                    direction="down"
+                  />
+                </div>
+
+                <div>
+                  <label className={`block text-sm font-semibold mb-1.5 ${isDark ? "text-white/80" : "text-slate-700"}`}>
+                    Phân vùng Biển Đông
+                  </label>
+                  <input
+                    type="text"
+                    list="east-sea-zones-datalist"
+                    placeholder="VD: Quần đảo Hoàng Sa, Trường Sa, Côn Đảo..."
+                    value={formData.geoZone}
+                    onChange={(e) => setFormData({ ...formData, geoZone: e.target.value })}
+                    className={`w-full px-3.5 py-2.5 rounded-xl text-sm focus:outline-none transition-all ${
+                      isDark
+                        ? "bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:border-cyan-400"
+                        : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500"
+                    }`}
+                  />
+                  <datalist id="east-sea-zones-datalist">
+                    <option value="Quần đảo Hoàng Sa" />
+                    <option value="Quần đảo Trường Sa" />
+                    <option value="Vườn Quốc gia Côn Đảo" />
+                    <option value="Khu Bảo tồn Biển Phú Quốc" />
+                    <option value="Vịnh Nha Trang & Hòn Mun" />
+                    <option value="Khu BTTB Cù Lao Chàm" />
+                    <option value="Vịnh Hạ Long & Bái Tử Long" />
+                    <option value="Đảo Bạch Long Vĩ" />
+                    <option value="Khu bảo tồn Hòn Cau" />
+                    <option value="Vực thẳm Manila Biển Đông" />
+                  </datalist>
+                </div>
               </div>
             </div>
           )}

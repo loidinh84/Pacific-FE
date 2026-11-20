@@ -13,6 +13,7 @@ import {
   CREATURE_MAP_CATEGORIES,
   MARINE_CREATURE_PINS,
 } from "./oceanMapData";
+import { fetchMapDistribution } from "../../services/speciesApi";
 
 export default function OceanMap() {
   const { language } = useLanguage();
@@ -33,6 +34,47 @@ export default function OceanMap() {
 
   const zoneQuery = searchParams.get("zone");
   const speciesQuery = searchParams.get("species");
+
+  const [creaturesList, setCreaturesList] = useState(MARINE_CREATURE_PINS);
+  const [zonesList, setZonesList] = useState(EAST_SEA_ZONES);
+
+  // Tải danh sách phân bố sinh vật & khu bảo tồn động từ Backend Database
+  useEffect(() => {
+    let isMounted = true;
+    fetchMapDistribution().then((res) => {
+      if (!isMounted || !res) return;
+      if (res.locations && res.locations.length > 0) {
+        setZonesList(res.locations);
+      }
+      if (res.species && res.species.length > 0) {
+        // Hợp nhất các sinh vật mới do Admin thêm từ CSDL vào danh sách hiển thị
+        const existingSlugs = new Set(MARINE_CREATURE_PINS.map((c) => c.slug));
+        const newSpeciesPins = res.species
+          .filter((sp) => !existingSlugs.has(sp.slug) && (sp.locations?.length > 0 || sp.zoneNameVi))
+          .map((sp) => ({
+            id: sp.slug,
+            slug: sp.slug,
+            nameVi: sp.nameVi,
+            nameEn: sp.nameEn,
+            sciName: sp.sciName,
+            groupId: sp.groupSlug || "fish",
+            categoryVi: "Sinh vật từ hệ thống",
+            zoneNameVi: sp.zoneNameVi || sp.locations?.[0]?.name || "Biển Đông",
+            depth: sp.depth,
+            lat: sp.locations?.[0]?.lat ?? 15.2,
+            lng: sp.locations?.[0]?.lng ?? 111.8,
+            image: sp.image || MARINE_CREATURE_PINS[0].image,
+          }));
+
+        if (newSpeciesPins.length > 0) {
+          setCreaturesList([...MARINE_CREATURE_PINS, ...newSpeciesPins]);
+        }
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Khởi tạo bản đồ Leaflet
   useEffect(() => {
@@ -92,7 +134,7 @@ export default function OceanMap() {
 
     // 1. Thêm các Marker phân vùng biển trọng điểm
     markersRef.current = {};
-    EAST_SEA_ZONES.forEach((zone) => {
+    zonesList.forEach((zone) => {
       const pinHtml = `
         <div style="cursor:pointer; display:flex; align-items:center; justify-content:center; width:22px; height:22px;">
           <div style="
@@ -173,11 +215,11 @@ export default function OceanMap() {
       markersRef.current[zone.id] = marker;
     });
 
-    // 2. Thêm đầy đủ 32 Marker Sinh vật biển trực tiếp trên bản đồ
+    // 2. Thêm đầy đủ Marker Sinh vật biển trực tiếp trên bản đồ
     creatureMarkersRef.current = [];
     creatureMarkersMapRef.current = {};
 
-    MARINE_CREATURE_PINS.forEach((creature) => {
+    creaturesList.forEach((creature) => {
       const creaturePinHtml = `
         <div style="cursor:pointer; display:flex; align-items:center; justify-content:center; width:34px; height:34px;">
           <div style="
@@ -281,7 +323,7 @@ export default function OceanMap() {
         mapInstanceRef.current = null;
       }
     };
-  }, [isEn, zoneQuery, speciesQuery]);
+  }, [isEn, zoneQuery, speciesQuery, zonesList, creaturesList]);
 
   // Lọc hiển thị marker sinh vật theo nhóm phân loại và trạng thái bật/tắt
   useEffect(() => {
@@ -394,7 +436,7 @@ export default function OceanMap() {
               }`}
             >
               <Fish size={14} className={showCreatures ? "text-sky-300" : "text-slate-400"} />
-              <span>{isEn ? `Marine Life (${MARINE_CREATURE_PINS.length})` : `Sinh vật biển (${MARINE_CREATURE_PINS.length})`}</span>
+              <span>{isEn ? `Marine Life (${creaturesList.length})` : `Sinh vật biển (${creaturesList.length})`}</span>
             </button>
 
             {/* Bộ chọn chế độ xem bản đồ */}
@@ -430,8 +472,8 @@ export default function OceanMap() {
             {CREATURE_MAP_CATEGORIES.map((cat) => {
               const count =
                 cat.id === "all"
-                  ? MARINE_CREATURE_PINS.length
-                  : MARINE_CREATURE_PINS.filter((c) => c.groupId === cat.id).length;
+                  ? creaturesList.length
+                  : creaturesList.filter((c) => c.groupId === cat.id).length;
               const isSelected = selectedCategory === cat.id;
               return (
                 <button
@@ -466,9 +508,9 @@ export default function OceanMap() {
                 className="bg-[#0b1b2d] border border-white/10 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500 cursor-pointer"
               >
                 <option value="" disabled>
-                  {isEn ? "Jump to Marine Zone (10)..." : "Đến phân vùng biển (10 vùng)..."}
+                  {isEn ? `Jump to Marine Zone (${zonesList.length})...` : `Đến phân vùng biển (${zonesList.length} vùng)...`}
                 </option>
-                {EAST_SEA_ZONES.map((z) => (
+                {zonesList.map((z) => (
                   <option key={z.id} value={z.id} className="bg-[#091b2e] text-white">
                     {isEn ? z.nameEn : z.nameVi} ({z.depth})
                   </option>
@@ -488,9 +530,9 @@ export default function OceanMap() {
                 className="bg-[#0b1b2d] border border-white/10 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500 cursor-pointer"
               >
                 <option value="" disabled>
-                  {isEn ? `Jump to Creature (${MARINE_CREATURE_PINS.length})...` : `Đến vị trí sinh vật (${MARINE_CREATURE_PINS.length} loài)...`}
+                  {isEn ? `Jump to Creature (${creaturesList.length})...` : `Đến vị trí sinh vật (${creaturesList.length} loài)...`}
                 </option>
-                {MARINE_CREATURE_PINS.map((c) => (
+                {creaturesList.map((c) => (
                   <option key={c.id} value={c.id} className="bg-[#091b2e] text-white">
                     {isEn ? c.nameEn : c.nameVi} ({c.zoneNameVi} - {c.depth})
                   </option>
