@@ -1,4 +1,6 @@
-// 10 phân vùng biển và khu bảo tồn trọng điểm Biển Đông kèm tọa độ chuẩn xác
+import { CREATURE_PNGS } from "../../assets/creatures";
+
+// 10 phân vùng biển và khu bảo tồn trọng điểm Biển Đông kèm tọa độ chuẩn xác & sinh vật cư ngụ
 export const EAST_SEA_ZONES = [
   {
     id: "hoang-sa",
@@ -14,6 +16,22 @@ export const EAST_SEA_ZONES = [
       "Vùng rạn san hô trù phú giữa Biển Đông, là nơi sinh sản và kiếm ăn quan trọng của hàng trăm loài cá biển nhiệt đới.",
     descEn:
       "Vibrant oceanic reef complex in the central East Sea hosting over 200 coral species and vital spawning grounds for tropical marine fish.",
+    residentSpecies: [
+      {
+        id: "whale-shark",
+        slug: "ca-map-voi-nham-voi",
+        nameVi: "Cá Mập Voi",
+        nameEn: "Whale Shark",
+        image: CREATURE_PNGS["whale-shark"],
+      },
+      {
+        id: "yellowfin-tuna",
+        slug: "ca-ngu-vay-vang-dai-duong",
+        nameVi: "Cá Ngừ Vây Vàng",
+        nameEn: "Yellowfin Tuna",
+        image: CREATURE_PNGS["yellowfin-tuna"],
+      },
+    ],
   },
   {
     id: "truong-sa",
@@ -29,6 +47,22 @@ export const EAST_SEA_ZONES = [
       "Vùng biển nhiệt đới rộng lớn với các rạn san hô bao quanh vực sâu, là hành lang di cư của rùa biển, cá heo và cá voi.",
     descEn:
       "Expansive tropical marine archipelago bordered by 5,000m oceanic trenches, a critical migratory corridor for cetaceans and pelagic tuna.",
+    residentSpecies: [
+      {
+        id: "hammerhead-shark",
+        slug: "ca-nham-bua-dau-bua",
+        nameVi: "Cá Mập Búa",
+        nameEn: "Hammerhead Shark",
+        image: CREATURE_PNGS["hammerhead-shark"],
+      },
+      {
+        id: "clownfish",
+        slug: "ca-he-ocellaris-nemo",
+        nameVi: "Cá Hề Nemo",
+        nameEn: "Clownfish",
+        image: CREATURE_PNGS["clownfish"],
+      },
+    ],
   },
   {
     id: "con-dao",
@@ -44,6 +78,22 @@ export const EAST_SEA_ZONES = [
       "Nơi bảo tồn rùa biển (đồi mồi, vích) quan trọng nhất Việt Nam, cùng các thảm cỏ biển tự nhiên của loài bò biển Dugong.",
     descEn:
       "Vietnam's primary nesting sanctuary for sea turtles, sheltering endangered Dugongs within vast pristine seagrass meadows.",
+    residentSpecies: [
+      {
+        id: "dugong",
+        slug: "bo-bien-dugong",
+        nameVi: "Bò Biển (Dugong)",
+        nameEn: "Dugong",
+        image: CREATURE_PNGS["dugong"],
+      },
+      {
+        id: "hawksbill-turtle",
+        slug: "doi-moi-rua-bien",
+        nameVi: "Đồi Mồi (Rùa biển)",
+        nameEn: "Hawksbill Turtle",
+        image: CREATURE_PNGS["hawksbill-turtle"],
+      },
+    ],
   },
   {
     id: "phu-quoc",
@@ -59,6 +109,22 @@ export const EAST_SEA_ZONES = [
       "Vùng biển ấm phía Tây Nam với hơn 12.000 ha thảm cỏ biển, môi trường sống quen thuộc của cá ngựa, cá hề và san hô nông.",
     descEn:
       "Warm shallow marine waters in the Gulf of Thailand with over 12,000 ha of seagrass beds supporting seahorses and clownfish.",
+    residentSpecies: [
+      {
+        id: "spotted-eagle-ray",
+        slug: "ca-duoi-o-hoa",
+        nameVi: "Cá Đuối Đại Dương",
+        nameEn: "Spotted Eagle Ray",
+        image: CREATURE_PNGS["spotted-eagle-ray"],
+      },
+      {
+        id: "clownfish",
+        slug: "ca-he-ocellaris-nemo",
+        nameVi: "Cá Hề Nemo",
+        nameEn: "Clownfish",
+        image: CREATURE_PNGS["clownfish"],
+      },
+    ],
   },
   {
     id: "nha-trang",
@@ -74,6 +140,22 @@ export const EAST_SEA_ZONES = [
       "Khu bảo tồn biển đầu tiên của Việt Nam với hơn 350 loài san hô tạo rạn và sự đa dạng sinh vật biển phong phú bậc nhất.",
     descEn:
       "Vietnam's first marine protected area renowned for immense coral biodiversity, harboring 350 reef-building coral species.",
+    residentSpecies: [
+      {
+        id: "clownfish",
+        slug: "ca-he-ocellaris-nemo",
+        nameVi: "Cá Hề Nemo",
+        nameEn: "Clownfish",
+        image: CREATURE_PNGS["clownfish"],
+      },
+      {
+        id: "sailfish",
+        slug: "ca-co-gon",
+        nameVi: "Cá Cờ Gòn",
+        nameEn: "Sailfish",
+        image: CREATURE_PNGS["sailfish"],
+      },
+    ],
   },
   {
     id: "cu-lao-cham",
@@ -89,6 +171,22 @@ export const EAST_SEA_ZONES = [
       "Cụm đảo ngoài khơi Quảng Nam nổi tiếng với rạn san hô nguyên sơ, cua đá đặc trưng và bãi đẻ tự nhiên của rùa biển.",
     descEn:
       "Granitic archipelago off Central Vietnam harboring pristine coral reefs, endemic land crabs, and coastal sea turtle nesting sites.",
+    residentSpecies: [
+      {
+        id: "bigfin-squid",
+        slug: "muc-la-dai-duong",
+        nameVi: "Mực Lá Biển Đông",
+        nameEn: "Bigfin Reef Squid",
+        image: CREATURE_PNGS["bigfin-squid"],
+      },
+      {
+        id: "hawksbill-turtle",
+        slug: "doi-moi-rua-bien",
+        nameVi: "Đồi Mồi",
+        nameEn: "Hawksbill Turtle",
+        image: CREATURE_PNGS["hawksbill-turtle"],
+      },
+    ],
   },
   {
     id: "ha-long",
@@ -104,6 +202,15 @@ export const EAST_SEA_ZONES = [
       "Hệ thống đảo đá vôi và hang ngập nước đặc sắc, nơi trú ngụ của nhiều loài hải sản quý và hệ sinh thái rừng ngập mặn ven bờ.",
     descEn:
       "Unique drowned Karst limestone archipelago with mangrove mudflats, submerged sea caves, and diverse marine mollusks.",
+    residentSpecies: [
+      {
+        id: "spotted-dolphin",
+        slug: "ca-heo-dom-nhiet-doi",
+        nameVi: "Cá Heo Đốm",
+        nameEn: "Spotted Dolphin",
+        image: CREATURE_PNGS["spotted-dolphin"],
+      },
+    ],
   },
   {
     id: "bach-long-vi",
@@ -119,6 +226,15 @@ export const EAST_SEA_ZONES = [
       "Đảo xa bờ trung tâm Vịnh Bắc Bộ, là ngư trường giàu có với bào ngư chín lỗ, hải sâm và nhiều loài cá tầng đáy.",
     descEn:
       "Central outpost island in the Gulf of Tonkin, preserving nine-hole abalones, sea cucumbers, and valuable demersal fish stocks.",
+    residentSpecies: [
+      {
+        id: "giant-isopod",
+        slug: "bo-bien-khong-lo-giant-isopod",
+        nameVi: "Bọ Biển Khổng Lồ",
+        nameEn: "Giant Isopod",
+        image: CREATURE_PNGS["giant-isopod"],
+      },
+    ],
   },
   {
     id: "hon-cau",
@@ -134,6 +250,15 @@ export const EAST_SEA_ZONES = [
       "Vùng biển Bình Thuận với những cụm đá ngầm tự nhiên, là nơi rùa biển thường xuyên lên bờ đẻ trứng và quần thể san hô cổ.",
     descEn:
       "Coastal island with underwater boulder reefs, a crucial nesting sanctuary for sea turtles and ancient coral communities.",
+    residentSpecies: [
+      {
+        id: "hawksbill-turtle",
+        slug: "doi-moi-rua-bien",
+        nameVi: "Đồi Mồi (Rùa biển)",
+        nameEn: "Hawksbill Turtle",
+        image: CREATURE_PNGS["hawksbill-turtle"],
+      },
+    ],
   },
   {
     id: "ranh-manila",
@@ -149,33 +274,209 @@ export const EAST_SEA_ZONES = [
       "Rãnh biển sâu hơn 5.000m ở phía đông Biển Đông, chìm hoàn toàn trong bóng tối với áp suất cực lớn và các loài sinh vật biển sâu đặc biệt.",
     descEn:
       "The deepest oceanic trench in the East Sea exceeding 5,000m, an extreme realm of complete darkness and unique abyssal fauna.",
+    residentSpecies: [
+      {
+        id: "dumbo-octopus",
+        slug: "bach-tuoc-dumbo",
+        nameVi: "Bạch Tuộc Dumbo",
+        nameEn: "Dumbo Octopus",
+        image: CREATURE_PNGS["dumbo-octopus"],
+      },
+      {
+        id: "hadal-snailfish",
+        slug: "ca-oc-ranh-sau-hadal-snailfish",
+        nameVi: "Cá Ốc Rãnh Sâu",
+        nameEn: "Hadal Snailfish",
+        image: CREATURE_PNGS["hadal-snailfish"],
+      },
+    ],
   },
 ];
 
-// Nguồn bản đồ chuẩn, ổn định, không watermark, không giới hạn chặn truy cập
+// Danh sách sinh vật biển hiển thị trực tiếp trên tọa độ bản đồ Biển Đông
+export const MARINE_CREATURE_PINS = [
+  {
+    id: "dugong",
+    slug: "bo-bien-dugong",
+    nameVi: "Bò Biển (Dugong)",
+    nameEn: "Dugong (Sea Cow)",
+    sciName: "Dugong dugon",
+    categoryVi: "Thú biển quý hiếm",
+    zoneNameVi: "Vườn Quốc gia Côn Đảo",
+    depth: "0m - 20m",
+    lat: 8.7000,
+    lng: 106.6100,
+    image: CREATURE_PNGS["dugong"],
+  },
+  {
+    id: "clownfish",
+    slug: "ca-he-ocellaris-nemo",
+    nameVi: "Cá Hề Nemo",
+    nameEn: "Clownfish",
+    sciName: "Amphiprion ocellaris",
+    categoryVi: "Cá rạn san hô",
+    zoneNameVi: "Vịnh Nha Trang & Hòn Mun",
+    depth: "1m - 15m",
+    lat: 12.1800,
+    lng: 109.3200,
+    image: CREATURE_PNGS["clownfish"],
+  },
+  {
+    id: "hawksbill-turtle",
+    slug: "doi-moi-rua-bien",
+    nameVi: "Đồi Mồi (Rùa biển)",
+    nameEn: "Hawksbill Turtle",
+    sciName: "Eretmochelys imbricata",
+    categoryVi: "Bò sát biển nguy cấp",
+    zoneNameVi: "Khu bảo tồn Hòn Cau",
+    depth: "1m - 30m",
+    lat: 11.2100,
+    lng: 108.8500,
+    image: CREATURE_PNGS["hawksbill-turtle"],
+  },
+  {
+    id: "whale-shark",
+    slug: "ca-map-voi-nham-voi",
+    nameVi: "Cá Mập Voi",
+    nameEn: "Whale Shark",
+    sciName: "Rhincodon typus",
+    categoryVi: "Cá sụn khổng lồ",
+    zoneNameVi: "Quần đảo Hoàng Sa",
+    depth: "0m - 200m",
+    lat: 16.3000,
+    lng: 112.4000,
+    image: CREATURE_PNGS["whale-shark"],
+  },
+  {
+    id: "spotted-dolphin",
+    slug: "ca-heo-dom-nhiet-doi",
+    nameVi: "Cá Heo Đốm",
+    nameEn: "Spotted Dolphin",
+    sciName: "Stenella attenuata",
+    categoryVi: "Động vật có vú biển",
+    zoneNameVi: "Vịnh Hạ Long & Bái Tử Long",
+    depth: "0m - 50m",
+    lat: 20.8000,
+    lng: 107.2800,
+    image: CREATURE_PNGS["spotted-dolphin"],
+  },
+  {
+    id: "sailfish",
+    slug: "ca-co-gon",
+    nameVi: "Cá Cờ Gòn",
+    nameEn: "Sailfish",
+    sciName: "Istiophorus platypterus",
+    categoryVi: "Cá săn mồi biển khơi",
+    zoneNameVi: "Vùng biển Nam Trung Bộ",
+    depth: "0m - 100m",
+    lat: 13.5000,
+    lng: 110.2000,
+    image: CREATURE_PNGS["sailfish"],
+  },
+  {
+    id: "hammerhead-shark",
+    slug: "ca-nham-bua-dau-bua",
+    nameVi: "Cá Mập Búa",
+    nameEn: "Hammerhead Shark",
+    sciName: "Sphyrna mokarran",
+    categoryVi: "Cá sụn săn mồi",
+    zoneNameVi: "Quần đảo Trường Sa",
+    depth: "1m - 80m",
+    lat: 8.8000,
+    lng: 112.1000,
+    image: CREATURE_PNGS["hammerhead-shark"],
+  },
+  {
+    id: "yellowfin-tuna",
+    slug: "ca-ngu-vay-vang-dai-duong",
+    nameVi: "Cá Ngừ Vây Vàng",
+    nameEn: "Yellowfin Tuna",
+    sciName: "Thunnus albacares",
+    categoryVi: "Cá tầng mặt khơi xa",
+    zoneNameVi: "Ngư trường trung tâm Biển Đông",
+    depth: "10m - 250m",
+    lat: 14.1000,
+    lng: 113.6000,
+    image: CREATURE_PNGS["yellowfin-tuna"],
+  },
+  {
+    id: "spotted-eagle-ray",
+    slug: "ca-duoi-o-hoa",
+    nameVi: "Cá Đuối Đại Dương",
+    nameEn: "Spotted Eagle Ray",
+    sciName: "Aetobatus narinari",
+    categoryVi: "Cá sụn rạn san hô",
+    zoneNameVi: "Vùng biển Phú Quốc",
+    depth: "1m - 40m",
+    lat: 10.1800,
+    lng: 103.9000,
+    image: CREATURE_PNGS["spotted-eagle-ray"],
+  },
+  {
+    id: "bigfin-squid",
+    slug: "muc-la-dai-duong",
+    nameVi: "Mực Lá Biển Đông",
+    nameEn: "Bigfin Reef Squid",
+    sciName: "Sepioteuthis lessoniana",
+    categoryVi: "Thân mềm chân đầu",
+    zoneNameVi: "Khu bảo tồn Cù Lao Chàm",
+    depth: "0m - 30m",
+    lat: 15.9300,
+    lng: 108.5600,
+    image: CREATURE_PNGS["bigfin-squid"],
+  },
+  {
+    id: "dumbo-octopus",
+    slug: "bach-tuoc-dumbo",
+    nameVi: "Bạch Tuộc Dumbo",
+    nameEn: "Dumbo Octopus",
+    sciName: "Grimpoteuthis sp.",
+    categoryVi: "Sinh vật vực thẳm biển sâu",
+    zoneNameVi: "Vực thẳm Manila",
+    depth: "3.000m - 5.000m",
+    lat: 14.7000,
+    lng: 117.3500,
+    image: CREATURE_PNGS["dumbo-octopus"],
+  },
+  {
+    id: "hadal-snailfish",
+    slug: "ca-oc-ranh-sau-hadal-snailfish",
+    nameVi: "Cá Ốc Rãnh Sâu",
+    nameEn: "Hadal Snailfish",
+    sciName: "Pseudoliparis swirei",
+    categoryVi: "Sinh vật tầng đáy Hadal",
+    zoneNameVi: "Đáy rãnh sâu Manila",
+    depth: "5.000m - 5.353m",
+    lat: 14.3000,
+    lng: 117.6500,
+    image: CREATURE_PNGS["hadal-snailfish"],
+  },
+];
+
+// Nguồn bản đồ chuẩn với zoom ceiling an toàn, không bao giờ rơi vào ô trống "Map data not yet available"
 export const BASEMAP_PROVIDERS = {
   ocean: {
     labelVi: "Độ sâu & Đáy biển",
     labelEn: "Ocean Depth & Terrain",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, GEBCO, NOAA",
-    maxNativeZoom: 13,
-    maxZoom: 14,
+    maxNativeZoom: 10,
+    maxZoom: 11, // Đỉnh zoom an toàn cho bản đồ đáy biển khơi
   },
   satellite: {
     labelVi: "Ảnh Vệ tinh",
     labelEn: "Satellite",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, Maxar, Earthstar Geographics",
-    maxNativeZoom: 18,
-    maxZoom: 18,
+    maxNativeZoom: 11,
+    maxZoom: 12, // Đỉnh zoom an toàn cho vệ tinh biển khơi
   },
   topo: {
     labelVi: "Bản đồ Địa lý",
     labelEn: "Geographic Map",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, USGS",
-    maxNativeZoom: 18,
-    maxZoom: 18,
+    maxNativeZoom: 12,
+    maxZoom: 13,
   },
 };
