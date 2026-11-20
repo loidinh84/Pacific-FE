@@ -41,7 +41,6 @@ export function SpeciesDistributionSpecs({ species, language = "vi" }) {
 
   const zoneName = species?.east_sea_zone || zoneInfo.zoneName;
   const habitatText = species?.local_distribution || (isEn ? "Coral reefs, continental shelf" : "Rạn san hô, thềm lục địa ven biển");
-  const depthText = species?.depth || (species?.depthMinM !== undefined ? `${species.depthMinM} - ${species.depthMaxM || 100}m` : null);
   const slugOrId = species?.slug || species?.id || "";
 
   return (
