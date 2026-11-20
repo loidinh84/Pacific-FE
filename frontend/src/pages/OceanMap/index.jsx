@@ -18,18 +18,8 @@ import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { useLanguage } from "../../hooks/useLanguage";
-
-// Lazy load leaflet và leaflet css
-async function loadLeaflet() {
-  const L = (await import("leaflet")).default;
-  if (!document.querySelector('link[href*="leaflet"]')) {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.min.css";
-    document.head.appendChild(link);
-  }
-  return L;
-}
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 // 10 phân vùng và khu bảo tồn biển trọng điểm Biển Đông
 export const EAST_SEA_ZONES = [
@@ -274,97 +264,97 @@ export default function OceanMap() {
 
   // Khởi tạo bản đồ Leaflet
   useEffect(() => {
-    let map;
-    loadLeaflet().then((L) => {
-      if (mapInstanceRef.current || !mapContainerRef.current) return;
+    if (mapInstanceRef.current || !mapContainerRef.current) return;
 
-      // Tâm Biển Đông
-      map = L.map(mapContainerRef.current, {
-        center: [15.0, 111.0],
-        zoom: 6,
-        minZoom: 4,
-        maxZoom: 12,
-        scrollWheelZoom: true,
-        zoomControl: false,
-      });
-
-      // Zoom control góc trên bên phải
-      L.control.zoom({ position: "topright" }).addTo(map);
-
-      // Lớp bản đồ vệ tinh tối (Carto Dark)
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-          attribution:
-            '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
-          subdomains: "abcd",
-          maxZoom: 18,
-        }
-      ).addTo(map);
-
-      // Thước đo tọa độ di chuột
-      map.on("mousemove", (e) => {
-        const lat = e.latlng.lat.toFixed(3);
-        const lng = e.latlng.lng.toFixed(3);
-        setCursorCoords(`${lat}° B, ${lng}° Đ`);
-      });
-
-      map.on("mouseout", () => setCursorCoords(null));
-
-      // Thêm các Marker phân vùng biển
-      EAST_SEA_ZONES.forEach((zone) => {
-        const isCurrent = selectedZone?.id === zone.id;
-
-        const pinHtml = `
-          <div class="custom-zone-marker group" style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
-            <div style="
-              width: 24px; height: 24px;
-              border-radius: 50% 50% 50% 0;
-              background: #0ea5e9;
-              border: 2px solid #ffffff;
-              transform: rotate(-45deg);
-              box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-              transition: transform 0.2s ease, background 0.2s ease;
-            "></div>
-            <div style="
-              margin-top: 4px;
-              background: rgba(15, 23, 42, 0.85);
-              border: 1px solid rgba(255,255,255,0.15);
-              padding: 2px 6px;
-              border-radius: 6px;
-              color: #e2e8f0;
-              font-size: 10px;
-              font-weight: 600;
-              white-space: nowrap;
-              pointer-events: none;
-              backdrop-filter: blur(4px);
-            ">${zone.nameVi}</div>
-          </div>
-        `;
-
-        const icon = L.divIcon({
-          className: "",
-          html: pinHtml,
-          iconSize: [24, 46],
-          iconAnchor: [12, 24],
-        });
-
-        const marker = L.marker([zone.lat, zone.lng], { icon })
-          .addTo(map)
-          .on("click", () => {
-            setSelectedZone(zone);
-            map.flyTo([zone.lat, zone.lng], Math.max(map.getZoom(), 7), {
-              duration: 1.2,
-            });
-          });
-
-        markersRef.current[zone.id] = marker;
-      });
-
-      mapInstanceRef.current = map;
+    // Tâm Biển Đông
+    const map = L.map(mapContainerRef.current, {
+      center: [15.0, 111.0],
+      zoom: 6,
+      minZoom: 4,
+      maxZoom: 12,
+      scrollWheelZoom: true,
+      zoomControl: false,
     });
 
+    // Zoom control góc trên bên phải
+    L.control.zoom({ position: "topright" }).addTo(map);
+
+    // Lớp bản đồ vệ tinh tối (Carto Dark)
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      {
+        attribution:
+          '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+        subdomains: "abcd",
+        maxZoom: 18,
+      }
+    ).addTo(map);
+
+    // Thước đo tọa độ di chuột
+    map.on("mousemove", (e) => {
+      const lat = e.latlng.lat.toFixed(3);
+      const lng = e.latlng.lng.toFixed(3);
+      setCursorCoords(`${lat}° B, ${lng}° Đ`);
+    });
+
+    map.on("mouseout", () => setCursorCoords(null));
+
+    // Thêm các Marker phân vùng biển
+    EAST_SEA_ZONES.forEach((zone) => {
+      const pinHtml = `
+        <div style="cursor:pointer; display:flex; flex-direction:column; align-items:center;">
+          <div style="
+            width: 22px; height: 22px;
+            border-radius: 50% 50% 50% 0;
+            background: #0ea5e9;
+            border: 2px solid #ffffff;
+            transform: rotate(-45deg);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+          "></div>
+          <div style="
+            margin-top: 3px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 2px 6px;
+            border-radius: 6px;
+            color: #f1f5f9;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+          ">${zone.nameVi}</div>
+        </div>
+      `;
+
+      const icon = L.divIcon({
+        className: "",
+        html: pinHtml,
+        iconSize: [22, 44],
+        iconAnchor: [11, 22],
+      });
+
+      const marker = L.marker([zone.lat, zone.lng], { icon })
+        .addTo(map)
+        .on("click", () => {
+          setSelectedZone(zone);
+          map.flyTo([zone.lat, zone.lng], Math.max(map.getZoom(), 7), {
+            duration: 1.2,
+          });
+        });
+
+      markersRef.current[zone.id] = marker;
+    });
+
+    mapInstanceRef.current = map;
+
+    // Kích hoạt tính toán lại kích thước sau khi DOM render
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
+
     return () => {
+      clearTimeout(timer);
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
@@ -499,10 +489,14 @@ export default function OceanMap() {
         </div>
 
         {/* Khung bản đồ và Sidebar phân vùng */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 min-h-[550px] relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-[calc(100vh-210px)] min-h-[560px] max-h-[860px] relative">
           {/* Cột Bản đồ tương tác */}
-          <div className="lg:col-span-8 rounded-2xl overflow-hidden border border-white/15 relative bg-[#0a1829] shadow-xl min-h-[420px] lg:min-h-full">
-            <div ref={mapContainerRef} className="w-full h-full min-h-[420px]" />
+          <div className="lg:col-span-8 rounded-2xl overflow-hidden border border-white/15 relative bg-[#0a1829] shadow-xl h-full flex flex-col">
+            <div
+              ref={mapContainerRef}
+              className="w-full flex-1"
+              style={{ width: "100%", height: "100%", minHeight: "100%" }}
+            />
 
             {/* Thước đo tọa độ góc dưới bên trái */}
             {cursorCoords && (
@@ -528,8 +522,8 @@ export default function OceanMap() {
           </div>
 
           {/* Cột Sidebar Chi tiết vùng & Sinh vật cư ngụ */}
-          <div className="lg:col-span-4 rounded-2xl bg-white/[0.03] border border-white/15 p-5 flex flex-col justify-between backdrop-blur-md">
-            <div>
+          <div className="lg:col-span-4 rounded-2xl bg-white/[0.03] border border-white/15 p-5 flex flex-col justify-between backdrop-blur-md h-full overflow-hidden">
+            <div className="overflow-y-auto pr-1 flex-1">
               {/* Tên vùng & Loại phân vùng */}
               <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-4">
                 <div>
