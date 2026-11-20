@@ -1,13 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Compass, Crosshair, Layers, Fish } from "lucide-react";
+import { Compass, Crosshair, Layers, Fish, MapPin } from "lucide-react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { useLanguage } from "../../hooks/useLanguage";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-import { EAST_SEA_ZONES, BASEMAP_PROVIDERS, MARINE_CREATURE_PINS } from "./oceanMapData";
+import {
+  EAST_SEA_ZONES,
+  BASEMAP_PROVIDERS,
+  CREATURE_MAP_CATEGORIES,
+  MARINE_CREATURE_PINS,
+} from "./oceanMapData";
 
 export default function OceanMap() {
   const { language } = useLanguage();
@@ -16,6 +21,7 @@ export default function OceanMap() {
 
   const [activeLayer, setActiveLayer] = useState("ocean");
   const [showCreatures, setShowCreatures] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [cursorCoords, setCursorCoords] = useState(null);
 
   const mapContainerRef = useRef(null);
@@ -23,6 +29,7 @@ export default function OceanMap() {
   const tileLayerRef = useRef(null);
   const markersRef = useRef({});
   const creatureMarkersRef = useRef([]);
+  const creatureMarkersMapRef = useRef({});
 
   const zoneQuery = searchParams.get("zone");
   const speciesQuery = searchParams.get("species");
@@ -66,7 +73,7 @@ export default function OceanMap() {
     // Zoom control góc trên bên phải
     L.control.zoom({ position: "topright" }).addTo(map);
 
-    // Layer bản đồ ban đầu (Độ sâu & Đáy biển)
+    // Layer bản đồ ban đầu với giới hạn zoom an toàn
     const tileLayer = L.tileLayer(initialProvider.url, {
       attribution: initialProvider.attribution,
       maxZoom: initialProvider.maxZoom,
@@ -83,7 +90,7 @@ export default function OceanMap() {
 
     map.on("mouseout", () => setCursorCoords(null));
 
-    // 1. Thêm các Marker phân vùng biển (Nautical Pins)
+    // 1. Thêm các Marker phân vùng biển trọng điểm
     markersRef.current = {};
     EAST_SEA_ZONES.forEach((zone) => {
       const pinHtml = `
@@ -111,7 +118,6 @@ export default function OceanMap() {
       const category = isEn ? zone.categoryEn : zone.categoryVi;
       const desc = isEn ? zone.descEn : zone.descVi;
 
-      // Danh sách sinh vật cư ngụ tiêu biểu của vùng biển này
       const speciesListHtml =
         zone.residentSpecies && zone.residentSpecies.length > 0
           ? `
@@ -167,8 +173,10 @@ export default function OceanMap() {
       markersRef.current[zone.id] = marker;
     });
 
-    // 2. Thêm các Marker Sinh vật biển trực tiếp trên bản đồ (Creature Pins)
+    // 2. Thêm đầy đủ 32 Marker Sinh vật biển trực tiếp trên bản đồ
     creatureMarkersRef.current = [];
+    creatureMarkersMapRef.current = {};
+
     MARINE_CREATURE_PINS.forEach((creature) => {
       const creaturePinHtml = `
         <div style="cursor:pointer; display:flex; align-items:center; justify-content:center; width:34px; height:34px;">
@@ -233,8 +241,12 @@ export default function OceanMap() {
         .bindPopup(creaturePopupHtml, { maxWidth: 300, closeButton: true })
         .bindTooltip(creatureName, { direction: "top", offset: [0, -18], opacity: 0.95 });
 
+      marker._groupId = creature.groupId;
+      marker._creatureId = creature.id;
       marker.addTo(map);
+
       creatureMarkersRef.current.push(marker);
+      creatureMarkersMapRef.current[creature.id] = marker;
     });
 
     mapInstanceRef.current = map;
@@ -251,10 +263,13 @@ export default function OceanMap() {
     const timer = setTimeout(() => {
       map.invalidateSize();
 
-      const targetZoneId = zoneQuery || (speciesQuery ? "hoang-sa" : null);
+      const targetZoneId = zoneQuery;
       if (targetZoneId && markersRef.current[targetZoneId]) {
         map.flyTo(markersRef.current[targetZoneId].getLatLng(), 8, { duration: 1.2 });
         markersRef.current[targetZoneId].openPopup();
+      } else if (speciesQuery && creatureMarkersMapRef.current[speciesQuery]) {
+        map.flyTo(creatureMarkersMapRef.current[speciesQuery].getLatLng(), 8, { duration: 1.2 });
+        creatureMarkersMapRef.current[speciesQuery].openPopup();
       }
     }, 250);
 
@@ -268,22 +283,62 @@ export default function OceanMap() {
     };
   }, [isEn, zoneQuery, speciesQuery]);
 
-  // Bật/tắt hiển thị marker sinh vật biển
-  const toggleCreatures = () => {
-    const nextState = !showCreatures;
-    setShowCreatures(nextState);
+  // Lọc hiển thị marker sinh vật theo nhóm phân loại và trạng thái bật/tắt
+  useEffect(() => {
     if (!mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
 
     creatureMarkersRef.current.forEach((marker) => {
-      if (nextState) {
-        marker.addTo(mapInstanceRef.current);
+      const isVisible =
+        showCreatures &&
+        (selectedCategory === "all" || marker._groupId === selectedCategory);
+
+      if (isVisible) {
+        if (!map.hasLayer(marker)) {
+          marker.addTo(map);
+        }
       } else {
-        mapInstanceRef.current.removeLayer(marker);
+        if (map.hasLayer(marker)) {
+          map.removeLayer(marker);
+        }
       }
     });
+  }, [selectedCategory, showCreatures]);
+
+  // Bật/tắt hiển thị sinh vật biển
+  const toggleCreatures = () => {
+    setShowCreatures((prev) => !prev);
   };
 
-  // Xử lý chuyển đổi lớp bản đồ (Ocean, Satellite, Coastline) với zoom ceiling an toàn
+  // Chọn nhanh và bay đến vị trí sinh vật
+  const handleSelectSpecies = (creatureId) => {
+    if (!creatureId || !mapInstanceRef.current) return;
+    const marker = creatureMarkersMapRef.current[creatureId];
+    if (marker) {
+      if (!showCreatures) setShowCreatures(true);
+      if (selectedCategory !== "all" && marker._groupId !== selectedCategory) {
+        setSelectedCategory("all");
+      }
+      mapInstanceRef.current.flyTo(marker.getLatLng(), 8, { duration: 1.2 });
+      setTimeout(() => {
+        marker.openPopup();
+      }, 400);
+    }
+  };
+
+  // Chọn nhanh và bay đến phân vùng biển
+  const handleSelectZone = (zoneId) => {
+    if (!zoneId || !mapInstanceRef.current) return;
+    const marker = markersRef.current[zoneId];
+    if (marker) {
+      mapInstanceRef.current.flyTo(marker.getLatLng(), 7, { duration: 1.2 });
+      setTimeout(() => {
+        marker.openPopup();
+      }, 400);
+    }
+  };
+
+  // Xử lý chuyển đổi lớp bản đồ (Ocean, Satellite, Topo) với zoom ceiling an toàn
   const handleLayerChange = (layerKey) => {
     if (!mapInstanceRef.current || !BASEMAP_PROVIDERS[layerKey]) return;
 
@@ -315,7 +370,7 @@ export default function OceanMap() {
 
       <main className="flex-1 pt-20 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex flex-col">
         {/* Header tinh gọn (Quiet Chrome) */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
           <div>
             <h1 className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
               {isEn ? "East Sea Marine Habitats & Coordinates" : "Bản đồ Sinh cảnh Biển Đông"}
@@ -339,10 +394,10 @@ export default function OceanMap() {
               }`}
             >
               <Fish size={14} className={showCreatures ? "text-sky-300" : "text-slate-400"} />
-              <span>{isEn ? "Marine Creatures (12)" : "Sinh vật biển (12)"}</span>
+              <span>{isEn ? `Marine Life (${MARINE_CREATURE_PINS.length})` : `Sinh vật biển (${MARINE_CREATURE_PINS.length})`}</span>
             </button>
 
-            {/* Bộ chọn chế độ xem bản đồ không có viền neon */}
+            {/* Bộ chọn chế độ xem bản đồ */}
             <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.04] border border-white/10">
               <span className="text-[11px] text-slate-400 px-2 flex items-center gap-1 hidden md:flex">
                 <Layers size={13} />
@@ -368,7 +423,84 @@ export default function OceanMap() {
           </div>
         </div>
 
-        {/* Khung bản đồ toàn màn hình (Full-width, không có sidebar thừa) */}
+        {/* Hàng điều khiển phụ: Bộ lọc danh mục sinh vật & Đến nhanh vị trí */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 mb-3">
+          {/* Bộ lọc nhóm sinh vật */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {CREATURE_MAP_CATEGORIES.map((cat) => {
+              const count =
+                cat.id === "all"
+                  ? MARINE_CREATURE_PINS.length
+                  : MARINE_CREATURE_PINS.filter((c) => c.groupId === cat.id).length;
+              const isSelected = selectedCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    setSelectedCategory(cat.id);
+                    if (!showCreatures) setShowCreatures(true);
+                  }}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer border ${
+                    isSelected
+                      ? "bg-sky-600/30 border-sky-400/50 text-sky-200"
+                      : "bg-white/[0.04] border-white/10 text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {isEn ? cat.labelEn : cat.labelVi} ({count})
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Đến nhanh vị trí sinh vật & phân vùng biển */}
+          <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+            {/* Chọn phân vùng */}
+            <div className="flex items-center gap-1">
+              <MapPin size={13} className="text-slate-400 hidden sm:block" />
+              <select
+                onChange={(e) => {
+                  handleSelectZone(e.target.value);
+                  e.target.value = "";
+                }}
+                defaultValue=""
+                className="bg-[#0b1b2d] border border-white/10 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500 cursor-pointer"
+              >
+                <option value="" disabled>
+                  {isEn ? "Jump to Marine Zone (10)..." : "Đến phân vùng biển (10 vùng)..."}
+                </option>
+                {EAST_SEA_ZONES.map((z) => (
+                  <option key={z.id} value={z.id} className="bg-[#091b2e] text-white">
+                    {isEn ? z.nameEn : z.nameVi} ({z.depth})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Chọn sinh vật */}
+            <div className="flex items-center gap-1">
+              <Fish size={13} className="text-slate-400 hidden sm:block" />
+              <select
+                onChange={(e) => {
+                  handleSelectSpecies(e.target.value);
+                  e.target.value = "";
+                }}
+                defaultValue=""
+                className="bg-[#0b1b2d] border border-white/10 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500 cursor-pointer"
+              >
+                <option value="" disabled>
+                  {isEn ? `Jump to Creature (${MARINE_CREATURE_PINS.length})...` : `Đến vị trí sinh vật (${MARINE_CREATURE_PINS.length} loài)...`}
+                </option>
+                {MARINE_CREATURE_PINS.map((c) => (
+                  <option key={c.id} value={c.id} className="bg-[#091b2e] text-white">
+                    {isEn ? c.nameEn : c.nameVi} ({c.zoneNameVi} - {c.depth})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Khung bản đồ toàn màn hình (Full-width, Quiet Chrome) */}
         <div
           className="rounded-2xl overflow-hidden border border-white/10 relative bg-[#061220] shadow-xl w-full"
           style={{ width: "100%", height: "640px", minHeight: "640px" }}
