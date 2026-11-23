@@ -162,14 +162,25 @@ export const EAST_SEA_ZONES = [
   },
 ];
 
-// Danh mục phân loại sinh vật trên bản đồ
+// Danh mục phân loại sinh vật trên bản đồ đồng bộ 100% với CSDL
 export const CREATURE_MAP_CATEGORIES = [
-  { id: "all", labelVi: "Tất cả sinh vật", labelEn: "All Creatures" },
-  { id: "fish", labelVi: "Cá biển", labelEn: "Marine Fishes" },
-  { id: "mammal-reptile", labelVi: "Thú biển & Rùa", labelEn: "Mammals & Turtles" },
-  { id: "mollusk", labelVi: "Thân mềm & Giáp xác", labelEn: "Mollusks & Crabs" },
-  { id: "deep-sea", labelVi: "Sinh vật biển sâu", labelEn: "Deep Sea Life" },
+  { id: "all", labelVi: "Tất cả", labelEn: "All", color: "#0284c7" },
+  { id: "ca-bien", labelVi: "Cá biển", labelEn: "Fishes", color: "#0284c7" },
+  { id: "than-mem-khong-xuong-song", labelVi: "Thân mềm & Giáp xác", labelEn: "Invertebrates", color: "#d97706" },
+  { id: "san-ho-thuc-vat-bien", labelVi: "San hô & Thực vật", labelEn: "Corals & Flora", color: "#e11d48" },
+  { id: "dong-vat-co-vu-bien", labelVi: "Thú biển", labelEn: "Mammals", color: "#059669" },
+  { id: "bo-sat-bien", labelVi: "Bò sát biển", labelEn: "Reptiles", color: "#10b981" },
+  { id: "sinh-vat-bien-sau", labelVi: "Biển sâu", labelEn: "Deep Sea", color: "#6366f1" },
 ];
+
+export const CATEGORY_COLORS = {
+  "ca-bien": "#0284c7",
+  "than-mem-khong-xuong-song": "#d97706",
+  "san-ho-thuc-vat-bien": "#e11d48",
+  "dong-vat-co-vu-bien": "#059669",
+  "bo-sat-bien": "#10b981",
+  "sinh-vat-bien-sau": "#6366f1",
+};
 
 // Nguồn bản đồ chuẩn với zoom ceiling an toàn
 export const BASEMAP_PROVIDERS = {
