@@ -187,6 +187,8 @@ export const BASEMAP_PROVIDERS = {
   ocean: {
     labelVi: "Độ sâu & Đáy biển",
     labelEn: "Ocean Depth & Terrain",
+    nameVi: "Độ sâu & Đáy biển",
+    nameEn: "Ocean Depth & Terrain",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, GEBCO, NOAA",
     maxNativeZoom: 9,
@@ -195,6 +197,8 @@ export const BASEMAP_PROVIDERS = {
   satellite: {
     labelVi: "Ảnh Vệ tinh",
     labelEn: "Satellite",
+    nameVi: "Ảnh Vệ tinh",
+    nameEn: "Satellite",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, Maxar, Earthstar Geographics",
     maxNativeZoom: 10,
@@ -203,6 +207,8 @@ export const BASEMAP_PROVIDERS = {
   topo: {
     labelVi: "Bản đồ Địa lý",
     labelEn: "Geographic Map",
+    nameVi: "Bản đồ Địa lý",
+    nameEn: "Geographic Map",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, USGS",
     maxNativeZoom: 11,

@@ -819,28 +819,33 @@ export default function OceanMap() {
 
             {/* Các lớp bản đồ nền */}
             <div className="flex items-center bg-[#061424] p-1 rounded-xl border border-white/10 text-xs">
-              <span className="text-slate-400 px-2 py-0.5 flex items-center gap-1 hidden sm:flex">
-                <Layers size={13} />
-                <span>{isEn ? "Layer:" : "Chế độ xem:"}</span>
+              <span className="text-slate-400 px-2.5 py-0.5 flex items-center gap-1.5 hidden md:flex font-medium">
+                <Layers size={13} className="text-sky-400" />
+                <span>{isEn ? "Basemap:" : "Lớp bản đồ:"}</span>
               </span>
-              {Object.keys(BASEMAP_PROVIDERS).map((key) => {
-                const p = BASEMAP_PROVIDERS[key];
-                const isActive = activeLayer === key;
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => handleLayerChange(key)}
-                    className={`px-2.5 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
-                      isActive
-                        ? "bg-sky-600 text-white shadow-sm"
-                        : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
-                    }`}
-                  >
-                    {isEn ? p.nameEn : p.nameVi}
-                  </button>
-                );
-              })}
+              <div className="flex items-center gap-1">
+                {Object.keys(BASEMAP_PROVIDERS).map((key) => {
+                  const p = BASEMAP_PROVIDERS[key];
+                  const isActive = activeLayer === key;
+                  const label = isEn
+                    ? p.labelEn || p.nameEn
+                    : p.labelVi || p.nameVi;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => handleLayerChange(key)}
+                      className={`px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer text-xs whitespace-nowrap ${
+                        isActive
+                          ? "bg-sky-600 text-white shadow-sm font-semibold"
+                          : "text-slate-300 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
