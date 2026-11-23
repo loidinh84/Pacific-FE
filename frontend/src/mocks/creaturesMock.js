@@ -10,12 +10,12 @@ export const RANDOM_CREATURES_DATA = [
     tagEn: "Gentle Giant",
   },
   {
-    nameVi: "Bạch tuộc khổng lồ",
-    nameEn: "Giant Octopus",
-    sciName: "Enteroctopus dofleini",
+    nameVi: "Bạch tuộc san hô Biển Đông",
+    nameEn: "Big Blue Octopus",
+    sciName: "Octopus cyanea",
     image: Images.BachTuotKhongLo,
-    tagVi: "Thông minh kiệt xuất",
-    tagEn: "Highly Intelligent",
+    tagVi: "Ngụy trang kiệt xuất",
+    tagEn: "Master of Camouflage",
   },
   {
     nameVi: "Cá heo mỏ chai",
