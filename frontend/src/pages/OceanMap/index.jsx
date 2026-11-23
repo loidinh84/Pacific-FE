@@ -782,7 +782,7 @@ export default function OceanMap() {
     <div className="min-h-screen bg-[#071322] text-slate-100 flex flex-col selection:bg-sky-500 selection:text-white">
       <Navbar />
 
-      <main className="flex-1 w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6 py-4 flex flex-col gap-3">
+      <main className="flex-1 w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6 pt-24 pb-8 sm:pt-28 flex flex-col gap-3">
         {/* Thanh tiêu đề & Tùy chọn bản đồ nền */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#081729]/80 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-white/10 shadow-sm">
           <div>
