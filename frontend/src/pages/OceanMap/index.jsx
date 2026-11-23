@@ -55,6 +55,7 @@ export default function OceanMap() {
   const tileLayerRef = useRef(null);
   const markersRef = useRef({});
   const creatureLayerGroupRef = useRef(null);
+  const zoneLayerGroupRef = useRef(null);
   const creatureMarkersMapRef = useRef({});
 
   const zoneQuery = searchParams.get("zone");
@@ -298,68 +299,86 @@ export default function OceanMap() {
       }
     }
 
-    // Vẽ các cụm hoặc từng loài độc lập
+    // Vẽ các cụm hoặc từng loài độc lập dưới dạng pin tròn gọn gàng (không chữ rườm rà trên bản đồ)
     clusters.forEach((item) => {
       if (item.isCluster) {
-        // TRƯỜNG HỢP 1: Cụm gồm từ 2 loài trở lên nằm gần nhau -> Vẽ Capsule Cluster Marker
-        const previewImages = item.species.slice(0, 3);
+        // TRƯỜNG HỢP 1: Cụm từ 2 loài trở lên -> Pin tròn 38px kèm huy hiệu số lượng nhỏ gọn góc trên
+        const representativePhoto =
+          item.species[0]?.image || "/assets/creatures/clownfish.png";
+
         const clusterHtml = `
-          <div class="ocean-cluster-badge" style="
+          <div class="ocean-cluster-pin" style="
             cursor: pointer;
-            background: #081627;
-            border: 2px solid #38bdf8;
-            border-radius: 24px;
-            padding: 3px 8px 3px 4px;
-            color: #ffffff;
-            display: inline-flex;
+            position: relative;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 5px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-            white-space: nowrap;
-            transition: transform 0.15s ease, border-color 0.15s ease;
+            filter: drop-shadow(0 2px 6px rgba(15, 23, 42, 0.45));
+            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
           ">
-            <div style="display: flex; align-items: center;">
-              ${previewImages
-                .map(
-                  (sp, idx) => `
-                <img
-                  src="${sp.image || '/assets/creatures/clownfish.png'}"
-                  alt="${sp.nameVi}"
-                  style="
-                    width: 22px;
-                    height: 22px;
-                    border-radius: 50%;
-                    border: 1.5px solid #ffffff;
-                    object-fit: cover;
-                    margin-left: ${idx === 0 ? "0" : "-7px"};
-                    background: #ffffff;
-                  "
-                />
-              `
-                )
-                .join("")}
+            <div style="
+              width: 38px;
+              height: 38px;
+              border-radius: 50%;
+              background: #ffffff;
+              border: 2.5px solid #0284c7;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+              box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+            ">
+              <img
+                src="${representativePhoto}"
+                alt="${item.name}"
+                style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+              />
             </div>
-            <span style="font-size: 11px; font-weight: 700; color: #e0f2fe;">${item.name}</span>
-            <span style="
+            <div style="
+              position: absolute;
+              top: -3px;
+              right: -5px;
               background: #0284c7;
               color: #ffffff;
-              padding: 1px 6px;
-              border-radius: 10px;
-              font-size: 10px;
+              font-size: 10.5px;
               font-weight: 800;
               font-family: monospace;
-            ">${item.count} loài</span>
+              padding: 1px 5.5px;
+              border-radius: 10px;
+              border: 1.5px solid #ffffff;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+              line-height: 1.1;
+            ">
+              ${item.count}
+            </div>
+            <div style="
+              width: 0;
+              height: 0;
+              border-left: 4px solid transparent;
+              border-right: 4px solid transparent;
+              border-top: 5px solid #0284c7;
+              margin-top: -1px;
+            "></div>
           </div>
         `;
 
         const clusterIcon = L.divIcon({
           className: "cluster-pin !bg-transparent !border-0",
           html: clusterHtml,
-          iconSize: [160, 32],
-          iconAnchor: [80, 16],
+          iconSize: [38, 44],
+          iconAnchor: [19, 44],
+          popupAnchor: [0, -44],
         });
 
-        const clusterMarker = L.marker([item.centerLat, item.centerLng], { icon: clusterIcon });
+        const clusterMarker = L.marker([item.centerLat, item.centerLng], { icon: clusterIcon })
+          .bindTooltip(`${item.name} • ${item.count} loài`, {
+            direction: "top",
+            offset: [0, -44],
+            opacity: 0.95,
+          });
+
+        clusterMarker.on("mouseover", () => clusterMarker.setZIndexOffset(10000));
+        clusterMarker.on("mouseout", () => clusterMarker.setZIndexOffset(0));
         clusterMarker.on("click", () => {
           map.flyTo([item.centerLat, item.centerLng], Math.min(map.getZoom() + 1.5, 11), {
             duration: 0.8,
@@ -502,7 +521,11 @@ export default function OceanMap() {
     const creatureGroup = L.layerGroup().addTo(map);
     creatureLayerGroupRef.current = creatureGroup;
 
-    // 1. Thêm các Marker phân vùng biển / Khu bảo tồn trọng điểm
+    // LayerGroup dành riêng cho các phân vùng biển / Khu bảo tồn trọng điểm
+    const zoneGroup = L.layerGroup().addTo(map);
+    zoneLayerGroupRef.current = zoneGroup;
+
+    // 1. Khởi tạo Marker phân vùng biển / Khu bảo tồn (Icon hải dương học gọn gàng 24px, không chữ đè lên bản đồ)
     markersRef.current = {};
     zonesList.forEach((zone) => {
       const zoneName = isEn ? zone.nameEn : zone.nameVi;
@@ -510,33 +533,29 @@ export default function OceanMap() {
       const desc = isEn ? zone.descEn : zone.descVi;
 
       const zonePinHtml = `
-        <div style="cursor:pointer; display:flex; flex-direction:column; align-items:center; filter: drop-shadow(0 2px 4px rgba(15,23,42,0.3)); transition: transform 0.15s ease;">
+        <div style="cursor:pointer; display:flex; flex-direction:column; align-items:center; filter: drop-shadow(0 2px 4px rgba(15,23,42,0.4)); transition: transform 0.15s ease;">
           <div style="
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
             background: #091b2e;
-            border: 1.5px solid #38bdf8;
-            border-radius: 14px;
-            padding: 2.5px 8px;
-            color: #e0f2fe;
-            font-size: 10px;
-            font-weight: 600;
+            border: 2px solid #38bdf8;
             display: flex;
             align-items: center;
-            gap: 5px;
-            white-space: nowrap;
+            justify-content: center;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
           ">
             <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#38bdf8;"></span>
-            <span>${zoneName}</span>
           </div>
-          <div style="width:0; height:0; border-left:4px solid transparent; border-right:4px solid transparent; border-top:4px solid #091b2e; margin-top:-1px;"></div>
         </div>
       `;
 
       const icon = L.divIcon({
         className: "nautical-pin !bg-transparent !border-0",
         html: zonePinHtml,
-        iconSize: [120, 26],
-        iconAnchor: [60, 26],
-        popupAnchor: [0, -26],
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+        popupAnchor: [0, -14],
       });
 
       const speciesListHtml =
@@ -588,12 +607,10 @@ export default function OceanMap() {
       `;
 
       const marker = L.marker([zone.lat, zone.lng], { icon })
-        .addTo(map)
         .bindPopup(popupHtml, { maxWidth: 300, closeButton: true })
-        .bindTooltip(zoneName, { direction: "top", offset: [0, -22], opacity: 0.95 });
+        .bindTooltip(zoneName, { direction: "top", offset: [0, -14], opacity: 0.95 });
 
       marker.on("click", () => {
-        // Mở bảng danh sách sinh vật tương ứng nếu có
         const zoneSpecies = creaturesList.filter(
           (sp) =>
             sp.zoneNameVi === zone.nameVi ||
@@ -611,6 +628,11 @@ export default function OceanMap() {
       });
 
       markersRef.current[zone.id] = marker;
+
+      // Chỉ hiển thị pin phân vùng khi người dùng tắt hiển thị sinh vật (tránh trùng lặp với pin sinh vật tại cùng tọa độ)
+      if (!showCreatures) {
+        zoneGroup.addLayer(marker);
+      }
     });
 
     mapInstanceRef.current = map;
@@ -651,12 +673,21 @@ export default function OceanMap() {
         mapInstanceRef.current = null;
       }
     };
-  }, [isEn, zoneQuery, speciesQuery, zonesList, creaturesList, renderCreatureLayers]);
+  }, [isEn, zoneQuery, speciesQuery, zonesList, creaturesList, renderCreatureLayers, showCreatures]);
 
   // Cập nhật khi danh mục lọc hoặc công tắc hiển thị sinh vật thay đổi
   useEffect(() => {
     renderCreatureLayers();
-  }, [renderCreatureLayers]);
+
+    if (zoneLayerGroupRef.current) {
+      zoneLayerGroupRef.current.clearLayers();
+      if (!showCreatures) {
+        Object.values(markersRef.current).forEach((m) => {
+          zoneLayerGroupRef.current.addLayer(m);
+        });
+      }
+    }
+  }, [renderCreatureLayers, showCreatures]);
 
   // Bật/tắt hiển thị sinh vật biển
   const toggleCreatures = () => {
