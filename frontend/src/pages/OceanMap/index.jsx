@@ -635,10 +635,10 @@ export default function OceanMap() {
               <button
                 type="button"
                 onClick={() => scrollCategory("left")}
-                className="absolute left-0 z-10 p-1 rounded-lg bg-[#0b1c30]/95 hover:bg-sky-600 border border-white/15 text-slate-300 hover:text-white shadow-lg transition-colors cursor-pointer"
+                className="absolute left-0 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#091b2e]/95 hover:bg-sky-600 border border-white/20 text-slate-200 hover:text-white shadow-xl flex items-center justify-center transition-all cursor-pointer backdrop-blur-md"
                 title={isEn ? "Scroll left" : "Cuộn sang trái"}
               >
-                <ChevronLeft size={13} />
+                <ChevronLeft size={16} />
               </button>
             )}
 
@@ -649,7 +649,7 @@ export default function OceanMap() {
               onMouseUp={handleCategoryMouseUp}
               onMouseLeave={handleCategoryMouseLeave}
               onScroll={checkScroll}
-              className={`flex items-center gap-1 sm:gap-1.5 overflow-x-auto py-0.5 px-0.5 scrollbar-none select-none transition-colors ${
+              className={`flex items-center gap-1.5 sm:gap-2 overflow-x-auto py-1 px-1 scrollbar-none select-none transition-colors ${
                 isCategoryDragging ? "cursor-grabbing" : "cursor-grab"
               }`}
               style={{ scrollBehavior: isCategoryDragging ? "auto" : "smooth" }}
@@ -670,7 +670,7 @@ export default function OceanMap() {
                       setSelectedCategory(cat.id);
                       if (!showCreatures) setShowCreatures(true);
                     }}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer border whitespace-nowrap flex items-center gap-1.5 flex-shrink-0 ${
+                    className={`px-3 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium transition-all cursor-pointer border whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${
                       isSelected
                         ? "bg-sky-600/35 border-sky-400/50 text-white shadow-sm"
                         : "bg-white/[0.03] border-white/10 text-slate-400 hover:text-slate-200 hover:bg-white/[0.06]"
@@ -678,12 +678,12 @@ export default function OceanMap() {
                   >
                     {cat.id !== "all" && (
                       <span
-                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        className="w-2 h-2 rounded-full flex-shrink-0"
                         style={{ backgroundColor: cat.color }}
                       />
                     )}
                     <span>{isEn ? cat.labelEn : cat.labelVi}</span>
-                    <span className="text-[11px] opacity-70">({count})</span>
+                    <span className="text-[11px] opacity-75">({count})</span>
                   </button>
                 );
               })}
@@ -694,10 +694,10 @@ export default function OceanMap() {
               <button
                 type="button"
                 onClick={() => scrollCategory("right")}
-                className="absolute right-0 z-10 p-1 rounded-lg bg-[#0b1c30]/95 hover:bg-sky-600 border border-white/15 text-slate-300 hover:text-white shadow-lg transition-colors cursor-pointer"
+                className="absolute right-0 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#091b2e]/95 hover:bg-sky-600 border border-white/20 text-slate-200 hover:text-white shadow-xl flex items-center justify-center transition-all cursor-pointer backdrop-blur-md"
                 title={isEn ? "Scroll right" : "Cuộn sang phải"}
               >
-                <ChevronRight size={13} />
+                <ChevronRight size={16} />
               </button>
             )}
           </div>
@@ -712,17 +712,17 @@ export default function OceanMap() {
                   setIsZoneDropdownOpen(!isZoneDropdownOpen);
                   setIsSpeciesSearchOpen(false);
                 }}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors cursor-pointer ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium border transition-colors cursor-pointer ${
                   isZoneDropdownOpen
                     ? "bg-[#0b1c30] border-sky-400/50 text-white"
                     : "bg-[#081525] border-white/10 text-slate-300 hover:text-white hover:border-white/20"
                 }`}
               >
-                <MapPin size={13} className="text-sky-400" />
+                <MapPin size={14} className="text-sky-400" />
                 <span>
                   {isEn ? `Marine Zones (${zonesList.length})` : `Khu bảo tồn (${zonesList.length})`}
                 </span>
-                <ChevronDown size={13} className={`transition-transform ${isZoneDropdownOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
+                <ChevronDown size={14} className={`transition-transform ${isZoneDropdownOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
               </button>
 
               {isZoneDropdownOpen && (
@@ -760,17 +760,17 @@ export default function OceanMap() {
                   setIsSpeciesSearchOpen(!isSpeciesSearchOpen);
                   setIsZoneDropdownOpen(false);
                 }}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors cursor-pointer ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium border transition-colors cursor-pointer ${
                   isSpeciesSearchOpen
                     ? "bg-[#0b1c30] border-sky-400/50 text-white"
                     : "bg-[#081525] border-white/10 text-slate-300 hover:text-white hover:border-white/20"
                 }`}
               >
-                <Search size={13} className="text-sky-400" />
+                <Search size={14} className="text-sky-400" />
                 <span>
                   {isEn ? `Search Species (${creaturesList.length})` : `Tìm sinh vật (${creaturesList.length})`}
                 </span>
-                <ChevronDown size={13} className={`transition-transform ${isSpeciesSearchOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
+                <ChevronDown size={14} className={`transition-transform ${isSpeciesSearchOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
               </button>
 
               {isSpeciesSearchOpen && (
@@ -866,9 +866,9 @@ export default function OceanMap() {
           <button
             onClick={handleResetView}
             title={isEn ? "Reset view to East Sea" : "Đặt lại góc nhìn Biển Đông"}
-            className="absolute top-3 left-3 z-[400] p-2 rounded-xl bg-slate-900/85 hover:bg-slate-800 backdrop-blur-md border border-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer shadow-sm flex items-center justify-center"
+            className="absolute top-3 left-3 z-[400] w-9 h-9 rounded-xl bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md border border-white/15 text-slate-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center justify-center hover:border-sky-400/40"
           >
-            <RotateCcw size={15} />
+            <RotateCcw size={17} />
           </button>
         </div>
       </main>
