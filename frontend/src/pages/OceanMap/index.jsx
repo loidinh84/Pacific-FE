@@ -434,11 +434,62 @@ export default function OceanMap() {
 
       marker._groupId = creature.groupId;
       marker._creatureId = creature.id;
+      marker._originalLatLng = L.latLng(creature.lat, creature.lng);
+
+      // Khi rê chuột: Tự động nổi lên trên cùng (z-index cao nhất) để không bị che khuất
+      marker.on("mouseover", () => {
+        marker.setZIndexOffset(10000);
+      });
+      marker.on("mouseout", () => {
+        marker.setZIndexOffset(0);
+      });
+
+      // Khi nhấp vào cụm sinh vật dày đặc: Bung tỏa theo vòng tròn (Spiderfy) để mọi loài đều thấy rõ
+      marker.on("click", () => {
+        const centerPt = map.latLngToLayerPoint(marker._originalLatLng || marker.getLatLng());
+        const overlapping = [];
+
+        creatureMarkersRef.current.forEach((other) => {
+          if (!map.hasLayer(other)) return;
+          const otherPt = map.latLngToLayerPoint(other._originalLatLng || other.getLatLng());
+          const dist = Math.hypot(centerPt.x - otherPt.x, centerPt.y - otherPt.y);
+          if (dist < 36) {
+            overlapping.push(other);
+          }
+        });
+
+        if (overlapping.length > 1) {
+          const spiderRadius = 38 + overlapping.length * 3.5;
+          overlapping.forEach((m, idx) => {
+            const angle = (idx * 2 * Math.PI) / overlapping.length;
+            const newPt = L.point(
+              centerPt.x + spiderRadius * Math.cos(angle),
+              centerPt.y + spiderRadius * Math.sin(angle)
+            );
+            const newLatLng = map.layerPointToLatLng(newPt);
+            m.setLatLng(newLatLng);
+            m._isSpiderfied = true;
+          });
+        }
+      });
+
       marker.addTo(map);
 
       creatureMarkersRef.current.push(marker);
       creatureMarkersMapRef.current[creature.id] = marker;
     });
+
+    // Khi người dùng bấm ra ngoài bản đồ hoặc bắt đầu zoom: Khôi phục lại tọa độ GPS ban đầu
+    const resetSpiderfy = () => {
+      creatureMarkersRef.current.forEach((m) => {
+        if (m._isSpiderfied && m._originalLatLng) {
+          m.setLatLng(m._originalLatLng);
+          m._isSpiderfied = false;
+        }
+      });
+    };
+    map.on("click", resetSpiderfy);
+    map.on("zoomstart", resetSpiderfy);
 
     mapInstanceRef.current = map;
 
