@@ -166,10 +166,10 @@ export const EAST_SEA_ZONES = [
 export const CREATURE_MAP_CATEGORIES = [
   { id: "all", labelVi: "Tất cả", labelEn: "All", color: "#0284c7" },
   { id: "ca-bien", labelVi: "Cá biển", labelEn: "Fishes", color: "#0284c7" },
-  { id: "than-mem-khong-xuong-song", labelVi: "Thân mềm & Giáp xác", labelEn: "Invertebrates", color: "#d97706" },
-  { id: "san-ho-thuc-vat-bien", labelVi: "San hô & Thực vật", labelEn: "Corals & Flora", color: "#e11d48" },
+  { id: "than-mem-khong-xuong-song", labelVi: "Thân mềm", labelEn: "Mollusks", color: "#d97706" },
+  { id: "san-ho-thuc-vat-bien", labelVi: "San hô", labelEn: "Corals", color: "#e11d48" },
   { id: "dong-vat-co-vu-bien", labelVi: "Thú biển", labelEn: "Mammals", color: "#059669" },
-  { id: "bo-sat-bien", labelVi: "Bò sát biển", labelEn: "Reptiles", color: "#10b981" },
+  { id: "bo-sat-bien", labelVi: "Bò sát", labelEn: "Reptiles", color: "#10b981" },
   { id: "sinh-vat-bien-sau", labelVi: "Biển sâu", labelEn: "Deep Sea", color: "#6366f1" },
 ];
 

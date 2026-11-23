@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   Crosshair,
@@ -8,6 +8,8 @@ import {
   RotateCcw,
   Search,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   X,
 } from "lucide-react";
 import Navbar from "../../components/layout/Navbar";
@@ -54,6 +56,65 @@ export default function OceanMap() {
 
   const zoneQuery = searchParams.get("zone");
   const speciesQuery = searchParams.get("species");
+
+  // Kéo chuột và cuộn mượt cho thanh danh mục sinh vật
+  const categoryScrollRef = useRef(null);
+  const [isCategoryDragging, setIsCategoryDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [dragScrollLeft, setDragScrollLeft] = useState(0);
+  const [hasMoved, setHasMoved] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    if (!categoryScrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = categoryScrollRef.current;
+    setCanScrollLeft(scrollLeft > 4);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [checkScroll, creaturesList]);
+
+  const handleCategoryMouseDown = (e) => {
+    if (!categoryScrollRef.current) return;
+    setIsCategoryDragging(true);
+    setHasMoved(false);
+    setDragStartX(e.pageX - categoryScrollRef.current.offsetLeft);
+    setDragScrollLeft(categoryScrollRef.current.scrollLeft);
+  };
+
+  const handleCategoryMouseMove = (e) => {
+    if (!isCategoryDragging || !categoryScrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - categoryScrollRef.current.offsetLeft;
+    const walk = (x - dragStartX) * 1.5;
+    if (Math.abs(walk) > 4) {
+      setHasMoved(true);
+    }
+    categoryScrollRef.current.scrollLeft = dragScrollLeft - walk;
+    checkScroll();
+  };
+
+  const handleCategoryMouseUp = () => {
+    setIsCategoryDragging(false);
+    checkScroll();
+  };
+
+  const handleCategoryMouseLeave = () => {
+    setIsCategoryDragging(false);
+    checkScroll();
+  };
+
+  const scrollCategory = (direction) => {
+    if (!categoryScrollRef.current) return;
+    const offset = direction === "left" ? -160 : 160;
+    categoryScrollRef.current.scrollBy({ left: offset, behavior: "smooth" });
+    setTimeout(checkScroll, 220);
+  };
 
   // Đóng dropdown khi click ra ngoài
   useEffect(() => {
@@ -567,39 +628,78 @@ export default function OceanMap() {
 
         {/* Thanh điều khiển thứ hai: Bộ lọc danh mục & Custom Dropdowns */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
-          {/* Bộ lọc nhóm sinh vật theo tab ngang */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
-            {CREATURE_MAP_CATEGORIES.map((cat) => {
-              const count =
-                cat.id === "all"
-                  ? creaturesList.length
-                  : creaturesList.filter((c) => c.groupId === cat.id).length;
-              const isSelected = selectedCategory === cat.id;
+          {/* Bộ lọc nhóm sinh vật: gọn gàng, hỗ trợ kéo chuột tay trực tiếp & nút mũi tên */}
+          <div className="relative flex items-center min-w-0 flex-1 max-w-full lg:max-w-3xl">
+            {/* Nút cuộn trái nếu tràn */}
+            {canScrollLeft && (
+              <button
+                type="button"
+                onClick={() => scrollCategory("left")}
+                className="absolute left-0 z-10 p-1 rounded-lg bg-[#0b1c30]/95 hover:bg-sky-600 border border-white/15 text-slate-300 hover:text-white shadow-lg transition-colors cursor-pointer"
+                title={isEn ? "Scroll left" : "Cuộn sang trái"}
+              >
+                <ChevronLeft size={13} />
+              </button>
+            )}
 
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => {
-                    setSelectedCategory(cat.id);
-                    if (!showCreatures) setShowCreatures(true);
-                  }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer border whitespace-nowrap flex items-center gap-1.5 ${
-                    isSelected
-                      ? "bg-sky-600/30 border-sky-400/50 text-white shadow-sm"
-                      : "bg-white/[0.03] border-white/10 text-slate-400 hover:text-slate-200 hover:bg-white/[0.06]"
-                  }`}
-                >
-                  {cat.id !== "all" && (
-                    <span
-                      className="w-2 h-2 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: cat.color }}
-                    />
-                  )}
-                  <span>{isEn ? cat.labelEn : cat.labelVi}</span>
-                  <span className="text-[11px] opacity-70">({count})</span>
-                </button>
-              );
-            })}
+            <div
+              ref={categoryScrollRef}
+              onMouseDown={handleCategoryMouseDown}
+              onMouseMove={handleCategoryMouseMove}
+              onMouseUp={handleCategoryMouseUp}
+              onMouseLeave={handleCategoryMouseLeave}
+              onScroll={checkScroll}
+              className={`flex items-center gap-1 sm:gap-1.5 overflow-x-auto py-0.5 px-0.5 scrollbar-none select-none transition-colors ${
+                isCategoryDragging ? "cursor-grabbing" : "cursor-grab"
+              }`}
+              style={{ scrollBehavior: isCategoryDragging ? "auto" : "smooth" }}
+            >
+              {CREATURE_MAP_CATEGORIES.map((cat) => {
+                const count =
+                  cat.id === "all"
+                    ? creaturesList.length
+                    : creaturesList.filter((c) => c.groupId === cat.id).length;
+                const isSelected = selectedCategory === cat.id;
+
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => {
+                      if (hasMoved) return;
+                      setSelectedCategory(cat.id);
+                      if (!showCreatures) setShowCreatures(true);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer border whitespace-nowrap flex items-center gap-1.5 flex-shrink-0 ${
+                      isSelected
+                        ? "bg-sky-600/35 border-sky-400/50 text-white shadow-sm"
+                        : "bg-white/[0.03] border-white/10 text-slate-400 hover:text-slate-200 hover:bg-white/[0.06]"
+                    }`}
+                  >
+                    {cat.id !== "all" && (
+                      <span
+                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: cat.color }}
+                      />
+                    )}
+                    <span>{isEn ? cat.labelEn : cat.labelVi}</span>
+                    <span className="text-[11px] opacity-70">({count})</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Nút cuộn phải nếu tràn */}
+            {canScrollRight && (
+              <button
+                type="button"
+                onClick={() => scrollCategory("right")}
+                className="absolute right-0 z-10 p-1 rounded-lg bg-[#0b1c30]/95 hover:bg-sky-600 border border-white/15 text-slate-300 hover:text-white shadow-lg transition-colors cursor-pointer"
+                title={isEn ? "Scroll right" : "Cuộn sang phải"}
+              >
+                <ChevronRight size={13} />
+              </button>
+            )}
           </div>
 
           {/* Hai bộ chọn tùy chỉnh: Phân vùng biển & Tìm kiếm sinh vật */}
