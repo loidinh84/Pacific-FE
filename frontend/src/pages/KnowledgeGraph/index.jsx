@@ -1,927 +1,759 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
-import * as echarts from "echarts";
 import {
-  Network,
   Search,
-  RotateCcw,
-  Maximize2,
-  Minimize2,
   X,
   ExternalLink,
-  Sparkles,
-  Compass,
   Target,
   ShieldAlert,
   Handshake,
   Home,
-  Sprout,
-  Zap,
-  Layers,
+  ArrowUp,
+  ChevronDown,
+  Check,
+  Compass,
 } from "lucide-react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { fetchKnowledgeGraph } from "../../services/ecosystemApi";
 import { useLanguage } from "../../hooks/useLanguage";
 
-// Bảng màu & danh mục quan hệ sinh thái chuẩn học thuật
-const RELATION_TYPES = {
-  all: { labelVi: "Tất cả mối liên kết", labelEn: "All Ecological Links", color: "#38bdf8" },
-  predator_prey: { labelVi: "Vật dữ - Con mồi", labelEn: "Predator - Prey", color: "#ef4444", Icon: Target },
-  herbivory: { labelVi: "Ăn thực vật / Tiêu thụ sơ cấp", labelEn: "Herbivory / Consumer", color: "#84cc16", Icon: Sprout },
-  symbiosis: { labelVi: "Cộng sinh tương hỗ", labelEn: "Symbiosis / Mutualism", color: "#38bdf8", Icon: Handshake },
-  commensalism: { labelVi: "Hội sinh", labelEn: "Commensalism", color: "#06b6d4", Icon: Layers },
-  habitat_provider: { labelVi: "Kiến tạo nơi ở / Sinh cảnh", labelEn: "Biogenic Habitat", color: "#10b981", Icon: Home },
-  competitor: { labelVi: "Cạnh tranh sinh thái", labelEn: "Niche Competition", color: "#f97316", Icon: Zap },
-};
+// Bậc Dinh Dưỡng Chuẩn Sinh Học Biển (Sắp xếp theo thứ tự số học tự nhiên từ 1 đến 5)
+const TROPHIC_TIERS = [
+  { id: 0, labelVi: "Tất cả bậc dinh dưỡng", labelEn: "All Trophic Tiers" },
+  { id: 1, labelVi: "Bậc 1: Sản xuất sơ cấp & Sinh cảnh", labelEn: "Tier 1: Producers & Habitat", color: "#10b981" },
+  { id: 2, labelVi: "Bậc 2: Ăn thực vật / Tiêu thụ sơ cấp", labelEn: "Tier 2: Primary Consumers", color: "#84cc16" },
+  { id: 3, labelVi: "Bậc 3: Tiêu thụ bậc 2 (Secondary)", labelEn: "Tier 3: Secondary Consumers", color: "#eab308" },
+  { id: 4, labelVi: "Bậc 4: Tiêu thụ bậc 3 (Tertiary)", labelEn: "Tier 4: Tertiary Consumers", color: "#f97316" },
+  { id: 5, labelVi: "Bậc 5: Săn mồi đỉnh bảng (Apex)", labelEn: "Tier 5: Apex Predators", color: "#ef4444" },
+];
 
-// Khu bảo tồn biển đặc thù Biển Đông
+// Khu bảo tồn biển Biển Đông
 const EAST_SEA_ZONES = [
-  { id: "", labelVi: "Tất cả vùng biển", labelEn: "All Marine Protected Areas" },
-  { id: "Hoàng Sa - Trường Sa", labelVi: "Quần đảo Hoàng Sa - Trường Sa", labelEn: "Paracel & Spratly Archipelago" },
+  { id: "", labelVi: "Toàn bộ Biển Đông", labelEn: "Entire East Sea" },
+  { id: "Nha Trang", labelVi: "Vịnh Nha Trang", labelEn: "Nha Trang Bay MPA" },
   { id: "Côn Đảo", labelVi: "Vườn Quốc gia Côn Đảo", labelEn: "Con Dao National Park" },
-  { id: "Nha Trang", labelVi: "Khu bảo tồn biển Vịnh Nha Trang", labelEn: "Nha Trang Bay MPA" },
+  { id: "Trường Sa", labelVi: "Quần đảo Hoàng Sa - Trường Sa", labelEn: "Paracel & Spratly Archipelago" },
   { id: "Phú Quốc", labelVi: "Khu bảo tồn biển Phú Quốc", labelEn: "Phu Quoc Marine Reserve" },
-  { id: "Cù Lao Chàm", labelVi: "Khu bảo tồn Cù Lao Chàm", labelEn: "Cu Lao Cham MPA" },
-  { id: "Cần Giờ", labelVi: "Khu dự trữ sinh quyển Cần Giờ", labelEn: "Can Gio Biosphere Reserve" },
-  { id: "Bạch Long Vĩ", labelVi: "Đảo Bạch Long Vĩ (Vịnh Bắc Bộ)", labelEn: "Bach Long Vi Island" },
 ];
 
-// Phân hạng Sách Đỏ Việt Nam & IUCN
-const RED_LIST_OPTIONS = [
-  { id: "", labelVi: "Tất cả bậc đe dọa", labelEn: "All Red List Categories" },
-  { id: "CR", labelVi: "CR - Cực kỳ nguy cấp (Critically Endangered)", labelEn: "CR - Critically Endangered", color: "#f43f5e" },
-  { id: "EN", labelVi: "EN - Nguy cấp (Endangered)", labelEn: "EN - Endangered", color: "#f97316" },
-  { id: "VU", labelVi: "VU - Sắp nguy cấp (Vulnerable)", labelEn: "VU - Vulnerable", color: "#f59e0b" },
-  { id: "NT", labelVi: "NT - Gần bị đe dọa (Near Threatened)", labelEn: "NT - Near Threatened", color: "#eab308" },
-  { id: "LC", labelVi: "LC - Ít quan tâm (Least Concern)", labelEn: "LC - Least Concern", color: "#10b981" },
-];
+// Component Custom Dropdown chuẩn Unslop (Thay thế hoàn toàn thẻ select mặc định của trình duyệt)
+function CustomDropdown({ value, onChange, options, isEn }) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-// Phân loại nhóm sinh vật
-const TAXONOMIC_GROUPS = [
-  { id: 1, nameVi: "Cá biển (Teleostei & Chondrichthyes)", nameEn: "Marine Fishes", color: "#38bdf8" },
-  { id: 2, nameVi: "Thú biển (Cetacea & Sirenia)", nameEn: "Marine Mammals", color: "#a855f7" },
-  { id: 3, nameVi: "Bò sát biển (Chelonioidea)", nameEn: "Marine Reptiles", color: "#f59e0b" },
-  { id: 4, nameVi: "Thân mềm & Giáp xác (Mollusca & Crustacea)", nameEn: "Mollusks & Crustaceans", color: "#ec4899" },
-  { id: 5, nameVi: "San hô & Thực vật (Anthozoa & Seagrass)", nameEn: "Corals & Marine Plants", color: "#10b981" },
-  { id: 6, nameVi: "Sinh vật biển sâu (Deep Sea Fauna)", nameEn: "Deep Sea Organisms", color: "#6366f1" },
-];
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-const GROUP_COLOR_MAP = {
-  1: "#38bdf8",
-  2: "#a855f7",
-  3: "#f59e0b",
-  4: "#ec4899",
-  5: "#10b981",
-  6: "#6366f1",
-};
+  const selectedOption = options.find((o) => o.id === value) || options[0];
+
+  return (
+    <div ref={dropdownRef} className="relative w-full">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full bg-[#0d2238] border border-white/10 hover:border-white/20 rounded-xl px-3 py-2 text-xs text-left text-slate-200 flex items-center justify-between transition-colors cursor-pointer"
+      >
+        <span className="truncate">{isEn ? selectedOption.labelEn : selectedOption.labelVi}</span>
+        <ChevronDown size={14} className={`text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1 z-30 bg-[#0a1a2c] border border-white/15 rounded-xl py-1 shadow-xl max-h-56 overflow-y-auto">
+          {options.map((opt) => {
+            const isSelected = opt.id === value;
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => {
+                  onChange(opt.id);
+                  setOpen(false);
+                }}
+                className={`w-full px-3 py-2 text-xs text-left flex items-center justify-between transition-colors cursor-pointer ${
+                  isSelected ? "bg-sky-500/15 text-sky-300 font-medium" : "text-slate-300 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <span className="truncate">{isEn ? opt.labelEn : opt.labelVi}</span>
+                {isSelected && <Check size={12} className="text-sky-400" />}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function KnowledgeGraph() {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const isEn = language === "en";
 
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
-
-  // States bộ lọc
-  const [selectedZone, setSelectedZone] = useState("");
-  const [selectedRedList, setSelectedRedList] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // States dữ liệu & UI
+  // States dữ liệu & Bộ lọc
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
-  const [selectedNode, setSelectedNode] = useState(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [selectedZone, setSelectedZone] = useState("");
+  const [selectedTier, setSelectedTier] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Tải dữ liệu đồ thị tri thức theo bộ lọc API
+  // Loài tâm điểm được chọn hiện tại
+  const [focalSpeciesId, setFocalSpeciesId] = useState(null);
+
+  // Tải dữ liệu đồ thị tri thức
   useEffect(() => {
     let ignore = false;
 
-    const fetchGraph = async () => {
+    const loadData = async () => {
+      setLoading(true);
       try {
-        const params = { limit: 500 };
+        const params = { limit: 5000 };
         if (selectedZone) params.zone = selectedZone;
-        if (selectedRedList) params.redList = selectedRedList;
-        if (selectedType && selectedType !== "all") params.type = selectedType;
 
         const res = await fetchKnowledgeGraph(params);
-        if (!ignore) {
-          if (res) {
-            setGraphData(res);
+        if (!ignore && res) {
+          setGraphData(res);
+          if (res.nodes && res.nodes.length > 0) {
+            setFocalSpeciesId(res.nodes[0].id.toString());
           }
-          setLoading(false);
         }
+        if (!ignore) setLoading(false);
       } catch (err) {
-        console.error("Failed to load knowledge graph:", err);
-        if (!ignore) {
-          setLoading(false);
-        }
+        console.error("Lỗi khi tải dữ liệu sinh thái:", err);
+        if (!ignore) setLoading(false);
       }
     };
 
-    fetchGraph();
+    loadData();
     return () => {
       ignore = true;
     };
-  }, [selectedZone, selectedRedList, selectedType]);
+  }, [selectedZone]);
 
-  // Bộ lọc tìm kiếm tên loài thời gian thực (Ego-Network: hiển thị loài tìm kiếm + tất cả các mắt xích liên kết)
-  const filteredGraph = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return {
-        ...graphData,
-        isSearchActive: false,
-        searchTargetNodes: [],
-        connectedNeighborCount: 0,
-      };
+  // Phân tích Bậc dinh dưỡng (Trophic Level) cho từng loài
+  const enrichedNodesMap = useMemo(() => {
+    const { nodes = [], links = [] } = graphData;
+    const foodOf = new Map();
+    const eatenBy = new Map();
+
+    for (const n of nodes) {
+      foodOf.set(n.id.toString(), new Set());
+      eatenBy.set(n.id.toString(), new Set());
     }
 
-    const q = searchQuery.toLowerCase().trim();
-
-    // 1. Tìm các node khớp trực tiếp với từ khóa tìm kiếm
-    const directMatchedNodes = graphData.nodes.filter(
-      (n) =>
-        n.name.toLowerCase().includes(q) ||
-        (n.scientificName && n.scientificName.toLowerCase().includes(q)) ||
-        (n.eastSeaZone && n.eastSeaZone.toLowerCase().includes(q)) ||
-        (n.code && n.code.toLowerCase().includes(q))
-    );
-
-    if (directMatchedNodes.length === 0) {
-      return {
-        nodes: [],
-        links: [],
-        isSearchActive: true,
-        searchTargetNodes: [],
-        connectedNeighborCount: 0,
-      };
-    }
-
-    const directMatchedIds = new Set(directMatchedNodes.map((n) => n.id.toString()));
-
-    // 2. Lấy tất cả các liên kết liên quan trực tiếp đến các node tìm kiếm (source HOẶC target là node tìm kiếm)
-    const primaryLinks = graphData.links.filter(
-      (l) => directMatchedIds.has(l.source.toString()) || directMatchedIds.has(l.target.toString())
-    );
-
-    // 3. Tập hợp các ID mắt xích hàng xóm (1st-degree neighbors)
-    const neighborIds = new Set();
-    for (const l of primaryLinks) {
+    for (const l of links) {
       const src = l.source.toString();
       const tgt = l.target.toString();
-      if (!directMatchedIds.has(src)) neighborIds.add(src);
-      if (!directMatchedIds.has(tgt)) neighborIds.add(tgt);
+      if (l.type === "predator_prey" || l.type === "herbivory") {
+        if (foodOf.has(src)) foodOf.get(src).add(tgt);
+        if (eatenBy.has(tgt)) eatenBy.get(tgt).add(src);
+      }
     }
 
-    // 4. Tập hợp toàn bộ Node thuộc mạng lưới vệ tinh
-    const allRelevantIds = new Set([...directMatchedIds, ...neighborIds]);
-    const nodesMap = new Map(graphData.nodes.map((n) => [n.id.toString(), n]));
+    const trophicMap = new Map();
 
-    const nodes = Array.from(allRelevantIds)
-      .map((id) => nodesMap.get(id))
-      .filter(Boolean)
-      .map((n) => ({
-        ...n,
-        isSearchTarget: directMatchedIds.has(n.id.toString()),
-      }));
+    for (const node of nodes) {
+      const gId = Number(node.groupId || 1);
+      const name = (node.name || "").toLowerCase();
 
-    // 5. Lấy tất cả các liên kết giữa các node trong mạng lưới này
-    const links = graphData.links.filter(
-      (l) => allRelevantIds.has(l.source.toString()) && allRelevantIds.has(l.target.toString())
-    );
+      let baseTrophic = 3.0;
+      if (gId === 5) {
+        baseTrophic = 1.0;
+      } else if (gId === 4) {
+        if (name.includes("hải sâm") || name.includes("nghêu") || name.includes("sò") || name.includes("tai tượng")) {
+          baseTrophic = 1.8;
+        } else if (name.includes("mực") || name.includes("bạch tuộc") || name.includes("cua")) {
+          baseTrophic = 3.2;
+        } else {
+          baseTrophic = 2.2;
+        }
+      } else if (gId === 3) {
+        if (name.includes("rùa xanh") || name.includes("vích")) baseTrophic = 2.0;
+        else if (name.includes("rắn biển")) baseTrophic = 4.0;
+        else baseTrophic = 3.2;
+      } else if (gId === 2) {
+        if (name.includes("bò biển") || name.includes("dugong")) baseTrophic = 2.0;
+        else if (name.includes("sát thủ") || name.includes("hổ kình")) baseTrophic = 5.0;
+        else baseTrophic = 4.2;
+      } else if (gId === 6) {
+        baseTrophic = 3.6;
+      } else {
+        if (name.includes("mập") || name.includes("nhám")) baseTrophic = 5.0;
+        else if (name.includes("ngừ") || name.includes("cờ") || name.includes("thu") || name.includes("mú")) baseTrophic = 4.2;
+        else if (name.includes("bướm") || name.includes("vẹt") || name.includes("hề")) baseTrophic = 2.6;
+        else baseTrophic = 3.4;
+      }
 
-    return {
-      nodes,
-      links,
-      isSearchActive: true,
-      searchTargetNodes: directMatchedNodes,
-      connectedNeighborCount: neighborIds.size,
-    };
-  }, [graphData, searchQuery]);
+      trophicMap.set(node.id.toString(), baseTrophic);
+    }
 
-  // Thống kê số lượng phục vụ phân tích
-  const stats = useMemo(() => {
-    const threatenedCount = graphData.nodes.filter((n) =>
-      ["CR", "EN", "VU"].includes(n.redList)
-    ).length;
+    for (let i = 0; i < 3; i++) {
+      for (const node of nodes) {
+        if (node.groupId === 5) continue;
+        const nId = node.id.toString();
+        const preys = Array.from(foodOf.get(nId) || []);
+        if (preys.length > 0) {
+          const preyLevels = preys.map((pId) => trophicMap.get(pId) || 2.0);
+          const avgPrey = preyLevels.reduce((a, b) => a + b, 0) / preyLevels.length;
+          const calculated = Math.min(5.0, Math.max(2.0, avgPrey + 1.0));
+          trophicMap.set(nId, (trophicMap.get(nId) + calculated) / 2);
+        }
+      }
+    }
 
-    return {
-      totalSpecies: graphData.nodes.length,
-      totalLinks: graphData.links.length,
-      threatenedCount,
-    };
+    const map = new Map();
+    for (const node of nodes) {
+      const nId = node.id.toString();
+      const rawTL = trophicMap.get(nId) || 3.0;
+
+      let tier = 3;
+      if (rawTL >= 4.4) tier = 5;
+      else if (rawTL >= 3.6) tier = 4;
+      else if (rawTL >= 2.5) tier = 3;
+      else if (rawTL >= 1.7) tier = 2;
+      else tier = 1;
+
+      map.set(nId, {
+        ...node,
+        trophicLevel: Number(rawTL.toFixed(1)),
+        trophicTier: tier,
+      });
+    }
+
+    return map;
   }, [graphData]);
 
-  // Trích xuất các liên kết liên quan tới Node đang được chọn trong Drawer
-  const nodeConnections = useMemo(() => {
-    if (!selectedNode) return { prey: [], predators: [], symbionts: [], habitats: [], others: [] };
+  // Danh sách loài sau khi lọc ở Cột 1
+  const filteredSpeciesList = useMemo(() => {
+    const list = Array.from(enrichedNodesMap.values());
+    return list.filter((sp) => {
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matchName = (sp.name || "").toLowerCase().includes(q);
+        const matchSci = (sp.scientificName || "").toLowerCase().includes(q);
+        const matchZone = (sp.eastSeaZone || "").toLowerCase().includes(q);
+        if (!matchName && !matchSci && !matchZone) return false;
+      }
+      if (selectedTier > 0 && sp.trophicTier !== selectedTier) {
+        return false;
+      }
+      return true;
+    });
+  }, [enrichedNodesMap, searchQuery, selectedTier]);
 
-    const nodeId = selectedNode.id.toString();
-    const prey = [];
+  // Thông tin loài tâm điểm hiện tại
+  const focalSpecies = useMemo(() => {
+    if (!focalSpeciesId) return null;
+    return enrichedNodesMap.get(focalSpeciesId.toString()) || null;
+  }, [enrichedNodesMap, focalSpeciesId]);
+
+  // Mối quan hệ xoay quanh Loài tâm điểm
+  const focalRelationships = useMemo(() => {
+    if (!focalSpecies) return { preys: [], predators: [], symbionts: [], habitats: [] };
+
+    const fId = focalSpecies.id.toString();
+    const preys = [];
     const predators = [];
     const symbionts = [];
     const habitats = [];
-    const others = [];
 
     for (const link of graphData.links) {
-      const isSrc = link.source === nodeId;
-      const isTgt = link.target === nodeId;
+      const isSrc = link.source.toString() === fId;
+      const isTgt = link.target.toString() === fId;
 
       if (!isSrc && !isTgt) continue;
 
-      const otherId = isSrc ? link.target : link.source;
-      const otherNode = graphData.nodes.find((n) => n.id === otherId);
-      if (!otherNode) continue;
+      const otherId = isSrc ? link.target.toString() : link.source.toString();
+      const otherSpecies = enrichedNodesMap.get(otherId);
+      if (!otherSpecies) continue;
 
-      const connectionInfo = {
-        node: otherNode,
+      const item = {
+        species: otherSpecies,
         link,
         direction: isSrc ? "outgoing" : "incoming",
       };
 
       if (link.type === "predator_prey" || link.type === "herbivory") {
-        if (isSrc) prey.push(connectionInfo);
-        else predators.push(connectionInfo);
+        if (isSrc) preys.push(item);
+        else predators.push(item);
       } else if (link.type === "symbiosis" || link.type === "commensalism") {
-        symbionts.push(connectionInfo);
+        symbionts.push(item);
       } else if (link.type === "habitat_provider") {
-        habitats.push(connectionInfo);
-      } else {
-        others.push(connectionInfo);
+        habitats.push(item);
       }
     }
 
-    return { prey, predators, symbionts, habitats, others };
-  }, [selectedNode, graphData]);
+    return { preys, predators, symbionts, habitats };
+  }, [focalSpecies, graphData.links, enrichedNodesMap]);
 
-  // Khởi tạo và đồng bộ hóa đồ thị tương tác ECharts
-  useEffect(() => {
-    if (!chartRef.current) return;
-
-    if (!chartInstance.current) {
-      chartInstance.current = echarts.init(chartRef.current, "dark");
-
-      chartInstance.current.on("click", (params) => {
-        if (params.dataType === "node") {
-          setSelectedNode(params.data.raw);
-        }
-      });
-    }
-
-    const { nodes = [], links = [] } = filteredGraph;
-
-    const categories = TAXONOMIC_GROUPS.map((g) => ({
-      name: isEn ? g.nameEn : g.nameVi,
-    }));
-
-    const chartNodes = nodes.map((node) => {
-      const isTarget = node.isSearchTarget;
-      const isCR = node.redList === "CR";
-      const isEN = node.redList === "EN";
-      const isVU = node.redList === "VU";
-
-      const defaultBorder = isCR
-        ? "#f43f5e"
-        : isEN
-        ? "#f97316"
-        : isVU
-        ? "#f59e0b"
-        : GROUP_COLOR_MAP[node.groupId] || "#38bdf8";
-
-      const borderColor = isTarget ? "#38bdf8" : defaultBorder;
-      const borderWidth = isTarget ? 4.5 : isCR ? 3.5 : isEN ? 2.5 : 2;
-      const shadowBlur = isTarget ? 28 : isCR ? 18 : 10;
-      const shadowColor = isTarget ? "#38bdf8" : borderColor;
-      const symbolSize = isTarget ? 64 : isCR ? 50 : isEN ? 46 : 40;
-
-      // Rút gọn tên hiển thị trực tiếp trên nút để tránh tràn chữ và che khuất liên kết
-      const displayName = (node.name || "").split("(")[0].trim();
-
-      return {
-        id: node.id,
-        name: displayName,
-        value: node.scientificName,
-        category: Math.min(categories.length - 1, Math.max(0, (node.groupId || 1) - 1)),
-        // Hiển thị ảnh đại diện cho từng sinh vật biển
-        symbol: node.image ? `image://${node.image}` : "circle",
-        symbolSize,
-        itemStyle: {
-          borderColor,
-          borderWidth,
-          shadowBlur,
-          shadowColor,
-        },
-        label: {
-          show: true,
-          position: "bottom",
-          distance: isTarget ? 11 : 9,
-          color: isTarget ? "#38bdf8" : "#f1f5f9",
-          fontSize: isTarget ? 13 : 12,
-          fontWeight: isTarget ? "800" : "600",
-          backgroundColor: isTarget ? "rgba(14, 165, 233, 0.28)" : "rgba(7, 19, 36, 0.88)",
-          padding: isTarget ? [5, 10] : [4, 8],
-          borderRadius: 6,
-          borderColor: isTarget ? "#38bdf8" : "rgba(56, 189, 248, 0.3)",
-          borderWidth: isTarget ? 1.5 : 1,
-          formatter: isTarget ? "★ {b}" : "{b}",
-        },
-        raw: node,
-      };
-    });
-
-    const chartLinks = links.map((link) => {
-      const meta = RELATION_TYPES[link.type] || {};
-      const isSymbiosis = link.type === "symbiosis" || link.type === "commensalism";
-
-      return {
-        source: link.source,
-        target: link.target,
-        value: isEn ? meta.labelEn : meta.labelVi,
-        lineStyle: {
-          color: meta.color || link.lineColor || "#64748b",
-          width: Math.max(1.8, (link.strength || 1) * 2.8),
-          type: isSymbiosis ? "dashed" : "solid",
-          curveness: 0.16,
-        },
-        raw: link,
-      };
-    });
-
-    const option = {
-      backgroundColor: "transparent",
-      tooltip: {
-        trigger: "item",
-        backgroundColor: "rgba(7, 21, 38, 0.95)",
-        borderColor: "rgba(56, 189, 248, 0.4)",
-        borderWidth: 1,
-        padding: [12, 16],
-        textStyle: { color: "#f8fafc" },
-        formatter: (params) => {
-          if (params.dataType === "node") {
-            const raw = params.data.raw;
-            return `
-              <div style="font-family: inherit; font-size: 13px; line-height: 1.5; min-width: 240px; max-width: 320px;">
-                <div style="font-size: 15px; font-weight: 700; color: #38bdf8; margin-bottom: 3px;">
-                  ${raw?.name || params.name}
-                </div>
-                <div style="font-style: italic; color: #94a3b8; font-size: 12px; margin-bottom: 8px;">
-                  ${raw?.scientificName || ""}
-                </div>
-                <div style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
-                  <span style="background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: #7dd3fc; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
-                    ${raw?.eastSeaZone || "Biển Đông"}
-                  </span>
-                  <span style="background: rgba(244,63,94,0.15); border: 1px solid rgba(244,63,94,0.3); color: #fda4af; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
-                    Sách Đỏ: ${raw?.redList || "LC"}
-                  </span>
-                </div>
-                <div style="color: #64748b; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px;">
-                  ${isEn ? "Click node to inspect ecological profile" : "Click để mở hồ sơ quan hệ sinh thái chi tiết"}
-                </div>
-              </div>
-            `;
-          } else if (params.dataType === "edge") {
-            const raw = params.data.raw;
-            const meta = RELATION_TYPES[raw?.type] || {};
-            return `
-              <div style="font-family: inherit; font-size: 13px; line-height: 1.45; max-width: 300px;">
-                <div style="font-weight: 700; color: ${meta.color || "#38bdf8"}; margin-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
-                  ${isEn ? meta.labelEn : meta.labelVi}
-                </div>
-                ${raw?.description ? `<div style="color: #cbd5e1; font-size: 12px; margin-bottom: 4px; line-height: 1.45;">${raw.description}</div>` : ""}
-                ${raw?.ecologicalImpact ? `<div style="color: #94a3b8; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px;"><strong>Ý nghĩa sinh thái:</strong> ${raw.ecologicalImpact}</div>` : ""}
-              </div>
-            `;
-          }
-          return "";
-        },
-      },
-      series: [
-        {
-          name: "Mạng Lưới Sinh Thái",
-          type: "graph",
-          layout: "force",
-          data: chartNodes,
-          links: chartLinks,
-          categories,
-          roam: true,
-          draggable: true,
-          edgeSymbol: ["none", "arrow"],
-          edgeSymbolSize: [4, 8],
-          cursor: "pointer",
-          force: {
-            repulsion: filteredGraph.isSearchActive ? 460 : 680,
-            edgeLength: filteredGraph.isSearchActive ? [110, 190] : [135, 250],
-            gravity: filteredGraph.isSearchActive ? 0.12 : 0.08,
-            friction: 0.6,
-          },
-          emphasis: {
-            focus: "adjacency",
-            lineStyle: {
-              width: 5,
-            },
-          },
-        },
-      ],
-    };
-
-    chartInstance.current.setOption(option);
-
-    const handleResize = () => {
-      chartInstance.current?.resize();
-    };
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [filteredGraph, isEn]);
-
-  useEffect(() => {
-    return () => {
-      if (chartInstance.current) {
-        chartInstance.current.dispose();
-        chartInstance.current = null;
-      }
-    };
+  const handleSelectFocal = useCallback((id) => {
+    setFocalSpeciesId(id.toString());
   }, []);
 
-  const handleResetFilters = () => {
-    setSelectedZone("");
-    setSelectedRedList("");
-    setSelectedType("");
-    setSearchQuery("");
-    chartInstance.current?.dispatchAction({ type: "restore" });
-  };
-
-  const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
-    setTimeout(() => {
-      chartInstance.current?.resize();
-    }, 150);
-  };
-
   return (
-    <div className="min-h-screen bg-[#0f2744] text-white flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen bg-[#07192f] text-white flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
       <Navbar />
 
-      {/* Main container với pt-28 để không bị che bởi fixed Navbar */}
       <main className="flex-1 px-4 md:px-8 pt-28 pb-16 max-w-7xl mx-auto w-full">
-        {/* ─── 1. HEADER SECTION CHUẨN KHOA HỌC ─────────────────────── */}
-        <div className="mb-6 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 text-xs font-semibold tracking-wider mb-2">
-              <Network size={14} />
-              <span>{isEn ? "East Sea marine knowledge platform" : "Hệ thống tri thức sinh thái Biển Đông"}</span>
-            </div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-heading tracking-tight leading-snug">
-              {isEn ? "East Sea marine ecosystem knowledge graph" : "Đồ thị tri thức đa dạng sinh thái Biển Đông"}
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1.5 max-w-2xl leading-relaxed">
-              {isEn
-                ? "Trophic energy flows, biogenic habitat matrices, and symbiotic networks across 8 Marine Protected Areas (MPAs) of Vietnam."
-                : "Mô hình hóa chuỗi thức ăn, quan hệ cộng sinh tương hỗ và cấu trúc sinh cảnh của 25 loài sinh vật đặc trưng tại 8 Khu bảo tồn biển (MPAs) Việt Nam."}
-            </p>
-          </div>
+        {/* ─── 1. HEADER SECTION CHUẨN UNSLOP (KHÔNG CHỮ DƯ THỪA, KHÔNG HUY HIỆU RỐI) ─── */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            {isEn ? "Food Chain & Trophic Flow" : "Chuỗi thức ăn & Dòng năng lượng"}
+          </h1>
 
-          {/* Bảng số liệu thống kê nhanh */}
-          <div className="flex items-center gap-3">
-            <div className="px-4 py-2.5 rounded-xl bg-[#183c66] border border-white/15 text-center min-w-[90px] shadow-sm">
-              <div className="text-xl sm:text-2xl font-bold font-mono text-cyan-300">{stats.totalSpecies}</div>
-              <div className="text-xs font-medium text-slate-300 tracking-wide mt-0.5">
-                {isEn ? "Species" : "Loài"}
-              </div>
-            </div>
-            <div className="px-4 py-2.5 rounded-xl bg-[#183c66] border border-white/15 text-center min-w-[90px] shadow-sm">
-              <div className="text-xl sm:text-2xl font-bold font-mono text-white">{stats.totalLinks}</div>
-              <div className="text-xs font-medium text-slate-300 tracking-wide mt-0.5">
-                {isEn ? "Links" : "Liên kết"}
-              </div>
-            </div>
-            <div className="px-4 py-2.5 rounded-xl bg-[#183c66] border border-rose-400/40 text-center min-w-[90px] shadow-sm">
-              <div className="text-xl sm:text-2xl font-bold font-mono text-rose-400">{stats.threatenedCount}</div>
-              <div className="text-xs font-medium text-rose-300 tracking-wide mt-0.5">
-                {isEn ? "Threatened" : "Nguy cấp"}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Thanh bộ lọc */}
-        <div className="p-4 rounded-2xl bg-[#183c66] border border-white/15 mb-6 shadow-sm flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
-            {/* Ô tìm kiếm tức thời */}
-            <div className="relative min-w-[210px] flex-1 sm:max-w-xs">
-              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isEn ? "Search species, scientific name, MPA..." : "Tìm loài, tên khoa học, vùng biển..."}
-                className="w-full bg-[#112d4e] border border-white/20 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-300 focus:outline-none focus:border-sky-400 transition-colors"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                >
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-
-            {/* Lọc theo Phân vùng Biển Đông */}
-            <div className="min-w-[180px]">
-              <select
-                value={selectedZone}
-                onChange={(e) => setSelectedZone(e.target.value)}
-                className="w-full bg-[#152a4a] border border-white/10 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
-              >
-                {EAST_SEA_ZONES.map((z) => (
-                  <option key={z.id} value={z.id} className="bg-[#0b1c33] text-white">
-                    {isEn ? z.labelEn : z.labelVi}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Lọc theo Phân hạng Sách Đỏ */}
-            <div className="min-w-[160px]">
-              <select
-                value={selectedRedList}
-                onChange={(e) => setSelectedRedList(e.target.value)}
-                className="w-full bg-[#152a4a] border border-white/10 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
-              >
-                {RED_LIST_OPTIONS.map((r) => (
-                  <option key={r.id} value={r.id} className="bg-[#0b1c33] text-white">
-                    {isEn ? r.labelEn : r.labelVi}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Lọc theo Loại quan hệ sinh thái */}
-            <div className="min-w-[170px]">
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="w-full bg-[#152a4a] border border-white/10 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-400 transition-colors cursor-pointer"
-              >
-                {Object.entries(RELATION_TYPES).map(([key, meta]) => (
-                  <option key={key} value={key} className="bg-[#0b1c33] text-white">
-                    {isEn ? meta.labelEn : meta.labelVi}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Nút đặt lại bộ lọc */}
-          <button
-            onClick={handleResetFilters}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs sm:text-sm font-semibold transition-all border border-white/10 cursor-pointer shrink-0"
-            title={isEn ? "Reset all filters" : "Đặt lại tất cả bộ lọc"}
-          >
-            <RotateCcw size={14} />
-            <span>{isEn ? "Reset" : "Đặt lại"}</span>
-          </button>
-        </div>
-
-        {/* ─── BANNER MẠNG LƯỚI SINH THÁI VỆ TINH KHI TÌM KIẾM (EGO-NETWORK) ─── */}
-        {filteredGraph.isSearchActive && filteredGraph.searchTargetNodes?.length > 0 && (
-          <div className="mb-4 px-4 py-3 rounded-2xl bg-gradient-to-r from-sky-950/80 via-blue-900/60 to-slate-900/80 border border-sky-400/30 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 shadow-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-300 shrink-0">
-                <Sparkles size={18} className="animate-pulse" />
-              </div>
-              <div>
-                <div className="text-xs text-sky-300/80 uppercase font-semibold tracking-wider">
-                  {isEn ? "Ecosystem Ego-Network (Satellite Links)" : "Mạng Lưới Sinh Thái Vệ Tinh"}
-                </div>
-                <div className="text-sm font-medium text-white flex items-center gap-2 flex-wrap">
-                  <span>{isEn ? "Focus:" : "Trọng tâm:"}</span>
-                  <span className="font-bold text-sky-300">
-                    {filteredGraph.searchTargetNodes.map((n) => n.name).join(", ")}
-                  </span>
-                  <span className="text-slate-400">•</span>
-                  <span className="text-emerald-300 font-semibold">
-                    {isEn
-                      ? `${filteredGraph.connectedNeighborCount} connected ecological links`
-                      : `${filteredGraph.connectedNeighborCount} mắt xích sinh thái liên kết`}
-                  </span>
-                  <span className="text-slate-400 text-xs">({filteredGraph.links.length} đường tương tác)</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {filteredGraph.searchTargetNodes.length === 1 && (
-                <button
-                  onClick={() => setSelectedNode(filteredGraph.searchTargetNodes[0])}
-                  className="px-3 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-xs font-semibold text-sky-200 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Target size={13} />
-                  <span>{isEn ? "Inspect Profile" : "Xem hồ sơ loài"}</span>
-                </button>
-              )}
-              <button
-                onClick={() => setSearchQuery("")}
-                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-semibold text-slate-200 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer"
-              >
-                <RotateCcw size={13} />
-                <span>{isEn ? "Full Ocean Graph" : "Xem toàn bộ mạng lưới"}</span>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Thông báo nếu không tìm thấy loài nào */}
-        {filteredGraph.isSearchActive && filteredGraph.nodes?.length === 0 && (
-          <div className="mb-4 px-4 py-3 rounded-2xl bg-amber-950/60 border border-amber-500/30 text-amber-200 text-sm flex items-center justify-between shadow-md">
+          {/* Số liệu thống kê tối giản dạng inline */}
+          <div className="flex items-center gap-3 text-xs text-slate-300">
             <span>
-              {isEn
-                ? `No species found matching "${searchQuery}".`
-                : `Không tìm thấy loài nào khớp với từ khóa "${searchQuery}".`}
+              <strong className="text-white font-mono">{graphData.nodes?.length || 0}</strong> {isEn ? "species" : "loài"}
             </span>
-            <button
-              onClick={() => setSearchQuery("")}
-              className="underline hover:text-white text-xs font-semibold ml-3 cursor-pointer"
-            >
-              {isEn ? "Clear search" : "Xóa tìm kiếm"}
-            </button>
-          </div>
-        )}
-
-        {/* ─── 3. KHU VỰC VẼ CANVAS ECHARTS FORCE GRAPH ───────────────── */}
-        <div
-          className={`relative rounded-3xl bg-gradient-to-b from-[#081a30] to-[#040e1b] border border-cyan-500/25 overflow-hidden shadow-2xl transition-all duration-300 ${
-            isFullscreen ? "fixed inset-4 z-50 rounded-2xl" : "h-[630px] md:h-[700px]"
-          }`}
-        >
-          {/* Thanh trạng thái phía trên canvas */}
-          <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2 pointer-events-auto">
-            <span className="px-3 py-1.5 rounded-full bg-cyan-950/85 border border-cyan-500/40 text-cyan-300 text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-cyan-400" />
-              <span>{isEn ? "Force-directed simulation" : "Mô phỏng trọng lực sinh thái"}</span>
+            <span className="text-white/20">•</span>
+            <span>
+              <strong className="text-white font-mono">{graphData.links?.length || 0}</strong> {isEn ? "links" : "liên kết"}
             </span>
-
-            {/* Chú giải liên kết */}
-            <div className="hidden sm:flex items-center gap-3.5 px-3.5 py-1.5 rounded-full bg-[#051120]/85 border border-white/10 backdrop-blur-md text-xs font-medium text-slate-300 shadow-md">
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" /> {t("knowledgeGraph.legendPredator", isEn ? "Carnivory" : "Ăn thịt")}</span>
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#84cc16]" /> {t("knowledgeGraph.legendHerbivore", isEn ? "Herbivory" : "Ăn cỏ")}</span>
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8]" /> {t("knowledgeGraph.legendSymbiosis", isEn ? "Symbiosis" : "Cộng sinh")}</span>
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#10b981]" /> {t("knowledgeGraph.legendHabitat", isEn ? "Habitat" : "Sinh cảnh")}</span>
-            </div>
+            <span className="text-white/20">•</span>
+            <span>
+              <strong className="text-rose-400 font-mono">
+                {graphData.nodes?.filter((n) => ["CR", "EN", "VU"].includes(n.redList)).length || 0}
+              </strong>{" "}
+              {isEn ? "threatened" : "nguy cấp"}
+            </span>
           </div>
+        </div>
 
-          {/* Công cụ góc trên bên phải */}
-          <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-            <button
-              onClick={() => chartInstance.current?.dispatchAction({ type: "restore" })}
-              className="p-2 rounded-xl bg-[#091b33]/85 hover:bg-[#0d274a] border border-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer shadow-lg backdrop-blur-md"
-              title={isEn ? "Reset Viewport" : "Đặt lại góc nhìn"}
-            >
-              <RotateCcw size={15} />
-            </button>
-            <button
-              onClick={toggleFullscreen}
-              className="p-2 rounded-xl bg-[#091b33]/85 hover:bg-[#0d274a] border border-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer shadow-lg backdrop-blur-md"
-              title={isFullscreen ? (isEn ? "Exit Fullscreen" : "Thu nhỏ") : (isEn ? "Fullscreen" : "Toàn màn hình")}
-            >
-              {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
-            </button>
-          </div>
+        {/* ─── 2. BỐ CỤC DASHBOARD 3 CỘT (3-COLUMN SCALE-FREE ARCHITECTURE) ──── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          {/* ═════ CỘT 1: BỘ LỌC & DANH SÁCH LOÀI (3/12 COLS) ═════ */}
+          <div className="lg:col-span-3 rounded-2xl bg-[#0b2038] border border-white/10 p-4 flex flex-col h-[720px]">
+            <div className="mb-3 space-y-2">
+              <div className="text-xs font-medium text-slate-400 flex items-center justify-between">
+                <span>{isEn ? "Species catalog" : "Danh mục loài"}</span>
+                <span className="text-slate-300 font-mono text-xs">{filteredSpeciesList.length}</span>
+              </div>
 
-          {/* Loading Indicator */}
-          {loading && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-[#040e1b]/80 backdrop-blur-sm text-cyan-400">
-              <div className="w-10 h-10 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm font-semibold">
-                {isEn ? "Computing East Sea trophic matrix..." : "Đang tổng hợp Đồ thị Tri thức Biển Đông..."}
-              </p>
-            </div>
-          )}
-
-          {/* Empty state */}
-          {!loading && filteredGraph.nodes.length === 0 && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-slate-400 gap-3">
-              <Compass size={40} className="text-cyan-500/60" />
-              <p className="text-base font-bold text-white">
-                {isEn ? "No species found matching the current filters" : "Không tìm thấy sinh vật phù hợp với bộ lọc"}
-              </p>
-              <p className="text-xs max-w-sm text-slate-400">
-                {isEn
-                  ? "Try resetting filters to display the complete East Sea marine knowledge graph."
-                  : "Hãy thử chọn 'Tất cả vùng biển' hoặc đặt lại bộ lọc để hiển thị toàn bộ mạng lưới sinh thái."}
-              </p>
-              <button
-                onClick={handleResetFilters}
-                className="mt-2 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition-all cursor-pointer"
-              >
-                {isEn ? "Reset Filters" : "Đặt lại bộ lọc"}
-              </button>
-            </div>
-          )}
-
-          {/* ECharts Canvas */}
-          <div ref={chartRef} className="w-full h-full" />
-
-          {/* Hướng dẫn thao tác góc dưới */}
-          <div className="absolute bottom-3 left-4 pointer-events-none text-xs text-slate-300 bg-[#040e1b]/85 px-3.5 py-1.5 rounded-lg border border-white/10 shadow-md">
-            {isEn
-              ? "* Drag to pan • Scroll to Zoom • Click any creature to inspect ecological dossier"
-              : "* Kéo chuột để di chuyển • Cuộn để Zoom • Click vào sinh vật để mở bảng phân tích sinh thái"}
-          </div>
-
-          {/* ─── 4. SLIDE-OVER DRAWER CHI TIẾT HỌC THUẬT KHI CLICK NODE ── */}
-          {selectedNode && (
-            <div className="absolute top-0 right-0 bottom-0 w-full sm:w-[390px] md:w-[440px] bg-[#07192f]/95 border-l border-cyan-500/30 backdrop-blur-xl z-30 p-6 flex flex-col justify-between overflow-y-auto shadow-2xl animate-in slide-in-from-right duration-300">
-              <div>
-                {/* Header Drawer */}
-                <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
-                  <span className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
-                    <Sparkles size={14} />
-                    <span>{isEn ? "Ecological dossier" : "Hồ sơ quan hệ sinh thái"}</span>
-                  </span>
+              {/* Ô tìm kiếm */}
+              <div className="relative">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={isEn ? "Search species..." : "Tìm kiếm loài..."}
+                  className="w-full bg-[#0d2238] border border-white/10 rounded-xl pl-8 pr-7 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                />
+                {searchQuery && (
                   <button
-                    onClick={() => setSelectedNode(null)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
                   >
-                    <X size={16} />
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+
+              {/* Custom Dropdown: Khu bảo tồn biển */}
+              <CustomDropdown
+                value={selectedZone}
+                onChange={setSelectedZone}
+                options={EAST_SEA_ZONES}
+                isEn={isEn}
+              />
+
+              {/* Custom Dropdown: Bậc dinh dưỡng */}
+              <CustomDropdown
+                value={selectedTier}
+                onChange={setSelectedTier}
+                options={TROPHIC_TIERS}
+                isEn={isEn}
+              />
+            </div>
+
+            {/* Danh sách loài cuộn êm ái */}
+            <div className="flex-1 overflow-y-auto pr-1 space-y-1.5 custom-scrollbar">
+              {loading && (
+                <div className="text-center py-10 text-xs text-slate-400">
+                  <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  <span>{isEn ? "Loading species..." : "Đang tải danh sách..."}</span>
+                </div>
+              )}
+
+              {!loading && filteredSpeciesList.length === 0 && (
+                <div className="text-center py-10 text-xs text-slate-400">
+                  <p className="mb-2">{isEn ? "No species found" : "Không tìm thấy loài phù hợp"}</p>
+                  <button
+                    onClick={() => {
+                      setSelectedZone("");
+                      setSelectedTier(0);
+                      setSearchQuery("");
+                    }}
+                    className="text-cyan-400 hover:underline"
+                  >
+                    {isEn ? "Reset filters" : "Đặt lại bộ lọc"}
                   </button>
                 </div>
+              )}
 
-                {/* Thông tin đại diện loài */}
-                <div className="flex items-start gap-4 mb-5">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-800 border-2 border-cyan-500/40 shrink-0 shadow-lg shadow-cyan-950/50">
-                    {selectedNode.image ? (
-                      <img
-                        src={selectedNode.image}
-                        alt={selectedNode.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xs text-slate-500">
-                        NO IMG
+              {!loading &&
+                filteredSpeciesList.map((sp) => {
+                  const isSelected = focalSpeciesId === sp.id.toString();
+                  const tierColor =
+                    sp.trophicTier === 5
+                      ? "#ef4444"
+                      : sp.trophicTier === 4
+                      ? "#f97316"
+                      : sp.trophicTier === 3
+                      ? "#eab308"
+                      : sp.trophicTier === 2
+                      ? "#84cc16"
+                      : "#10b981";
+
+                  return (
+                    <div
+                      key={sp.id}
+                      onClick={() => handleSelectFocal(sp.id)}
+                      className={`p-2 rounded-xl transition-colors flex items-center justify-between gap-2.5 cursor-pointer border ${
+                        isSelected
+                          ? "bg-sky-950/60 border-sky-400/50 text-white"
+                          : "bg-[#0d2238]/60 hover:bg-[#0d2238] border-white/5 text-slate-300 hover:text-white"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-lg overflow-hidden bg-slate-800 border border-white/10 shrink-0">
+                          {sp.image ? (
+                            <img
+                              src={sp.image}
+                              alt={sp.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[9px] text-slate-500">
+                              IMG
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-xs font-medium truncate leading-tight">{sp.name}</div>
+                          <div className="text-[11px] text-slate-400 italic truncate font-serif">
+                            {sp.scientificName}
+                          </div>
+                        </div>
                       </div>
+
+                      <div className="flex flex-col items-end shrink-0 gap-0.5">
+                        <span
+                          className="px-1.5 py-0.5 rounded text-[10px] font-medium"
+                          style={{
+                            backgroundColor: `${tierColor}15`,
+                            color: tierColor,
+                            border: `1px solid ${tierColor}30`,
+                          }}
+                        >
+                          Bậc {sp.trophicTier}
+                        </span>
+                        {["CR", "EN", "VU"].includes(sp.redList) && (
+                          <span className="text-[10px] text-rose-400 font-mono">{sp.redList}</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+
+          {/* ═════ CỘT 2: SƠ ĐỒ DÒNG CHẢY SINH THÁI 3 TẦNG (6/12 COLS) ═════ */}
+          <div className="lg:col-span-6 rounded-2xl bg-[#0b2038] border border-white/10 p-5 flex flex-col h-[720px] overflow-y-auto custom-scrollbar">
+            {!focalSpecies ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-2">
+                <Compass size={28} className="text-slate-500" />
+                <p className="text-xs">{isEn ? "Select a species to inspect its food chain" : "Chọn một loài từ danh mục bên trái để bắt đầu phân tích"}</p>
+              </div>
+            ) : (
+              <div className="space-y-3.5">
+                {/* ─── TẦNG ĐỈNH: THIÊN ĐỊCH & KẺ SĂN MỒI (BẬC CAO HƠN) ─── */}
+                <div className="p-3 rounded-xl bg-[#0d2238] border border-white/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-rose-300 flex items-center gap-1.5">
+                      <ShieldAlert size={13} className="text-rose-400" />
+                      <span>{isEn ? "Predators & higher consumers" : "Thiên địch & kẻ săn mồi"} ({focalRelationships.predators.length})</span>
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      {isEn ? "Higher trophic tier" : "Bậc tiêu thụ cao hơn"}
+                    </span>
+                  </div>
+
+                  {focalRelationships.predators.length === 0 ? (
+                    <div className="py-2.5 px-3 rounded-lg bg-black/20 text-xs text-slate-400 italic text-center">
+                      {focalSpecies.trophicTier === 5
+                        ? isEn
+                          ? "Apex predator (top-down regulator, no natural predators in ecosystem)"
+                          : "Động vật săn mồi đỉnh bảng (Apex predator, không có thiên địch tự nhiên)"
+                        : isEn
+                          ? "No recorded predators in the current zone"
+                          : "Chưa ghi nhận thiên địch săn bắt loài này trong phân hệ hiện tại"}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {focalRelationships.predators.map(({ species, link }) => (
+                        <div
+                          key={species.id}
+                          onClick={() => handleSelectFocal(species.id)}
+                          className="p-2 rounded-lg bg-[#112a44] hover:bg-[#163657] border border-rose-500/20 hover:border-rose-400/40 transition-colors cursor-pointer flex items-center justify-between gap-2 group"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-7 h-7 rounded-md overflow-hidden bg-slate-800 shrink-0">
+                              {species.image ? (
+                                <img src={species.image} alt={species.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-[9px]">IMG</div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="text-xs font-medium text-white group-hover:text-rose-300 truncate">
+                                {species.name}
+                              </div>
+                              <div className="text-[10px] text-slate-400 truncate">
+                                {link.description || "Thiên địch"}
+                              </div>
+                            </div>
+                          </div>
+                          <span className="text-rose-400 text-xs font-medium shrink-0">Bậc {species.trophicTier}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* ─── DÒNG CHUYỂN TIẾP LÊN ĐỈNH THÁP ─── */}
+                <div className="flex items-center justify-center gap-1.5 py-0.5 text-xs text-slate-400">
+                  <ArrowUp size={13} className="text-slate-400" />
+                  <span>{isEn ? "Energy transferred to higher consumers" : "Năng lượng chuyển tiếp lên bậc cao hơn"}</span>
+                </div>
+
+                {/* ─── TẦNG TÂM ĐIỂM: LOÀI ĐANG CHỌN ─── */}
+                <div className="p-4 rounded-xl bg-[#0e2744] border border-sky-400/30">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3.5">
+                    <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-800 border border-sky-400/30 shrink-0">
+                      {focalSpecies.image ? (
+                        <img src={focalSpecies.image} alt={focalSpecies.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-xs text-slate-500">NO IMG</div>
+                      )}
+                    </div>
+
+                    <div className="flex-1 text-center sm:text-left min-w-0">
+                      <h3 className="text-base font-bold text-white leading-snug">
+                        {focalSpecies.name}
+                      </h3>
+                      <p className="text-xs text-slate-400 italic font-serif mb-2">
+                        {focalSpecies.scientificName}
+                      </p>
+
+                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 text-xs">
+                        <span className="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 border border-sky-500/25">
+                          Bậc dinh dưỡng {focalSpecies.trophicTier} (TL {focalSpecies.trophicLevel})
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-white/5 text-slate-300 border border-white/10">
+                          {focalSpecies.eastSeaZone || "Biển Đông"}
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/25">
+                          Sách Đỏ: {focalSpecies.redList || "LC"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── DÒNG CHUYỂN TIẾP TỪ CHÂN ĐẾ LÊN ─── */}
+                <div className="flex items-center justify-center gap-1.5 py-0.5 text-xs text-slate-400">
+                  <ArrowUp size={13} className="text-slate-400" />
+                  <span>{isEn ? "Energy absorbed from food base" : "Năng lượng hấp thu từ nguồn thức ăn bên dưới"}</span>
+                </div>
+
+                {/* ─── TẦNG CHÂN ĐẾ: NGUỒN DINH DƯỠNG & CON MỒI ─── */}
+                <div className="p-3 rounded-xl bg-[#0d2238] border border-white/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-emerald-300 flex items-center gap-1.5">
+                      <Target size={13} className="text-emerald-400" />
+                      <span>{isEn ? "Prey & energy sources" : "Nguồn thức ăn & con mồi"} ({focalRelationships.preys.length})</span>
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      {isEn ? "Direct inputs" : "Nguồn cấp trực tiếp"}
+                    </span>
+                  </div>
+
+                  {focalRelationships.preys.length === 0 ? (
+                    <div className="py-2.5 px-3 rounded-lg bg-black/20 text-xs text-slate-400 italic text-center">
+                      {focalSpecies.groupId === 5
+                        ? isEn
+                          ? "Primary producer (fixes sunlight and nutrients, does not prey on fauna)"
+                          : "Loài sản xuất sơ cấp (quang hợp và hấp thụ dinh dưỡng hòa tan, không săn mồi)"
+                        : isEn
+                          ? "No recorded prey within the selected zone"
+                          : "Chưa ghi nhận liên kết con mồi trong phạm vi phân hệ này"}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {focalRelationships.preys.map(({ species, link }) => (
+                        <div
+                          key={species.id}
+                          onClick={() => handleSelectFocal(species.id)}
+                          className="p-2 rounded-lg bg-[#112a44] hover:bg-[#163657] border border-emerald-500/20 hover:border-emerald-400/40 transition-colors cursor-pointer flex items-center justify-between gap-2 group"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-7 h-7 rounded-md overflow-hidden bg-slate-800 shrink-0">
+                              {species.image ? (
+                                <img src={species.image} alt={species.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-[9px]">IMG</div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="text-xs font-medium text-white group-hover:text-emerald-300 truncate">
+                                {species.name}
+                              </div>
+                              <div className="text-[10px] text-slate-400 truncate">
+                                {link.description || "Con mồi"}
+                              </div>
+                            </div>
+                          </div>
+                          <span className="text-emerald-400 text-xs font-medium shrink-0">Bậc {species.trophicTier}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* ─── PHẦN MỞ RỘNG: QUAN HỆ TƯƠNG HỖ & SINH CẢNH ─── */}
+                {(focalRelationships.symbionts.length > 0 || focalRelationships.habitats.length > 0) && (
+                  <div className="p-3 rounded-xl bg-[#091a2e] border border-white/10">
+                    <span className="text-xs font-semibold text-slate-300 block mb-2 flex items-center gap-1.5">
+                      <Handshake size={13} className="text-sky-400" />
+                      <span>{isEn ? "Mutualism & biogenic habitats" : "Quan hệ tương hỗ & sinh cảnh"}</span>
+                    </span>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {focalRelationships.symbionts.map(({ species, link }) => (
+                        <div
+                          key={species.id}
+                          onClick={() => handleSelectFocal(species.id)}
+                          className="p-2 rounded-lg bg-[#0e243d] hover:bg-[#143254] border border-sky-500/20 transition-colors cursor-pointer flex items-center justify-between gap-2"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Handshake size={13} className="text-sky-400 shrink-0" />
+                            <div className="min-w-0">
+                              <div className="text-xs font-medium text-white truncate">{species.name}</div>
+                              <div className="text-[10px] text-slate-400 truncate">{link.label || "Cộng sinh"}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                      {focalRelationships.habitats.map(({ species, link }) => (
+                        <div
+                          key={species.id}
+                          onClick={() => handleSelectFocal(species.id)}
+                          className="p-2 rounded-lg bg-[#0e243d] hover:bg-[#143254] border border-emerald-500/20 transition-colors cursor-pointer flex items-center justify-between gap-2"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Home size={13} className="text-emerald-400 shrink-0" />
+                            <div className="min-w-0">
+                              <div className="text-xs font-medium text-white truncate">{species.name}</div>
+                              <div className="text-[10px] text-slate-400 truncate">{link.label || "Nơi ở"}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* ═════ CỘT 3: HỒ SƠ SINH THÁI HỌC & ĐÁNH GIÁ RỦI RO (3/12 COLS) ═════ */}
+          <div className="lg:col-span-3 rounded-2xl bg-[#0b2038] border border-white/10 p-4 flex flex-col justify-between h-[720px] overflow-y-auto custom-scrollbar">
+            {!focalSpecies ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-2">
+                <Compass size={28} className="text-slate-500" />
+                <p className="text-xs">{isEn ? "Select a species to view profile" : "Chọn loài để xem hồ sơ chi tiết"}</p>
+              </div>
+            ) : (
+              <div className="space-y-3.5">
+                <div>
+                  <div className="text-xs font-medium text-slate-400 mb-2.5">
+                    {isEn ? "Ecological profile" : "Hồ sơ sinh học"}
+                  </div>
+
+                  {/* Ảnh và thông số nhận dạng */}
+                  <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-800 border border-white/10 mb-3">
+                    {focalSpecies.image ? (
+                      <img src={focalSpecies.image} alt={focalSpecies.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xs text-slate-500">NO IMAGE</div>
                     )}
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-xl font-bold text-white font-heading leading-snug mb-1">
-                      {selectedNode.name}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-300 italic font-serif mb-2.5">
-                      {selectedNode.scientificName}
-                    </p>
+                  <h4 className="text-sm font-bold text-white leading-tight mb-0.5">{focalSpecies.name}</h4>
+                  <p className="text-xs text-slate-400 italic font-serif mb-3">{focalSpecies.scientificName}</p>
 
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="px-2.5 py-1 rounded text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40">
-                        {isEn ? "Red List:" : "Sách Đỏ:"} {selectedNode.redList || "LC"}
-                      </span>
-                      <span className="px-2.5 py-1 rounded text-xs font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                        {selectedNode.eastSeaZone || (isEn ? "East Sea" : "Biển Đông")}
-                      </span>
+                  {/* Bảng thông số */}
+                  <div className="space-y-1.5 text-xs bg-[#0d2238] p-3 rounded-xl border border-white/5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">{isEn ? "Trophic level:" : "Bậc dinh dưỡng:"}</span>
+                      <span className="font-medium text-sky-300">Bậc {focalSpecies.trophicTier} ({focalSpecies.trophicLevel})</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">{isEn ? "Depth range:" : "Độ sâu sinh sống:"}</span>
+                      <span className="font-mono text-white">{focalSpecies.depthMin || 0}m - {focalSpecies.depthMax || 50}m</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">{isEn ? "Red list:" : "Sách Đỏ:"}</span>
+                      <span className="font-medium text-rose-400">{focalSpecies.redList || "LC"}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">{isEn ? "Distribution:" : "Phân bố:"}</span>
+                      <span className="text-slate-200 text-right truncate max-w-[130px]">{focalSpecies.eastSeaZone || "Biển Đông"}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Bảng thông số sinh thái học chi tiết */}
-                <div className="grid grid-cols-2 gap-3 text-xs mb-5 bg-white/[0.03] p-3.5 rounded-xl border border-white/5">
-                  <div>
-                    <span className="text-slate-400 block text-xs tracking-wider mb-0.5">
-                      {isEn ? "Identifier Code:" : "Mã định danh:"}
-                    </span>
-                    <span className="font-mono font-bold text-white text-xs sm:text-sm">{selectedNode.code || "N/A"}</span>
+                {/* Đánh giá rủi ro sinh thái thực tế */}
+                <div className="p-3 rounded-xl bg-[#0d2238] border border-white/10 text-xs">
+                  <div className="text-slate-300 font-medium mb-1">
+                    {isEn ? "Trophic impact assessment" : "Đánh giá rủi ro sinh thái"}
                   </div>
-                  <div>
-                    <span className="text-slate-400 block text-xs tracking-wider mb-0.5">
-                      {isEn ? "Living Depth:" : "Độ sâu sinh sống:"}
-                    </span>
-                    <span className="font-mono text-cyan-300 text-xs sm:text-sm font-semibold">
-                      {selectedNode.depthMin || 0}m - {selectedNode.depthMax || 50}m
-                    </span>
-                  </div>
+                  <p className="text-slate-400 leading-relaxed text-[11px]">
+                    {focalSpecies.trophicTier === 5
+                      ? "Là loài săn mồi đỉnh bảng kiểm soát cấu trúc quần xã từ trên xuống. Sự suy giảm của loài có thể khiến các loài ăn thịt cỡ trung bùng nổ mất kiểm soát (Mesopredator Release), gián tiếp làm cạn kiệt cá nhỏ và động vật ăn cỏ."
+                      : focalSpecies.groupId === 5
+                      ? "Là loài sinh cảnh nền tảng của hệ sinh thái. Sự suy giảm của loài sẽ trực tiếp phá hủy bãi đẻ và nơi ẩn náu của cá rạn con, làm lung lay chân đế của toàn bộ tháp dinh dưỡng."
+                      : focalRelationships.predators.length === 0
+                      ? "Loài bảo tồn biểu tượng (Umbrella species), giữ vai trò gặm tỉa duy trì độ thông thoáng và sức tái sinh của thảm cỏ biển. Sự suy giảm của loài sẽ dẫn đến bồi lắng già cỗi bãi cỏ, làm mất bãi đẻ của tôm cá con."
+                      : `Loài này là mắt xích chuyển hóa năng lượng trung gian cho ${focalRelationships.predators.length} loài thiên địch phía trên. Sự suy giảm của nó sẽ gây thiếu hụt nguồn thức ăn trực tiếp.`}
+                  </p>
                 </div>
 
-                {/* Danh sách các mối liên kết sinh thái trong mạng lưới */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-1.5 border-b border-white/10">
-                    <span className="text-xs sm:text-sm font-bold tracking-wider text-slate-200">
-                      {isEn ? "Network Connections" : "Mối liên kết trong mạng lưới"}
-                    </span>
-                    <span className="text-cyan-400 font-mono text-xs sm:text-sm font-bold">
-                      {nodeConnections.prey.length +
-                        nodeConnections.predators.length +
-                        nodeConnections.symbionts.length +
-                        nodeConnections.habitats.length +
-                        nodeConnections.others.length}{" "}
-                      {isEn ? "links" : "liên kết"}
-                    </span>
-                  </div>
-
-                  {/* 1. Con mồi */}
-                  {nodeConnections.prey.length > 0 && (
-                    <div className="space-y-1.5">
-                      <div className="text-xs font-bold text-rose-300 flex items-center gap-1.5">
-                        <Target size={14} className="text-rose-400" />
-                        <span>{isEn ? "Foraging / Prey Base" : "Săn bắt / Nguồn thức ăn"} ({nodeConnections.prey.length}):</span>
-                      </div>
-                      {nodeConnections.prey.map(({ node, link }) => (
-                        <div
-                          key={link.id}
-                          className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-500/20 text-xs sm:text-sm flex items-center justify-between"
-                        >
-                          <span className="font-semibold text-white">{node.name}</span>
-                          <span className="text-xs text-slate-400 italic line-clamp-1 max-w-[160px]">
-                            {link.description || (isEn ? "Prey" : "Con mồi")}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* 2. Kẻ săn mồi */}
-                  {nodeConnections.predators.length > 0 && (
-                    <div className="space-y-1.5">
-                      <div className="text-xs font-bold text-red-400 flex items-center gap-1.5">
-                        <ShieldAlert size={14} className="text-red-400" />
-                        <span>{isEn ? "Apex Predators & Threats" : "Động vật ăn thịt đe dọa"} ({nodeConnections.predators.length}):</span>
-                      </div>
-                      {nodeConnections.predators.map(({ node, link }) => (
-                        <div
-                          key={link.id}
-                          className="p-2.5 rounded-lg bg-red-950/20 border border-red-500/20 text-xs sm:text-sm flex items-center justify-between"
-                        >
-                          <span className="font-semibold text-white">{node.name}</span>
-                          <span className="text-xs text-slate-400 italic line-clamp-1 max-w-[160px]">
-                            {link.description || (isEn ? "Predator" : "Thiên địch")}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* 3. Cộng sinh */}
-                  {nodeConnections.symbionts.length > 0 && (
-                    <div className="space-y-1.5">
-                      <div className="text-xs font-bold text-sky-300 flex items-center gap-1.5">
-                        <Handshake size={14} className="text-sky-400" />
-                        <span>{isEn ? "Symbiosis & Mutualism" : "Cộng sinh & Tương hỗ"} ({nodeConnections.symbionts.length}):</span>
-                      </div>
-                      {nodeConnections.symbionts.map(({ node, link }) => (
-                        <div
-                          key={link.id}
-                          className="p-2.5 rounded-lg bg-sky-950/20 border border-sky-500/20 text-xs sm:text-sm flex items-center justify-between"
-                        >
-                          <span className="font-semibold text-white">{node.name}</span>
-                          <span className="text-xs text-sky-300/80 italic line-clamp-1 max-w-[160px]">
-                            {link.description || (isEn ? "Symbiont" : "Cộng sinh")}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* 4. Sinh cảnh */}
-                  {nodeConnections.habitats.length > 0 && (
-                    <div className="space-y-1.5">
-                      <div className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
-                        <Home size={14} className="text-emerald-400" />
-                        <span>{isEn ? "Biogenic Habitat & Nursery" : "Sinh cảnh cư trú & Bãi ươm"} ({nodeConnections.habitats.length}):</span>
-                      </div>
-                      {nodeConnections.habitats.map(({ node, link }) => (
-                        <div
-                          key={link.id}
-                          className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-500/20 text-xs sm:text-sm flex items-center justify-between"
-                        >
-                          <span className="font-semibold text-white">{node.name}</span>
-                          <span className="text-xs text-emerald-300/80 italic line-clamp-1 max-w-[160px]">
-                            {link.description || (isEn ? "Habitat" : "Sinh cảnh")}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                {/* Nút điều hướng hồ sơ sinh vật đầy đủ */}
+                <div className="pt-1">
+                  <Link
+                    to={`/species/${focalSpecies.slug || focalSpecies.id}`}
+                    className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>{isEn ? "View biological profile" : "Xem hồ sơ sinh học"}</span>
+                    <ExternalLink size={13} />
+                  </Link>
                 </div>
               </div>
-
-              {/* Nút Điều hướng tới Hồ sơ chi tiết */}
-              <div className="pt-4 border-t border-white/10 mt-6">
-                <Link
-                  to={`/species/${selectedNode.slug || selectedNode.id}`}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-950/50 cursor-pointer"
-                >
-                  <span>{isEn ? "View Detailed Biological Dossier" : "Xem Hồ Sơ Sinh Học Chi Tiết"}</span>
-                  <ExternalLink size={15} />
-                </Link>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </main>
 
