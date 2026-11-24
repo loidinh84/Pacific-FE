@@ -287,8 +287,17 @@ export default function OceanMap() {
       return { sp, pt };
     });
 
-    // Gom cụm với khoảng cách ngưỡng 44px (bảo đảm đường kính 32px luôn có khoảng hở thoáng đãng)
-    const CLUSTER_THRESHOLD_PX = 44;
+    const currentZoom = map.getZoom();
+    // Ngưỡng gom cụm động thích ứng theo cấp độ zoom:
+    // - Zoom <= 6 (toàn cảnh Biển Đông): 48px -> gom thành các phân vùng hải dương học lớn
+    // - Zoom 7 - 8 (cấp tiểu vùng/tỉnh duyên hải): 36px
+    // - Zoom 9 - 10 (cấp vịnh biển/quần đảo): 24px
+    // - Zoom >= 11: 0px -> toàn bộ tách biệt hoàn toàn về đúng tọa độ hải dương thực tế
+    const CLUSTER_THRESHOLD_PX =
+      currentZoom >= 11 ? 0 :
+      currentZoom >= 9 ? 24 :
+      currentZoom >= 7 ? 36 : 48;
+
     const clusters = [];
     const visited = new Set();
 
@@ -298,18 +307,43 @@ export default function OceanMap() {
       const group = [base.sp];
       visited.add(i);
 
-      for (let j = i + 1; j < itemsWithPoints.length; j++) {
-        if (visited.has(j)) continue;
-        const target = itemsWithPoints[j];
-        const dist = Math.hypot(base.pt.x - target.pt.x, base.pt.y - target.pt.y);
-        if (dist < CLUSTER_THRESHOLD_PX) {
-          group.push(target.sp);
-          visited.add(j);
+      if (CLUSTER_THRESHOLD_PX > 0) {
+        for (let j = i + 1; j < itemsWithPoints.length; j++) {
+          if (visited.has(j)) continue;
+          const target = itemsWithPoints[j];
+          const dist = Math.hypot(base.pt.x - target.pt.x, base.pt.y - target.pt.y);
+          if (dist < CLUSTER_THRESHOLD_PX) {
+            group.push(target.sp);
+            visited.add(j);
+          }
         }
       }
 
       if (group.length === 1) {
         clusters.push({ isCluster: false, creature: group[0] });
+      } else if (currentZoom >= 11) {
+        // Nếu trùng khít tọa độ, tạo vi dịch chuyển nhỏ (16px) để không bị đè khuất
+        const sumLat = group.reduce((s, item) => s + item.lat, 0);
+        const sumLng = group.reduce((s, item) => s + item.lng, 0);
+        const centerPt = map.latLngToContainerPoint([sumLat / group.length, sumLng / group.length]);
+        const spreadRadiusPx = group.length === 2 ? 16 : 20;
+
+        group.forEach((sp, idx) => {
+          const angle = (2 * Math.PI * idx) / group.length - Math.PI / 2;
+          const offsetPt = L.point(
+            centerPt.x + spreadRadiusPx * Math.cos(angle),
+            centerPt.y + spreadRadiusPx * Math.sin(angle)
+          );
+          const offsetLatLng = map.containerPointToLatLng(offsetPt);
+          clusters.push({
+            isCluster: false,
+            creature: {
+              ...sp,
+              displayLat: offsetLatLng.lat,
+              displayLng: offsetLatLng.lng,
+            },
+          });
+        });
       } else {
         const sumLat = group.reduce((s, item) => s + item.lat, 0);
         const sumLng = group.reduce((s, item) => s + item.lng, 0);
@@ -405,8 +439,9 @@ export default function OceanMap() {
         clusterMarker.on("mouseover", () => clusterMarker.setZIndexOffset(10000));
         clusterMarker.on("mouseout", () => clusterMarker.setZIndexOffset(0));
         clusterMarker.on("click", () => {
-          map.flyTo([item.centerLat, item.centerLng], Math.min(map.getZoom() + 1.5, 11), {
-            duration: 0.8,
+          const nextZoom = Math.min(map.getZoom() + 2, 16);
+          map.flyTo([item.centerLat, item.centerLng], nextZoom, {
+            duration: 0.6,
           });
           setActiveCluster(item);
         });
@@ -464,7 +499,9 @@ export default function OceanMap() {
           popupAnchor: [0, -37],
         });
 
-        const marker = L.marker([creature.lat, creature.lng], { icon: creatureIcon })
+        const markerLat = creature.displayLat ?? creature.lat;
+        const markerLng = creature.displayLng ?? creature.lng;
+        const marker = L.marker([markerLat, markerLng], { icon: creatureIcon })
           .bindPopup(createCreaturePopupHtml(creature), { maxWidth: 300, closeButton: true })
           .bindTooltip(creatureName, { direction: "top", offset: [0, -37], opacity: 0.95 });
 
@@ -729,7 +766,7 @@ export default function OceanMap() {
       setSelectedCategory("all");
     }
 
-    map.flyTo([creature.lat, creature.lng], 9.5, { duration: 1.1 });
+    map.flyTo([creature.lat, creature.lng], 12, { duration: 1.1 });
 
     setTimeout(() => {
       renderCreatureLayers();
@@ -854,7 +891,7 @@ export default function OceanMap() {
               }`}
             >
               <Fish size={15} />
-              <span>{isEn ? `Marine Life (${creaturesList.length})` : `Sinh vật biển (${creaturesList.length})`}</span>
+              <span>{isEn ? "Marine Life" : "Sinh vật biển"}</span>
             </button>
 
             {/* Các lớp bản đồ nền */}
@@ -943,7 +980,6 @@ export default function OceanMap() {
                       />
                     )}
                     <span>{isEn ? cat.labelEn : cat.labelVi}</span>
-                    <span className="text-[11px] opacity-75">({count})</span>
                   </button>
                 );
               })}
@@ -980,7 +1016,7 @@ export default function OceanMap() {
               >
                 <MapPin size={14} className="text-sky-400" />
                 <span>
-                  {isEn ? `Marine Zones (${zonesList.length})` : `Khu bảo tồn (${zonesList.length})`}
+                  {isEn ? "Marine Protected Areas" : "Khu bảo tồn"}
                 </span>
                 <ChevronDown
                   size={14}
@@ -1005,11 +1041,8 @@ export default function OceanMap() {
                         <span>{isEn ? z.nameEn : z.nameVi}</span>
                         <span className="text-[10px] text-sky-400 font-mono">{z.depth}</span>
                       </div>
-                      <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+                      <div className="text-[10px] text-slate-400 font-mono">
                         <span>{z.coordText}</span>
-                        {z.residentSpecies?.length > 0 && (
-                          <span className="text-slate-400 font-sans">{z.residentSpecies.length} loài</span>
-                        )}
                       </div>
                     </button>
                   ))}
@@ -1041,7 +1074,7 @@ export default function OceanMap() {
                 <span>
                   {selectedRedList === "all"
                     ? (isEn ? "Red List Status" : "Sách Đỏ / IUCN")
-                    : `${selectedRedList} (${creaturesList.filter((c) => c.redList === selectedRedList).length})`}
+                    : selectedRedList}
                 </span>
                 <ChevronDown
                   size={14}
@@ -1057,10 +1090,6 @@ export default function OceanMap() {
                     {isEn ? "IUCN / Vietnam Red List" : "Phân hạng bảo tồn Sách Đỏ"}
                   </div>
                   {RED_LIST_CATEGORIES.map((cat) => {
-                    const count =
-                      cat.id === "all"
-                        ? creaturesList.length
-                        : creaturesList.filter((c) => c.redList === cat.id).length;
                     const isSelected = selectedRedList === cat.id;
 
                     return (
@@ -1091,7 +1120,6 @@ export default function OceanMap() {
                           </span>
                           <span>{isEn ? cat.labelEn : cat.labelVi}</span>
                         </div>
-                        <span className="text-[11px] text-slate-400 font-mono">({count})</span>
                       </button>
                     );
                   })}
@@ -1115,7 +1143,7 @@ export default function OceanMap() {
               >
                 <Search size={14} className="text-sky-400" />
                 <span>
-                  {isEn ? `Search Species (${creaturesList.length})` : `Tìm sinh vật (${creaturesList.length})`}
+                  {isEn ? "Search Species" : "Tìm sinh vật"}
                 </span>
                 <ChevronDown
                   size={14}
@@ -1250,9 +1278,6 @@ export default function OceanMap() {
                   <span className="w-2 h-2 rounded-full bg-sky-400" />
                   <h3 className="text-xs sm:text-sm font-semibold text-white">
                     {activeCluster.name}
-                    <span className="text-sky-400 font-mono text-xs ml-1.5 font-normal">
-                      ({activeCluster.species.length} loài sinh vật)
-                    </span>
                   </h3>
                 </div>
                 <div className="flex items-center gap-2">

@@ -185,11 +185,11 @@ export const CATEGORY_COLORS = {
 // Danh mục phân loại mức độ đe dọa sinh thái (Sách Đỏ Việt Nam / IUCN Red List)
 export const RED_LIST_CATEGORIES = [
   { id: "all", labelVi: "Tất cả tình trạng", labelEn: "All Statuses", badge: "ALL", color: "#64748b" },
-  { id: "CR", labelVi: "Cực kỳ nguy cấp (CR)", labelEn: "Critically Endangered (CR)", badge: "CR", color: "#ef4444" },
-  { id: "EN", labelVi: "Nguy cấp (EN)", labelEn: "Endangered (EN)", badge: "EN", color: "#f97316" },
-  { id: "VU", labelVi: "Sắp nguy cấp (VU)", labelEn: "Vulnerable (VU)", badge: "VU", color: "#eab308" },
-  { id: "NT", labelVi: "Gần bị đe dọa (NT)", labelEn: "Near Threatened (NT)", badge: "NT", color: "#06b6d4" },
-  { id: "LC", labelVi: "Ít lo ngại (LC)", labelEn: "Least Concern (LC)", badge: "LC", color: "#10b981" },
+  { id: "CR", labelVi: "Cực kỳ nguy cấp", labelEn: "Critically Endangered", badge: "CR", color: "#ef4444" },
+  { id: "EN", labelVi: "Nguy cấp", labelEn: "Endangered", badge: "EN", color: "#f97316" },
+  { id: "VU", labelVi: "Sắp nguy cấp", labelEn: "Vulnerable", badge: "VU", color: "#eab308" },
+  { id: "NT", labelVi: "Gần bị đe dọa", labelEn: "Near Threatened", badge: "NT", color: "#06b6d4" },
+  { id: "LC", labelVi: "Ít lo ngại", labelEn: "Least Concern", badge: "LC", color: "#10b981" },
 ];
 
 export const RED_LIST_COLORS = {
@@ -201,7 +201,7 @@ export const RED_LIST_COLORS = {
   DD: "#64748b",
 };
 
-// Nguồn bản đồ chuẩn với zoom ceiling an toàn
+// Nguồn bản đồ chuẩn với zoom ceiling an toàn (hỗ trợ phóng to chi tiết tới cấp 16)
 export const BASEMAP_PROVIDERS = {
   ocean: {
     labelVi: "Độ sâu & Đáy biển",
@@ -211,7 +211,7 @@ export const BASEMAP_PROVIDERS = {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, GEBCO, NOAA",
     maxNativeZoom: 9,
-    maxZoom: 10,
+    maxZoom: 16,
   },
   satellite: {
     labelVi: "Ảnh Vệ tinh",
@@ -221,7 +221,7 @@ export const BASEMAP_PROVIDERS = {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, Maxar, Earthstar Geographics",
     maxNativeZoom: 10,
-    maxZoom: 11,
+    maxZoom: 16,
   },
   topo: {
     labelVi: "Bản đồ Địa lý",
@@ -231,6 +231,6 @@ export const BASEMAP_PROVIDERS = {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, USGS",
     maxNativeZoom: 11,
-    maxZoom: 12,
+    maxZoom: 16,
   },
 };

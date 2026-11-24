@@ -527,7 +527,9 @@ export const getSpeciesFavoriteStatus = async (idOrSlug) => {
  */
 export const fetchMapDistribution = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/species/map-distribution`);
+    const response = await axios.get(
+      `${API_BASE_URL}/species/map-distribution?_t=${Date.now()}`
+    );
     if (response.data && response.data.success) {
       return response.data.data;
     }
