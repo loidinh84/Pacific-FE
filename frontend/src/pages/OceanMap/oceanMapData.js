@@ -182,6 +182,25 @@ export const CATEGORY_COLORS = {
   "sinh-vat-bien-sau": "#6366f1",
 };
 
+// Danh mục phân loại mức độ đe dọa sinh thái (Sách Đỏ Việt Nam / IUCN Red List)
+export const RED_LIST_CATEGORIES = [
+  { id: "all", labelVi: "Tất cả tình trạng", labelEn: "All Statuses", badge: "ALL", color: "#64748b" },
+  { id: "CR", labelVi: "Cực kỳ nguy cấp (CR)", labelEn: "Critically Endangered (CR)", badge: "CR", color: "#ef4444" },
+  { id: "EN", labelVi: "Nguy cấp (EN)", labelEn: "Endangered (EN)", badge: "EN", color: "#f97316" },
+  { id: "VU", labelVi: "Sắp nguy cấp (VU)", labelEn: "Vulnerable (VU)", badge: "VU", color: "#eab308" },
+  { id: "NT", labelVi: "Gần bị đe dọa (NT)", labelEn: "Near Threatened (NT)", badge: "NT", color: "#06b6d4" },
+  { id: "LC", labelVi: "Ít lo ngại (LC)", labelEn: "Least Concern (LC)", badge: "LC", color: "#10b981" },
+];
+
+export const RED_LIST_COLORS = {
+  CR: "#ef4444",
+  EN: "#f97316",
+  VU: "#eab308",
+  NT: "#06b6d4",
+  LC: "#10b981",
+  DD: "#64748b",
+};
+
 // Nguồn bản đồ chuẩn với zoom ceiling an toàn
 export const BASEMAP_PROVIDERS = {
   ocean: {

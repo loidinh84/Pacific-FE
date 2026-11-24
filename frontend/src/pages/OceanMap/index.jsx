@@ -11,6 +11,9 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Share2,
+  ShieldAlert,
+  Check,
 } from "lucide-react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
@@ -23,6 +26,8 @@ import {
   BASEMAP_PROVIDERS,
   CREATURE_MAP_CATEGORIES,
   CATEGORY_COLORS,
+  RED_LIST_CATEGORIES,
+  RED_LIST_COLORS,
 } from "./oceanMapData";
 import { fetchMapDistribution } from "../../services/speciesApi";
 
@@ -33,8 +38,10 @@ export default function OceanMap() {
 
   const [activeLayer, setActiveLayer] = useState("ocean");
   const [showCreatures, setShowCreatures] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("cat") || "all");
+  const [selectedRedList, setSelectedRedList] = useState(searchParams.get("status") || "all");
   const [cursorCoords, setCursorCoords] = useState(null);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const [creaturesList, setCreaturesList] = useState([]);
   const [zonesList, setZonesList] = useState(EAST_SEA_ZONES);
@@ -45,10 +52,12 @@ export default function OceanMap() {
 
   // Trạng thái cho custom dropdowns
   const [isZoneDropdownOpen, setIsZoneDropdownOpen] = useState(false);
+  const [isRedListDropdownOpen, setIsRedListDropdownOpen] = useState(false);
   const [isSpeciesSearchOpen, setIsSpeciesSearchOpen] = useState(false);
   const [speciesSearchQuery, setSpeciesSearchQuery] = useState("");
 
   const zoneDropdownRef = useRef(null);
+  const redListDropdownRef = useRef(null);
   const speciesSearchRef = useRef(null);
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -126,6 +135,9 @@ export default function OceanMap() {
       if (zoneDropdownRef.current && !zoneDropdownRef.current.contains(e.target)) {
         setIsZoneDropdownOpen(false);
       }
+      if (redListDropdownRef.current && !redListDropdownRef.current.contains(e.target)) {
+        setIsRedListDropdownOpen(false);
+      }
       if (speciesSearchRef.current && !speciesSearchRef.current.contains(e.target)) {
         setIsSpeciesSearchOpen(false);
       }
@@ -176,6 +188,8 @@ export default function OceanMap() {
   const createCreaturePopupHtml = useCallback(
     (creature) => {
       const categoryColor = CATEGORY_COLORS[creature.groupId] || "#0284c7";
+      const redListCode = creature.redList || "LC";
+      const redListColor = RED_LIST_COLORS[redListCode] || "#10b981";
       const creatureName = isEn ? creature.nameEn : creature.nameVi;
 
       return `
@@ -191,9 +205,12 @@ export default function OceanMap() {
               <div style="font-size: 10.5px; color: #64748b; font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 ${creature.sciName}
               </div>
-              <div style="margin-top: 3px;">
+              <div style="margin-top: 3px; display: flex; align-items: center; gap: 4px;">
                 <span style="display: inline-block; font-size: 9.5px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: ${categoryColor}18; color: ${categoryColor};">
                   ${creature.groupName || (isEn ? "Marine Species" : "Sinh vật biển")}
+                </span>
+                <span style="display: inline-block; font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: ${redListColor}18; color: ${redListColor}; border: 1px solid ${redListColor}40;">
+                  ${redListCode}
                 </span>
               </div>
             </div>
@@ -223,6 +240,12 @@ export default function OceanMap() {
               <span>${isEn ? "Depth" : "Tầng độ sâu"}</span>
               <span style="font-weight: 600; color: #0f172a;">${creature.depth}</span>
             </div>
+            <div style="display: flex; justify-content: space-between; color: #475569;">
+              <span>${isEn ? "Red List Status" : "Sách Đỏ / Bảo tồn"}</span>
+              <span style="font-weight: 700; color: ${redListColor}; font-size: 10.5px;">
+                ${creature.conservationName || redListCode}
+              </span>
+            </div>
           </div>
 
           <a
@@ -249,10 +272,12 @@ export default function OceanMap() {
 
     if (!showCreatures || creaturesList.length === 0) return;
 
-    // Lọc theo danh mục được chọn
-    const visibleSpecies = creaturesList.filter(
-      (c) => selectedCategory === "all" || c.groupId === selectedCategory
-    );
+    // Lọc theo danh mục được chọn VÀ tình trạng Sách Đỏ
+    const visibleSpecies = creaturesList.filter((c) => {
+      const matchCategory = selectedCategory === "all" || c.groupId === selectedCategory;
+      const matchRedList = selectedRedList === "all" || c.redList === selectedRedList;
+      return matchCategory && matchRedList;
+    });
 
     if (visibleSpecies.length === 0) return;
 
@@ -459,7 +484,7 @@ export default function OceanMap() {
         layerGroup.addLayer(marker);
       }
     });
-  }, [creaturesList, selectedCategory, showCreatures, isEn, createCreaturePopupHtml]);
+  }, [creaturesList, selectedCategory, selectedRedList, showCreatures, isEn, createCreaturePopupHtml]);
 
   // Khởi tạo bản đồ Leaflet
   useEffect(() => {
@@ -775,7 +800,27 @@ export default function OceanMap() {
       mapInstanceRef.current.flyTo([14.8, 111.5], 6, { duration: 1 });
       mapInstanceRef.current.closePopup();
       setActiveCluster(null);
+      setSelectedCategory("all");
+      setSelectedRedList("all");
     }
+  };
+
+  // Sao chép liên kết tọa độ & trạng thái bộ lọc
+  const handleShareMap = () => {
+    if (!mapInstanceRef.current) return;
+    const center = mapInstanceRef.current.getCenter();
+    const zoom = mapInstanceRef.current.getZoom();
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set("lat", center.lat.toFixed(4));
+    url.searchParams.set("lng", center.lng.toFixed(4));
+    url.searchParams.set("zoom", zoom.toString());
+    if (selectedCategory !== "all") url.searchParams.set("cat", selectedCategory);
+    if (selectedRedList !== "all") url.searchParams.set("status", selectedRedList);
+
+    navigator.clipboard.writeText(url.toString()).then(() => {
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2200);
+    });
   };
 
   return (
@@ -794,11 +839,6 @@ export default function OceanMap() {
                 </span>
               )}
             </h1>
-            <p className="text-xs sm:text-[13px] text-slate-400 mt-0.5">
-              {isEn
-                ? "Explore critical marine habitats, coordinates and depth distributions across Vietnam's East Sea"
-                : "Khám phá các vùng biển trọng điểm, tọa độ sinh sống và độ sâu của sinh vật biển Việt Nam"}
-            </p>
           </div>
 
           {/* Công tắc lớp nền & Công tắc sinh vật */}
@@ -819,10 +859,6 @@ export default function OceanMap() {
 
             {/* Các lớp bản đồ nền */}
             <div className="flex items-center bg-[#061424] p-1 rounded-xl border border-white/10 text-xs">
-              <span className="text-slate-400 px-2.5 py-0.5 flex items-center gap-1.5 hidden md:flex font-medium">
-                <Layers size={13} className="text-sky-400" />
-                <span>{isEn ? "Basemap:" : "Lớp bản đồ:"}</span>
-              </span>
               <div className="flex items-center gap-1">
                 {Object.keys(BASEMAP_PROVIDERS).map((key) => {
                   const p = BASEMAP_PROVIDERS[key];
@@ -850,8 +886,8 @@ export default function OceanMap() {
           </div>
         </div>
 
-        {/* Thanh bộ lọc danh mục và 2 dropdown chọn nhanh */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 bg-[#081729]/80 backdrop-blur-md p-2 sm:p-2.5 rounded-2xl border border-white/10 shadow-sm">
+        {/* Thanh bộ lọc danh mục và các dropdown chọn nhanh */}
+        <div className="relative z-30 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 bg-[#081729]/80 backdrop-blur-md p-2 sm:p-2.5 rounded-2xl border border-white/10 shadow-sm">
           {/* Danh mục sinh vật cuộn ngang có nút trượt và kéo chuột */}
           <div className="relative flex-1 min-w-0 flex items-center">
             {/* Nút cuộn trái */}
@@ -981,6 +1017,88 @@ export default function OceanMap() {
               )}
             </div>
 
+            {/* Custom Dropdown: Bộ lọc Sách Đỏ Việt Nam / IUCN */}
+            <div className="relative" ref={redListDropdownRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRedListDropdownOpen(!isRedListDropdownOpen);
+                  setIsZoneDropdownOpen(false);
+                  setIsSpeciesSearchOpen(false);
+                }}
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium border transition-colors cursor-pointer ${
+                  isRedListDropdownOpen
+                    ? "bg-[#0b1c30] border-sky-400/50 text-white"
+                    : selectedRedList !== "all"
+                    ? "bg-amber-500/15 border-amber-400/40 text-amber-200"
+                    : "bg-[#081525] border-white/10 text-slate-300 hover:text-white hover:border-white/20"
+                }`}
+              >
+                <ShieldAlert
+                  size={14}
+                  className={selectedRedList !== "all" ? "text-amber-400" : "text-sky-400"}
+                />
+                <span>
+                  {selectedRedList === "all"
+                    ? (isEn ? "Red List Status" : "Sách Đỏ / IUCN")
+                    : `${selectedRedList} (${creaturesList.filter((c) => c.redList === selectedRedList).length})`}
+                </span>
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform ${
+                    isRedListDropdownOpen ? "rotate-180 text-sky-400" : "text-slate-400"
+                  }`}
+                />
+              </button>
+
+              {isRedListDropdownOpen && (
+                <div className="absolute right-0 top-full mt-1.5 w-64 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[500] p-1.5">
+                  <div className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 border-b border-white/10 mb-1">
+                    {isEn ? "IUCN / Vietnam Red List" : "Phân hạng bảo tồn Sách Đỏ"}
+                  </div>
+                  {RED_LIST_CATEGORIES.map((cat) => {
+                    const count =
+                      cat.id === "all"
+                        ? creaturesList.length
+                        : creaturesList.filter((c) => c.redList === cat.id).length;
+                    const isSelected = selectedRedList === cat.id;
+
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedRedList(cat.id);
+                          setIsRedListDropdownOpen(false);
+                          if (!showCreatures) setShowCreatures(true);
+                        }}
+                        className={`w-full text-left px-2.5 py-2 rounded-lg transition-colors cursor-pointer flex items-center justify-between text-xs mb-0.5 border ${
+                          isSelected
+                            ? "bg-sky-500/20 text-white border-sky-400/40 font-semibold"
+                            : "text-slate-200 hover:text-white hover:bg-white/5 border-transparent"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="w-7 text-center text-[10px] font-bold py-0.5 rounded font-mono"
+                            style={{
+                              backgroundColor: `${cat.color}22`,
+                              color: cat.color,
+                              border: `1px solid ${cat.color}44`,
+                            }}
+                          >
+                            {cat.badge}
+                          </span>
+                          <span>{isEn ? cat.labelEn : cat.labelVi}</span>
+                        </div>
+                        <span className="text-[11px] text-slate-400 font-mono">({count})</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             {/* Custom Searchable Dropdown: Tìm kiếm & Chọn nhanh sinh vật */}
             <div className="relative" ref={speciesSearchRef}>
               <button
@@ -1079,7 +1197,7 @@ export default function OceanMap() {
 
         {/* Khung bản đồ toàn màn hình (Full-width, Quiet Chrome) */}
         <div
-          className="rounded-2xl overflow-hidden border border-white/10 relative bg-[#061220] shadow-xl w-full"
+          className="rounded-2xl overflow-hidden border border-white/10 relative z-10 bg-[#061220] shadow-xl w-full"
           style={{ width: "100%", height: "640px", minHeight: "640px" }}
         >
           <div
@@ -1096,13 +1214,32 @@ export default function OceanMap() {
             </div>
           )}
 
-          {/* Nút reset khung nhìn Biển Đông (Không dùng chữ rườm rà, dùng icon chuẩn) */}
+          {/* Nút reset khung nhìn Biển Đông */}
           <button
             onClick={handleResetView}
             title={isEn ? "Reset view to East Sea" : "Đặt lại góc nhìn Biển Đông"}
             className="absolute top-3 left-3 z-[400] w-9 h-9 rounded-xl bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md border border-white/15 text-slate-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center justify-center hover:border-sky-400/40"
           >
-            <RotateCcw size={17} />
+            <RotateCcw size={16} />
+          </button>
+
+          {/* Nút sao chép tọa độ & chia sẻ góc nhìn */}
+          <button
+            onClick={handleShareMap}
+            title={isEn ? "Copy map coordinate link" : "Sao chép liên kết tọa độ"}
+            className="absolute top-3 left-14 z-[400] px-3 h-9 rounded-xl bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md border border-white/15 text-slate-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center gap-1.5 text-xs font-medium hover:border-sky-400/40"
+          >
+            {copiedLink ? (
+              <>
+                <Check size={14} className="text-emerald-400" />
+                <span className="text-emerald-300">{isEn ? "Link copied" : "Đã sao chép"}</span>
+              </>
+            ) : (
+              <>
+                <Share2 size={14} />
+                <span>{isEn ? "Share" : "Chia sẻ"}</span>
+              </>
+            )}
           </button>
 
           {/* Bảng khám phá cụm sinh vật (Hiển thị khi click vào cụm hoặc sinh vật ở góc dưới bản đồ) */}
@@ -1110,7 +1247,7 @@ export default function OceanMap() {
             <div className="absolute bottom-3 left-3 right-3 sm:left-6 sm:right-6 z-[500] bg-[#071526]/95 backdrop-blur-xl border border-sky-500/30 rounded-2xl p-3 shadow-2xl transition-all">
               <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-white/10">
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-sky-400" />
                   <h3 className="text-xs sm:text-sm font-semibold text-white">
                     {activeCluster.name}
                     <span className="text-sky-400 font-mono text-xs ml-1.5 font-normal">
@@ -1131,7 +1268,7 @@ export default function OceanMap() {
                     }}
                     className="text-[11px] text-sky-300 hover:text-white px-2 py-0.5 rounded-md bg-sky-600/20 hover:bg-sky-600/40 border border-sky-400/30 transition-colors cursor-pointer"
                   >
-                    {isEn ? "Zoom into Area 🔍" : "Phóng to vùng biển 🔍"}
+                    {isEn ? "Zoom into area" : "Phóng to vùng biển"}
                   </button>
                   <button
                     onClick={() => setActiveCluster(null)}
@@ -1161,8 +1298,20 @@ export default function OceanMap() {
                       />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="text-xs font-semibold text-white group-hover:text-sky-300 truncate">
-                        {isEn ? sp.nameEn : sp.nameVi}
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-xs font-semibold text-white group-hover:text-sky-300 truncate">
+                          {isEn ? sp.nameEn : sp.nameVi}
+                        </span>
+                        <span
+                          className="text-[9px] font-bold px-1.5 py-0.2 rounded font-mono border flex-shrink-0"
+                          style={{
+                            color: RED_LIST_COLORS[sp.redList] || "#10b981",
+                            borderColor: `${RED_LIST_COLORS[sp.redList] || "#10b981"}40`,
+                            backgroundColor: `${RED_LIST_COLORS[sp.redList] || "#10b981"}15`,
+                          }}
+                        >
+                          {sp.redList || "LC"}
+                        </span>
                       </div>
                       <div className="text-[10.5px] text-slate-400 italic truncate">
                         {sp.sciName}
