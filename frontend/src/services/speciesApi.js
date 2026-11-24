@@ -540,5 +540,23 @@ export const fetchMapDistribution = async () => {
   }
 };
 
+/**
+ * Lấy phân bố sinh vật theo độ sâu đại dương (Thước đo độ sâu Biển Đông)
+ */
+export const fetchDepthDistribution = async () => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/species/depth-distribution?_t=${Date.now()}`
+    );
+    if (response.data && response.data.success) {
+      return response.data.data;
+    }
+    return null;
+  } catch (error) {
+    console.warn("Depth distribution API fallback:", error.message);
+    return null;
+  }
+};
+
 
 

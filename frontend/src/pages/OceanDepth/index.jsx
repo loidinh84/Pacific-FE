@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { useLanguageStore } from "../../stores/useLanguageStore";
 import { OCEAN_ZONES, CREATURES_BY_DEPTH } from "./depthData";
-import { ArrowDown, FlashlightIcon, SunIcon, MapPinIcon, Anchor, WaveIcon } from "../../assets/Icons";
+import { fetchDepthDistribution } from "../../services/speciesApi";
+import { WaveIcon } from "../../assets/Icons";
 import "./OceanDepth.css";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -56,25 +56,6 @@ function getZoneAtDepth(depth) {
     OCEAN_ZONES.find((z) => depth >= z.depthStart && depth < z.depthEnd) ||
     OCEAN_ZONES[OCEAN_ZONES.length - 1]
   );
-}
-
-function getPressure(depth) {
-  return `${Math.round(1 + depth / 10)} atm`;
-}
-
-function getTemperature(depth) {
-  if (depth <= 30) return "27–30°C";
-  if (depth <= 100) return "24–27°C";
-  if (depth <= 200) return "18–24°C";
-  if (depth <= 500) return "8–18°C";
-  if (depth <= 1000) return "5–8°C";
-  return "2–5°C";
-}
-
-function getLightPercent(depth) {
-  if (depth <= 20) return 100;
-  if (depth <= 200) return Math.max(1, Math.round(100 - (depth / 200) * 99));
-  return 0;
 }
 
 function getSeededRandom(seedStr) {
@@ -200,8 +181,6 @@ function FixedRuler({ depth }) {
             <span className="od-ruler-cursor-dot" />
             <span className="od-ruler-cursor-val">{depth.toLocaleString()}m</span>
           </div>
-          {/* Tia laser quét độ sâu sang ngang */}
-          <div className="od-ruler-cursor-beam" />
         </div>
       </div>
 
@@ -218,142 +197,6 @@ function FixedRuler({ depth }) {
         <span className="od-ruler-footer-label">5,016m MAX</span>
       </div>
     </aside>
-  );
-}
-
-// ─── HUD có thể kéo thả + thu gọn ────────────────────────────────────────────
-function DraggableHUD({ depth, currentZone }) {
-  const [pos, setPos] = useState({
-    x: Math.max(0, window.innerWidth - 288),
-    y: 84,
-  });
-  const [collapsed, setCollapsed] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const dragOffset = useRef({ x: 0, y: 0 });
-  const hudRef = useRef(null);
-  const { t, language } = useLanguageStore();
-  const loc = (vi, en) => language === "en" ? en : vi;
-
-  const onMouseDown = useCallback((e) => {
-    setDragging(true);
-    dragOffset.current = { x: e.clientX - pos.x, y: e.clientY - pos.y };
-    e.preventDefault();
-  }, [pos]);
-
-  const onTouchStart = useCallback((e) => {
-    const touch = e.touches[0];
-    setDragging(true);
-    dragOffset.current = { x: touch.clientX - pos.x, y: touch.clientY - pos.y };
-  }, [pos]);
-
-  useEffect(() => {
-    if (!dragging) return;
-    const hudW = hudRef.current ? hudRef.current.offsetWidth  : 260;
-    const hudH = hudRef.current ? hudRef.current.offsetHeight : 220;
-
-    const onMouseMove = (e) => {
-      setPos({
-        x: Math.max(0, Math.min(window.innerWidth  - hudW, e.clientX - dragOffset.current.x)),
-        y: Math.max(0, Math.min(window.innerHeight - hudH, e.clientY - dragOffset.current.y)),
-      });
-    };
-    const onTouchMove = (e) => {
-      const touch = e.touches[0];
-      setPos({
-        x: Math.max(0, Math.min(window.innerWidth  - hudW, touch.clientX - dragOffset.current.x)),
-        y: Math.max(0, Math.min(window.innerHeight - hudH, touch.clientY - dragOffset.current.y)),
-      });
-    };
-    const stop = () => setDragging(false);
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup",   stop);
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("touchend",  stop);
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup",   stop);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend",  stop);
-    };
-  }, [dragging]);
-
-  // Visibility label
-  const visLabel = depth <= 20
-    ? t("oceanDepth.visGood")
-    : depth <= 200
-    ? t("oceanDepth.visPoor")
-    : t("oceanDepth.visNone");
-
-  return (
-    <div
-      ref={hudRef}
-      className={`od-hud ${collapsed ? "od-hud--collapsed" : ""} ${dragging ? "od-hud--dragging" : ""}`}
-      style={{ left: pos.x, top: pos.y }}
-    >
-      {/* Thanh tiêu đề — kéo ở đây */}
-      <div
-        className="od-hud-titlebar"
-        onMouseDown={onMouseDown}
-        onTouchStart={onTouchStart}
-      >
-        <span className="od-hud-titlebar-grip" aria-hidden="true">
-          <span /><span /><span />
-        </span>
-        <span className="od-hud-titlebar-name">{t("oceanDepth.hudTitle")}</span>
-        <button
-          className="od-hud-collapse-btn"
-          onClick={() => setCollapsed((c) => !c)}
-          title={
-            collapsed
-              ? (language === "en" ? "Expand" : "Mở rộng")
-              : (language === "en" ? "Collapse" : "Thu gọn")
-          }
-          aria-label={collapsed ? "Expand" : "Collapse"}
-        >
-          <ChevronDown
-            size={13}
-            className={`od-hud-collapse-icon ${collapsed ? "" : "rotate-180"}`}
-          />
-        </button>
-      </div>
-
-      {/* Nội dung — ẩn khi collapsed */}
-      {!collapsed && (
-        <>
-          <div className="od-hud-depth-wrapper">
-            <div className="od-hud-depth">
-              {depth.toLocaleString()}
-              <span className="od-hud-depth-unit">m</span>
-            </div>
-          </div>
-
-          <div className="od-hud-zone">
-            <span className="od-hud-zone-icon"><currentZone.icon /></span>
-            <span className="od-hud-zone-name">{loc(currentZone.nameVi, currentZone.nameEn)}</span>
-          </div>
-
-          <div className="od-hud-stats">
-            <div className="od-hud-stat">
-              <span className="od-hud-stat-label">{t("oceanDepth.pressure")}</span>
-              <span className="od-hud-stat-val">{getPressure(depth)}</span>
-            </div>
-            <div className="od-hud-stat">
-              <span className="od-hud-stat-label">{t("oceanDepth.temperature")}</span>
-              <span className="od-hud-stat-val">{getTemperature(depth)}</span>
-            </div>
-            <div className="od-hud-stat">
-              <span className="od-hud-stat-label">{t("oceanDepth.light")}</span>
-              <span className="od-hud-stat-val">{getLightPercent(depth)}%</span>
-            </div>
-            <div className="od-hud-stat">
-              <span className="od-hud-stat-label">{t("oceanDepth.visibility")}</span>
-              <span className="od-hud-stat-val">{visLabel}</span>
-            </div>
-          </div>
-        </>
-      )}
-    </div>
   );
 }
 
@@ -423,6 +266,53 @@ function EnvironmentParticles({ depth }) {
   );
 }
 
+// ─── Thanh điều hướng nhanh 5 tầng nước đại dương ───────────────────────────
+function QuickZoneBar({ currentDepth }) {
+  const { language } = useLanguageStore();
+  const isEn = language === "en";
+
+  const ZONES_NAV = [
+    { depth: 0, labelVi: "Mặt nước", labelEn: "Surface" },
+    { depth: 200, labelVi: "Chạng vạng", labelEn: "Twilight" },
+    { depth: 1000, labelVi: "Nửa đêm", labelEn: "Midnight" },
+    { depth: 4000, labelVi: "Vực thẳm", labelEn: "Abyss" },
+    { depth: 5016, labelVi: "Rãnh Manila", labelEn: "Manila Trench" },
+  ];
+
+  const handleJump = (targetDepth) => {
+    const targetScrollY = window.innerHeight + targetDepth * DEPTH_SCALE;
+    window.scrollTo({ top: targetScrollY, behavior: "smooth" });
+  };
+
+  return (
+    <nav className="od-quick-jump-bar" aria-label="Điều hướng nhanh độ sâu">
+      {ZONES_NAV.map((z) => {
+        const isActive =
+          z.depth === 5016
+            ? currentDepth >= 4600
+            : z.depth === 4000
+            ? currentDepth >= 3500 && currentDepth < 4600
+            : z.depth === 1000
+            ? currentDepth >= 700 && currentDepth < 3500
+            : z.depth === 200
+            ? currentDepth >= 120 && currentDepth < 700
+            : currentDepth < 120;
+
+        return (
+          <button
+            key={z.depth}
+            type="button"
+            onClick={() => handleJump(z.depth)}
+            className={`od-quick-jump-btn ${isActive ? "is-active" : ""}`}
+          >
+            {isEn ? z.labelEn : z.labelVi}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
 export default function OceanDepth() {
   const navigate = useNavigate();
   const [depth, setDepth] = useState(0);
@@ -430,6 +320,30 @@ export default function OceanDepth() {
   const { t, language } = useLanguageStore();
   // Helper: chọn đúng trường theo ngôn ngữ
   const loc = (vi, en) => language === "en" ? en : vi;
+
+  const [apiCreatures, setApiCreatures] = useState([]);
+  const [isLoadingApi, setIsLoadingApi] = useState(true);
+
+  // Tải dữ liệu 319 sinh vật theo độ sâu đại dương thực tế từ CSDL
+  useEffect(() => {
+    let isMounted = true;
+    fetchDepthDistribution()
+      .then((res) => {
+        if (!isMounted || !res) return;
+        if (res.species && res.species.length > 0) {
+          setApiCreatures(res.species);
+        }
+      })
+      .catch((err) => {
+        console.warn("Lỗi tải phân bố sinh vật theo độ sâu từ API:", err);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoadingApi(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const currentZone = getZoneAtDepth(depth);
   const realisticOceanColor = getRealisticOceanColor(depth);
@@ -446,30 +360,51 @@ export default function OceanDepth() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Ưu tiên hiển thị 32 sinh vật biển tự nhiên có ảnh tách nền chuẩn (transparent cutouts),
+  // được làm giàu thông tin phân loại và tình trạng bảo tồn từ CSDL PostgreSQL
+  const displayCreatures = useMemo(() => {
+    if (!apiCreatures || apiCreatures.length === 0) {
+      return CREATURES_BY_DEPTH;
+    }
+
+    const apiMap = new Map();
+    apiCreatures.forEach((sp) => {
+      if (sp.slug) apiMap.set(sp.slug, sp);
+      if (sp.code) apiMap.set(sp.code, sp);
+    });
+
+    return CREATURES_BY_DEPTH.map((c) => {
+      const dbMatch = apiMap.get(c.slug) || apiMap.get(c.id);
+      if (!dbMatch) return c;
+      return {
+        ...c,
+        nameVi: dbMatch.nameVi || c.nameVi,
+        nameEn: dbMatch.nameEn || c.nameEn,
+        sciName: dbMatch.sciName || c.sciName,
+        descVi: dbMatch.descVi || c.descVi,
+        descEn: dbMatch.descEn || c.descEn,
+        redList: dbMatch.redList,
+      };
+    });
+  }, [apiCreatures]);
+
   // ── Sinh vật biển: Thả tự do trực tiếp trong nước theo phong cách Neal.fun ───
   const renderCreatures = () => {
-    // Thuật toán phân bổ tự nhiên 4 làn rộng khắp toàn màn hình (16% → 84%):
-    // Làn 0: Trái (16% - 32%)
-    // Làn 1: Giữa-Trái (33% - 49%)
-    // Làn 2: Giữa-Phải (50% - 66%)
-    // Làn 3: Phải (67% - 84%)
     const lastTopInLane = [-9999, -9999, -9999, -9999];
     let lastGlobalTop = -9999;
 
-    return CREATURES_BY_DEPTH.map((c) => {
+    return displayCreatures.map((c) => {
       const left = c.left || 40;
       const lane = left < 33 ? 0 : left < 50 ? 1 : left < 67 ? 2 : 3;
 
       // Chiều sâu tự nhiên theo tỉ lệ 1m = 2px
       const naturalTop = window.innerHeight + 80 + c.depth * DEPTH_SCALE;
 
-      // 1. Giãn cách trong cùng làn tối thiểu 260px để ảnh và tên không bao giờ chạm nhau
-      // 2. Giãn cách toàn cục giữa 2 sinh vật liên tiếp tối thiểu 110px để không bị dàn ngang cùng một hàng
-      const top = Math.max(naturalTop, lastTopInLane[lane] + 260, lastGlobalTop + 110);
+      // Giãn cách trong cùng làn tối thiểu 180px và toàn cục 45px để tránh chồng chéo
+      const top = Math.max(naturalTop, lastTopInLane[lane] + 180, lastGlobalTop + 45);
       lastTopInLane[lane] = top;
       lastGlobalTop = top;
       const name = loc(c.nameVi, c.nameEn);
-      // Hiển thị tên tự nhiên / Title Case
       const displayName = language === "en" ? (c.nameEn || name) : (c.nameVi || name);
 
       return (
@@ -492,6 +427,11 @@ export default function OceanDepth() {
           />
           <div className="od-creature-label">
             <span className="od-creature-title">{displayName}</span>
+            {c.sciName && (
+              <span className="od-creature-sciname">
+                {c.sciName}
+              </span>
+            )}
             <span className="od-creature-meter">{c.depth}m</span>
           </div>
         </div>
@@ -523,11 +463,11 @@ export default function OceanDepth() {
     <>
       <Navbar />
 
+      {/* Thanh điều hướng nhảy nhanh các tầng nước đại dương */}
+      <QuickZoneBar currentDepth={depth} />
+
       {/* Thước đo dọc khoa học cố định bên trái */}
       <FixedRuler depth={depth} />
-
-      {/* HUD kéo thả hiển thị thông số */}
-      <DraggableHUD depth={depth} currentZone={currentZone} />
 
       {/* Nền nước biển */}
       <div
@@ -584,13 +524,6 @@ export default function OceanDepth() {
           <div className="od-hero-sky" aria-hidden="true" />
 
           <h1 className="od-hero-title">{t("oceanDepth.heroTitle")}</h1>
-          <p className="od-hero-subtitle">{t("oceanDepth.heroSubtitle")}</p>
-          <div className="od-scroll-prompt">
-            <div className="od-scroll-icon">
-              <div className="od-scroll-wheel" />
-            </div>
-            <span>{t("oceanDepth.scrollDown")}</span>
-          </div>
 
           {/* Sóng mặt nước hữu cơ — Neal.fun style wave separator */}
           <div className="od-hero-wave" aria-hidden="true">
@@ -644,60 +577,38 @@ export default function OceanDepth() {
             </div>
           </div>
 
-          {/* Thẻ vinh danh hoàn thành thám hiểm Rãnh Manila */}
-          <div className="od-seabed-badge-card">
-            <div className="od-seabed-badge-header">
-              <span className="od-seabed-badge-trophy">
-                <Anchor className="od-seabed-badge-trophy-icon" />
-              </span>
-              <div>
-                <h2 className="od-seabed-badge-title">
-                  {language === "en" ? "MANILA TRENCH SEABED REACHED" : "CHẠM ĐÁY BIỂN ĐÔNG — RÃNH MANILA"}
-                </h2>
-                <p className="od-seabed-badge-subtitle">
-                  {language === "en"
-                    ? "You have completed the full vertical descent of the East Sea to 5,016 meters"
-                    : "Bạn đã hoàn thành chuyến thám hiểm trọn vẹn toàn bộ cột nước Biển Đông tới độ sâu 5,016 mét"}
-                </p>
-              </div>
-            </div>
-
-            <div className="od-seabed-stats-grid">
-              <div className="od-seabed-stat-box">
-                <span className="od-seabed-stat-k">
-                  <ArrowDown className="od-seabed-stat-icon" />
-                  {language === "en" ? "Max depth" : "Độ sâu tối đa"}
-                </span>
-                <span className="od-seabed-stat-v">5,016 m</span>
-              </div>
-              <div className="od-seabed-stat-box">
-                <span className="od-seabed-stat-k">
-                  <FlashlightIcon className="od-seabed-stat-icon" />
-                  {language === "en" ? "Seabed pressure" : "Áp suất đáy"}
-                </span>
-                <span className="od-seabed-stat-v">502 atm</span>
-              </div>
-              <div className="od-seabed-stat-box">
-                <span className="od-seabed-stat-k">
-                  <SunIcon className="od-seabed-stat-icon" />
-                  {language === "en" ? "Seabed temp." : "Nhiệt độ đáy"}
-                </span>
-                <span className="od-seabed-stat-v">1.4°C</span>
-              </div>
-              <div className="od-seabed-stat-box">
-                <span className="od-seabed-stat-k">
-                  <MapPinIcon className="od-seabed-stat-icon" />
-                  {language === "en" ? "Trench coords." : "Tọa độ rãnh"}
-                </span>
-                <span className="od-seabed-stat-v">15°N 119°E</span>
-              </div>
-            </div>
-
-            <p className="od-seabed-badge-desc">
+          {/* Thông tin Rãnh Manila (Đáy sâu nhất Biển Đông) */}
+          <div className="od-seabed-summary-card">
+            <h2 className="od-seabed-summary-title">
+              {language === "en" ? "Manila Trench (5,016m)" : "Rãnh Manila (5.016m)"}
+            </h2>
+            <p className="od-seabed-summary-desc">
               {language === "en"
-                ? "The Manila Trench was formed by the subduction of the East Sea plate beneath the Philippine Mobile Belt. It is the only true deep oceanic trench in this semi-enclosed sea."
-                : "Rãnh Manila hình thành do sự hút chìm của mảng kiến tạo đáy Biển Đông. Đây là rãnh hút chìm sâu duy nhất và là ranh giới kiến tạo quan trọng bậc nhất tạo nên điểm sâu nhất của vùng biển này."}
+                ? "The Manila Trench is the only oceanic subduction trench in the East Sea, formed where the oceanic crust subducts beneath the Philippine Mobile Belt. At 5,016 meters, the seabed experiences an extreme pressure of 502 atmospheres and a near-freezing temperature of 1.4°C."
+                : "Rãnh hút chìm sâu duy nhất và là ranh giới kiến tạo quan trọng bậc nhất tạo nên điểm sâu nhất của Biển Đông (5.016m). Áp suất nền đáy đạt 502 atm và nhiệt độ 1,4°C."}
             </p>
+
+            <div className="od-seabed-meta-row">
+              <span className="od-seabed-meta-item">
+                <span className="od-seabed-meta-label">{language === "en" ? "Depth" : "Độ sâu"}:</span>
+                <span className="od-seabed-meta-value">5,016 m</span>
+              </span>
+              <span className="od-seabed-meta-divider">•</span>
+              <span className="od-seabed-meta-item">
+                <span className="od-seabed-meta-label">{language === "en" ? "Pressure" : "Áp suất"}:</span>
+                <span className="od-seabed-meta-value">502 atm</span>
+              </span>
+              <span className="od-seabed-meta-divider">•</span>
+              <span className="od-seabed-meta-item">
+                <span className="od-seabed-meta-label">{language === "en" ? "Temperature" : "Nhiệt độ"}:</span>
+                <span className="od-seabed-meta-value">1.4°C</span>
+              </span>
+              <span className="od-seabed-meta-divider">•</span>
+              <span className="od-seabed-meta-item">
+                <span className="od-seabed-meta-label">{language === "en" ? "Coords" : "Tọa độ"}:</span>
+                <span className="od-seabed-meta-value">15°N 119°E</span>
+              </span>
+            </div>
 
             <button
               type="button"
@@ -705,7 +616,7 @@ export default function OceanDepth() {
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               <WaveIcon className="od-seabed-back-icon" />
-              {language === "en" ? "Return to Sea Surface" : "Trở về mặt biển"}
+              {language === "en" ? "Return to surface" : "Trở về mặt biển"}
             </button>
           </div>
         </div>

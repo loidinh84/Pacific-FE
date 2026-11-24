@@ -201,7 +201,7 @@ export const RED_LIST_COLORS = {
   DD: "#64748b",
 };
 
-// Nguồn bản đồ chuẩn với zoom ceiling an toàn (hỗ trợ phóng to chi tiết tới cấp 16)
+// Nguồn bản đồ chuẩn với zoom ceiling an toàn (hỗ trợ phóng to chi tiết tới cấp 18)
 export const BASEMAP_PROVIDERS = {
   ocean: {
     labelVi: "Độ sâu & Đáy biển",
@@ -211,7 +211,7 @@ export const BASEMAP_PROVIDERS = {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, GEBCO, NOAA",
     maxNativeZoom: 9,
-    maxZoom: 16,
+    maxZoom: 18,
   },
   satellite: {
     labelVi: "Ảnh Vệ tinh",
@@ -221,7 +221,7 @@ export const BASEMAP_PROVIDERS = {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, Maxar, Earthstar Geographics",
     maxNativeZoom: 10,
-    maxZoom: 16,
+    maxZoom: 18,
   },
   topo: {
     labelVi: "Bản đồ Địa lý",
@@ -231,6 +231,6 @@ export const BASEMAP_PROVIDERS = {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, USGS",
     maxNativeZoom: 11,
-    maxZoom: 16,
+    maxZoom: 18,
   },
 };

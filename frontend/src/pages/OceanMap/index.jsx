@@ -290,13 +290,9 @@ export default function OceanMap() {
     const currentZoom = map.getZoom();
     // Ngưỡng gom cụm động thích ứng theo cấp độ zoom:
     // - Zoom <= 6 (toàn cảnh Biển Đông): 48px -> gom thành các phân vùng hải dương học lớn
-    // - Zoom 7 - 8 (cấp tiểu vùng/tỉnh duyên hải): 36px
-    // - Zoom 9 - 10 (cấp vịnh biển/quần đảo): 24px
-    // - Zoom >= 11: 0px -> toàn bộ tách biệt hoàn toàn về đúng tọa độ hải dương thực tế
-    const CLUSTER_THRESHOLD_PX =
-      currentZoom >= 11 ? 0 :
-      currentZoom >= 9 ? 24 :
-      currentZoom >= 7 ? 36 : 48;
+    // - Zoom 7 - 9: 32px
+    // - Zoom >= 10: Tự động tách từng loài thành cánh hoa / nan hoa (spiderfy 22px), không còn hiển thị avatar kèm số (2), (3), (4) đè nén nữa
+    const CLUSTER_THRESHOLD_PX = currentZoom >= 10 ? 22 : currentZoom >= 8 ? 32 : 46;
 
     const clusters = [];
     const visited = new Set();
@@ -307,26 +303,24 @@ export default function OceanMap() {
       const group = [base.sp];
       visited.add(i);
 
-      if (CLUSTER_THRESHOLD_PX > 0) {
-        for (let j = i + 1; j < itemsWithPoints.length; j++) {
-          if (visited.has(j)) continue;
-          const target = itemsWithPoints[j];
-          const dist = Math.hypot(base.pt.x - target.pt.x, base.pt.y - target.pt.y);
-          if (dist < CLUSTER_THRESHOLD_PX) {
-            group.push(target.sp);
-            visited.add(j);
-          }
+      for (let j = i + 1; j < itemsWithPoints.length; j++) {
+        if (visited.has(j)) continue;
+        const target = itemsWithPoints[j];
+        const dist = Math.hypot(base.pt.x - target.pt.x, base.pt.y - target.pt.y);
+        if (dist < CLUSTER_THRESHOLD_PX) {
+          group.push(target.sp);
+          visited.add(j);
         }
       }
 
       if (group.length === 1) {
         clusters.push({ isCluster: false, creature: group[0] });
-      } else if (currentZoom >= 11) {
-        // Nếu trùng khít tọa độ, tạo vi dịch chuyển nhỏ (16px) để không bị đè khuất
+      } else if (currentZoom >= 10) {
+        // Cấp độ zoom cận cảnh (>=10): Tản đều các loài theo nan hoa (spiderfy), mỗi loài là 1 avatar độc lập
         const sumLat = group.reduce((s, item) => s + item.lat, 0);
         const sumLng = group.reduce((s, item) => s + item.lng, 0);
         const centerPt = map.latLngToContainerPoint([sumLat / group.length, sumLng / group.length]);
-        const spreadRadiusPx = group.length === 2 ? 16 : 20;
+        const spreadRadiusPx = group.length <= 3 ? 20 : Math.min(36, 16 + group.length * 3);
 
         group.forEach((sp, idx) => {
           const angle = (2 * Math.PI * idx) / group.length - Math.PI / 2;
@@ -439,7 +433,7 @@ export default function OceanMap() {
         clusterMarker.on("mouseover", () => clusterMarker.setZIndexOffset(10000));
         clusterMarker.on("mouseout", () => clusterMarker.setZIndexOffset(0));
         clusterMarker.on("click", () => {
-          const nextZoom = Math.min(map.getZoom() + 2, 16);
+          const nextZoom = Math.min(Math.max(map.getZoom() + 3, 11), 18);
           map.flyTo([item.centerLat, item.centerLng], nextZoom, {
             duration: 0.6,
           });
@@ -924,7 +918,7 @@ export default function OceanMap() {
         </div>
 
         {/* Thanh bộ lọc danh mục và các dropdown chọn nhanh */}
-        <div className="relative z-30 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 bg-[#081729]/80 backdrop-blur-md p-2 sm:p-2.5 rounded-2xl border border-white/10 shadow-sm">
+        <div className="relative z-[1000] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 bg-[#081729] p-2 sm:p-2.5 rounded-2xl border border-white/10 shadow-sm">
           {/* Danh mục sinh vật cuộn ngang có nút trượt và kéo chuột */}
           <div className="relative flex-1 min-w-0 flex items-center">
             {/* Nút cuộn trái */}
@@ -1027,7 +1021,7 @@ export default function OceanMap() {
               </button>
 
               {isZoneDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-72 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[500] p-1.5 max-h-80 overflow-y-auto">
+                <div className="absolute right-0 top-full mt-1.5 w-72 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[1100] p-1.5 max-h-80 overflow-y-auto">
                   <div className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 border-b border-white/10 mb-1">
                     {isEn ? "Select Marine Protected Area" : "Chọn phân vùng trọng điểm"}
                   </div>
@@ -1085,7 +1079,7 @@ export default function OceanMap() {
               </button>
 
               {isRedListDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-64 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[500] p-1.5">
+                <div className="absolute right-0 top-full mt-1.5 w-64 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[1100] p-1.5">
                   <div className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 border-b border-white/10 mb-1">
                     {isEn ? "IUCN / Vietnam Red List" : "Phân hạng bảo tồn Sách Đỏ"}
                   </div>
@@ -1154,7 +1148,7 @@ export default function OceanMap() {
               </button>
 
               {isSpeciesSearchOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[500] p-2 max-h-96 flex flex-col">
+                <div className="absolute right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[1100] p-2 max-h-96 flex flex-col">
                   {/* Ô nhập tìm kiếm */}
                   <div className="relative mb-2">
                     <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -1225,7 +1219,7 @@ export default function OceanMap() {
 
         {/* Khung bản đồ toàn màn hình (Full-width, Quiet Chrome) */}
         <div
-          className="rounded-2xl overflow-hidden border border-white/10 relative z-10 bg-[#061220] shadow-xl w-full"
+          className="rounded-2xl overflow-hidden border border-white/10 relative z-0 bg-[#061220] shadow-xl w-full"
           style={{ width: "100%", height: "640px", minHeight: "640px" }}
         >
           <div
