@@ -194,7 +194,9 @@ function FixedRuler({ depth }) {
             : "Đáy sâu nhất Biển Đông: Rãnh Manila (5,016m)"
         }
       >
-        <span className="od-ruler-footer-label">5,016m MAX</span>
+        <span className="od-ruler-footer-label">
+          {language === "en" ? "5,016m Max" : "Tối đa 5.016m"}
+        </span>
       </div>
     </aside>
   );

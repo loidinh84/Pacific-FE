@@ -2,12 +2,12 @@ import { Search } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 
 const SUGGESTIONS = [
-  { vi: "Cá mập", en: "Sharks" },
-  { vi: "Rùa biển", en: "Sea Turtles" },
-  { vi: "San hô", en: "Corals" },
-  { vi: "Cá hề", en: "Clownfish" },
-  { vi: "Bò biển", en: "Dugong" },
-  { vi: "Sao biển", en: "Starfish" },
+  { vi: "Sinh vật phát sáng ở biển sâu", en: "Bioluminescent deep sea fish" },
+  { vi: "Con cá nào to nhất đại dương", en: "Largest fish in the ocean" },
+  { vi: "Thiên địch của sao biển gai", en: "Crown-of-thorns predators" },
+  { vi: "Loài nào giống trong phim đi tìm Nemo", en: "Fish from Finding Nemo" },
+  { vi: "Loài ăn cỏ biển ở Côn Đảo", en: "Seagrass grazers in Con Dao" },
+  { vi: "Động vật có vú biết hát", en: "Singing marine mammals" },
 ];
 
 export function SearchHeroHeader({

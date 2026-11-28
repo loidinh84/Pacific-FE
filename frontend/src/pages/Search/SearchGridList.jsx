@@ -17,6 +17,8 @@ import { getLocalizedCategory, getLocalizedSpeciesName } from "../../utils/speci
 export function SearchGridList({
   speciesList,
   semanticQuery,
+  semanticMeta,
+  onSuggestionClick,
   onClearSemantic,
   loading = false,
   currentPage: controlledPage,
@@ -126,24 +128,29 @@ export function SearchGridList({
   return (
     <div id="search-results" className="max-w-6xl mx-auto px-4 mb-20 scroll-mt-4">
       {semanticQuery ? (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[#0f172a]/10">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-6 pb-4 border-b border-[#0f172a]/10">
+          <div className="space-y-2">
             <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading">
-              Kết quả cho:{" "}
+              {language === "en" ? "Results for:" : "Kết quả cho:"}{" "}
               <span className="text-[#0284c7] font-semibold">
                 "{semanticQuery}"
               </span>
               <span className="text-[#475569] text-sm font-normal ml-2 tabular-nums">
-                ({speciesList.length} loài)
+                ({speciesList.length} {language === "en" ? "species" : "loài"})
               </span>
             </h2>
+            {semanticMeta?.summary && !semanticMeta?.outOfDomain && (
+              <p className="text-xs sm:text-sm text-[#475569] font-normal">
+                {semanticMeta.summary}
+              </p>
+            )}
           </div>
           {onClearSemantic && (
             <button
               onClick={onClearSemantic}
-              className="px-3.5 py-1.5 rounded-xl liquid-glass-subtle hover:bg-white text-[#334155] hover:text-[#0f172a] text-xs font-medium transition-colors self-start sm:self-auto cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl liquid-glass-subtle hover:bg-white text-[#334155] hover:text-[#0f172a] text-xs font-medium transition-colors self-start cursor-pointer shrink-0"
             >
-              Xem tất cả loài
+              {language === "en" ? "View all species" : "Xem tất cả loài"}
             </button>
           )}
         </div>
@@ -168,9 +175,23 @@ export function SearchGridList({
             className="w-52 md:w-64 opacity-80 select-none"
             draggable={false}
           />
-          <p className="text-[#475569] text-sm">
-            {t("searchPage.noResults")}
+          <p className="text-[#475569] text-sm max-w-md leading-relaxed">
+            {semanticMeta?.message || t("searchPage.noResults")}
           </p>
+          {semanticMeta?.suggestions?.length > 0 && onSuggestionClick && (
+            <div className="flex flex-wrap items-center justify-center gap-2 max-w-xl mt-2">
+              {semanticMeta.suggestions.map((sug, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => onSuggestionClick(sug)}
+                  className="px-3 py-1.5 rounded-full liquid-glass-subtle hover:bg-white text-xs text-[#334155] hover:text-[#0284c7] font-medium transition-colors cursor-pointer"
+                >
+                  {sug}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <>

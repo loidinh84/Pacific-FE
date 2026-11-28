@@ -52,23 +52,17 @@ export default function Search() {
   const urlQuery = searchParams.get("q") || searchParams.get("search") || "";
   const selectedCategory =
     searchParams.get("category") || searchParams.get("cat") || "";
-  const sortBy = searchParams.get("sort") || "az";
+  const rawSortParam = searchParams.get("sort");
+  const sortBy = rawSortParam || "az";
   const rawPage = Number.parseInt(searchParams.get("page") || "1", 10);
   const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
   const [searchTerm, setSearchTerm] = useState(urlQuery);
   const lastWrittenQueryRef = useRef(urlQuery);
+  const lastExecutedSemanticRef = useRef("");
   const shouldRestoreScrollRef = useRef(
     navigationType === "POP" && currentPage > 1,
   );
-
-  // Đồng bộ ô tìm kiếm khi URL thay đổi từ bên ngoài (Back/Forward hoặc menu)
-  useEffect(() => {
-    if (urlQuery !== lastWrittenQueryRef.current) {
-      lastWrittenQueryRef.current = urlQuery;
-      setSearchTerm(urlQuery);
-    }
-  }, [urlQuery]);
 
   // Dữ liệu từ API Backend
   const [apiSpecies, setApiSpecies] = useState(null);
@@ -78,6 +72,27 @@ export default function Search() {
   const [semanticResults, setSemanticResults] = useState(null);
   const [semanticLoading, setSemanticLoading] = useState(false);
   const [semanticQuery, setSemanticQuery] = useState("");
+
+  // Đồng bộ ô tìm kiếm khi URL thay đổi từ bên ngoài (Back/Forward, Landing hoặc link trực tiếp)
+  useEffect(() => {
+    if (urlQuery !== lastWrittenQueryRef.current) {
+      lastWrittenQueryRef.current = urlQuery;
+      setSearchTerm(urlQuery);
+    }
+  }, [urlQuery]);
+
+  // Tự động kích hoạt Tìm kiếm Ngữ nghĩa khi truy cập trang với ?q=... từ Landing, F5 hoặc Back
+  useEffect(() => {
+    const trimmed = urlQuery.trim();
+    if (trimmed.length >= 2 && trimmed !== lastExecutedSemanticRef.current) {
+      executeSemanticSearch(trimmed, { skipScroll: true });
+    } else if (!trimmed && lastExecutedSemanticRef.current) {
+      lastExecutedSemanticRef.current = "";
+      setSemanticResults(null);
+      setSemanticQuery("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlQuery]);
 
   // Tải danh sách sinh vật từ API theo thời gian thực (có debounce)
   useEffect(() => {
@@ -179,12 +194,13 @@ export default function Search() {
   const activeCatalog = apiSpecies !== null ? apiSpecies : fallbackSpecies;
 
   // Khi có kết quả tìm kiếm ngữ nghĩa, chuyển hóa trực tiếp vào danh sách sinh vật chính
+  // Hỗ trợ đầy đủ bộ lọc Nhóm loài (selectedCategory) và Sắp xếp (sortBy)
   const displayedSpecies = useMemo(() => {
-    if (
-      semanticResults &&
-      semanticResults.data &&
-      semanticResults.data.length > 0
-    ) {
+    if (semanticResults && Array.isArray(semanticResults.data)) {
+      if (semanticResults.data.length === 0) {
+        return [];
+      }
+
       const statusMap = {
         CR: { vi: "Cực kỳ nguy cấp", en: "Critically Endangered", type: "danger" },
         EN: { vi: "Nguy cấp", en: "Endangered", type: "danger" },
@@ -195,113 +211,127 @@ export default function Search() {
         NE: { vi: "Chưa đánh giá", en: "Not Evaluated", type: "safe" },
       };
 
-      const term = (searchTerm || semanticQuery || "").toLowerCase().trim();
+      const mappedSemantic = semanticResults.data.map((item) => {
+        const itemClean = (item.commonName || "").toLowerCase().trim();
+        const sciClean = (item.scientificName || "").toLowerCase().trim();
 
-      // 1. Ưu tiên các loài khớp trực tiếp tên với từ khóa tìm kiếm
-      const directMatches = term
-        ? activeCatalog
-            .filter((c) => {
-              const matchNameVi = (c.nameVi || "").toLowerCase().includes(term);
-              const matchNameEn = (c.nameEn || "").toLowerCase().includes(term);
-              const matchSci = (c.sciName || "").toLowerCase().includes(term);
-              return matchNameVi || matchNameEn || matchSci;
-            })
-            .map((c) => ({
-              ...c,
-              role: "Khớp từ khóa",
-            }))
-        : [];
-
-      const directIds = new Set(directMatches.map((d) => String(d.id || d.slug)));
-
-      // 2. Chuyển đổi các loài ngữ nghĩa bổ sung (không trùng với loài đã khớp trực tiếp)
-      const mappedSemantic = semanticResults.data
-        .filter((item) => !directIds.has(String(item.id)) && !directIds.has(String(item.slug)))
-        .map((item) => {
-          const itemClean = (item.commonName || "").toLowerCase().trim();
-          const sciClean = (item.scientificName || "").toLowerCase().trim();
-
-          const matchedCatalog = activeCatalog.find((c) => {
-            if (c.id === item.id || c.slug === item.slug) return true;
-            const cSci = (c.sciName || "").toLowerCase();
-            if (sciClean && cSci && (cSci.includes(sciClean) || sciClean.includes(cSci))) return true;
-            const cName = (c.nameVi || "").toLowerCase();
-            if (itemClean && cName && (cName.includes(itemClean) || itemClean.includes(cName))) return true;
-            return false;
-          });
-
-          const statusInfo = statusMap[item.redList] || {
-            vi: matchedCatalog?.statusVi || "Ít quan tâm",
-            en: matchedCatalog?.statusEn || "Least Concern",
-            type: matchedCatalog?.statusType || "safe",
-          };
-
-          const categoryVi =
-            matchedCatalog?.categoryVi ||
-            item.groupName?.replace(/\(.*?\)/g, "").trim() ||
-            "Cá biển";
-
-          const categoryEn =
-            matchedCatalog?.categoryEn ||
-            getLocalizedCategory(categoryVi, "en");
-
-          const realDescVi =
-            matchedCatalog?.descVi ||
-            item.description ||
-            (item.diet ? `Tập tính ăn: ${item.diet}.` : "") ||
-            `Phân bố tự nhiên tại vùng biển ${item.zone || "Biển Đông"}.`;
-
-          const realDescEn =
-            matchedCatalog?.descEn ||
-            item.description ||
-            `Naturally distributed in ${item.zone || "East Sea"}.`;
-
-          return {
-            id: matchedCatalog?.id || item.id,
-            slug: item.slug || matchedCatalog?.slug || item.id,
-            nameVi: matchedCatalog?.nameVi || item.commonName,
-            nameEn: matchedCatalog?.nameEn || getLocalizedSpeciesName(item, "en"),
-            sciName: matchedCatalog?.sciName || item.scientificName,
-            categoryVi,
-            categoryEn,
-            statusVi: statusInfo.vi,
-            statusEn: statusInfo.en,
-            statusType: statusInfo.type,
-            descVi: realDescVi,
-            descEn: realDescEn,
-            image: matchedCatalog?.image || item.image,
-            depth: matchedCatalog?.depth || item.depth || "0 - 200m",
-            depthMax: matchedCatalog?.depthMax,
-            vietnamRedListStatus: item.redList || matchedCatalog?.vietnamRedListStatus,
-            role: item.role,
-            semanticReason: item.semanticReason,
-          };
+        const matchedCatalog = activeCatalog.find((c) => {
+          if (String(c.id) === String(item.id) || (item.slug && c.slug === item.slug)) return true;
+          const cSci = (c.sciName || "").toLowerCase();
+          if (sciClean && cSci && (cSci.includes(sciClean) || sciClean.includes(cSci))) return true;
+          const cName = (c.nameVi || "").toLowerCase();
+          if (itemClean && cName && (cName.includes(itemClean) || itemClean.includes(cName))) return true;
+          return false;
         });
 
-      return [...directMatches, ...mappedSemantic];
+        const statusInfo = statusMap[item.redList] || {
+          vi: matchedCatalog?.statusVi || "Ít quan tâm",
+          en: matchedCatalog?.statusEn || "Least Concern",
+          type: matchedCatalog?.statusType || "safe",
+        };
+
+        const categoryVi =
+          matchedCatalog?.categoryVi ||
+          item.groupName?.replace(/\(.*?\)/g, "").trim() ||
+          "Cá biển";
+
+        const categoryEn =
+          matchedCatalog?.categoryEn ||
+          getLocalizedCategory(categoryVi, "en");
+
+        const categorySlug = item.groupSlug || matchedCatalog?.category || "";
+
+        const realDescVi =
+          matchedCatalog?.descVi ||
+          item.description ||
+          (item.diet ? `Tập tính ăn: ${item.diet}.` : "") ||
+          `Phân bố tự nhiên tại vùng biển ${item.zone || "Biển Đông"}.`;
+
+        const realDescEn =
+          matchedCatalog?.descEn ||
+          item.description ||
+          `Naturally distributed in ${item.zone || "East Sea"}.`;
+
+        return {
+          id: matchedCatalog?.id || item.id,
+          slug: item.slug || matchedCatalog?.slug || item.id,
+          nameVi: matchedCatalog?.nameVi || item.commonName,
+          nameEn: matchedCatalog?.nameEn || getLocalizedSpeciesName(item, "en"),
+          sciName: matchedCatalog?.sciName || item.scientificName,
+          category: categorySlug,
+          categoryVi,
+          categoryEn,
+          statusVi: statusInfo.vi,
+          statusEn: statusInfo.en,
+          statusType: statusInfo.type,
+          descVi: realDescVi,
+          descEn: realDescEn,
+          image: matchedCatalog?.image || item.image,
+          depth: matchedCatalog?.depth || item.depth || "0 - 200m",
+          depthMax: item.depthMax ?? matchedCatalog?.depthMax,
+          vietnamRedListStatus: item.redList || matchedCatalog?.vietnamRedListStatus,
+          role: item.role,
+          semanticReason: item.semanticReason,
+          matchScore: item.matchScore,
+        };
+      });
+
+      const filteredByCategory = selectedCategory
+        ? mappedSemantic.filter((item) => {
+            const target = selectedCategory.toLowerCase();
+            return (
+              (item.category || "").toLowerCase() === target ||
+              (item.categoryVi || "").toLowerCase().includes(target)
+            );
+          })
+        : mappedSemantic;
+
+      // Giữ nguyên thứ tự xếp hạng Hybrid RRF trừ khi người dùng chủ động chọn tiêu chí sắp xếp trên URL
+      if (!rawSortParam) {
+        return filteredByCategory;
+      }
+
+      return [...filteredByCategory].sort((a, b) => {
+        if (sortBy === "az") {
+          const nameA = language === "en" ? a.nameEn : a.nameVi;
+          const nameB = language === "en" ? b.nameEn : b.nameVi;
+          return nameA.localeCompare(nameB);
+        }
+        if (sortBy === "depth") {
+          return parseDepthMax(a) - parseDepthMax(b);
+        }
+        if (sortBy === "status") {
+          return getStatusRank(a) - getStatusRank(b);
+        }
+        return 0;
+      });
     }
     return activeCatalog;
-  }, [semanticResults, activeCatalog, sortBy, language, searchTerm, semanticQuery]);
+  }, [semanticResults, activeCatalog, selectedCategory, sortBy, rawSortParam, language]);
 
-  const executeSemanticSearch = async (queryText) => {
-    const q = (queryText || searchTerm || "").trim();
+  const executeSemanticSearch = async (queryText, options = {}) => {
+    const q = (queryText ?? searchTerm ?? "").trim();
     if (!q || q.length < 2) {
+      lastExecutedSemanticRef.current = "";
       setSemanticResults(null);
       setSemanticQuery("");
       return;
     }
 
+    lastExecutedSemanticRef.current = q;
     setSemanticLoading(true);
     setSemanticQuery(q);
     try {
       const res = await searchSemantic(q);
-      if (res && res.success && res.data && res.data.length > 0) {
+      if (res && res.success) {
         setSemanticResults(res);
-        setTimeout(() => {
-          document
-            .getElementById("search-results")
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100);
+        if (!options.skipScroll && res.data && res.data.length > 0) {
+          setTimeout(() => {
+            document
+              .getElementById("search-results")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100);
+        }
       } else {
         setSemanticResults(null);
       }
@@ -404,6 +434,7 @@ export default function Search() {
   };
 
   const handleClearSemantic = () => {
+    lastExecutedSemanticRef.current = "";
     setSemanticResults(null);
     setSemanticQuery("");
     setSearchTerm("");
@@ -418,6 +449,11 @@ export default function Search() {
       },
       { replace: false },
     );
+  };
+
+  const handleSuggestionSelect = (suggestionText) => {
+    setSearchTerm(suggestionText);
+    handleSearchSubmit(null, suggestionText);
   };
 
   return (
@@ -446,6 +482,8 @@ export default function Search() {
           key={`${selectedCategory}|${sortBy}|${semanticQuery}`}
           speciesList={displayedSpecies}
           semanticQuery={semanticQuery}
+          semanticMeta={semanticResults}
+          onSuggestionClick={handleSuggestionSelect}
           onClearSemantic={handleClearSemantic}
           loading={semanticLoading || (apiLoading && apiSpecies === null)}
           currentPage={currentPage}

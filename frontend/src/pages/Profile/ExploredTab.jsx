@@ -112,7 +112,9 @@ export default function ExploredTab() {
                         ? new Date(item.exploredDate).toLocaleDateString("vi-VN")
                         : "Gần đây"}
                     </span>
-                    <span className="text-emerald-700 font-semibold">Đã mở khóa ✓</span>
+                    <span className="text-emerald-700 font-semibold">
+                      {isEn ? "Explored" : "Đã khám phá"}
+                    </span>
                   </div>
                 </div>
               </div>

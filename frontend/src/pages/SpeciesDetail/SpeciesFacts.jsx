@@ -313,7 +313,7 @@ export function SpeciesFacts({ species, language = "vi" }) {
         text: tempRange
           ? isEn
             ? `Oceanographic occurrence records show preferred sea temperatures around ${tempRange} in ${species.eastSeaZone || "regional waters"}.`
-            : `Dữ liệu quan trắc hải dương học OBIS ghi nhận ngưỡng nhiệt độ thích hợp khoảng ${tempRange}${species.eastSeaZone ? ` tại ${species.eastSeaZone}` : ""}.`
+            : `Ngưỡng nhiệt độ nước biển thích hợp khoảng ${tempRange}${species.eastSeaZone ? ` tại ${species.eastSeaZone}` : ""}.`
           : isEn
             ? `Recorded habitat zone: ${species.eastSeaZone || species.localDistribution || "tropical East Sea waters"}.`
             : `Khu vực ghi nhận phân bố: ${species.eastSeaZone || species.localDistribution || "vùng biển nhiệt đới và Biển Đông"}.`,
