@@ -88,46 +88,41 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
 
   return (
     <div className="max-w-6xl mx-auto px-4 mb-6">
-      <div className="flex flex-col gap-4 pb-6 border-b border-white/10">
-        
-        {/* ROW 1: Category Filter Bar - Responsive Wrap trên Desktop & Scroll trên Mobile */}
+      <div className="flex flex-col gap-4 p-4 sm:p-5 rounded-2xl liquid-glass">
+        {/* ROW 1: Category Filter Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 w-full">
-          <span className="text-sm text-white/70 font-semibold whitespace-nowrap min-w-[70px]">
+          <span className="text-sm text-[#334155] font-medium whitespace-nowrap min-w-[70px]">
             {t("searchPage.filterLabel")}
           </span>
 
           <div className="relative flex-1 flex items-center min-w-0">
-            {/* Left Scroll Button cho màn hình hẹp */}
             {canScrollLeft && (
               <button
                 onClick={scrollLeft}
-                className="hidden sm:flex absolute left-0 z-10 p-1.5 rounded-full bg-[#0a203c]/90 hover:bg-pacific-blue-bright/40 border border-pacific-blue-bright/40 text-pacific-blue-light hover:text-white transition-all cursor-pointer shrink-0 shadow-lg"
+                className="hidden sm:flex absolute left-0 z-10 p-1.5 rounded-full liquid-glass-strong text-[#0f172a] hover:text-[#0284c7] transition-colors cursor-pointer shrink-0"
                 title="Lướt sang trái"
               >
                 <ChevronLeft size={14} />
               </button>
             )}
 
-            {/* Danh sách danh mục: tự động xuống dòng trên màn hình lớn để không bao giờ bị cắt chữ */}
             <div
               ref={scrollRef}
               onScroll={checkScrollState}
-              className="flex items-center gap-2 overflow-x-auto sm:flex-wrap whitespace-nowrap sm:whitespace-normal scrollbar-none flex-1 py-1 px-1 scroll-smooth"
+              className="flex items-center gap-2 overflow-x-auto sm:flex-wrap whitespace-nowrap sm:whitespace-normal scrollbar-none flex-1 py-0.5 px-0.5 scroll-smooth"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
-              {/* "Tất cả" Tab */}
               <button
                 onClick={() => setSelectedCategory("")}
                 className={`px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer shrink-0 ${
                   selectedCategory === ""
-                    ? "bg-sky-600 text-white shadow-sm"
-                    : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
+                    ? "bg-[#0284c7] text-white shadow-sm"
+                    : "bg-white/65 text-[#334155] hover:bg-white hover:text-[#0f172a] border border-[#0f172a]/10"
                 }`}
               >
                 {t("searchPage.allCategory")}
               </button>
 
-              {/* Dynamic Categories */}
               {categories.map((c) => {
                 const isSelected = selectedCategory === c.value;
                 const rawLabel = language === "en" ? c.labelEn : c.labelVi;
@@ -140,8 +135,8 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
                     title={rawLabel}
                     className={`px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer shrink-0 ${
                       isSelected
-                        ? "bg-sky-600 text-white shadow-sm"
-                        : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
+                        ? "bg-[#0284c7] text-white shadow-sm"
+                        : "bg-white/65 text-[#334155] hover:bg-white hover:text-[#0f172a] border border-[#0f172a]/10"
                     }`}
                   >
                     {shortLabel}
@@ -150,11 +145,10 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
               })}
             </div>
 
-            {/* Right Scroll Button cho màn hình hẹp */}
             {canScrollRight && (
               <button
                 onClick={scrollRight}
-                className="hidden sm:flex absolute right-0 z-10 p-1.5 rounded-full bg-[#0a203c]/90 hover:bg-white/20 border border-white/20 text-slate-200 hover:text-white transition-colors cursor-pointer shrink-0 shadow-md"
+                className="hidden sm:flex absolute right-0 z-10 p-1.5 rounded-full liquid-glass-strong text-[#0f172a] hover:text-[#0284c7] transition-colors cursor-pointer shrink-0"
                 title="Lướt sang phải"
               >
                 <ChevronRight size={14} />
@@ -164,8 +158,8 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
         </div>
 
         {/* ROW 2: Sort By Controls */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm text-white/70 font-semibold whitespace-nowrap min-w-[70px]">
+        <div className="flex items-center gap-2 flex-wrap pt-3 border-t border-[#0f172a]/8">
+          <span className="text-sm text-[#334155] font-medium whitespace-nowrap min-w-[70px]">
             {t("searchPage.sortLabel")}
           </span>
 
@@ -174,8 +168,8 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
               onClick={() => setSortBy("az")}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer ${
                 sortBy === "az"
-                  ? "bg-sky-500/20 border border-sky-400/40 text-sky-200 shadow-sm"
-                  : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
+                  ? "bg-sky-600/12 border border-[#0284c7]/30 text-[#0284c7]"
+                  : "bg-white/65 text-[#334155] hover:bg-white hover:text-[#0f172a] border border-[#0f172a]/10"
               }`}
             >
               <ArrowUpDown size={13} />
@@ -186,8 +180,8 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
               onClick={() => setSortBy("depth")}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer ${
                 sortBy === "depth"
-                  ? "bg-sky-500/20 border border-sky-400/40 text-sky-200 shadow-sm"
-                  : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
+                  ? "bg-sky-600/12 border border-[#0284c7]/30 text-[#0284c7]"
+                  : "bg-white/65 text-[#334155] hover:bg-white hover:text-[#0f172a] border border-[#0f172a]/10"
               }`}
             >
               <Waves size={13} />
@@ -198,8 +192,8 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
               onClick={() => setSortBy("status")}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer ${
                 sortBy === "status"
-                  ? "bg-sky-500/20 border border-sky-400/40 text-sky-200 shadow-sm"
-                  : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/10"
+                  ? "bg-sky-600/12 border border-[#0284c7]/30 text-[#0284c7]"
+                  : "bg-white/65 text-[#334155] hover:bg-white hover:text-[#0f172a] border border-[#0f172a]/10"
               }`}
             >
               <ShieldAlert size={13} />
@@ -207,7 +201,6 @@ export function SearchFilterBar({ selectedCategory, setSelectedCategory, sortBy,
             </button>
           </div>
         </div>
-
       </div>
     </div>
   );

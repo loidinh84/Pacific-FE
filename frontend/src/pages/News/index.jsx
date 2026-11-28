@@ -153,7 +153,7 @@ export default function News() {
   const hasMore = pagination.page < pagination.totalPages;
 
   return (
-    <div className="min-h-screen bg-[#0f2744] text-white flex flex-col justify-between">
+    <div className="min-h-screen text-[#0f172a] flex flex-col justify-between">
       <Navbar />
 
       <main className="flex-1 relative z-10 pb-20">
@@ -169,14 +169,14 @@ export default function News() {
           <>
             {isLoadingFeatured ? (
               <div className="max-w-6xl mx-auto px-4 mb-16 animate-pulse">
-                <div className="w-48 h-7 bg-white/10 rounded-lg mb-6" />
+                <div className="w-48 h-7 liquid-glass-subtle rounded-lg mb-6" />
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  <div className="lg:col-span-7 h-[420px] rounded-3xl bg-white/5 border border-white/10" />
+                  <div className="lg:col-span-7 h-[420px] rounded-3xl liquid-glass-subtle border border-[#0f172a]/10" />
                   <div className="lg:col-span-5 flex flex-col justify-between gap-4">
                     {[1, 2, 3].map((i) => (
                       <div
                         key={i}
-                        className="h-28 rounded-2xl bg-white/5 border border-white/10"
+                        className="h-28 rounded-2xl liquid-glass-subtle border border-[#0f172a]/10"
                       />
                     ))}
                   </div>
@@ -201,7 +201,7 @@ export default function News() {
         {/* 4. Latest News Grid Section */}
         <section className="max-w-6xl mx-auto px-4 mb-16">
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl md:text-2xl font-black text-white font-heading tracking-tight">
+            <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading tracking-tight">
               {t("news.latestTitle")}
             </h2>
           </div>
@@ -209,19 +209,19 @@ export default function News() {
           {/* Trạng thái lỗi */}
           {error && !isLoadingArticles && (
             <div className="text-center py-16 px-4 rounded-3xl bg-red-500/10 border border-red-500/20 backdrop-blur-md max-w-lg mx-auto">
-              <div className="w-14 h-14 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400 mx-auto mb-4">
+              <div className="w-14 h-14 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-rose-700 mx-auto mb-4">
                 <AlertCircle size={28} />
               </div>
-              <h3 className="text-base font-bold text-white mb-2">
+              <h3 className="text-base font-bold text-[#0f172a] mb-2">
                 Không thể tải dữ liệu tin tức
               </h3>
-              <p className="text-xs text-slate-300 mb-6">{error}</p>
+              <p className="text-xs text-[#334155] mb-6">{error}</p>
               <button
                 onClick={() => {
                   loadInitialData();
                   loadArticles(1, false);
                 }}
-                className="px-5 py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 font-bold text-xs inline-flex items-center gap-2 transition-all cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-sky-600/10 hover:bg-cyan-500/30 text-[#0284c7] border border-sky-600/25 font-bold text-xs inline-flex items-center gap-2 transition-all cursor-pointer"
               >
                 <RefreshCw size={14} />
                 <span>Thử lại</span>
@@ -235,14 +235,14 @@ export default function News() {
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div
                   key={i}
-                  className="rounded-3xl overflow-hidden bg-[#0d1f35]/80 border border-white/10 animate-pulse flex flex-col h-[380px]"
+                  className="rounded-3xl overflow-hidden liquid-glass-strong border border-[#0f172a]/10 animate-pulse flex flex-col h-[380px]"
                 >
-                  <div className="h-52 bg-white/10" />
+                  <div className="h-52 liquid-glass-subtle" />
                   <div className="p-5 flex flex-col flex-1 gap-3">
-                    <div className="w-24 h-3 bg-white/10 rounded" />
+                    <div className="w-24 h-3 liquid-glass-subtle rounded" />
                     <div className="w-full h-5 bg-white/15 rounded" />
                     <div className="w-3/4 h-5 bg-white/15 rounded" />
-                    <div className="w-full h-3 bg-white/5 rounded mt-auto" />
+                    <div className="w-full h-3 liquid-glass-subtle rounded mt-auto" />
                   </div>
                 </div>
               ))}
@@ -251,19 +251,19 @@ export default function News() {
 
           {/* Trạng thái không có kết quả */}
           {!isLoadingArticles && !error && articles.length === 0 && (
-            <div className="text-center py-16 px-4 rounded-3xl bg-white/[0.02] border border-white/10 backdrop-blur-md max-w-lg mx-auto">
-              <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-300 mx-auto mb-4">
+            <div className="text-center py-16 px-4 rounded-3xl bg-white/[0.02] border border-[#0f172a]/10 backdrop-blur-md max-w-lg mx-auto">
+              <div className="w-16 h-16 rounded-2xl bg-sky-600/10 border border-sky-600/25 flex items-center justify-center text-[#0284c7] mx-auto mb-4">
                 <Newspaper size={30} />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">
+              <h3 className="text-lg font-bold text-[#0f172a] mb-2">
                 {t("news.noResults")}
               </h3>
-              <p className="text-xs text-slate-400 mb-6">
+              <p className="text-xs text-[#475569] mb-6">
                 Hãy thử đổi từ khóa tìm kiếm hoặc bỏ chọn các bộ lọc để xem bài viết khác.
               </p>
               <button
                 onClick={handleResetFilters}
-                className="px-5 py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 font-bold text-xs inline-flex items-center gap-2 transition-all cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-sky-600/10 hover:bg-cyan-500/30 text-[#0284c7] border border-sky-600/25 font-bold text-xs inline-flex items-center gap-2 transition-all cursor-pointer"
               >
                 <RefreshCw size={14} />
                 <span>{t("news.clearFilters")}</span>
@@ -286,7 +286,7 @@ export default function News() {
                   <button
                     onClick={handleLoadMore}
                     disabled={isLoadingMore}
-                    className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600/30 to-cyan-600/30 hover:from-blue-600/50 hover:to-cyan-600/50 border border-cyan-500/40 text-cyan-200 hover:text-white font-bold text-sm tracking-wide transition-all cursor-pointer active:scale-95 inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600/30 to-cyan-600/30 hover:from-blue-600/50 hover:to-cyan-600/50 border border-sky-600/25 text-[#0284c7] hover:text-[#0f172a] font-bold text-sm tracking-wide transition-all cursor-pointer active:scale-95 inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isLoadingMore ? (
                       <>

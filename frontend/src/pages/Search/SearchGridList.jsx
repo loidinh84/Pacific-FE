@@ -126,14 +126,14 @@ export function SearchGridList({
   return (
     <div id="search-results" className="max-w-6xl mx-auto px-4 mb-20 scroll-mt-4">
       {semanticQuery ? (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-white/10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[#0f172a]/10">
           <div>
-            <h2 className="text-xl md:text-2xl font-black text-white font-heading">
+            <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading">
               Kết quả cho:{" "}
-              <span className="text-cyan-300 italic font-medium">
+              <span className="text-[#0284c7] font-semibold">
                 "{semanticQuery}"
               </span>
-              <span className="text-slate-400 text-sm font-normal ml-2">
+              <span className="text-[#475569] text-sm font-normal ml-2 tabular-nums">
                 ({speciesList.length} loài)
               </span>
             </h2>
@@ -141,22 +141,22 @@ export function SearchGridList({
           {onClearSemantic && (
             <button
               onClick={onClearSemantic}
-              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 hover:text-white text-xs font-medium transition-all self-start sm:self-auto cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl liquid-glass-subtle hover:bg-white text-[#334155] hover:text-[#0f172a] text-xs font-medium transition-colors self-start sm:self-auto cursor-pointer"
             >
               Xem tất cả loài
             </button>
           )}
         </div>
       ) : (
-        <h2 className="text-xl md:text-2xl font-black text-white font-heading mb-6">
+        <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading mb-6">
           {t("searchPage.mainCatalogTitle")}
         </h2>
       )}
 
       {loading ? (
         <div className="py-16 flex flex-col items-center justify-center text-center">
-          <div className="w-10 h-10 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin mb-3" />
-          <p className="text-sm text-cyan-200">
+          <div className="w-10 h-10 border-3 border-[#0284c7] border-t-transparent rounded-full animate-spin mb-3" />
+          <p className="text-sm text-[#334155]">
             Đang tìm kiếm dữ liệu sinh thái Biển Đông...
           </p>
         </div>
@@ -165,10 +165,10 @@ export function SearchGridList({
           <img
             src={NoFound}
             alt="Không tìm thấy sinh vật"
-            className="w-52 md:w-64 opacity-70 select-none"
+            className="w-52 md:w-64 opacity-80 select-none"
             draggable={false}
           />
-          <p className="text-slate-400 text-sm">
+          <p className="text-[#475569] text-sm">
             {t("searchPage.noResults")}
           </p>
         </div>
@@ -186,7 +186,7 @@ export function SearchGridList({
               return (
                 <div
                   key={s.id}
-                  className="bg-[#183c66] hover:bg-[#1a426f] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-colors duration-200 group cursor-pointer shadow-sm"
+                  className="liquid-glass liquid-glass-interactive rounded-2xl p-4 flex flex-col justify-between group cursor-pointer"
                   onClick={() =>
                     navigate(`/species/${s.slug || s.id}`, {
                       state: { fromSearch: `${location.pathname}${location.search}` },
@@ -196,16 +196,16 @@ export function SearchGridList({
                   <div>
                     {/* Header Tags */}
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="px-2 py-0.5 rounded-md bg-sky-500/20 border border-sky-400/30 text-sky-200 text-[10px] font-semibold">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-900/6 border border-slate-900/12 text-[#1e293b] text-[11px] font-medium">
                         {categoryName}
                       </span>
                       <span
-                        className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
+                        className={`px-2 py-0.5 rounded-md text-[11px] font-medium ${
                           s.statusType === "danger"
-                            ? "bg-rose-500/20 border border-rose-400/40 text-rose-300"
+                            ? "bg-rose-500/12 border border-rose-500/25 text-rose-700"
                             : s.statusType === "warning"
-                              ? "bg-amber-500/20 border border-amber-400/40 text-amber-300"
-                              : "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300"
+                              ? "bg-amber-500/12 border border-amber-500/25 text-amber-800"
+                              : "bg-emerald-500/12 border border-emerald-500/25 text-emerald-700"
                         }`}
                       >
                         {statusName}
@@ -213,8 +213,7 @@ export function SearchGridList({
                     </div>
 
                     {/* Image */}
-                    <div className="w-full h-36 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-[#112d4e] border border-white/10">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(56,189,248,0.07)_0%,transparent_70%)]" />
+                    <div className="w-full h-40 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-gradient-to-br from-sky-100/55 via-white/55 to-cyan-100/45 border border-white/85">
                       <img
                         src={s.image || FishHidden}
                         alt={name}
@@ -223,57 +222,62 @@ export function SearchGridList({
                           e.currentTarget.onerror = null;
                           e.currentTarget.src = FishHidden;
                         }}
-                        className="w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] relative z-10"
+                        className={
+                          typeof s.image === "string" &&
+                          (s.image.startsWith("http") || s.image.endsWith(".jpg") || s.image.endsWith(".webp"))
+                            ? "w-full h-full object-cover relative z-10"
+                            : "w-full h-full object-contain p-3 drop-shadow-[0_6px_12px_rgba(15,23,42,0.16)] relative z-10"
+                        }
                       />
                     </div>
 
                     {/* Info */}
                     <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                      <h3 className="text-base font-bold text-white font-heading group-hover:text-sky-300 transition-colors line-clamp-1">
+                      <h3 className="text-base font-bold text-[#0f172a] font-heading group-hover:text-[#0284c7] transition-colors line-clamp-1">
                         {name}
                       </h3>
                       {s.role && (
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-sky-500/15 border border-sky-400/25 text-sky-200">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-900/6 border border-slate-900/12 text-[#1e293b]">
                           {s.role}
                         </span>
                       )}
                     </div>
-                    <p className="text-[10px] text-slate-400 italic mb-2">
+                    <p className="text-xs text-[#475569] italic mb-2 font-mono">
                       {s.sciName}
                     </p>
                     {s.semanticReason ? (
-                      <p className="text-[11px] text-sky-200/90 bg-sky-500/10 border border-sky-400/20 rounded-md p-1.5 mb-2 leading-relaxed">
+                      <p className="text-xs text-[#0f172a] bg-sky-500/10 border border-sky-500/20 rounded-md p-2 mb-2 leading-relaxed">
                         {s.semanticReason}
                       </p>
                     ) : null}
-                    <p className="text-xs text-white/60 leading-relaxed line-clamp-2 mb-3">
+                    <p className="text-xs text-[#334155] leading-relaxed line-clamp-2 mb-3">
                       {desc}
                     </p>
                   </div>
 
                   {/* Card Footer */}
-                  <div className="pt-3 border-t border-white/8 flex items-center justify-between">
-                    <span className="flex items-center gap-1 text-[10px] text-slate-500">
-                      <Anchor className="w-3.5 h-3.5 text-blue-400" /> {s.depth}
+                  <div className="pt-3 border-t border-[#0f172a]/8 flex items-center justify-between">
+                    <span className="flex items-center gap-1 text-xs text-[#475569] font-mono tabular-nums">
+                      <Anchor className="w-3.5 h-3.5 text-[#0284c7]" /> {s.depth}
                     </span>
 
                     {/* Favorite Button */}
                     <button
                       onClick={(e) => toggleFavorite(e, s)}
-                      className={`flex items-center gap-1 text-xs font-semibold transition-all cursor-pointer ${
+                      className={`flex items-center gap-1 text-xs font-medium transition-colors cursor-pointer ${
                         isFav
-                          ? "text-rose-400"
-                          : "text-slate-400 hover:text-rose-400"
+                          ? "text-rose-600"
+                          : "text-[#475569] hover:text-rose-600"
                       }`}
                       title={isFav ? "Bỏ yêu thích" : "Yêu thích sinh vật"}
                     >
                       {isFav ? (
-                        <Favorited className="w-5 h-5" />
+                        <Favorited className="w-4 h-4" />
                       ) : (
-                        <Favorite className="w-5 h-5" />
+                        <Favorite className="w-4 h-4" />
                       )}
                       <span>
-                        {t("searchPage.btnFavorite") ?? "Yêu thích sinh vật"}
+                        {t("searchPage.btnFavorite") ?? "Yêu thích"}
                       </span>
                     </button>
                   </div>
@@ -287,7 +291,7 @@ export function SearchGridList({
             <button
               onClick={() => goToPage(1)}
               disabled={effectivePage <= 1}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="p-2 rounded-xl liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:bg-white disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Trang đầu"
             >
               <ChevronsLeft size={15} />
@@ -295,7 +299,7 @@ export function SearchGridList({
             <button
               onClick={() => goToPage(effectivePage - 1)}
               disabled={effectivePage <= 1}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="p-2 rounded-xl liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:bg-white disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Trang trước"
             >
               <ChevronLeft size={15} />
@@ -306,7 +310,7 @@ export function SearchGridList({
                 return (
                   <span
                     key={`ellipsis-${idx}`}
-                    className="w-8 h-8 flex items-center justify-center text-xs text-white/40 font-bold select-none"
+                    className="w-8 h-8 flex items-center justify-center text-xs text-[#475569] font-medium select-none"
                   >
                     ...
                   </span>
@@ -316,10 +320,10 @@ export function SearchGridList({
                 <button
                   key={p}
                   onClick={() => goToPage(p)}
-                  className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`w-8 h-8 rounded-xl text-xs font-semibold tabular-nums transition-colors cursor-pointer ${
                     effectivePage === p
-                      ? "bg-sky-500 text-white shadow-sky-500/30"
-                      : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-white/10"
+                      ? "bg-[#0284c7] text-white shadow-sm"
+                      : "liquid-glass-subtle text-[#334155] hover:bg-white hover:text-[#0f172a]"
                   }`}
                 >
                   {p}
@@ -330,7 +334,7 @@ export function SearchGridList({
             <button
               onClick={() => goToPage(effectivePage + 1)}
               disabled={effectivePage >= totalPages}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="p-2 rounded-xl liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:bg-white disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Trang sau"
             >
               <ChevronRight size={15} />
@@ -338,7 +342,7 @@ export function SearchGridList({
             <button
               onClick={() => goToPage(totalPages)}
               disabled={effectivePage >= totalPages}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="p-2 rounded-xl liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:bg-white disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Trang cuối"
             >
               <ChevronsRight size={15} />

@@ -1,36 +1,13 @@
-import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 
-const SUGGESTION_GROUPS = [
-  [
-    { vi: "Cá mập", en: "Sharks" },
-    { vi: "Rùa biển", en: "Sea Turtles" },
-    { vi: "San hô", en: "Corals" },
-    { vi: "Cá hề Nemo", en: "Clownfish" },
-    { vi: "Bạch tuộc", en: "Octopus" },
-  ],
-  [
-    { vi: "Sao biển", en: "Starfish" },
-    { vi: "Cá voi xanh", en: "Blue Whale" },
-    { vi: "Đồi mồi", en: "Hawksbill Turtle" },
-    { vi: "Bò biển", en: "Dugong" },
-    { vi: "Cá ngựa", en: "Seahorse" },
-  ],
-  [
-    { vi: "Hải quỳ", en: "Sea Anemone" },
-    { vi: "Cá cờ xanh", en: "Sailfish" },
-    { vi: "Sứa biển", en: "Jellyfish" },
-    { vi: "Bào ngư", en: "Abalone" },
-    { vi: "Cua khổng lồ", en: "Giant Crab" },
-  ],
-  [
-    { vi: "Tôm hùm", en: "Lobster" },
-    { vi: "Cá mặt trăng", en: "Sunfish" },
-    { vi: "Ốc tù và", en: "Triton Snail" },
-    { vi: "Cá chình", en: "Moray Eel" },
-    { vi: "Cá lồng đèn", en: "Lanternfish" },
-  ],
+const SUGGESTIONS = [
+  { vi: "Cá mập", en: "Sharks" },
+  { vi: "Rùa biển", en: "Sea Turtles" },
+  { vi: "San hô", en: "Corals" },
+  { vi: "Cá hề", en: "Clownfish" },
+  { vi: "Bò biển", en: "Dugong" },
+  { vi: "Sao biển", en: "Starfish" },
 ];
 
 export function SearchHeroHeader({
@@ -41,96 +18,63 @@ export function SearchHeroHeader({
   const { t, language } = useLanguage();
   const isEn = language === "en";
 
-  const [groupIndex, setGroupIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isFading, setIsFading] = useState(false);
-
-  // Tự động luân chuyển gợi ý mượt mà (như TikTok / Shopee), tạm dừng khi hover
-  useEffect(() => {
-    if (isHovered) return;
-    const interval = setInterval(() => {
-      setIsFading(true);
-      setTimeout(() => {
-        setGroupIndex((prev) => (prev + 1) % SUGGESTION_GROUPS.length);
-        setIsFading(false);
-      }, 300);
-    }, 4500);
-    return () => clearInterval(interval);
-  }, [isHovered]);
-
-  const currentSuggestions = SUGGESTION_GROUPS[groupIndex];
-
   return (
-    <div id="search-hero" className="text-center max-w-4xl mx-auto pt-14 pb-4 md:pt-16 md:pb-6 px-4">
-      {/* Title - compact, elegant and sharp */}
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white font-heading tracking-tight mb-2">
+    <div id="search-hero" className="text-center max-w-4xl mx-auto pt-24 pb-4 md:pt-28 md:pb-6 px-4">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#0f172a] font-heading tracking-tight mb-2">
         {t("searchPage.heroTitle")}
       </h1>
 
-      {/* Description - concise and clear */}
-      <p className="text-xs sm:text-sm text-slate-300/80 max-w-xl mx-auto mb-5 font-normal leading-relaxed">
+      <p className="text-xs sm:text-sm text-[#334155] max-w-xl mx-auto mb-6 font-normal leading-relaxed">
         {t("searchPage.heroDesc")}
       </p>
 
-      {/* Main Search Input Form */}
       <form
         onSubmit={onSearchSubmit}
         className="relative max-w-2xl mx-auto mb-4"
       >
         <div className="relative flex items-center">
           <Search
-            size={20}
-            className="absolute left-4 text-cyan-300/60 pointer-events-none"
+            size={18}
+            className="absolute left-4 text-[#475569] pointer-events-none z-10"
           />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t("searchPage.searchPlaceholder")}
-            className="w-full py-3.5 pl-11 pr-32 bg-[#0a203c]/70 border border-cyan-500/30 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:bg-[#0c274a]/90 backdrop-blur-xl transition-all shadow-lg shadow-cyan-950/30"
+            className="w-full py-3.5 pl-11 pr-32 liquid-glass-strong rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none focus:border-[#0284c7] focus:ring-2 focus:ring-sky-500/15 transition-colors"
           />
           <button
             type="submit"
-            className="absolute right-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer active:translate-y-0.5 shadow-sm"
+            className="absolute right-1.5 px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer shadow-sm"
           >
             {t("searchPage.btnSearch")}
           </button>
         </div>
 
-        {/* Compact suggestion chips */}
-        <div
-          className="flex items-center justify-center flex-wrap gap-1.5 mt-3 min-h-[30px]"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <span className="text-xs text-slate-400 font-normal select-none shrink-0 mr-1">
+        {/* Static realistic suggestion chips */}
+        <div className="flex items-center justify-center flex-wrap gap-1.5 mt-3">
+          <span className="text-xs text-[#475569] font-normal select-none shrink-0 mr-1">
             {isEn ? "Suggestions:" : "Gợi ý:"}
           </span>
-
-          <div
-            className={`inline-flex flex-wrap items-center justify-center gap-1.5 transition-all duration-300 ease-out ${
-              isFading ? "opacity-0 -translate-y-1 scale-95" : "opacity-100 translate-y-0 scale-100"
-            }`}
-          >
-            {currentSuggestions.map((item, idx) => {
-              const text = isEn ? item.en : item.vi;
-              return (
-                <button
-                  key={`${groupIndex}-${idx}`}
-                  type="button"
-                  onClick={() => {
-                    setSearchTerm(text);
-                    if (onSearchSubmit) {
-                      setTimeout(() => onSearchSubmit({ preventDefault: () => {} }, text), 10);
-                    }
-                  }}
-                  className="px-2.5 py-1 rounded-full bg-white/5 hover:bg-cyan-500/20 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-200 text-xs transition-all cursor-pointer"
-                >
-                  {text}
-                </button>
-              );
-            })}
-          </div>
+          {SUGGESTIONS.map((item, idx) => {
+            const text = isEn ? item.en : item.vi;
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setSearchTerm(text);
+                  if (onSearchSubmit) {
+                    setTimeout(() => onSearchSubmit({ preventDefault: () => {} }, text), 10);
+                  }
+                }}
+                className="px-2.5 py-1 rounded-full liquid-glass-subtle hover:bg-white text-[#334155] hover:text-[#0284c7] text-xs font-medium transition-colors cursor-pointer"
+              >
+                {text}
+              </button>
+            );
+          })}
         </div>
       </form>
     </div>

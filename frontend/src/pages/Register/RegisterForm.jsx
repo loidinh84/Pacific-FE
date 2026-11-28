@@ -75,7 +75,7 @@ export function RegisterForm() {
   return (
     <div className="md:col-span-7 p-8 md:p-10 flex flex-col justify-center relative">
       <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-black text-white font-heading tracking-tight mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-[#0f172a] font-heading tracking-tight mb-2">
           {t("auth.registerTitle")}
         </h1>
         <p className="text-xs md:text-sm text-pacific-blue-pale font-medium">
@@ -84,15 +84,15 @@ export function RegisterForm() {
       </div>
 
       {errorMessage && (
-        <div className="p-3.5 mb-5 rounded-xl text-xs sm:text-sm bg-rose-500/20 border border-rose-500/40 text-rose-200 flex items-center gap-2.5">
-          <AlertCircle size={18} className="shrink-0 text-rose-400" />
+        <div className="p-3.5 mb-5 rounded-xl text-xs sm:text-sm bg-rose-600/10 border border-rose-500/40 text-rose-700 flex items-center gap-2.5">
+          <AlertCircle size={18} className="shrink-0 text-rose-700" />
           <span>{errorMessage}</span>
         </div>
       )}
 
       {successMessage && (
-        <div className="p-3.5 mb-5 rounded-xl text-xs sm:text-sm bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 flex items-center gap-2.5">
-          <CheckCircle2 size={18} className="shrink-0 text-emerald-400" />
+        <div className="p-3.5 mb-5 rounded-xl text-xs sm:text-sm bg-emerald-600/10 border border-emerald-500/40 text-emerald-700 flex items-center gap-2.5">
+          <CheckCircle2 size={18} className="shrink-0 text-emerald-700" />
           <span>{successMessage}</span>
         </div>
       )}
@@ -130,7 +130,7 @@ export function RegisterForm() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 text-white/50 hover:text-white transition-colors cursor-pointer z-10"
+              className="absolute right-4 text-[#475569] hover:text-[#0f172a] transition-colors cursor-pointer z-10"
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -149,7 +149,7 @@ export function RegisterForm() {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-4 text-white/50 hover:text-white transition-colors cursor-pointer z-10"
+              className="absolute right-4 text-[#475569] hover:text-[#0f172a] transition-colors cursor-pointer z-10"
             >
               {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -172,8 +172,8 @@ export function RegisterForm() {
         </button>
 
         <div className="relative flex items-center justify-center my-0.5">
-          <div className="w-full border-t border-white/10" />
-          <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-white/50">
+          <div className="w-full border-t border-[#0f172a]/10" />
+          <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-[#475569]">
             {t("auth.orWith")}
           </span>
         </div>
@@ -181,7 +181,7 @@ export function RegisterForm() {
         <SocialLoginButtons />
       </form>
 
-      <div className="text-center mt-6 pt-4 border-t border-white/10 text-xs text-white/70">
+      <div className="text-center mt-6 pt-4 border-t border-[#0f172a]/10 text-xs text-[#334155]">
         {t("auth.hasAccount")}{" "}
         <Link
           to="/login"

@@ -22,7 +22,7 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-pacific-figma-dark text-white selection:bg-pacific-cyan/30">
+    <div className="relative min-h-screen bg-[#d6ecf9] text-[#0f172a] selection:bg-sky-500/20">
       {/* Bản đồ Biển Đông tương tác làm nền cho khu vực Hero */}
       <PacificHotspotMap asBackground />
 

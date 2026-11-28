@@ -328,14 +328,14 @@ export function SpeciesFacts({ species, language = "vi" }) {
   }, [species, isEn]);
 
   return (
-    <section className="relative py-14 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 font-sans overflow-hidden">
+    <section className="relative py-14 px-4 md:px-8 max-w-6xl mx-auto border-t border-[#0f172a]/10 font-sans overflow-hidden">
       {/* Ambient background glow: Tạo ánh sáng nền ấm hổ phách */}
       <div className="absolute top-1/3 right-1/4 w-[500px] h-[350px] bg-amber-500/10 rounded-full blur-[130px] pointer-events-none -z-10" />
 
       {/* ─── 1. HEADER KHỐI ──────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white font-heading tracking-tight flex items-center gap-2">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#0f172a] font-heading tracking-tight flex items-center gap-2">
             <span>
               {isEn
                 ? "Fascinating Biological Facts"
@@ -344,8 +344,8 @@ export function SpeciesFacts({ species, language = "vi" }) {
           </h2>
         </div>
 
-        <span className="text-xs font-medium text-slate-300 px-3.5 py-1.5 rounded-full bg-[#10223d]/80 border border-white/15 self-start md:self-auto flex items-center gap-1.5">
-          <HelpCircle size={13} className="text-amber-400" />
+        <span className="text-xs font-medium text-[#334155] px-3.5 py-1.5 rounded-full liquid-glass border border-[#0f172a]/10 self-start md:self-auto flex items-center gap-1.5">
+          <HelpCircle size={13} className="text-amber-700" />
           <span>
             {factsList.length} {isEn ? "verified facts" : "sự thật ghi nhận"}
           </span>
@@ -360,16 +360,16 @@ export function SpeciesFacts({ species, language = "vi" }) {
             className="p-6 rounded-2xl bg-gradient-to-br from-[#122647]/90 via-[#0e1f3a]/90 to-[#0a182e]/90 border border-amber-400/25 relative overflow-hidden flex gap-4 items-start backdrop-blur-xl"
           >
             {/* Số thứ tự sáng màu */}
-            <div className="shrink-0 w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-mono font-bold text-sm">
+            <div className="shrink-0 w-11 h-11 rounded-xl bg-amber-500/12 border border-amber-400/40 flex items-center justify-center text-amber-700 font-mono font-bold text-sm">
               {String(i + 1).padStart(2, "0")}
             </div>
 
             {/* Nội dung sự thật: Chữ sáng rõ nét */}
             <div className="flex-1 space-y-1.5">
-              <h4 className="text-sm sm:text-base font-bold text-white">
+              <h4 className="text-sm sm:text-base font-bold text-[#0f172a]">
                 {fact.title}
               </h4>
-              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#334155] leading-relaxed">
                 {fact.text}
               </p>
             </div>

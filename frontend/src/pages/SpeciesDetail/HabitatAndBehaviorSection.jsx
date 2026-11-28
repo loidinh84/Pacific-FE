@@ -65,7 +65,7 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
           "Tầng nước lạnh mờ ảo nơi ánh sáng mờ dần, diễn ra hiện tượng di cư thẳng đứng kiếm ăn hàng đêm.",
         descEn:
           "Chilled dim layer where light fades quickly, hosting massive nightly vertical feeding migrations.",
-        badgeColor: "text-cyan-300 border-cyan-400/40 bg-cyan-400/15",
+        badgeColor: "text-[#0284c7] border-sky-600/25 bg-cyan-400/15",
         badge: "200 - 1.000m",
       };
     } else {
@@ -196,8 +196,8 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
         descEn: "Warm shelf waters with stable 33–34.5‰ tropical salinity.",
         icon: Compass,
         accent:
-          "from-cyan-500/25 to-blue-500/10 text-cyan-300 border-cyan-400/30",
-        iconBg: "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30",
+          "from-cyan-500/25 to-blue-500/10 text-[#0284c7] border-sky-600/25",
+        iconBg: "bg-sky-600/10 text-[#0284c7] border border-sky-600/25",
       });
     }
 
@@ -334,14 +334,14 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
   }, [species, isEn]);
 
   return (
-    <section className="relative py-14 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 font-sans overflow-hidden">
+    <section className="relative py-14 px-4 md:px-8 max-w-6xl mx-auto border-t border-[#0f172a]/10 font-sans overflow-hidden">
       {/* Ambient background glow: Làm sáng nền, không còn bị chìm tối */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-sky-500/10 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-sky-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* ─── 1. HEADER KHỐI & BỘ CHUYỂN TAB ──────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white font-heading tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#0f172a] font-heading tracking-tight">
             {isEn
               ? "Habitat & Biological Behavior"
               : "Sinh cảnh sống & tập tính sinh học"}
@@ -349,13 +349,13 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center gap-1.5 p-1 bg-[#10223b]/80 backdrop-blur-md border border-white/15 rounded-xl self-start sm:self-auto">
+        <div className="flex items-center gap-1.5 p-1 liquid-glass backdrop-blur-md border border-[#0f172a]/10 rounded-xl self-start sm:self-auto">
           <button
             onClick={() => setActiveTab("habitat")}
             className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === "habitat"
-                ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/40"
-                : "text-slate-300 hover:text-white"
+                ? "bg-sky-600/10 text-[#0284c7] border border-sky-600/25"
+                : "text-[#334155] hover:text-[#0f172a]"
             }`}
           >
             <Waves size={14} />
@@ -365,8 +365,8 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
             onClick={() => setActiveTab("behavior")}
             className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === "behavior"
-                ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/40"
-                : "text-slate-300 hover:text-white"
+                ? "bg-sky-600/10 text-[#0284c7] border border-sky-600/25"
+                : "text-[#334155] hover:text-[#0f172a]"
             }`}
           >
             <Activity size={14} />
@@ -381,17 +381,17 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
           {/* Tầng nước sinh thái và vùng phân bố */}
           <div className="lg:col-span-7 space-y-5">
             {/* Thẻ tầng nước sinh thái */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#122647]/90 via-[#0e1f3a]/90 to-[#0a182e]/90 border border-sky-400/25 relative overflow-hidden backdrop-blur-xl">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#122647]/90 via-[#0e1f3a]/90 to-[#0a182e]/90 border border-sky-600/25 relative overflow-hidden backdrop-blur-xl">
               <div className="flex items-start justify-between gap-4 mb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-cyan-500/20 border border-cyan-400/35 text-cyan-300">
+                  <div className="p-2 rounded-xl bg-sky-600/10 border border-cyan-400/35 text-[#0284c7]">
                     <Layers size={18} />
                   </div>
                   <div>
-                    <span className="text-xs font-medium text-slate-300">
+                    <span className="text-xs font-medium text-[#334155]">
                       {isEn ? "Bathymetric Layer" : "Tầng nước đại dương"}
                     </span>
-                    <h3 className="text-base sm:text-lg font-bold text-white">
+                    <h3 className="text-base sm:text-lg font-bold text-[#0f172a]">
                       {isEn ? depthZoneInfo.nameEn : depthZoneInfo.nameVi}
                     </h3>
                   </div>
@@ -403,19 +403,19 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-5">
+              <p className="text-xs sm:text-sm text-[#334155] leading-relaxed mb-5">
                 {isEn ? depthZoneInfo.descEn : depthZoneInfo.descVi}
               </p>
 
               {/* Thước đo độ sâu: Bỏ ngoặc đơn thừa, nhãn sạch sẽ */}
-              <div className="space-y-2 pt-3 border-t border-white/10">
-                <div className="flex justify-between text-[11px] text-slate-300 font-mono">
+              <div className="space-y-2 pt-3 border-t border-[#0f172a]/10">
+                <div className="flex justify-between text-[11px] text-[#334155] font-mono">
                   <span>0m</span>
                   <span>200m</span>
                   <span>1.000m</span>
                   <span>4.000m+</span>
                 </div>
-                <div className="relative h-2.5 rounded-full bg-slate-900/90 overflow-hidden border border-white/15">
+                <div className="relative h-2.5 rounded-full liquid-glass-strong overflow-hidden border border-[#0f172a]/10">
                   <div
                     className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-amber-400 via-cyan-400 to-indigo-500 rounded-full"
                     style={{
@@ -423,16 +423,16 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
                     }}
                   />
                 </div>
-                <div className="flex items-center justify-between text-xs text-cyan-200 font-medium pt-1">
+                <div className="flex items-center justify-between text-xs text-[#0284c7] font-medium pt-1">
                   <span className="flex items-center gap-1.5">
-                    <Droplets size={13} className="text-cyan-400" />
+                    <Droplets size={13} className="text-[#0284c7]" />
                     <span>{isEn ? "Depth range:" : "Độ sâu ghi nhận:"}</span>
-                    <strong className="text-white font-bold">
+                    <strong className="text-[#0f172a] font-bold">
                       {species.depth ||
                         `${depthMetrics.minM}m - ${depthMetrics.maxM}m`}
                     </strong>
                   </span>
-                  <span className="text-slate-300 text-[11px]">
+                  <span className="text-[#334155] text-[11px]">
                     {isEn ? "Natural biome" : "Sinh cảnh tự nhiên"}
                   </span>
                 </div>
@@ -440,16 +440,16 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
             </div>
 
             {/* Thẻ Vị trí phân bố tại Việt Nam */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#122647]/90 via-[#0e1f3a]/90 to-[#0a182e]/90 border border-sky-400/25 backdrop-blur-xl">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#122647]/90 via-[#0e1f3a]/90 to-[#0a182e]/90 border border-sky-600/25 backdrop-blur-xl">
               <div className="flex items-center gap-2.5 mb-3">
-                <div className="p-2 rounded-xl bg-rose-500/20 border border-rose-400/35 text-rose-300">
+                <div className="p-2 rounded-xl bg-rose-600/10 border border-rose-400/35 text-rose-700">
                   <MapPin size={18} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium text-slate-300">
+                  <span className="text-xs font-medium text-[#334155]">
                     {isEn ? "Geographic Range" : "Phân bố tại Việt Nam"}
                   </span>
-                  <h4 className="text-base font-bold text-white">
+                  <h4 className="text-base font-bold text-[#0f172a]">
                     {species.eastSeaZone ||
                       (isEn
                         ? "East Sea Marine Protected Areas"
@@ -458,12 +458,12 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
                 </div>
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-4">
+              <p className="text-xs sm:text-sm text-[#334155] leading-relaxed mb-4">
                 {localDistText}
               </p>
 
               {/* Các điểm quan trắc / Vườn quốc gia trọng điểm - Static informative tags, no hover */}
-              <div className="flex flex-wrap gap-2 pt-3 border-t border-white/10">
+              <div className="flex flex-wrap gap-2 pt-3 border-t border-[#0f172a]/10">
                 {[
                   "Hoàng Sa",
                   "Trường Sa",
@@ -474,7 +474,7 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
                 ].map((zoneName) => (
                   <span
                     key={zoneName}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-sky-500/10 text-sky-200 border border-sky-400/20 font-medium"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-sky-600/10 text-[#0284c7] border border-sky-600/25 font-medium"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                     <span>{zoneName}</span>
@@ -486,8 +486,8 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
 
           {/* Danh sách sinh cảnh */}
           <div className="lg:col-span-5 space-y-4">
-            <h4 className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-              <Shield size={14} className="text-cyan-400" />
+            <h4 className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+              <Shield size={14} className="text-[#0284c7]" />
               <span>
                 {isEn ? "Preferred Marine Biomes" : "Sinh cảnh cư trú"}
               </span>
@@ -504,11 +504,11 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
                     <div className={`p-2 rounded-xl shrink-0 ${h.iconBg}`}>
                       <IconComp size={18} />
                     </div>
-                    <h5 className="text-sm sm:text-base font-bold text-white">
+                    <h5 className="text-sm sm:text-base font-bold text-[#0f172a]">
                       {isEn ? h.titleEn : h.titleVi}
                     </h5>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-200 leading-relaxed pl-11">
+                  <p className="text-xs sm:text-sm text-[#334155] leading-relaxed pl-11">
                     {isEn ? h.descEn : h.descVi}
                   </p>
                 </div>
@@ -516,29 +516,29 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
             })}
 
             {/* Thông số môi trường phụ trợ: Bỏ uppercase */}
-            <div className="p-4 rounded-xl bg-[#10223d]/90 border border-sky-400/25 grid grid-cols-2 gap-3">
+            <div className="p-4 rounded-xl liquid-glass border border-sky-600/25 grid grid-cols-2 gap-3">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-rose-500/15 text-rose-300 border border-rose-400/25">
+                <div className="p-2 rounded-lg bg-rose-600/10 text-rose-700 border border-rose-400/25">
                   <Thermometer size={16} />
                 </div>
                 <div>
-                  <span className="block text-xs text-slate-300 font-medium">
+                  <span className="block text-xs text-[#334155] font-medium">
                     {isEn ? "Water Temp" : "Nhiệt độ nước"}
                   </span>
-                  <span className="text-xs font-bold text-white">
+                  <span className="text-xs font-bold text-[#0f172a]">
                     {species.waterTemp || "22°C – 29°C"}
                   </span>
                 </div>
               </div>
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-cyan-500/15 text-cyan-300 border border-cyan-400/25">
+                <div className="p-2 rounded-lg bg-sky-600/10 text-[#0284c7] border border-sky-600/25">
                   <Droplets size={16} />
                 </div>
                 <div>
-                  <span className="block text-xs text-slate-300 font-medium">
+                  <span className="block text-xs text-[#334155] font-medium">
                     {isEn ? "Salinity" : "Độ mặn Biển Đông"}
                   </span>
-                  <span className="text-xs font-bold text-white">
+                  <span className="text-xs font-bold text-[#0f172a]">
                     33 – 34.5 ‰
                   </span>
                 </div>
@@ -552,24 +552,24 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
       {activeTab === "behavior" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in duration-300">
           {/* Card 1: Chế độ dinh dưỡng & Săn mồi */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#122647]/90 to-[#0a182e]/90 border border-sky-400/25 flex flex-col justify-between backdrop-blur-md">
+          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#122647]/90 to-[#0a182e]/90 border border-sky-600/25 flex flex-col justify-between backdrop-blur-md">
             <div>
-              <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 w-fit mb-3 border border-cyan-400/30">
+              <div className="p-2.5 rounded-xl bg-sky-600/10 text-[#0284c7] w-fit mb-3 border border-sky-600/25">
                 <Fish size={18} />
               </div>
-              <span className="text-xs font-medium text-slate-300">
+              <span className="text-xs font-medium text-[#334155]">
                 {isEn ? "Dietary Strategy" : "Kiểu dinh dưỡng"}
               </span>
-              <h4 className="text-base font-bold text-white mt-1 mb-2">
+              <h4 className="text-base font-bold text-[#0f172a] mt-1 mb-2">
                 {biologyDetails.diet}
               </h4>
-              <p className="text-xs text-slate-200 leading-relaxed">
+              <p className="text-xs text-[#334155] leading-relaxed">
                 {isEn
                   ? biologyDetails.feedingStrategyEn
                   : biologyDetails.feedingStrategyVi}
               </p>
             </div>
-            <div className="pt-3 mt-4 border-t border-white/10 text-xs text-cyan-300 font-medium">
+            <div className="pt-3 mt-4 border-t border-[#0f172a]/10 text-xs text-[#0284c7] font-medium">
               {isEn
                 ? "Trophic interaction recorded"
                 : "Ghi nhận chuỗi thức ăn Biển Đông"}
@@ -577,24 +577,24 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
           </div>
 
           {/* Card 2: Thích nghi tiến hóa */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#122647]/90 to-[#0a182e]/90 border border-sky-400/25 flex flex-col justify-between backdrop-blur-md">
+          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#122647]/90 to-[#0a182e]/90 border border-sky-600/25 flex flex-col justify-between backdrop-blur-md">
             <div>
-              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-300 w-fit mb-3 border border-amber-400/30">
+              <div className="p-2.5 rounded-xl bg-amber-500/12 text-amber-700 w-fit mb-3 border border-amber-400/30">
                 <Zap size={18} />
               </div>
-              <span className="text-xs font-medium text-slate-300">
+              <span className="text-xs font-medium text-[#334155]">
                 {isEn ? "Key Adaptation" : "Thích nghi sinh học"}
               </span>
-              <h4 className="text-base font-bold text-white mt-1 mb-2">
+              <h4 className="text-base font-bold text-[#0f172a] mt-1 mb-2">
                 {isEn ? "Evolutionary Edge" : "Vũ khí tiến hóa"}
               </h4>
-              <p className="text-xs text-slate-200 leading-relaxed">
+              <p className="text-xs text-[#334155] leading-relaxed">
                 {isEn
                   ? biologyDetails.adaptationEn
                   : biologyDetails.adaptationVi}
               </p>
             </div>
-            <div className="pt-3 mt-4 border-t border-white/10 text-xs text-amber-300 font-medium">
+            <div className="pt-3 mt-4 border-t border-[#0f172a]/10 text-xs text-amber-700 font-medium">
               {isEn
                 ? "Survives marine pressure"
                 : "Tối ưu hóa khả năng sống sót"}
@@ -602,52 +602,52 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
           </div>
 
           {/* Card 3: Chu kỳ & Thời gian hoạt động */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#122647]/90 to-[#0a182e]/90 border border-sky-400/25 flex flex-col justify-between backdrop-blur-md">
+          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#122647]/90 to-[#0a182e]/90 border border-sky-600/25 flex flex-col justify-between backdrop-blur-md">
             <div>
-              <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 w-fit mb-3 border border-purple-400/30">
+              <div className="p-2.5 rounded-xl bg-sky-600/10 text-sky-700 w-fit mb-3 border border-purple-400/30">
                 <Clock size={18} />
               </div>
-              <span className="text-xs font-medium text-slate-300">
+              <span className="text-xs font-medium text-[#334155]">
                 {isEn ? "Activity Rhythm" : "Nhịp sinh học"}
               </span>
-              <h4 className="text-base font-bold text-white mt-1 mb-2">
+              <h4 className="text-base font-bold text-[#0f172a] mt-1 mb-2">
                 {isEn ? "Diel Patterns" : "Thời gian hoạt động"}
               </h4>
-              <p className="text-xs text-slate-200 leading-relaxed">
+              <p className="text-xs text-[#334155] leading-relaxed">
                 {isEn
                   ? biologyDetails.activityPeriodEn
                   : biologyDetails.activityPeriodVi}
               </p>
             </div>
-            <div className="pt-3 mt-4 border-t border-white/10 text-xs text-purple-300 font-medium flex items-center gap-1.5">
+            <div className="pt-3 mt-4 border-t border-[#0f172a]/10 text-xs text-sky-700 font-medium flex items-center gap-1.5">
               <Sun size={12} /> / <Moon size={12} />
               <span>{isEn ? "Diel cycle" : "Chu kỳ ngày đêm"}</span>
             </div>
           </div>
 
           {/* Card 4: Sinh sản & Vòng đời */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#122647]/90 to-[#0a182e]/90 border border-sky-400/25 flex flex-col justify-between backdrop-blur-md">
+          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#122647]/90 to-[#0a182e]/90 border border-sky-600/25 flex flex-col justify-between backdrop-blur-md">
             <div>
-              <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-300 w-fit mb-3 border border-emerald-400/30">
+              <div className="p-2.5 rounded-xl bg-emerald-600/10 text-emerald-700 w-fit mb-3 border border-emerald-400/30">
                 <Sparkles size={18} />
               </div>
-              <span className="text-xs font-medium text-slate-300">
+              <span className="text-xs font-medium text-[#334155]">
                 {isEn ? "Life History" : "Sinh sản & vòng đời"}
               </span>
-              <h4 className="text-base font-bold text-white mt-1 mb-2">
+              <h4 className="text-base font-bold text-[#0f172a] mt-1 mb-2">
                 {species.lifespan
                   ? `${species.lifespan}`
                   : isEn
                     ? "Reproduction"
                     : "Tiếp nối nòi giống"}
               </h4>
-              <p className="text-xs text-slate-200 leading-relaxed">
+              <p className="text-xs text-[#334155] leading-relaxed">
                 {isEn
                   ? biologyDetails.reproductionEn
                   : biologyDetails.reproductionVi}
               </p>
             </div>
-            <div className="pt-3 mt-4 border-t border-white/10 text-xs text-emerald-300 font-medium">
+            <div className="pt-3 mt-4 border-t border-[#0f172a]/10 text-xs text-emerald-700 font-medium">
               {isEn
                 ? "Sensitive to ocean warming"
                 : "Nhạy cảm với biến đổi khí hậu"}

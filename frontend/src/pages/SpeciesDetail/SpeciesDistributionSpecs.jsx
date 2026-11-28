@@ -45,31 +45,31 @@ export function SpeciesDistributionSpecs({ species, language = "vi" }) {
 
   return (
     <section className="px-4 sm:px-6 lg:px-8 py-3 max-w-5xl mx-auto">
-      <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/15 transition-colors">
+      <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-[#0f172a]/10 hover:border-[#0f172a]/10 transition-colors">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Thông số tọa độ & phân vùng */}
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs sm:text-sm">
             {/* Vùng biển */}
             <div className="flex items-center gap-2">
-              <MapPin size={16} className="text-sky-400 shrink-0" />
+              <MapPin size={16} className="text-[#0284c7] shrink-0" />
               <div>
-                <span className="text-slate-400 text-xs block">
+                <span className="text-[#475569] text-xs block">
                   {isEn ? "Distribution Zone" : "Vùng phân bố"}
                 </span>
-                <span className="text-white font-semibold">
+                <span className="text-[#0f172a] font-semibold">
                   {zoneName}
                 </span>
               </div>
             </div>
 
             {/* Tọa độ */}
-            <div className="flex items-center gap-2 border-l border-white/10 pl-4 sm:pl-6">
+            <div className="flex items-center gap-2 border-l border-[#0f172a]/10 pl-4 sm:pl-6">
               <Compass size={16} className="text-teal-400 shrink-0" />
               <div>
-                <span className="text-slate-400 text-xs block">
+                <span className="text-[#475569] text-xs block">
                   {isEn ? "Coordinates" : "Tọa độ"}
                 </span>
-                <span className="text-cyan-200 font-mono font-medium text-xs">
+                <span className="text-[#0284c7] font-mono font-medium text-xs">
                   {zoneInfo.lat}, {zoneInfo.lng}
                 </span>
               </div>
@@ -77,13 +77,13 @@ export function SpeciesDistributionSpecs({ species, language = "vi" }) {
 
             {/* Môi trường sống */}
             {habitatText && (
-              <div className="flex items-center gap-2 border-l border-white/10 pl-4 sm:pl-6 hidden lg:flex">
-                <Waves size={16} className="text-slate-400 shrink-0" />
+              <div className="flex items-center gap-2 border-l border-[#0f172a]/10 pl-4 sm:pl-6 hidden lg:flex">
+                <Waves size={16} className="text-[#475569] shrink-0" />
                 <div>
-                  <span className="text-slate-400 text-xs block">
+                  <span className="text-[#475569] text-xs block">
                     {isEn ? "Habitat" : "Môi trường sống"}
                   </span>
-                  <span className="text-slate-300">
+                  <span className="text-[#334155]">
                     {habitatText}
                   </span>
                 </div>

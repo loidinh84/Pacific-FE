@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Edit,
   Eye,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../../../hooks/useTheme";
 import { FishHidden } from "../../../assets/Images";
+import { fetchAdminSpeciesViews } from "../../../services/adminStatsApi";
 
 export default function SpeciesExpandedDetail({
   selectedSpecies,
@@ -22,14 +24,49 @@ export default function SpeciesExpandedDetail({
   handleDelete,
 }) {
   const { isDark } = useTheme();
+  const [dailyViews, setDailyViews] = useState([]);
+  const [loadingViews, setLoadingViews] = useState(false);
+
+  useEffect(() => {
+    if (!selectedSpecies?.id || activeDetailTab !== "stats") return;
+
+    let isMounted = true;
+    setLoadingViews(true);
+    fetchAdminSpeciesViews(selectedSpecies.id, 7)
+      .then((res) => {
+        if (!isMounted) return;
+        if (res?.success && Array.isArray(res.data)) {
+          setDailyViews(res.data);
+        } else {
+          setDailyViews([]);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setDailyViews([]);
+      })
+      .finally(() => {
+        if (isMounted) setLoadingViews(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedSpecies?.id, activeDetailTab]);
 
   if (!selectedSpecies) return null;
 
-  // Generate 7-day mock view distribution based on current total views
   const totalViews = Number(selectedSpecies.views) || 0;
-  const dayWeights = [0.12, 0.08, 0.15, 0.1, 0.18, 0.22, 0.15];
-  const dayLabels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
-  const maxDayView = Math.max(1, ...dayWeights.map((w) => Math.round(totalViews * w)));
+  const chartData = dailyViews.length > 0
+    ? dailyViews
+    : Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        return {
+          label: `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`,
+          count: 0,
+        };
+      });
+  const maxDayView = Math.max(1, ...chartData.map((d) => Number(d.count) || 0));
 
   return (
     <tr>
@@ -333,29 +370,35 @@ export default function SpeciesExpandedDetail({
                 </div>
 
                 <div className="flex items-end justify-between gap-2 h-28 pt-4 px-2">
-                  {dayLabels.map((label, index) => {
-                    const count = Math.round(totalViews * dayWeights[index]);
-                    const heightPercent = Math.max(12, Math.round((count / maxDayView) * 100));
+                  {loadingViews ? (
+                    <div className="w-full h-full flex items-center justify-center text-xs opacity-60">
+                      Đang tải dữ liệu lượt xem...
+                    </div>
+                  ) : (
+                    chartData.map((day, index) => {
+                      const count = Number(day.count) || 0;
+                      const heightPercent = count === 0 ? 6 : Math.max(12, Math.round((count / maxDayView) * 100));
 
-                    return (
-                      <div key={label} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
-                        <span className="text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400 font-bold">
-                          {count}
-                        </span>
-                        <div
-                          style={{ height: `${heightPercent}%` }}
-                          className={`w-full max-w-[28px] rounded-t-lg transition-all duration-300 group-hover:brightness-125 ${
-                            index === 6
-                              ? "bg-gradient-to-t from-cyan-600 to-cyan-400 shadow-md shadow-cyan-500/20"
-                              : isDark
-                              ? "bg-cyan-500/40 hover:bg-cyan-500/60"
-                              : "bg-cyan-200 hover:bg-cyan-300"
-                          }`}
-                        />
-                        <span className="text-[11px] font-medium opacity-60">{label}</span>
-                      </div>
-                    );
-                  })}
+                      return (
+                        <div key={day.label || index} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+                          <span className="text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400 font-bold">
+                            {count}
+                          </span>
+                          <div
+                            style={{ height: `${heightPercent}%` }}
+                            className={`w-full max-w-[28px] rounded-t-lg transition-all duration-300 group-hover:brightness-125 ${
+                              index === chartData.length - 1
+                                ? "bg-gradient-to-t from-cyan-600 to-cyan-400 shadow-md shadow-cyan-500/20"
+                                : isDark
+                                ? "bg-cyan-500/40 hover:bg-cyan-500/60"
+                                : "bg-cyan-200 hover:bg-cyan-300"
+                            }`}
+                          />
+                          <span className="text-[11px] font-medium opacity-60">{day.label}</span>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
 

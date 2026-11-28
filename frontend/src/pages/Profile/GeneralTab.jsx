@@ -140,15 +140,15 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
   return (
     <div className="space-y-6">
       {/* 1. THẺ THÔNG TIN HỒ SƠ */}
-      <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8">
-        <div className="flex items-center justify-between pb-5 border-b border-white/10 mb-6">
-          <h2 className="text-lg font-bold text-white font-heading flex items-center gap-2.5">
+      <div className="liquid-glass backdrop-blur-md border border-[#0f172a]/10 rounded-2xl p-6 sm:p-8">
+        <div className="flex items-center justify-between pb-5 border-b border-[#0f172a]/10 mb-6">
+          <h2 className="text-lg font-bold text-[#0f172a] font-heading flex items-center gap-2.5">
             <User size={20} className="text-pacific-cyan" />
             <span>{isEn ? "Profile Information" : "Thông tin hồ sơ"}</span>
           </h2>
           <button
             onClick={onOpenEditModal}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-semibold text-white transition-all active:scale-95 cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl liquid-glass-subtle hover:liquid-glass-subtle border border-[#0f172a]/10 text-xs font-semibold text-[#0f172a] transition-all active:scale-95 cursor-pointer"
           >
             <Edit3 size={14} className="text-pacific-cyan" />
             <span>{isEn ? "Edit Profile" : "Chỉnh sửa"}</span>
@@ -159,17 +159,17 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
           {/* Avatar Area */}
           <div className="md:col-span-3 flex flex-col items-center justify-center">
             <div className="relative group">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#161f3e] border border-white/20 flex items-center justify-center overflow-hidden">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#161f3e] border border-[#0f172a]/10 flex items-center justify-center overflow-hidden">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-3xl font-black text-white">
+                  <span className="text-3xl font-bold text-[#0f172a]">
                     {user?.username?.charAt(0).toUpperCase() || "U"}
                   </span>
                 )}
               </div>
             </div>
-            <span className="mt-3 text-xs font-semibold text-white/50">
+            <span className="mt-3 text-xs font-semibold text-[#475569]">
               @{user?.username || "user"}
             </span>
           </div>
@@ -177,45 +177,45 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
           {/* User Fields List */}
           <div className="md:col-span-9 space-y-3.5">
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-              <span className="sm:col-span-3 text-xs font-semibold text-white/60">
+              <span className="sm:col-span-3 text-xs font-semibold text-[#334155]">
                 {isEn ? "Full Name:" : "Họ tên:"}
               </span>
-              <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-white">
-                {user?.fullName || <span className="text-white/40 italic">{isEn ? "Not updated" : "Chưa cập nhật"}</span>}
+              <div className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-sm font-medium text-[#0f172a]">
+                {user?.fullName || <span className="text-[#475569] italic">{isEn ? "Not updated" : "Chưa cập nhật"}</span>}
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-              <span className="sm:col-span-3 text-xs font-semibold text-white/60">Email:</span>
-              <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-white">
+              <span className="sm:col-span-3 text-xs font-semibold text-[#334155]">Email:</span>
+              <div className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-sm font-medium text-[#0f172a]">
                 {user?.email || "..."}
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-              <span className="sm:col-span-3 text-xs font-semibold text-white/60">
+              <span className="sm:col-span-3 text-xs font-semibold text-[#334155]">
                 {isEn ? "Date of Birth:" : "Ngày sinh:"}
               </span>
-              <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-white">
+              <div className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-sm font-medium text-[#0f172a]">
                 {formatDateDisplay(user?.dateOfBirth)}
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-              <span className="sm:col-span-3 text-xs font-semibold text-white/60">
+              <span className="sm:col-span-3 text-xs font-semibold text-[#334155]">
                 {isEn ? "Phone Number:" : "Số điện thoại:"}
               </span>
-              <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-white">
-                {user?.phoneNumber || <span className="text-white/40 italic">{isEn ? "Not updated" : "Chưa cập nhật"}</span>}
+              <div className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-sm font-medium text-[#0f172a]">
+                {user?.phoneNumber || <span className="text-[#475569] italic">{isEn ? "Not updated" : "Chưa cập nhật"}</span>}
               </div>
             </div>
 
             {user?.bio && (
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-start">
-                <span className="sm:col-span-3 text-xs font-semibold text-white/60 pt-2">
+                <span className="sm:col-span-3 text-xs font-semibold text-[#334155] pt-2">
                   {isEn ? "Biography:" : "Tiểu sử:"}
                 </span>
-                <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-normal text-white/85 leading-relaxed">
+                <div className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-xs font-normal text-[#0f172a] leading-relaxed">
                   {user.bio}
                 </div>
               </div>
@@ -225,38 +225,38 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
       </div>
 
       {/* 2. THẺ THAY ĐỔI EMAIL */}
-      <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8">
-        <h2 className="text-lg font-bold text-white font-heading mb-6 flex items-center gap-2.5">
+      <div className="liquid-glass backdrop-blur-md border border-[#0f172a]/10 rounded-2xl p-6 sm:p-8">
+        <h2 className="text-lg font-bold text-[#0f172a] font-heading mb-6 flex items-center gap-2.5">
           <Mail size={20} className="text-pacific-cyan" />
           <span>{isEn ? "Change Email" : "Thay đổi email"}</span>
         </h2>
 
         {emailError && (
-          <div className="p-3 mb-4 rounded-xl text-xs bg-rose-500/20 border border-rose-500/40 text-rose-200 flex items-center gap-2">
-            <AlertCircle size={16} className="shrink-0 text-rose-400" />
+          <div className="p-3 mb-4 rounded-xl text-xs bg-rose-600/10 border border-rose-500/40 text-rose-700 flex items-center gap-2">
+            <AlertCircle size={16} className="shrink-0 text-rose-700" />
             <span>{emailError}</span>
           </div>
         )}
 
         {emailSuccess && (
-          <div className="p-3 mb-4 rounded-xl text-xs bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 flex items-center gap-2">
-            <CheckCircle2 size={16} className="shrink-0 text-emerald-400" />
+          <div className="p-3 mb-4 rounded-xl text-xs bg-emerald-600/10 border border-emerald-500/40 text-emerald-700 flex items-center gap-2">
+            <CheckCircle2 size={16} className="shrink-0 text-emerald-700" />
             <span>{emailSuccess}</span>
           </div>
         )}
 
         <form onSubmit={handleChangeEmail} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/60">
+            <label className="sm:col-span-3 text-xs font-semibold text-[#334155]">
               {isEn ? "Current Email:" : "Email hiện tại:"}
             </label>
-            <div className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white/60 select-none">
+            <div className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-sm text-[#334155] select-none">
               {user?.email || "..."}
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+            <label className="sm:col-span-3 text-xs font-semibold text-[#334155]">
               {isEn ? "New Email:" : "Email mới:"}
             </label>
             <input
@@ -265,12 +265,12 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               placeholder={isEn ? "Enter new email address" : "Nhập địa chỉ email mới"}
-              className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
+              className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 focus:border-pacific-cyan rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+            <label className="sm:col-span-3 text-xs font-semibold text-[#334155]">
               {isEn ? "Current Password:" : "Mật khẩu hiện tại:"}
             </label>
             <input
@@ -279,7 +279,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
               value={emailCurrentPassword}
               onChange={(e) => setEmailCurrentPassword(e.target.value)}
               placeholder={isEn ? "Enter current password to verify" : "Nhập mật khẩu hiện tại để xác nhận"}
-              className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
+              className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 focus:border-pacific-cyan rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
@@ -303,29 +303,29 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
       </div>
 
       {/* 3. THẺ THAY ĐỔI MẬT KHẨU */}
-      <div className="bg-[#182245]/80 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8">
-        <h2 className="text-lg font-bold text-white font-heading mb-6 flex items-center gap-2.5">
+      <div className="liquid-glass backdrop-blur-md border border-[#0f172a]/10 rounded-2xl p-6 sm:p-8">
+        <h2 className="text-lg font-bold text-[#0f172a] font-heading mb-6 flex items-center gap-2.5">
           <Lock size={20} className="text-pacific-cyan" />
           <span>{isEn ? "Change Password" : "Thay đổi mật khẩu"}</span>
         </h2>
 
         {passwordError && (
-          <div className="p-3 mb-4 rounded-xl text-xs bg-rose-500/20 border border-rose-500/40 text-rose-200 flex items-center gap-2">
-            <AlertCircle size={16} className="shrink-0 text-rose-400" />
+          <div className="p-3 mb-4 rounded-xl text-xs bg-rose-600/10 border border-rose-500/40 text-rose-700 flex items-center gap-2">
+            <AlertCircle size={16} className="shrink-0 text-rose-700" />
             <span>{passwordError}</span>
           </div>
         )}
 
         {passwordSuccess && (
-          <div className="p-3 mb-4 rounded-xl text-xs bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 flex items-center gap-2">
-            <CheckCircle2 size={16} className="shrink-0 text-emerald-400" />
+          <div className="p-3 mb-4 rounded-xl text-xs bg-emerald-600/10 border border-emerald-500/40 text-emerald-700 flex items-center gap-2">
+            <CheckCircle2 size={16} className="shrink-0 text-emerald-700" />
             <span>{passwordSuccess}</span>
           </div>
         )}
 
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+            <label className="sm:col-span-3 text-xs font-semibold text-[#334155]">
               {isEn ? "Old Password:" : "Mật khẩu cũ:"}
             </label>
             <input
@@ -334,12 +334,12 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
               placeholder={isEn ? "Enter current password" : "Nhập mật khẩu hiện tại"}
-              className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
+              className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 focus:border-pacific-cyan rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+            <label className="sm:col-span-3 text-xs font-semibold text-[#334155]">
               {isEn ? "New Password:" : "Mật khẩu mới:"}
             </label>
             <input
@@ -348,12 +348,12 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder={isEn ? "New password (at least 6 characters)" : "Nhập mật khẩu mới (ít nhất 6 ký tự)"}
-              className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
+              className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 focus:border-pacific-cyan rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-            <label className="sm:col-span-3 text-xs font-semibold text-white/70">
+            <label className="sm:col-span-3 text-xs font-semibold text-[#334155]">
               {isEn ? "Confirm New Password:" : "Xác nhận mật khẩu mới:"}
             </label>
             <input
@@ -362,7 +362,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder={isEn ? "Re-enter new password" : "Nhập lại mật khẩu mới"}
-              className="sm:col-span-9 px-4 py-2.5 bg-white/5 border border-white/15 focus:border-pacific-cyan rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none transition-all"
+              className="sm:col-span-9 px-4 py-2.5 liquid-glass-subtle border border-[#0f172a]/10 focus:border-pacific-cyan rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 

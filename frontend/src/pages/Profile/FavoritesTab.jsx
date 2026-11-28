@@ -36,8 +36,8 @@ export default function FavoritesTab() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white font-heading flex items-center gap-2.5">
-          <Heart size={22} className="text-rose-400 fill-rose-400/20" />
+        <h2 className="text-xl font-bold text-[#0f172a] font-heading flex items-center gap-2.5">
+          <Heart size={22} className="text-rose-700 fill-rose-400/20" />
           <span>
             {t("profile.tabFavorites", "Sinh vật yêu thích")} ({pagination.total})
           </span>
@@ -45,25 +45,25 @@ export default function FavoritesTab() {
       </div>
 
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-[#1b254b]/50 border border-white/10 rounded-3xl">
+        <div className="flex flex-col items-center justify-center py-20 liquid-glass border border-[#0f172a]/10 rounded-3xl">
           <Loader2 size={32} className="text-pacific-cyan animate-spin mb-3" />
-          <p className="text-xs text-white/60">
+          <p className="text-xs text-[#334155]">
             {isEn ? "Loading favorite collection..." : "Đang tải bộ sưu tập yêu thích..."}
           </p>
         </div>
       ) : error ? (
-        <div className="p-6 bg-rose-500/10 border border-rose-500/30 rounded-3xl text-center text-rose-200 text-sm">
+        <div className="p-6 bg-rose-500/10 border border-rose-500/30 rounded-3xl text-center text-rose-700 text-sm">
           {error}
         </div>
       ) : favorites.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 px-6 bg-[#1b254b]/60 border border-white/10 rounded-2xl text-center">
-          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-4">
+        <div className="flex flex-col items-center justify-center py-20 px-6 liquid-glass border border-[#0f172a]/10 rounded-2xl text-center">
+          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-700 mb-4">
             <Heart size={28} />
           </div>
-          <h3 className="text-base font-bold text-white mb-1">
+          <h3 className="text-base font-bold text-[#0f172a] mb-1">
             {t("profile.emptyFavorites", "Chưa có sinh vật yêu thích")}
           </h3>
-          <p className="text-xs text-white/50 max-w-sm mb-5">
+          <p className="text-xs text-[#475569] max-w-sm mb-5">
             {t(
               "profile.emptyFavoritesDesc",
               "Bạn chưa lưu sinh vật nào vào danh sách yêu thích. Hãy khám phá bách khoa sinh vật và thả tim những loài bạn ấn tượng nhất!"
@@ -84,9 +84,9 @@ export default function FavoritesTab() {
               <Link
                 key={item.creatureId}
                 to={`/species/${item.slug || item.creatureId}`}
-                className="group bg-[#182245]/80 hover:bg-[#1f2b56] border border-white/10 hover:border-pacific-cyan/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                className="group liquid-glass hover:bg-white/90 border border-[#0f172a]/10 hover:border-pacific-cyan/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col"
               >
-                <div className="relative aspect-4/3 w-full bg-[#121933] overflow-hidden">
+                <div className="relative aspect-4/3 w-full liquid-glass-strong overflow-hidden">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -95,21 +95,21 @@ export default function FavoritesTab() {
                       e.target.src = "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80";
                     }}
                   />
-                  <div className="absolute top-2.5 right-2.5 p-1.5 rounded-full bg-black/40 backdrop-blur-md text-rose-400 border border-white/10">
+                  <div className="absolute top-2.5 right-2.5 p-1.5 rounded-full bg-black/40 backdrop-blur-md text-rose-400 border border-[#0f172a]/10">
                     <Heart size={14} className="fill-rose-500" />
                   </div>
                 </div>
 
                 <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-pacific-cyan transition-colors truncate">
+                    <h4 className="text-sm font-bold text-[#0f172a] group-hover:text-pacific-cyan transition-colors truncate">
                       {item.name}
                     </h4>
-                    <p className="text-[11px] text-white/50 italic truncate">
+                    <p className="text-[11px] text-[#475569] italic truncate">
                       {item.scientificName}
                     </p>
                   </div>
-                  <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[10px] text-white/40">
+                  <div className="mt-3 pt-2.5 border-t border-[#0f172a]/10 flex items-center justify-between text-[10px] text-[#475569]">
                     <span>Mã: {item.code}</span>
                     <span className="text-pacific-cyan font-semibold group-hover:underline">Chi tiết →</span>
                   </div>
@@ -124,17 +124,17 @@ export default function FavoritesTab() {
               <button
                 onClick={() => loadFavorites(pagination.page - 1)}
                 disabled={pagination.page <= 1}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-white transition-all"
+                className="p-2 rounded-xl liquid-glass-subtle hover:liquid-glass-subtle disabled:opacity-30 disabled:cursor-not-allowed text-[#0f172a] transition-all"
               >
                 <ChevronLeft size={16} />
               </button>
-              <span className="text-xs font-semibold text-white/70 px-3">
+              <span className="text-xs font-semibold text-[#334155] px-3">
                 Trang {pagination.page} / {pagination.totalPages}
               </span>
               <button
                 onClick={() => loadFavorites(pagination.page + 1)}
                 disabled={pagination.page >= pagination.totalPages}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-white transition-all"
+                className="p-2 rounded-xl liquid-glass-subtle hover:liquid-glass-subtle disabled:opacity-30 disabled:cursor-not-allowed text-[#0f172a] transition-all"
               >
                 <ChevronRight size={16} />
               </button>

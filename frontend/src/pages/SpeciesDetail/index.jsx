@@ -271,37 +271,37 @@ export default function SpeciesDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0f2744] text-white flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+      <div className="min-h-screen text-[#0f172a] flex flex-col justify-between selection:bg-sky-500/20">
         <Navbar />
         <main className="flex-1 max-w-6xl mx-auto px-4 md:px-8 pt-24 pb-16 w-full">
           {/* Skeleton Breadcrumbs */}
-          <div className="w-48 h-4 bg-white/10 rounded mb-6 animate-pulse" />
+          <div className="w-48 h-4 bg-[#0f172a]/10 rounded mb-6 animate-pulse" />
 
           {/* Skeleton Header */}
           <div className="space-y-3 mb-8 animate-pulse">
-            <div className="w-64 sm:w-80 h-10 bg-white/15 rounded-xl" />
-            <div className="w-44 h-5 bg-white/10 rounded-lg" />
-            <div className="w-full max-w-2xl h-14 bg-white/5 rounded-xl" />
+            <div className="w-64 sm:w-80 h-10 bg-white/70 rounded-xl" />
+            <div className="w-44 h-5 bg-white/60 rounded-lg" />
+            <div className="w-full max-w-2xl h-14 bg-white/50 rounded-xl" />
           </div>
 
           {/* Skeleton Quick stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6 animate-pulse">
-            <div className="h-20 bg-white/10 rounded-2xl" />
-            <div className="h-20 bg-white/10 rounded-2xl" />
-            <div className="h-20 bg-white/10 rounded-2xl" />
-            <div className="h-20 bg-white/10 rounded-2xl" />
+            <div className="h-20 liquid-glass rounded-2xl" />
+            <div className="h-20 liquid-glass rounded-2xl" />
+            <div className="h-20 liquid-glass rounded-2xl" />
+            <div className="h-20 liquid-glass rounded-2xl" />
           </div>
 
           {/* Skeleton Image Coverflow */}
-          <div className="w-full h-[260px] sm:h-[360px] rounded-2xl bg-white/[0.04] border border-white/10 mb-10 flex flex-col items-center justify-center gap-3">
-            <div className="w-9 h-9 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
-            <span className="text-xs text-slate-300 font-medium">
+          <div className="w-full h-[260px] sm:h-[360px] rounded-2xl liquid-glass mb-10 flex flex-col items-center justify-center gap-3">
+            <div className="w-9 h-9 border-2 border-[#0284c7]/30 border-t-[#0284c7] rounded-full animate-spin" />
+            <span className="text-xs text-[#334155] font-medium">
               {t("speciesDetail.loadingSpecies", "Đang tải dữ liệu sinh vật Biển Đông...")}
             </span>
           </div>
 
           {/* Skeleton Taxonomy */}
-          <div className="w-full h-36 bg-white/[0.04] border border-white/10 rounded-2xl animate-pulse" />
+          <div className="w-full h-36 liquid-glass rounded-2xl animate-pulse" />
         </main>
         <Footer />
       </div>
@@ -310,18 +310,18 @@ export default function SpeciesDetail() {
 
   if (!species) {
     return (
-      <div className="min-h-screen bg-[#0f2744] flex flex-col justify-between text-white selection:bg-cyan-500 selection:text-black">
+      <div className="min-h-screen flex flex-col justify-between text-[#0f172a] selection:bg-sky-500/20">
         <Navbar />
         <main className="flex-1 flex items-center justify-center px-4 py-24">
-          <div className="text-center max-w-md p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl space-y-4">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
-              <Compass size={28} className="text-cyan-400/70" />
+          <div className="text-center max-w-md p-8 rounded-3xl liquid-glass-strong space-y-4">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-sky-600/10 border border-sky-600/20 flex items-center justify-center text-[#0284c7]">
+              <Compass size={28} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-[#0f172a]">
                 {t("speciesDetail.notFoundTitle", "Không tìm thấy sinh vật")}
               </h2>
-              <p className="text-sm text-slate-300 mt-1.5 leading-relaxed">
+              <p className="text-sm text-[#334155] mt-1.5 leading-relaxed">
                 {t(
                   "speciesDetail.notFoundDesc",
                   "Sinh vật này không tồn tại trong danh mục hoặc đường dẫn chưa chính xác."
@@ -330,7 +330,7 @@ export default function SpeciesDetail() {
             </div>
             <button
               onClick={() => navigate(searchBackUrl)}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-semibold cursor-pointer transition-all inline-flex items-center gap-2 text-white shadow-md shadow-blue-900/30"
+              className="px-5 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] rounded-xl text-sm font-medium cursor-pointer transition-colors inline-flex items-center gap-2 text-white shadow-sm"
             >
               <ArrowLeft size={16} />
               <span>{t("speciesDetail.backToSearch", "Quay lại tìm kiếm")}</span>
@@ -343,7 +343,7 @@ export default function SpeciesDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f2744] text-white flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen text-[#0f172a] flex flex-col justify-between selection:bg-sky-500/20">
       <Navbar />
 
       <main className="flex-1 pb-16">

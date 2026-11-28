@@ -28,7 +28,7 @@ export function NewsFilterBar({
 
   return (
     <div className="max-w-6xl mx-auto px-4 mb-10 mt-2 relative z-30">
-      <div className="p-4 md:p-5 rounded-2xl bg-[#142d4c]/90 border border-white/15 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-5 shadow-lg">
+      <div className="p-4 md:p-5 rounded-2xl liquid-glass border border-[#0f172a]/10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-5 shadow-lg">
         {/* Left: Category Pill Chips */}
         <div className="flex items-center gap-2.5 overflow-x-auto pb-3 lg:pb-0 custom-scrollbar-thin">
           <button
@@ -36,7 +36,7 @@ export function NewsFilterBar({
             className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
               !selectedCategory
                 ? "bg-sky-600 text-white shadow-sm"
-                : "bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
+                : "liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:liquid-glass-subtle border border-[#0f172a]/10"
             }`}
           >
             {t("news.allCategories")}
@@ -47,7 +47,7 @@ export function NewsFilterBar({
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="w-24 h-8 rounded-xl bg-white/5 animate-pulse border border-white/10"
+                  className="w-24 h-8 rounded-xl liquid-glass-subtle animate-pulse border border-[#0f172a]/10"
                 />
               ))}
             </div>
@@ -61,7 +61,7 @@ export function NewsFilterBar({
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer flex items-center gap-1.5 ${
                     isSelected
                       ? "bg-sky-600 text-white shadow-sm"
-                      : "bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
+                      : "liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:liquid-glass-subtle border border-[#0f172a]/10"
                   }`}
                 >
                   <span>{getCategoryLabel(t, cat.slug) || cat.name}</span>
@@ -72,27 +72,27 @@ export function NewsFilterBar({
         </div>
 
         {/* Right: Custom Glassmorphic Sort Dropdown */}
-        <div className="flex items-center gap-3 shrink-0 pt-4 lg:pt-0 border-t border-white/10 lg:border-t-0">
+        <div className="flex items-center gap-3 shrink-0 pt-4 lg:pt-0 border-t border-[#0f172a]/10 lg:border-t-0">
           <div className="relative" ref={sortDropdownRef}>
             <button
               type="button"
               onClick={() => setIsSortOpen(!isSortOpen)}
-              className="flex items-center gap-2 px-3.5 py-2 text-white/90 hover:text-white bg-white/5 hover:bg-white/10 border border-white/15 rounded-xl text-xs font-semibold cursor-pointer transition-all active:scale-95"
+              className="flex items-center gap-2 px-3.5 py-2 text-[#0f172a] hover:text-[#0f172a] liquid-glass-subtle hover:liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-xs font-semibold cursor-pointer transition-all active:scale-95"
             >
-              <ArrowUpDown size={13} className="text-cyan-400" />
+              <ArrowUpDown size={13} className="text-[#0284c7]" />
               <span>{currentSortObj.label}</span>
               <ChevronDown
                 size={13}
                 className={`transition-transform duration-200 ${
-                  isSortOpen ? "rotate-180 text-cyan-400" : "text-white/60"
+                  isSortOpen ? "rotate-180 text-[#0284c7]" : "text-[#334155]"
                 }`}
               />
             </button>
 
             {/* Dropdown Menu */}
             {isSortOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-[#0f2744] border border-white/20 rounded-2xl shadow-2xl p-1.5 z-[60] animate-in fade-in zoom-in-95 duration-150">
-                <div className="px-3 py-1.5 text-[10px] font-semibold text-white/40 border-b border-white/10 mb-1">
+              <div className="absolute right-0 mt-2 w-48 liquid-glass-strong border border-[#0f172a]/10 rounded-2xl shadow-2xl p-1.5 z-[60] animate-in fade-in zoom-in-95 duration-150">
+                <div className="px-3 py-1.5 text-[10px] font-semibold text-[#475569] border-b border-[#0f172a]/10 mb-1">
                   Sắp xếp bài viết
                 </div>
                 {sortOptions.map((opt) => {
@@ -107,12 +107,12 @@ export function NewsFilterBar({
                       }}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-sky-500/20 text-sky-200 border border-sky-400/30"
-                          : "text-white/80 hover:text-white hover:bg-white/10 border border-transparent"
+                          ? "bg-sky-600/10 text-[#0284c7] border border-sky-600/25"
+                          : "text-[#0f172a] hover:text-[#0f172a] hover:liquid-glass-subtle border border-transparent"
                       }`}
                     >
                       <span>{opt.label}</span>
-                      {isSelected && <Check size={14} className="text-cyan-400" />}
+                      {isSelected && <Check size={14} className="text-[#0284c7]" />}
                     </button>
                   );
                 })}

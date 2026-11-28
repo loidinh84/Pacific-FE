@@ -57,7 +57,7 @@ export function SocialLoginButtons() {
       <button
         type="button"
         onClick={() => loginWithGoogle()}
-        className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white text-xs font-semibold transition-all cursor-pointer active:translate-y-0.5"
+        className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl liquid-glass-subtle hover:bg-white text-[#0f172a] text-xs font-medium transition-colors cursor-pointer"
       >
         <FcGoogle size={16} />
         <span>Google</span>
@@ -65,7 +65,7 @@ export function SocialLoginButtons() {
       <button
         type="button"
         onClick={handleGithubLogin}
-        className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white text-xs font-semibold transition-all cursor-pointer active:translate-y-0.5"
+        className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl liquid-glass-subtle hover:bg-white text-[#0f172a] text-xs font-medium transition-colors cursor-pointer"
       >
         <FaGithub size={16} />
         <span>GitHub</span>

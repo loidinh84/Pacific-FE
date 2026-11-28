@@ -47,3 +47,15 @@ export const fetchAdminFullDashboard = async (days = 7) => {
   });
   return res.data;
 };
+
+/**
+ * Lấy thống kê lượt xem 7 ngày qua cho 1 sinh vật cụ thể
+ */
+export const fetchAdminSpeciesViews = async (speciesId, days = 7) => {
+  const rootApi = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+  const res = await axios.get(`${rootApi}/admin/species/${speciesId}/views`, {
+    params: { days },
+    ...getAuthHeaders(),
+  });
+  return res.data;
+};

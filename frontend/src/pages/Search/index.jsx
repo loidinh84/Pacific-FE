@@ -421,7 +421,7 @@ export default function Search() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f2744] text-white flex flex-col justify-between">
+    <div className="min-h-screen text-[#0f172a] flex flex-col justify-between">
       <Navbar />
 
       <main className="flex-1 relative z-10 pb-16">

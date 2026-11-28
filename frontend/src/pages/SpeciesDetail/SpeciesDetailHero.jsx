@@ -670,25 +670,25 @@ export function SpeciesDetailHero({ species }) {
   );
 
   return (
-    <section className="relative pt-20 md:pt-24 pb-12 px-4 md:px-8 max-w-6xl mx-auto font-sans">
+    <section className="relative pt-24 md:pt-28 pb-12 px-4 md:px-8 max-w-6xl mx-auto font-sans">
       {/* ── 1. BREADCRUMB & BACK NAVIGATION ── */}
       <div className="flex items-center justify-between gap-4 mb-6">
-        <nav className="flex items-center gap-2 text-xs text-slate-400 overflow-x-auto scrollbar-none py-1">
+        <nav className="flex items-center gap-2 text-xs text-[#475569] overflow-x-auto scrollbar-none py-1">
           <Link
             to="/"
-            className="hover:text-cyan-300 transition-colors shrink-0 flex items-center gap-1"
+            className="hover:text-[#0284c7] transition-colors shrink-0 flex items-center gap-1"
           >
             <span>{t("speciesDetail.home") || "Trang chủ"}</span>
           </Link>
-          <span className="text-slate-600">/</span>
+          <span className="text-[#475569]/50">/</span>
           <Link
             to={searchBackUrl}
-            className="hover:text-cyan-300 transition-colors shrink-0"
+            className="hover:text-[#0284c7] transition-colors shrink-0"
           >
             <span>{t("speciesDetail.catalog") || "Khám phá sinh vật"}</span>
           </Link>
-          <span className="text-slate-600">/</span>
-          <span className="text-cyan-300 font-semibold truncate max-w-[200px] md:max-w-none">
+          <span className="text-[#475569]/50">/</span>
+          <span className="text-[#0284c7] font-medium truncate max-w-[200px] md:max-w-none">
             {speciesName}
           </span>
         </nav>
@@ -701,20 +701,20 @@ export function SpeciesDetailHero({ species }) {
               navigate(searchBackUrl);
             }
           }}
-          className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/10 border border-white/10 transition-all cursor-pointer"
+          className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#334155] hover:text-[#0f172a] px-3 py-1.5 rounded-lg liquid-glass-subtle hover:bg-white transition-colors cursor-pointer"
         >
           <ArrowLeft size={13} />
           <span>{t("speciesDetail.btnBack") || "Quay lại"}</span>
         </button>
       </div>
 
-      {/* ── 2. MAIN HERO HEADER: TIÊU ĐỀ CHÍNH H1 + HUY HIỆU + ACTION BAR ── */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/10">
+      {/* ── 2. MAIN HERO HEADER ── */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-[#0f172a]/10">
         <div className="space-y-3 max-w-3xl">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/25 flex items-center gap-2">
+            <span className="text-xs font-medium px-3 py-1 rounded-full liquid-glass-subtle text-[#0284c7] flex items-center gap-2">
               <span className="flex items-center gap-1">
-                <Layers size={12} className="text-cyan-400" />
+                <Layers size={12} className="text-[#0284c7]" />
                 <span>
                   {taxonomy.class ||
                     taxonomy.phylum ||
@@ -723,9 +723,9 @@ export function SpeciesDetailHero({ species }) {
               </span>
               {specificZone && (
                 <>
-                  <span className="text-cyan-500/40">•</span>
-                  <span className="flex items-center gap-1 text-slate-300">
-                    <Globe size={12} className="text-cyan-400" />
+                  <span className="text-[#475569]/50">•</span>
+                  <span className="flex items-center gap-1 text-[#334155]">
+                    <Globe size={12} className="text-[#0284c7]" />
                     <span>{specificZone}</span>
                   </span>
                 </>
@@ -735,18 +735,18 @@ export function SpeciesDetailHero({ species }) {
 
           {/* Tiêu đề chính */}
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white font-heading tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#0f172a] font-heading tracking-tight leading-tight">
               {speciesName}
             </h1>
             {scientificName && (
-              <p className="text-sm sm:text-base md:text-lg text-cyan-300/90 font-serif italic mt-1 tracking-wide">
+              <p className="text-sm sm:text-base md:text-lg text-[#0284c7] font-serif italic mt-1 tracking-wide">
                 {scientificName}
               </p>
             )}
           </div>
 
-          {/* Đoạn văn giới thiệu ngắn sinh động */}
-          <p className="text-slate-300 text-sm md:text-[15px] leading-relaxed pt-1 max-w-2xl">
+          {/* Đoạn văn giới thiệu ngắn */}
+          <p className="text-[#334155] text-sm md:text-[15px] leading-relaxed pt-1 max-w-2xl">
             {introText}
           </p>
         </div>
@@ -759,21 +759,21 @@ export function SpeciesDetailHero({ species }) {
               onClick={() =>
                 navigate(`/species/${species.slug || species.id}/3d`)
               }
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium transition-colors cursor-pointer border border-sky-400/30 shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-medium transition-colors cursor-pointer shadow-sm"
             >
-              <Box size={16} className="text-sky-200" />
+              <Box size={16} />
               <span>{t("speciesDetail.btnView3D") || "Xem mô hình 3D"}</span>
             </button>
           ) : (
             <div
-              className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg border border-white/10 bg-white/[0.03] text-white/40 text-xs font-medium cursor-not-allowed"
+              className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg border border-[#0f172a]/10 bg-white/45 text-[#475569] text-xs font-medium cursor-not-allowed"
               title={
                 isEn
                   ? "3D model for this species is updating"
                   : "Mô hình 3D cho loài này đang được cập nhật"
               }
             >
-              <Box size={14} className="text-white/30" />
+              <Box size={14} className="text-[#475569]/70" />
               <span>
                 {t("speciesDetail.model3dUpdating") ||
                   (isEn ? "3D Model: Updating" : "Mô hình 3D: Đang cập nhật")}
@@ -781,14 +781,14 @@ export function SpeciesDetailHero({ species }) {
             </div>
           )}
 
-          {/* Nút 2: Phát âm thanh thủy âm (chỉ hiển thị với các loài phát âm thanh sinh học) */}
+          {/* Nút 2: Phát âm thanh thủy âm */}
           {hasSound && (
             <button
               onClick={handleAudioToggle}
-              className={`inline-flex items-center gap-2 text-xs font-medium px-3.5 py-2.5 rounded-lg border transition-colors cursor-pointer ${
+              className={`inline-flex items-center gap-2 text-xs font-medium px-3.5 py-2.5 rounded-lg transition-colors cursor-pointer ${
                 isPlayingAudio
-                  ? "bg-sky-500/20 border-sky-400/40 text-sky-200"
-                  : "bg-white/5 hover:bg-white/12 border-white/15 text-white/90 hover:text-white"
+                  ? "bg-sky-600/15 border border-[#0284c7]/40 text-[#0284c7]"
+                  : "liquid-glass-subtle hover:bg-white text-[#0f172a]"
               }`}
               title={
                 isEn
@@ -798,19 +798,14 @@ export function SpeciesDetailHero({ species }) {
             >
               {isPlayingAudio ? (
                 <>
-                  <VolumeX size={15} className="text-sky-400" />
-                  <span className="text-sky-200 font-medium">
+                  <VolumeX size={15} className="text-[#0284c7]" />
+                  <span className="text-[#0284c7] font-medium">
                     {t("speciesDetail.audioPlaying") || (isEn ? "Playing" : "Đang phát")}
-                  </span>
-                  <span className="flex gap-0.5 ml-0.5 items-center">
-                    <span className="w-1 h-3 bg-sky-400 rounded-full animate-pulse" />
-                    <span className="w-1 h-4 bg-sky-300 rounded-full animate-pulse delay-75" />
-                    <span className="w-1 h-2 bg-sky-400 rounded-full animate-pulse delay-150" />
                   </span>
                 </>
               ) : (
                 <>
-                  <Volume2 size={15} className="text-sky-400" />
+                  <Volume2 size={15} className="text-[#0284c7]" />
                   <span>{t("speciesDetail.audioBtn") || (isEn ? "Sound" : "Âm thanh")}</span>
                 </>
               )}
@@ -820,23 +815,23 @@ export function SpeciesDetailHero({ species }) {
           {/* Nút 3: Yêu thích sinh vật */}
           <button
             onClick={handleToggleFavorite}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer backdrop-blur-md ${
+            className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
               isFavorited
-                ? "bg-rose-500/15 border-rose-400/50 text-rose-300"
-                : "bg-white/5 hover:bg-white/10 border-white/15 text-white/80 hover:text-white"
+                ? "bg-rose-500/12 border border-rose-500/30 text-rose-700"
+                : "liquid-glass-subtle hover:bg-white text-[#0f172a]"
             }`}
             title={isEn ? "Save to favorites" : "Lưu vào danh sách yêu thích"}
           >
             {isFavorited ? (
               <>
-                <Favorited className="w-4 h-4 text-rose-400" />
-                <span className="text-rose-300">
+                <Favorited className="w-4 h-4 text-rose-600" />
+                <span className="text-rose-700">
                   {t("speciesDetail.btnFavorited") || (isEn ? "Favorited" : "Đã lưu")}
                 </span>
               </>
             ) : (
               <>
-                <Favorite className="w-4 h-4 text-white/70" />
+                <Favorite className="w-4 h-4 text-[#475569]" />
                 <span>{t("speciesDetail.btnFavorite") || (isEn ? "Favorite" : "Yêu thích")}</span>
               </>
             )}
@@ -845,19 +840,19 @@ export function SpeciesDetailHero({ species }) {
           {/* Nút 4: Chia sẻ liên kết */}
           <button
             onClick={handleShare}
-            className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white/80 hover:text-white text-xs font-semibold transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg liquid-glass-subtle hover:bg-white text-[#0f172a] text-xs font-medium transition-colors cursor-pointer"
             title={isEn ? "Copy link to share" : "Sao chép liên kết chia sẻ"}
           >
             {isCopied ? (
               <>
-                <Check size={14} className="text-emerald-400" />
-                <span className="text-emerald-300 font-bold">
+                <Check size={14} className="text-emerald-600" />
+                <span className="text-emerald-700 font-medium">
                   {t("speciesDetail.copied") || (isEn ? "Copied" : "Đã chép")}
                 </span>
               </>
             ) : (
               <>
-                <Share2 size={14} className="text-slate-300" />
+                <Share2 size={14} className="text-[#475569]" />
                 <span>{t("speciesDetail.share") || (isEn ? "Share" : "Chia sẻ")}</span>
               </>
             )}
@@ -868,83 +863,81 @@ export function SpeciesDetailHero({ species }) {
       {/* Thông số nhanh */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6">
         {/* Kích thước */}
-        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-4 flex items-center gap-3.5 shadow-sm">
-          <div className="p-2.5 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 shrink-0">
+        <div className="liquid-glass rounded-2xl p-4 flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-slate-900/6 border border-slate-900/12 text-[#1e293b] shrink-0">
             <Gauge size={18} />
           </div>
           <div className="min-w-0">
-            <span className="text-slate-300 text-[11px] block font-medium truncate">
+            <span className="text-[#475569] text-[11px] block font-medium truncate">
               {t("speciesDetail.maxSize") || "Kích thước tối đa"}
             </span>
-            <span className="text-white font-bold text-sm sm:text-base mt-0.5 block truncate">
+            <span className="text-[#0f172a] font-semibold tabular-nums text-sm sm:text-base mt-0.5 block truncate">
               {size || (isEn ? "Updating" : "Đang cập nhật")}
             </span>
           </div>
         </div>
 
         {/* Độ sâu */}
-        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-4 flex items-center gap-3.5 shadow-sm">
-          <div className="p-2.5 rounded-xl bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 shrink-0">
+        <div className="liquid-glass rounded-2xl p-4 flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-slate-900/6 border border-slate-900/12 text-[#1e293b] shrink-0">
             <Compass size={18} />
           </div>
           <div className="min-w-0">
-            <span className="text-slate-300 text-[11px] block font-medium truncate">
+            <span className="text-[#475569] text-[11px] block font-medium truncate">
               {t("speciesDetail.depthZone") || "Vùng nước & Độ sâu"}
             </span>
-            <span className="text-white font-bold text-sm sm:text-base mt-0.5 block truncate">
+            <span className="text-[#0f172a] font-semibold tabular-nums text-sm sm:text-base mt-0.5 block truncate">
               {species.depth || (isEn ? "Updating" : "Đang cập nhật")}
             </span>
           </div>
         </div>
 
         {/* Khối lượng */}
-        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-4 flex items-center gap-3.5 shadow-sm">
-          <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 shrink-0">
+        <div className="liquid-glass rounded-2xl p-4 flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-emerald-600/10 border border-emerald-600/20 text-emerald-700 shrink-0">
             <Scale size={18} />
           </div>
           <div className="min-w-0">
-            <span className="text-slate-300 text-[11px] block font-medium truncate">
+            <span className="text-[#475569] text-[11px] block font-medium truncate">
               {t("speciesDetail.weight") || "Trọng lượng cơ thể"}
             </span>
-            <span className="text-white font-bold text-sm sm:text-base mt-0.5 block truncate">
+            <span className="text-[#0f172a] font-semibold tabular-nums text-sm sm:text-base mt-0.5 block truncate">
               {weight || (isEn ? "Updating" : "Đang cập nhật")}
             </span>
           </div>
         </div>
 
         {/* Tình trạng bảo tồn */}
-        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-4 flex items-center gap-3.5 shadow-sm">
-          <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-400/30 text-rose-300 shrink-0">
+        <div className="liquid-glass rounded-2xl p-4 flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-700 shrink-0">
             <ShieldAlert size={18} />
           </div>
           <div className="min-w-0">
-            <span className="text-slate-300 text-[11px] block font-medium truncate">
+            <span className="text-[#475569] text-[11px] block font-medium truncate">
               {t("speciesDetail.conservationStatus") || "Tình trạng bảo tồn"}
             </span>
-            <span className="text-rose-300 font-bold text-sm sm:text-base mt-0.5 block leading-snug line-clamp-2">
+            <span className="text-rose-700 font-semibold text-sm sm:text-base mt-0.5 block leading-snug line-clamp-2">
               {status || redListMeta.label || "Ít quan tâm (LC)"}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Bộ sưu tập hình ảnh với tương tác Kéo chuột & Vuốt (Mouse Drag & Touch Swipe) */}
+      {/* Bộ sưu tập hình ảnh */}
       <div className="relative py-4 my-2 flex flex-col items-center justify-center bg-transparent select-none">
         {images.length === 0 ? (
-          <div className="w-full max-w-2xl h-[240px] sm:h-[320px] rounded-2xl bg-slate-900/70 border border-white/10 flex flex-col items-center justify-center text-slate-400 gap-2">
-            <Compass size={32} className="text-cyan-400/60" />
+          <div className="w-full max-w-2xl h-[240px] sm:h-[320px] rounded-2xl liquid-glass flex flex-col items-center justify-center text-[#475569] gap-2">
+            <Compass size={32} className="text-[#0284c7]/60" />
             <span className="text-sm font-medium">
               {isEn ? "Species imagery updating" : "Hình ảnh loài đang được cập nhật"}
             </span>
           </div>
         ) : (
           <>
-            {/* Khung sân khấu 3D Image Stack có chiều cao rõ ràng để nút & dấu chấm không đè lên ảnh */}
             <div
               onPointerDown={handlePointerDown}
               className="relative flex items-center justify-center w-full max-w-5xl h-[240px] sm:h-[340px] md:h-[420px] px-4 overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y"
             >
-              {/* Nút chuyển ảnh thủ công */}
               {images.length > 1 && (
                 <>
                   <button
@@ -954,7 +947,7 @@ export function SpeciesDetailHero({ species }) {
                       e.stopPropagation();
                       prevImage();
                     }}
-                    className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/70 hover:bg-slate-800/90 text-white/90 hover:text-white border border-white/25 hover:border-cyan-400 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/30 hover:scale-110 active:scale-95"
+                    className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full liquid-glass-strong text-[#0f172a] hover:text-[#0284c7] transition-colors cursor-pointer"
                     aria-label="Previous image"
                   >
                     <ChevronLeft size={20} />
@@ -966,7 +959,7 @@ export function SpeciesDetailHero({ species }) {
                       e.stopPropagation();
                       nextImage();
                     }}
-                    className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-slate-900/70 hover:bg-slate-800/90 text-white/90 hover:text-white border border-white/25 hover:border-cyan-400 transition-all cursor-pointer backdrop-blur-md shadow-lg shadow-black/30 hover:scale-110 active:scale-95"
+                    className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full liquid-glass-strong text-[#0f172a] hover:text-[#0284c7] transition-colors cursor-pointer"
                     aria-label="Next image"
                   >
                     <ChevronRight size={20} />
@@ -1060,7 +1053,7 @@ export function SpeciesDetailHero({ species }) {
 
             {/* Dots pagination nằm gọn bên dưới khung ảnh */}
             {images.length > 1 && (
-              <div className="flex items-center gap-2 z-20 bg-slate-900/35 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10 mt-4">
+              <div className="flex items-center gap-2 z-20 liquid-glass-subtle px-3 py-1.5 rounded-full mt-4">
                 {images.map((_, i) => (
                   <button
                     key={i}
@@ -1072,8 +1065,8 @@ export function SpeciesDetailHero({ species }) {
                     }}
                     className={`h-1.5 rounded-full transition-all cursor-pointer ${
                       i === activeImageIdx
-                        ? "w-6 bg-cyan-400/75"
-                        : "w-1.5 bg-white/25 hover:bg-white/45"
+                        ? "w-6 bg-[#0284c7]"
+                        : "w-1.5 bg-[#0f172a]/25 hover:bg-[#0f172a]/45"
                     }`}
                     aria-label={`Xem ảnh ${i + 1}`}
                   />
@@ -1261,87 +1254,86 @@ export function SpeciesDetailHero({ species }) {
       </AnimatePresence>
 
       {/* ── 5. HỒ SƠ SINH HỌC & PHÂN LOẠI HỌC KHOA HỌC ── */}
-      <div className="mt-10 pt-8 border-t border-white/10 space-y-6">
-        {/* Tiêu đề mục */}
+      <div className="mt-10 pt-8 border-t border-[#0f172a]/10 space-y-6">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
+          <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading">
             {t("speciesDetail.profileTitle") ||
               "Hồ sơ sinh học & Phân loại học"}
           </h2>
         </div>
 
         {/* Bảng phân loại khoa học */}
-        <div className="bg-[#183c66] border border-white/15 rounded-2xl p-5 shadow-sm">
+        <div className="liquid-glass rounded-2xl p-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
             {/* Giới & Ngành */}
-            <div className="bg-[#112d4e] rounded-xl p-3.5 border border-white/10 space-y-2">
+            <div className="liquid-glass-subtle rounded-xl p-3.5 space-y-2">
               <div>
-                <span className="text-slate-300 text-[11px] block">
+                <span className="text-[#475569] text-[11px] block">
                   {t("speciesDetail.kingdom") || "Giới"}
                 </span>
-                <span className="font-semibold text-white mt-0.5 block leading-snug">
+                <span className="font-semibold text-[#0f172a] mt-0.5 block leading-snug">
                   {taxonomy.kingdom}
                 </span>
               </div>
-              <div className="pt-2 border-t border-white/10">
-                <span className="text-slate-300 text-[11px] block">
+              <div className="pt-2 border-t border-[#0f172a]/8">
+                <span className="text-[#475569] text-[11px] block">
                   {t("speciesDetail.phylum") || "Ngành"}
                 </span>
-                <span className="font-semibold text-white mt-0.5 block leading-snug">
+                <span className="font-semibold text-[#0f172a] mt-0.5 block leading-snug">
                   {taxonomy.phylum}
                 </span>
               </div>
             </div>
 
             {/* Lớp & Bộ */}
-            <div className="bg-[#112d4e] rounded-xl p-3.5 border border-white/10 space-y-2">
+            <div className="liquid-glass-subtle rounded-xl p-3.5 space-y-2">
               <div>
-                <span className="text-slate-300 text-[11px] block">
+                <span className="text-[#475569] text-[11px] block">
                   {t("speciesDetail.class") || "Lớp"}
                 </span>
-                <span className="font-semibold text-cyan-300 mt-0.5 block leading-snug">
+                <span className="font-semibold text-[#0284c7] mt-0.5 block leading-snug">
                   {taxonomy.class}
                 </span>
               </div>
-              <div className="pt-2 border-t border-white/10">
-                <span className="text-slate-300 text-[11px] block">
+              <div className="pt-2 border-t border-[#0f172a]/8">
+                <span className="text-[#475569] text-[11px] block">
                   {t("speciesDetail.order") || "Bộ"}
                 </span>
-                <span className="font-semibold text-white mt-0.5 block leading-snug">
+                <span className="font-semibold text-[#0f172a] mt-0.5 block leading-snug">
                   {taxonomy.order}
                 </span>
               </div>
             </div>
 
             {/* Họ & Chi */}
-            <div className="bg-[#112d4e] rounded-xl p-3.5 border border-white/10 space-y-2">
+            <div className="liquid-glass-subtle rounded-xl p-3.5 space-y-2">
               <div>
-                <span className="text-slate-300 text-[11px] block">
+                <span className="text-[#475569] text-[11px] block">
                   {t("speciesDetail.family") || "Họ"}
                 </span>
-                <span className="font-semibold text-white mt-0.5 block leading-snug">
+                <span className="font-semibold text-[#0f172a] mt-0.5 block leading-snug">
                   {taxonomy.family}
                 </span>
               </div>
-              <div className="pt-2 border-t border-white/10">
-                <span className="text-slate-300 text-[11px] block">
+              <div className="pt-2 border-t border-[#0f172a]/8">
+                <span className="text-[#475569] text-[11px] block">
                   {t("speciesDetail.genus") || "Chi"}
                 </span>
-                <span className="font-semibold text-cyan-300 italic mt-0.5 block leading-snug">
+                <span className="font-semibold text-[#0284c7] italic mt-0.5 block leading-snug">
                   {taxonomy.genus}
                 </span>
               </div>
             </div>
 
             {/* Loài */}
-            <div className="bg-[#112d4e] rounded-xl p-3.5 border border-cyan-400/30 flex flex-col justify-center">
-              <span className="text-cyan-300 text-[11px] block font-semibold">
+            <div className="liquid-glass-subtle rounded-xl p-3.5 border-[#0284c7]/30 flex flex-col justify-center">
+              <span className="text-[#0284c7] text-[11px] block font-semibold">
                 {t("speciesDetail.species") || "Loài"}
               </span>
-              <span className="font-bold text-white text-sm italic mt-1 block leading-snug">
+              <span className="font-bold text-[#0f172a] text-sm italic mt-1 block leading-snug">
                 {taxonomy.species}
               </span>
-              <span className="text-slate-300 text-[11px] mt-1 block">
+              <span className="text-[#475569] text-[11px] mt-1 block">
                 {speciesName}
               </span>
             </div>
@@ -1351,7 +1343,7 @@ export function SpeciesDetailHero({ species }) {
         {/* 4 Chuyên đề đặc điểm sinh thái học chuyên sâu */}
         {scientificDossier.length > 0 && (
           <div className="space-y-3 pt-2">
-            <h3 className="text-sm font-semibold text-slate-200 tracking-wide">
+            <h3 className="text-sm font-semibold text-[#0f172a]">
               {t("speciesDetail.bioFeatures") ||
                 "Đặc điểm sinh học & Sinh thái học"}
             </h3>
@@ -1359,18 +1351,18 @@ export function SpeciesDetailHero({ species }) {
               {scientificDossier.map((dossier, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#183c66] border border-white/15 rounded-2xl p-5 space-y-2.5 shadow-sm"
+                  className="liquid-glass rounded-2xl p-5 space-y-2.5"
                 >
                   <div className="flex items-center gap-2">
                     {dossierIcons[idx % dossierIcons.length]}
-                    <span className="text-cyan-300 text-xs font-bold tracking-wide">
+                    <span className="text-[#0284c7] text-xs font-semibold">
                       {dossier.category}
                     </span>
                   </div>
-                  <h4 className="text-white font-bold text-sm leading-snug">
+                  <h4 className="text-[#0f172a] font-semibold text-sm leading-snug">
                     {dossier.title}
                   </h4>
-                  <p className="text-slate-200 text-xs md:text-sm leading-relaxed font-normal">
+                  <p className="text-[#334155] text-xs md:text-sm leading-relaxed font-normal">
                     {dossier.desc}
                   </p>
                 </div>

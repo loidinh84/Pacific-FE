@@ -69,12 +69,12 @@ export function OceanFunFacts() {
   return (
     <div className="max-w-6xl mx-auto px-4 mb-20">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl md:text-2xl font-black text-white font-heading">
+        <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading">
           {t("searchPage.funFactsTitle")}
         </h2>
         <Link
           to="/news?category=fun-facts"
-          className="inline-flex items-center gap-1.5 text-xs text-sky-400 hover:text-sky-300 font-semibold transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-xs text-[#0284c7] hover:text-[#0369a1] font-medium transition-colors cursor-pointer"
         >
           <span>Xem tất cả</span>
           <ArrowRight size={14} />
@@ -93,51 +93,49 @@ export function OceanFunFacts() {
             <Link
               key={fact.id || fact.slug}
               to={linkTarget}
-              className="bg-[#183c66] hover:bg-[#1f4a7d] border border-white/15 hover:border-sky-400/40 rounded-2xl overflow-hidden transition-all duration-200 group shadow-sm hover:shadow-md hover:-translate-y-1 block cursor-pointer"
+              className="liquid-glass liquid-glass-interactive rounded-2xl overflow-hidden group block cursor-pointer"
             >
               {/* Dải ảnh thu nhỏ */}
-              <div className="relative h-36 overflow-hidden bg-[#112d4e] border-b border-white/10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(56,189,248,0.12)_0%,transparent_70%)]" />
+              <div className="relative h-36 overflow-hidden bg-sky-100 border-b border-[#0f172a]/8">
                 {fact.image ? (
                   <img
                     src={fact.image}
                     alt={title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-500">
-                    <Waves size={32} className="opacity-30" />
+                  <div className="w-full h-full flex items-center justify-center text-[#475569]">
+                    <Waves size={32} className="opacity-35" />
                   </div>
                 )}
-                {/* Biểu tượng đặc trưng - hoàn toàn dùng icon SVG Lucide React, không dùng emoji ký tự */}
-                <span className="absolute top-2.5 right-2.5 p-2 rounded-xl bg-black/50 border border-white/15 select-none shadow-md">
+                <span className="absolute top-2.5 right-2.5 p-2 rounded-xl bg-white/85 backdrop-blur-md border border-white/90 select-none shadow-sm">
                   {getFactIcon(fact)}
                 </span>
               </div>
 
               {/* Nội dung thẻ */}
               <div className="p-5">
-                <span className="inline-block px-2.5 py-0.5 rounded-full bg-cyan-500/12 border border-cyan-500/25 text-cyan-300 text-[10px] font-bold tracking-wider mb-3">
+                <span className="inline-block px-2.5 py-0.5 rounded-md bg-slate-900/6 border border-slate-900/12 text-[#1e293b] text-[11px] font-medium mb-3">
                   {badge}
                 </span>
 
-                <h3 className="text-sm font-bold text-white font-heading leading-snug mb-2 group-hover:text-sky-300 transition-colors line-clamp-2">
+                <h3 className="text-sm font-bold text-[#0f172a] font-heading leading-snug mb-2 group-hover:text-[#0284c7] transition-colors line-clamp-2">
                   {title}
                 </h3>
 
-                <p className="text-xs text-white/60 leading-relaxed mb-4 line-clamp-3">
+                <p className="text-xs text-[#334155] leading-relaxed mb-4 line-clamp-3">
                   {desc}
                 </p>
 
-                {/* Khối thông số ấn tượng */}
-                <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-center">
-                  <p className="text-xl md:text-2xl font-black text-cyan-300 font-heading">
+                {/* Khối thông số */}
+                <div className="p-3 rounded-xl liquid-glass-subtle text-center">
+                  <p className="text-xl md:text-2xl font-bold text-[#0284c7] font-heading tabular-nums">
                     {fact.statVal}
                   </p>
-                  <p className="text-xs text-slate-400 font-semibold tracking-wide mt-1">
+                  <p className="text-xs text-[#475569] font-medium mt-1">
                     {statTitle}
                   </p>
                 </div>

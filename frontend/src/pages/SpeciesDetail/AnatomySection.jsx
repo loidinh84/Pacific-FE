@@ -1024,10 +1024,10 @@ export function AnatomySection({ species }) {
   // Hiển thị mô hình 3D tương tác
   if (hasDedicated3D && resolvedModel3dUrl) {
     return (
-      <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 font-sans">
+      <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-[#0f172a]/10 font-sans">
         {/* Top Header */}
         <div className="mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
+          <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading">
             {t("speciesDetail.anatomyTitle") || "Phân tích và giải phẫu"}
           </h2>
         </div>
@@ -1051,23 +1051,23 @@ export function AnatomySection({ species }) {
   const SystemIcon = currentSystem?.icon || Activity;
 
   return (
-    <section className="py-10 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 font-sans">
+    <section className="py-10 px-4 md:px-8 max-w-6xl mx-auto border-t border-[#0f172a]/10 font-sans">
       {/* ── Tiêu đề & Điều hướng mô hình 3D mẫu ── */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
-            <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
+            <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading">
               {t("speciesDetail.anatomyTitle") || (isEn ? "Anatomy & Physiology" : "Cấu trúc giải phẫu & sinh lý học")}
             </h2>
-            <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+            <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-sky-600/10 text-[#0284c7] border border-sky-600/25">
               {anatomyProfile.groupLabel}
             </span>
           </div>
         </div>
 
         {/* Trạng thái mô hình 3D */}
-        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#112d4e] border border-white/15 text-slate-300 text-xs font-medium shrink-0">
-          <Box size={14} className="text-sky-400" />
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl liquid-glass-subtle border border-[#0f172a]/10 text-[#334155] text-xs font-medium shrink-0">
+          <Box size={14} className="text-[#0284c7]" />
           <span>
             {t(
               "speciesDetail.model3dUpdating",
@@ -1082,15 +1082,15 @@ export function AnatomySection({ species }) {
         {anatomyProfile.metrics.map((m, idx) => (
           <div
             key={idx}
-            className="p-3.5 rounded-xl bg-[#183c66] border border-white/15 shadow-sm"
+            className="p-3.5 rounded-xl liquid-glass border border-[#0f172a]/10 shadow-sm"
           >
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-[#334155]">
               {m.label}
             </p>
-            <p className={`text-base md:text-lg font-bold mt-1 ${m.color || "text-white"}`}>
+            <p className={`text-base md:text-lg font-bold mt-1 ${m.color || "text-[#0f172a]"}`}>
               {m.value}
             </p>
-            <p className="text-[11px] text-slate-300/80 mt-0.5">
+            <p className="text-[11px] text-[#334155] mt-0.5">
               {m.sub}
             </p>
           </div>
@@ -1098,7 +1098,7 @@ export function AnatomySection({ species }) {
       </div>
 
       {/* ── Các tab chọn hệ cơ quan ── */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-5 scrollbar-none border-b border-white/10">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-5 scrollbar-none border-b border-[#0f172a]/10">
         {anatomyProfile.systems.map((sys, idx) => {
           const Icon = sys.icon || Activity;
           const isActive = activeSystemTab === idx;
@@ -1110,10 +1110,10 @@ export function AnatomySection({ species }) {
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                 isActive
                   ? "bg-sky-500 text-white font-bold shadow-sm"
-                  : "bg-[#112d4e] hover:bg-[#183c66] border border-white/10 text-slate-300 hover:text-white"
+                  : "liquid-glass-subtle hover:bg-white/90 border border-[#0f172a]/10 text-[#334155] hover:text-[#0f172a]"
               }`}
             >
-              <Icon size={14} className={isActive ? "text-white" : "text-slate-400"} />
+              <Icon size={14} className={isActive ? "text-[#0f172a]" : "text-slate-400"} />
               <span>{language === "en" ? sys.nameEn : sys.nameVi}</span>
             </button>
           );
@@ -1123,11 +1123,11 @@ export function AnatomySection({ species }) {
       {/* ── Nội dung chi tiết của hệ cơ quan được chọn ── */}
       <div className="space-y-4">
         {/* Khối tóm tắt cơ chế chính */}
-        <div className="p-4 rounded-xl bg-[#143357] border border-sky-400/30 flex items-center gap-3 shadow-sm">
-          <div className="p-2.5 rounded-lg bg-sky-500/20 border border-sky-400/30 text-sky-300 shrink-0">
+        <div className="p-4 rounded-xl liquid-glass-strong border border-sky-600/25 flex items-center gap-3 shadow-sm">
+          <div className="p-2.5 rounded-lg bg-sky-600/10 border border-sky-600/25 text-[#0284c7] shrink-0">
             <SystemIcon size={20} />
           </div>
-          <p className="text-xs md:text-sm text-slate-200 leading-relaxed font-medium">
+          <p className="text-xs md:text-sm text-[#334155] leading-relaxed font-medium">
             {isEn ? (currentSystem.headlineEn || currentSystem.headline) : (currentSystem.headlineVi || currentSystem.headline)}
           </p>
         </div>
@@ -1137,17 +1137,17 @@ export function AnatomySection({ species }) {
           {currentSystem.details.map((detail, idx) => (
             <div
               key={idx}
-              className="p-4 md:p-5 rounded-xl bg-[#183c66] border border-white/15 flex flex-col shadow-sm"
+              className="p-4 md:p-5 rounded-xl liquid-glass border border-[#0f172a]/10 flex flex-col shadow-sm"
             >
               <div className="flex items-center gap-2.5 mb-2">
-                <span className="w-5 h-5 rounded-md bg-sky-500/20 border border-sky-400/30 text-sky-300 flex items-center justify-center text-xs font-mono font-bold shrink-0">
+                <span className="w-5 h-5 rounded-md bg-sky-600/10 border border-sky-600/25 text-[#0284c7] flex items-center justify-center text-xs font-mono font-bold shrink-0">
                   {idx + 1}
                 </span>
-                <h4 className="text-sm font-semibold text-white leading-snug">
+                <h4 className="text-sm font-semibold text-[#0f172a] leading-snug">
                   {isEn ? (detail.titleEn || detail.title) : (detail.titleVi || detail.title)}
                 </h4>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed pl-7 flex-1">
+              <p className="text-xs text-[#334155] leading-relaxed pl-7 flex-1">
                 {isEn ? (detail.descEn || detail.desc) : (detail.descVi || detail.desc)}
               </p>
             </div>
@@ -1156,10 +1156,10 @@ export function AnatomySection({ species }) {
 
         {/* Ghi chú đặc trưng sinh học */}
         {species?.fullBioHighlightsVi && species.fullBioHighlightsVi.length > 0 && (
-          <div className="p-3.5 rounded-xl bg-blue-950/20 border border-blue-500/20 flex items-start gap-2.5 text-xs text-slate-300">
-            <Info size={15} className="text-cyan-400 shrink-0 mt-0.5" />
-            <p className="leading-relaxed text-slate-300/90">
-              <span className="font-semibold text-cyan-300 mr-1.5">
+          <div className="p-3.5 rounded-xl bg-blue-950/20 border border-blue-500/20 flex items-start gap-2.5 text-xs text-[#334155]">
+            <Info size={15} className="text-[#0284c7] shrink-0 mt-0.5" />
+            <p className="leading-relaxed text-[#334155]">
+              <span className="font-semibold text-[#0284c7] mr-1.5">
                 {isEn ? "Biological Note:" : "Ghi nhận sinh học:"}
               </span>
               "{isEn

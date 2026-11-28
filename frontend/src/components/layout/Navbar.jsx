@@ -8,6 +8,8 @@ import {
   HelpCircle,
   Shield,
   Eye,
+  Menu,
+  X,
 } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useScroll } from "../../hooks/useScroll";
@@ -111,7 +113,7 @@ export default function Navbar() {
   ];
 
   const languages = [
-    { code: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
+    { code: "vi", label: "Tiếng Việt", flag: "VI" },
     { code: "en", label: "English", flag: "EN" },
   ];
 
@@ -120,66 +122,73 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,padding] duration-200 ${
         isScrolled
-          ? "bg-[#0f2744]/95 backdrop-blur-md border-b border-white/10 shadow-md py-3"
-          : "bg-transparent"
+          ? "bg-white/95 backdrop-blur-xl border-b border-[#0f172a]/12 shadow-sm py-2.5"
+          : "bg-white/88 backdrop-blur-xl border-b border-[#0f172a]/10 py-3.5"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-2.5 shrink-0">
           <img
             src={systemSettings?.general?.logoUrl || Images.Logo}
             alt={systemSettings?.general?.websiteName || "Logo"}
             className="w-8 h-8 object-contain"
           />
-          <span className="font-heading text-2xl font-bold text-white tracking-tight">
-            {systemSettings?.general?.websiteName || "Pacific"}
+          <span className="font-heading text-xl font-bold text-[#0f172a] tracking-tight">
+            {systemSettings?.general?.websiteName || "Biển Đông"}
           </span>
         </Link>
 
         {/* Desktop links */}
         <ul className="hidden lg:flex items-center gap-1">
-          {navLinks.map((link, index) => (
-            <li key={index}>
-              <a
-                href={link.href}
-                className="flex items-center gap-1 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg text-sm font-medium transition-colors"
-              >
-                {link.label}
-                {link.hasDropdown && <ChevronDown size={13} />}
-              </a>
-            </li>
-          ))}
+          {navLinks.map((link, index) => {
+            const isActive = location.pathname === link.href;
+            return (
+              <li key={index}>
+                <Link
+                  to={link.href}
+                  className={`flex items-center gap-1 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-sky-600/12 text-[#0284c7]"
+                      : "text-[#334155] hover:text-[#0f172a] hover:bg-sky-900/5"
+                  }`}
+                >
+                  {link.label}
+                  {link.hasDropdown && <ChevronDown size={14} />}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
         {/* Desktop actions */}
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-2.5">
           {/* Language Selector Dropdown */}
           <div className="relative" ref={langDropdownRef}>
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 text-white/90 hover:text-white bg-white/5 hover:bg-white/10 border border-white/15 rounded-lg text-xs font-medium cursor-pointer transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 text-[#0f172a] liquid-glass-subtle hover:bg-white/85 rounded-lg text-xs font-medium cursor-pointer transition-colors"
             >
-              <span className="text-sm leading-none">
+              <span className="text-[11px] font-mono font-semibold text-[#0284c7]">
                 {currentLangObj.flag}
               </span>
               <span>{currentLangObj.label}</span>
               <ChevronDown
-                size={13}
-                className={`transition-transform duration-200 ${
+                size={14}
+                className={`transition-transform duration-150 ${
                   isLangOpen
-                    ? "rotate-180 text-sky-400"
-                    : "text-white/60"
+                    ? "rotate-180 text-[#0284c7]"
+                    : "text-[#475569]"
                 }`}
               />
             </button>
 
-            {/* Glassmorphism Language Menu */}
+            {/* Liquid Glass Language Menu */}
             {isLangOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-[#183c66] border border-white/15 rounded-2xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
-                <div className="px-3 py-1.5 text-[10px] font-semibold text-white/40 border-b border-white/10 mb-1">
+              <div className="absolute right-0 mt-2 w-44 liquid-glass-strong rounded-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="px-3 py-1.5 text-xs font-medium text-[#475569] border-b border-[#0f172a]/8 mb-1">
                   {t("nav.language")}
                 </div>
                 {languages.map((lang) => {
@@ -191,20 +200,20 @@ export default function Navbar() {
                         changeLanguage(lang.code);
                         setIsLangOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
                         isSelected
-                          ? "bg-sky-500/20 text-sky-200 border border-sky-400/30"
-                          : "text-white/80 hover:text-white hover:bg-white/10 border border-transparent"
+                          ? "bg-sky-600/12 text-[#0284c7]"
+                          : "text-[#334155] hover:text-[#0f172a] hover:bg-[#0f172a]/5"
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-base leading-none">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-mono font-semibold">
                           {lang.flag}
                         </span>
                         <span>{lang.label}</span>
                       </div>
                       {isSelected && (
-                        <Check size={14} className="text-sky-300" />
+                        <Check size={14} className="text-[#0284c7]" />
                       )}
                     </button>
                   );
@@ -218,9 +227,9 @@ export default function Navbar() {
             <div className="relative" ref={userDropdownRef}>
               <button
                 onClick={() => setIsUserOpen(!isUserOpen)}
-                className="flex items-center gap-2.5 px-3.5 py-1.5 bg-white/10 hover:bg-white/15 border border-white/20 hover:border-white/30 rounded-full text-white text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow-sm"
+                className="flex items-center gap-2 px-3 py-1.5 liquid-glass-subtle hover:bg-white/85 rounded-full text-[#0f172a] text-xs font-medium cursor-pointer transition-colors"
               >
-                <div className="w-6 h-6 rounded-full bg-sky-600 flex items-center justify-center text-white text-[11px] font-bold shadow-sm">
+                <div className="w-6 h-6 rounded-full bg-[#0284c7] flex items-center justify-center text-white text-[11px] font-semibold">
                   {user.username?.charAt(0).toUpperCase() ||
                     user.email?.charAt(0).toUpperCase() ||
                     "U"}
@@ -229,23 +238,23 @@ export default function Navbar() {
                   {user.full_name || user.username || user.email}
                 </span>
                 <ChevronDown
-                  size={13}
-                  className={`transition-transform duration-200 ${
+                  size={14}
+                  className={`transition-transform duration-150 ${
                     isUserOpen
-                      ? "rotate-180 text-sky-300"
-                      : "text-white/60"
+                      ? "rotate-180 text-[#0284c7]"
+                      : "text-[#475569]"
                   }`}
                 />
               </button>
 
-              {/* User Glassmorphism Dropdown Menu */}
+              {/* User Liquid Glass Dropdown Menu */}
               {isUserOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-[#183c66] border border-white/15 rounded-2xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="px-3 py-2 border-b border-white/10 mb-1">
-                    <p className="text-xs font-bold text-white truncate">
+                <div className="absolute right-0 mt-2 w-56 liquid-glass-strong rounded-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="px-3 py-2 border-b border-[#0f172a]/8 mb-1">
+                    <p className="text-xs font-semibold text-[#0f172a] truncate">
                       {user.full_name || user.username}
                     </p>
-                    <p className="text-[11px] text-white/50 truncate">
+                    <p className="text-[11px] text-[#475569] truncate">
                       {user.email}
                     </p>
                   </div>
@@ -255,9 +264,9 @@ export default function Navbar() {
                       <Link
                         to="/admin/species"
                         onClick={() => setIsUserOpen(false)}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/15 transition-all cursor-pointer"
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-[#0284c7] hover:bg-sky-600/10 transition-colors cursor-pointer"
                       >
-                        <Shield size={15} className="text-cyan-400" />
+                        <Shield size={15} />
                         <span>Quản trị hệ thống</span>
                       </Link>
 
@@ -266,10 +275,10 @@ export default function Navbar() {
                           setIsUserOpen(false);
                           setPreviewAsGuest(true);
                         }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-amber-300 hover:text-amber-200 hover:bg-amber-500/15 transition-all cursor-pointer"
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-amber-700 hover:bg-amber-500/10 transition-colors cursor-pointer"
                         title="Tạm ẩn quyền admin để xem trang như một khách vãng lai thực thụ"
                       >
-                        <Eye size={15} className="text-amber-400" />
+                        <Eye size={15} />
                         <span>Xem với tư cách Khách</span>
                       </button>
                     </>
@@ -278,20 +287,19 @@ export default function Navbar() {
                   <Link
                     to="/profile"
                     onClick={() => setIsUserOpen(false)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-[#334155] hover:text-[#0f172a] hover:bg-[#0f172a]/5 transition-colors cursor-pointer"
                   >
-                    <User size={15} className="text-pacific-cyan" />
+                    <User size={15} className="text-[#475569]" />
                     <span>Hồ sơ của tôi</span>
                   </Link>
 
                   <button
                     onClick={() => {
                       setIsUserOpen(false);
-                      // Có thể mở Modal Báo cáo sự cố
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-[#334155] hover:text-[#0f172a] hover:bg-[#0f172a]/5 transition-colors cursor-pointer"
                   >
-                    <HelpCircle size={15} className="text-pacific-cyan" />
+                    <HelpCircle size={15} className="text-[#475569]" />
                     <span>Báo cáo sự cố</span>
                   </button>
 
@@ -300,9 +308,9 @@ export default function Navbar() {
                       setIsUserOpen(false);
                       handleLogout();
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-300 hover:text-rose-200 hover:bg-rose-500/15 transition-all cursor-pointer mt-0.5"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-700 hover:bg-rose-500/10 transition-colors cursor-pointer mt-0.5"
                   >
-                    <LogOut size={15} className="text-rose-400" />
+                    <LogOut size={15} />
                     <span>Đăng xuất</span>
                   </button>
                 </div>
@@ -310,43 +318,54 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              {/* Register Button */}
               <Link
                 to="/register"
-                className="px-4 py-2 rounded-lg text-sm text-slate-300 hover:text-white transition-colors cursor-pointer inline-block"
+                className="px-3.5 py-2 rounded-lg text-sm font-medium text-[#334155] hover:text-[#0f172a] hover:bg-[#0f172a]/5 transition-colors cursor-pointer inline-block"
               >
                 {t("nav.register")}
               </Link>
 
-              {/* Login Button */}
               <Link
                 to="/login"
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-sky-600 text-white hover:bg-sky-500 transition-colors cursor-pointer inline-block active:translate-y-0.5 shadow-sm"
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-[#0284c7] text-white hover:bg-[#0369a1] transition-colors cursor-pointer inline-block shadow-sm"
               >
                 {t("nav.login")}
               </Link>
             </>
           )}
         </div>
+
+        {/* Mobile Menu Toggle */}
+        <button
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          aria-label="Mở menu điều hướng"
+          className="lg:hidden p-2 rounded-lg liquid-glass-subtle text-[#0f172a] hover:bg-white/85 transition-colors cursor-pointer"
+        >
+          {isMobileOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
       </div>
 
       {/* Mobile Menu */}
       {isMobileOpen && (
-        <div className="lg:hidden mt-3 px-6 py-4 bg-[#0f2744] border-b border-white/10 flex flex-col gap-2">
+        <div className="lg:hidden mt-3 px-6 py-4 liquid-glass-strong border-x-0 flex flex-col gap-1.5">
           {navLinks.map((link, index) => (
-            <a
+            <Link
               key={index}
-              href={link.href}
-              className="px-4 py-2.5 text-white/85 hover:text-white hover:bg-white/5 rounded-xl text-base font-medium transition-all"
+              to={link.href}
+              className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                location.pathname === link.href
+                  ? "bg-sky-600/12 text-[#0284c7]"
+                  : "text-[#334155] hover:text-[#0f172a] hover:bg-[#0f172a]/5"
+              }`}
               onClick={() => setIsMobileOpen(false)}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
 
           {/* Mobile Language Switcher */}
-          <div className="flex items-center justify-between px-4 py-2.5 mt-2 bg-white/5 rounded-xl border border-white/10">
-            <span className="text-xs font-semibold text-white/70">
+          <div className="flex items-center justify-between px-4 py-2.5 mt-2 bg-white/60 rounded-xl border border-[#0f172a]/8">
+            <span className="text-xs font-medium text-[#334155]">
               {t("nav.language")}
             </span>
             <div className="flex gap-1.5">
@@ -354,25 +373,25 @@ export default function Navbar() {
                 <button
                   key={lang.code}
                   onClick={() => changeLanguage(lang.code)}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                     language === lang.code
-                      ? "bg-sky-600 text-white shadow-sm"
-                      : "bg-white/10 text-white/60 hover:text-white"
+                      ? "bg-[#0284c7] text-white shadow-sm"
+                      : "bg-[#0f172a]/6 text-[#334155] hover:text-[#0f172a]"
                   }`}
                 >
-                  {lang.flag} {lang.code.toUpperCase()}
+                  {lang.flag}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="flex gap-3 mt-3 pt-3 border-t border-white/10">
+          <div className="flex gap-3 mt-3 pt-3 border-t border-[#0f172a]/10">
             {user ? (
               <>
                 <Link
                   to="/profile"
                   onClick={() => setIsMobileOpen(false)}
-                  className="flex-1 py-3 rounded-xl text-sm font-semibold border border-white/30 text-white hover:bg-white/10 transition-all text-center flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 rounded-xl text-sm font-medium border border-[#0f172a]/15 text-[#0f172a] hover:bg-[#0f172a]/5 transition-colors text-center flex items-center justify-center gap-1.5"
                 >
                   <User size={15} />
                   <span>Hồ sơ cá nhân</span>
@@ -382,7 +401,7 @@ export default function Navbar() {
                     setIsMobileOpen(false);
                     handleLogout();
                   }}
-                  className="flex-1 py-3 rounded-xl text-sm font-semibold border border-rose-500/40 text-rose-300 hover:bg-rose-500/20 transition-all text-center flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 rounded-xl text-sm font-medium border border-rose-500/30 text-rose-700 hover:bg-rose-500/10 transition-colors text-center flex items-center justify-center gap-1.5"
                 >
                   <LogOut size={15} />
                   <span>Đăng xuất</span>
@@ -393,14 +412,14 @@ export default function Navbar() {
                 <Link
                   to="/register"
                   onClick={() => setIsMobileOpen(false)}
-                  className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-white/20 text-slate-200 hover:bg-white/10 transition-colors text-center"
+                  className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-[#0f172a]/15 text-[#0f172a] hover:bg-[#0f172a]/5 transition-colors text-center"
                 >
                   {t("nav.register")}
                 </Link>
                 <Link
                   to="/login"
                   onClick={() => setIsMobileOpen(false)}
-                  className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-sky-600 hover:bg-sky-500 text-white transition-colors text-center shadow-sm"
+                  className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-[#0284c7] hover:bg-[#0369a1] text-white transition-colors text-center shadow-sm"
                 >
                   {t("nav.login")}
                 </Link>
@@ -425,28 +444,28 @@ export default function Navbar() {
               aria-label="Chế độ xem trước của quản trị viên"
               className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto"
             >
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#0c1830]/95 backdrop-blur-2xl border border-amber-500/50 text-white shadow-xl text-xs">
-                <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl liquid-glass-strong border-amber-500/35 text-[#0f172a] text-xs">
+                <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
                 <div className="text-left">
-                  <div className="font-bold text-amber-300 flex items-center gap-1.5">
+                  <div className="font-semibold text-amber-800 flex items-center gap-1.5">
                     <Eye size={13} />
                     <span>Chế độ xem Khách</span>
                   </div>
-                  <p className="text-[10px] text-white/60">
-                    Đang ẩn quyền Admin để trải nghiệm góc nhìn người dùng
+                  <p className="text-[11px] text-[#475569]">
+                    Đang ẩn quyền Admin để xem góc nhìn người dùng
                   </p>
                 </div>
-                <div className="flex items-center gap-2 ml-2 pl-3 border-l border-white/15">
+                <div className="flex items-center gap-2 ml-2 pl-3 border-l border-[#0f172a]/10">
                   <button
                     onClick={() => setPreviewAsGuest(false)}
-                    className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold border border-amber-500/40 cursor-pointer transition-all active:scale-95 whitespace-nowrap"
+                    className="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 font-medium border border-amber-500/30 cursor-pointer transition-colors whitespace-nowrap"
                   >
                     Thoát chế độ khách
                   </button>
                   <Link
                     to="/admin/species"
                     onClick={() => setPreviewAsGuest(false)}
-                    className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 transition-all active:scale-95 whitespace-nowrap"
+                    className="px-3 py-1.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-medium transition-colors whitespace-nowrap"
                   >
                     Vào Admin
                   </Link>

@@ -8,12 +8,12 @@ import { FishHidden } from "../../assets/Images";
 import { getLocalizedCategory, getLocalizedSpeciesName } from "../../utils/speciesFormatters";
 
 const IUCN_COLORS = {
-  CR: "bg-rose-500/20 text-rose-300 border-rose-500/40",
-  EN: "bg-orange-500/20 text-orange-300 border-orange-500/40",
-  VU: "bg-amber-500/20 text-amber-300 border-amber-500/40",
-  NT: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-  LC: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
-  DD: "bg-slate-500/20 text-slate-300 border-slate-500/40",
+  CR: "bg-rose-500/12 text-rose-700 border-rose-500/25",
+  EN: "bg-orange-500/12 text-orange-700 border-orange-500/25",
+  VU: "bg-amber-500/12 text-amber-800 border-amber-500/25",
+  NT: "bg-yellow-500/12 text-yellow-800 border-yellow-500/25",
+  LC: "bg-emerald-500/12 text-emerald-700 border-emerald-500/25",
+  DD: "bg-slate-500/12 text-slate-700 border-slate-500/25",
 };
 
 export default function SpeciesSection() {
@@ -90,72 +90,89 @@ export default function SpeciesSection() {
   return (
     <section
       id="species"
-      className="bg-pacific-figma-dark/90 backdrop-blur-md pt-16 pb-20 relative overflow-hidden border-t border-white/5"
+      className="bg-transparent pt-16 pb-20 relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12" data-aos="fade-up">
-          <h2 className="text-3xl md:text-5xl font-black text-white font-heading tracking-tight leading-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#0f172a] font-heading tracking-tight leading-tight">
             {t("species.title")}
           </h2>
-          <p className="text-sm md:text-base text-slate-300/80 mt-3 font-normal leading-relaxed">
+          <p className="text-sm md:text-base text-[#334155] mt-3 font-normal leading-relaxed">
             {t("species.subtitle")}
           </p>
         </div>
 
         {/* Species List */}
-        <div className="flex flex-col gap-8 md:gap-10">
+        <div className="flex flex-col gap-6 md:gap-7 max-w-6xl mx-auto">
           {speciesList.map((s) => {
             const tag = isEn ? s.tagEn : s.tagVi;
             const name = isEn ? s.nameEn : s.nameVi;
             const desc = isEn ? s.descEn : s.descVi;
             const iucnClass = IUCN_COLORS[s.cCode] || IUCN_COLORS.LC;
+            const isPhotoUrl =
+              typeof s.image === "string" &&
+              (s.image.startsWith("http") || s.image.endsWith(".jpg") || s.image.endsWith(".webp"));
 
             return (
               <div
                 key={s.id}
-                className="bg-white/[0.03] rounded-3xl p-6 md:p-8 shadow-md border border-white/10 backdrop-blur-xl relative overflow-hidden group cursor-pointer hover:border-white/20 hover:bg-white/[0.05] transition-colors"
+                className="liquid-glass liquid-glass-interactive rounded-[28px] p-5 sm:p-6 md:p-7 relative overflow-hidden group cursor-pointer"
                 data-aos="fade-up"
-                data-aos-duration="900"
+                data-aos-duration="700"
                 onClick={() => navigate(`/species/${s.slug || s.id}`)}
               >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-center">
-                  {/* Left Column: Details */}
-                  <div className="lg:col-span-7 flex flex-col justify-between">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+                  {/* Text & Stats Column (alternates left/right for editorial rhythm) */}
+                  <div
+                    className={`lg:col-span-7 flex flex-col justify-between ${
+                      s.reverse ? "lg:order-2" : "lg:order-1"
+                    }`}
+                  >
                     <div>
                       {/* Tags row: Group, IUCN & Depth */}
                       <div className="flex flex-wrap items-center gap-2 mb-3">
-                        <span className="inline-block px-3 py-1 bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 text-xs font-semibold rounded-xl tracking-wide">
+                        <span className="inline-block px-3 py-1 bg-white/75 border border-slate-900/10 text-[#1e293b] text-xs font-medium rounded-full shadow-2xs">
                           {tag}
                         </span>
-                        <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-xl border ${iucnClass}`}
-                        >
-                          <ShieldAlert size={12} />
-                          <span>IUCN: {s.cCode}</span>
-                        </span>
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-xl bg-white/5 text-slate-300 border border-white/10">
-                          <Waves size={12} className="text-cyan-400" />
-                          <span>{s.depthZone}</span>
-                        </span>
+                        {s.cCode && (
+                          <span
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full border ${iucnClass}`}
+                          >
+                            <ShieldAlert size={13} />
+                            <span>IUCN: {s.cCode}</span>
+                          </span>
+                        )}
+                        {s.depthZone && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full bg-white/70 text-[#334155] border border-slate-900/10">
+                            <Waves size={13} className="text-[#0284c7]" />
+                            <span>{s.depthZone}</span>
+                          </span>
+                        )}
                       </div>
 
                       {/* Name & SciName */}
-                      <h3 className="text-2xl md:text-3xl font-black text-white font-heading mb-1 group-hover:text-cyan-300 transition-colors">
-                        {name}
-                      </h3>
-                      <p className="text-sm text-cyan-200/70 italic mb-4 font-mono">
+                      <div className="flex items-baseline justify-between gap-4 mb-1">
+                        <h3 className="text-2xl md:text-3xl font-bold text-[#0f172a] font-heading group-hover:text-[#0284c7] transition-colors">
+                          {name}
+                        </h3>
+                        <span className="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-[#0284c7] shrink-0">
+                          <span>{isEn ? "View profile" : "Xem chi tiết"}</span>
+                          <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+                        </span>
+                      </div>
+                      <p className="text-sm text-[#475569] italic mb-4 font-mono">
                         {s.sciName}
                       </p>
 
                       {/* Description */}
-                      <p className="text-sm md:text-base text-slate-200/80 leading-relaxed mb-6 line-clamp-3 font-normal">
+                      <p className="text-sm md:text-[15px] text-[#334155] leading-relaxed mb-6 line-clamp-3 font-normal">
                         {desc}
                       </p>
                     </div>
 
-                    {/* Key Stats Grid */}
-                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10">
+                    {/* Unified Liquid Glass Metric Strip */}
+                    <div className="grid grid-cols-3 divide-x divide-slate-900/10 rounded-2xl bg-white/65 border border-white/90 shadow-2xs overflow-hidden">
                       {s.stats.map((st, idx) => {
                         const displayVal = st.val
                           ? st.isYears
@@ -168,11 +185,11 @@ export default function SpeciesSection() {
                           : "Đang cập nhật";
 
                         return (
-                          <div key={idx} className="text-center p-2 rounded-xl bg-white/5 border border-white/5">
-                            <p className="text-lg md:text-xl font-black text-cyan-300 font-heading whitespace-nowrap">
+                          <div key={idx} className="text-center py-3.5 px-3">
+                            <p className="text-base md:text-lg font-bold text-[#0f172a] font-heading tabular-nums whitespace-nowrap">
                               {displayVal}
                             </p>
-                            <p className="text-[11px] text-slate-400 mt-0.5">
+                            <p className="text-[11px] sm:text-xs text-[#475569] mt-0.5 font-medium">
                               {isEn ? st.labelEn : st.labelVi}
                             </p>
                           </div>
@@ -181,9 +198,19 @@ export default function SpeciesSection() {
                     </div>
                   </div>
 
-                  {/* Right Column: Image */}
-                  <div className="lg:col-span-5 flex justify-center items-center">
-                    <div className="relative w-full max-w-sm aspect-square flex justify-center items-center p-4">
+                  {/* Specimen / Photo Showcase Column */}
+                  <div
+                    className={`lg:col-span-5 flex justify-center items-center ${
+                      s.reverse ? "lg:order-1" : "lg:order-2"
+                    }`}
+                  >
+                    <div
+                      className={`relative w-full aspect-[16/11] rounded-2xl overflow-hidden flex justify-center items-center border border-white/90 shadow-inner ${
+                        isPhotoUrl
+                          ? "bg-sky-100/60"
+                          : "bg-gradient-to-br from-sky-100/55 via-white/55 to-cyan-100/45 p-5"
+                      }`}
+                    >
                       <img
                         src={s.image || FishHidden}
                         alt={name}
@@ -192,7 +219,11 @@ export default function SpeciesSection() {
                           e.currentTarget.onerror = null;
                           e.currentTarget.src = FishHidden;
                         }}
-                        className="w-full h-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.35)]"
+                        className={
+                          isPhotoUrl
+                            ? "w-full h-full object-cover"
+                            : "w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(15,23,42,0.18)]"
+                        }
                       />
                     </div>
                   </div>
@@ -206,7 +237,7 @@ export default function SpeciesSection() {
         <div className="text-center mt-12" data-aos="fade-up">
           <button
             onClick={() => navigate("/search")}
-            className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-semibold text-white bg-pacific-teal hover:bg-pacific-teal-light border border-cyan-400/20 shadow-md shadow-black/20 hover:shadow-cyan-950/50 transition-all text-sm cursor-pointer active:translate-y-0.5"
+            className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-medium text-white bg-[#0284c7] hover:bg-[#0369a1] shadow-sm transition-colors text-sm cursor-pointer"
           >
             <span>{t("species.btnViewAll")}</span>
             <ArrowRight size={16} />

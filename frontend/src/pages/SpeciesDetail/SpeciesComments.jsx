@@ -167,7 +167,7 @@ export function SpeciesComments({ speciesId }) {
     currentUser?.role === "admin" || currentUser?.role === "super_admin";
 
   return (
-    <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10 mb-12 relative">
+    <section className="py-12 px-4 md:px-8 max-w-6xl mx-auto border-t border-[#0f172a]/10 mb-12 relative">
       <ToastContainer toasts={toasts} removeToast={removeToast} />
 
       <ConfirmModal
@@ -186,18 +186,18 @@ export function SpeciesComments({ speciesId }) {
         onClose={() => setDeleteModal({ isOpen: false, commentId: null })}
       />
 
-      <div className="bg-[#183c66] border border-white/15 rounded-2xl p-6 md:p-8 space-y-6 shadow-sm">
+      <div className="liquid-glass border border-[#0f172a]/10 rounded-2xl p-6 md:p-8 space-y-6 shadow-sm">
         {/* Header với icon và số lượng bình luận */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-300">
+            <div className="w-10 h-10 rounded-xl bg-sky-600/10 border border-sky-600/25 flex items-center justify-center text-[#0284c7]">
               <MessageSquare size={20} />
             </div>
             <div>
-              <h2 className="text-lg md:text-xl font-bold text-white font-heading">
+              <h2 className="text-lg md:text-xl font-bold text-[#0f172a] font-heading">
                 {t("speciesDetail.commentsTitle") || (isEn ? "What people say about this species" : "Họ nói gì về sinh vật này?")}
               </h2>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-[#334155]">
                 {isEn
                   ? "Community discussions and observations from ocean enthusiasts"
                   : "Ý kiến và trao đổi từ cộng đồng người yêu đại dương"}
@@ -205,7 +205,7 @@ export function SpeciesComments({ speciesId }) {
             </div>
           </div>
 
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-500/20 border border-sky-400/30 text-sky-300">
+          <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-600/10 border border-sky-600/25 text-[#0284c7]">
             {commentsList.length} {isEn ? (commentsList.length === 1 ? "comment" : "comments") : "bình luận"}
           </span>
         </div>
@@ -225,13 +225,13 @@ export function SpeciesComments({ speciesId }) {
                       : "Nhập ý kiến của bạn về loài sinh vật này...")
                   : (isEn ? "Log in to share your thoughts..." : "Đăng nhập để chia sẻ cảm nghĩ của bạn...")
               }
-              className="flex-1 bg-[#112d4e] border border-white/20 text-white placeholder:text-white/40 text-xs md:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition-colors"
+              className="flex-1 liquid-glass-subtle border border-[#0f172a]/10 text-[#0f172a] placeholder:text-[#475569] text-xs md:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition-colors"
             />
             {currentUser ? (
               <button
                 type="submit"
                 disabled={isSubmitting || !commentText.trim()}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs md:text-sm font-bold transition-all cursor-pointer shrink-0 active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-[#0f172a] text-xs md:text-sm font-bold transition-all cursor-pointer shrink-0 active:scale-95"
               >
                 {isSubmitting ? (
                   <>
@@ -248,7 +248,7 @@ export function SpeciesComments({ speciesId }) {
             ) : (
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs md:text-sm font-bold transition-all cursor-pointer shrink-0 active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-[#0f172a] text-xs md:text-sm font-bold transition-all cursor-pointer shrink-0 active:scale-95"
               >
                 <span>{t("nav.login", isEn ? "Log In" : "Đăng nhập")}</span>
               </Link>
@@ -257,16 +257,16 @@ export function SpeciesComments({ speciesId }) {
         </form>
 
         {/* Khu vực danh sách bình luận */}
-        <div className="pt-4 border-t border-white/10">
+        <div className="pt-4 border-t border-[#0f172a]/10">
           {isLoading ? (
-            <div className="flex items-center justify-center py-8 text-cyan-400 gap-2">
+            <div className="flex items-center justify-center py-8 text-[#0284c7] gap-2">
               <Loader2 size={20} className="animate-spin" />
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-[#475569]">
                 {isEn ? "Loading comments..." : "Đang tải bình luận..."}
               </span>
             </div>
           ) : commentsList.length === 0 ? (
-            <p className="text-center text-white/50 text-xs md:text-sm py-6 italic">
+            <p className="text-center text-[#475569] text-xs md:text-sm py-6 italic">
               {t("speciesDetail.noComments") ||
                 (isEn
                   ? "No comments on this species yet! Be the first to share your thoughts."
@@ -289,12 +289,12 @@ export function SpeciesComments({ speciesId }) {
                 return (
                   <div
                     key={c.id}
-                    className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2"
+                    className="p-4 rounded-xl liquid-glass-subtle border border-[#0f172a]/10 space-y-2"
                   >
                     {/* Header bình luận: Avatar + Tên + Badge + Thời gian + Xóa */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-tr from-cyan-600 to-blue-500 border border-white/20 flex items-center justify-center font-bold text-xs text-white shrink-0">
+                        <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-tr from-cyan-600 to-blue-500 border border-[#0f172a]/10 flex items-center justify-center font-bold text-xs text-[#0f172a] shrink-0">
                           {c.user?.avatarUrl ? (
                             <img
                               src={c.user.avatarUrl}
@@ -310,20 +310,20 @@ export function SpeciesComments({ speciesId }) {
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-xs md:text-sm text-white">
+                          <span className="font-bold text-xs md:text-sm text-[#0f172a]">
                             {c.user?.fullName || c.user?.username}
                           </span>
 
                           {isAuthorAdmin && (
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center gap-1">
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-600/10 text-[#0284c7] border border-sky-600/25 flex items-center gap-1">
                               <ShieldCheck size={11} />
                               <span>{isEn ? "Administrator" : "Quản trị viên"}</span>
                             </span>
                           )}
 
-                          <span className="text-white/30 text-xs">•</span>
+                          <span className="text-[#475569] text-xs">•</span>
 
-                          <span className="text-[11px] text-white/50">
+                          <span className="text-[11px] text-[#475569]">
                             {formatRelativeTime(c.createdAt || c.created_at, isEn)}
                           </span>
                         </div>
@@ -332,7 +332,7 @@ export function SpeciesComments({ speciesId }) {
                       {canDelete && (
                         <button
                           onClick={() => setDeleteModal({ isOpen: true, commentId: c.id })}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/15 transition-all cursor-pointer opacity-70 hover:opacity-100"
+                          className="p-1.5 rounded-lg text-[#475569] hover:text-rose-700 hover:bg-rose-600/10 transition-all cursor-pointer opacity-70 hover:opacity-100"
                           title={isEn ? "Delete this comment" : "Xóa bình luận này"}
                         >
                           <Trash2 size={14} />
@@ -341,7 +341,7 @@ export function SpeciesComments({ speciesId }) {
                     </div>
 
                     {/* Nội dung bình luận */}
-                    <p className="text-xs md:text-sm text-slate-200 pl-11 leading-relaxed">
+                    <p className="text-xs md:text-sm text-[#334155] pl-11 leading-relaxed">
                       {c.content}
                     </p>
                   </div>

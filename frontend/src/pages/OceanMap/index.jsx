@@ -855,17 +855,17 @@ export default function OceanMap() {
   };
 
   return (
-    <div className="min-h-screen bg-[#071322] text-slate-100 flex flex-col selection:bg-sky-500 selection:text-white">
+    <div className="min-h-screen text-[#0f172a] flex flex-col selection:bg-sky-500/20">
       <Navbar />
 
       <main className="flex-1 w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6 pt-24 pb-8 sm:pt-28 flex flex-col gap-3">
         {/* Thanh tiêu đề & Tùy chọn bản đồ nền */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#081729]/80 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-white/10 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 liquid-glass p-3 sm:p-4 rounded-2xl">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0f172a] font-heading flex items-center gap-2">
               <span>{isEn ? "East Sea Ecological Map" : "Bản đồ Sinh cảnh Biển Đông"}</span>
               {isLoading && (
-                <span className="text-xs px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 font-normal">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-sky-600/12 text-[#0277bd] font-medium">
                   {isEn ? "Loading..." : "Đang đồng bộ..."}
                 </span>
               )}
@@ -880,8 +880,8 @@ export default function OceanMap() {
               type="button"
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium border transition-colors cursor-pointer ${
                 showCreatures
-                  ? "bg-sky-500/20 text-sky-300 border-sky-400/40"
-                  : "bg-white/5 text-slate-400 border-white/10 hover:text-slate-200"
+                  ? "bg-sky-600/14 text-[#0277bd] border-[#0277bd]/35"
+                  : "bg-white/70 text-[#475569] border-[#0b2545]/12 hover:text-[#0f172a] hover:bg-white"
               }`}
             >
               <Fish size={15} />
@@ -889,7 +889,7 @@ export default function OceanMap() {
             </button>
 
             {/* Các lớp bản đồ nền */}
-            <div className="flex items-center bg-[#061424] p-1 rounded-xl border border-white/10 text-xs">
+            <div className="flex items-center liquid-glass-subtle p-1 rounded-xl text-xs">
               <div className="flex items-center gap-1">
                 {Object.keys(BASEMAP_PROVIDERS).map((key) => {
                   const p = BASEMAP_PROVIDERS[key];
@@ -904,8 +904,8 @@ export default function OceanMap() {
                       onClick={() => handleLayerChange(key)}
                       className={`px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer text-xs whitespace-nowrap ${
                         isActive
-                          ? "bg-sky-600 text-white shadow-sm font-semibold"
-                          : "text-slate-300 hover:text-white hover:bg-white/5"
+                          ? "bg-[#0284c7] text-white shadow-sm font-semibold"
+                          : "text-[#334155] hover:text-[#0f172a] hover:bg-white/80"
                       }`}
                     >
                       {label}
@@ -918,22 +918,20 @@ export default function OceanMap() {
         </div>
 
         {/* Thanh bộ lọc danh mục và các dropdown chọn nhanh */}
-        <div className="relative z-[1000] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 bg-[#081729] p-2 sm:p-2.5 rounded-2xl border border-white/10 shadow-sm">
+        <div className="relative z-[1000] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 liquid-glass p-2 sm:p-2.5 rounded-2xl">
           {/* Danh mục sinh vật cuộn ngang có nút trượt và kéo chuột */}
           <div className="relative flex-1 min-w-0 flex items-center">
-            {/* Nút cuộn trái */}
             {canScrollLeft && (
               <button
                 type="button"
                 onClick={() => scrollCategory("left")}
-                className="absolute left-0 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#091b2e]/95 hover:bg-sky-600 border border-white/20 text-slate-200 hover:text-white shadow-xl flex items-center justify-center transition-all cursor-pointer backdrop-blur-md"
+                className="absolute left-0 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-xl liquid-glass-strong hover:bg-[#0284c7] text-[#0f172a] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                 title={isEn ? "Scroll left" : "Cuộn sang trái"}
               >
                 <ChevronLeft size={16} />
               </button>
             )}
 
-            {/* Vùng kéo và cuộn danh mục */}
             <div
               ref={categoryScrollRef}
               onMouseDown={handleCategoryMouseDown}
@@ -946,10 +944,6 @@ export default function OceanMap() {
               }`}
             >
               {CREATURE_MAP_CATEGORIES.map((cat) => {
-                const count =
-                  cat.id === "all"
-                    ? creaturesList.length
-                    : creaturesList.filter((c) => c.groupId === cat.id).length;
                 const isSelected = selectedCategory === cat.id;
 
                 return (
@@ -961,16 +955,16 @@ export default function OceanMap() {
                       setSelectedCategory(cat.id);
                       if (!showCreatures) setShowCreatures(true);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium transition-all cursor-pointer border whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${
+                    className={`px-3 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium transition-colors cursor-pointer border whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${
                       isSelected
-                        ? "bg-sky-600/35 border-sky-400/50 text-white shadow-sm"
-                        : "bg-white/[0.03] border-white/10 text-slate-400 hover:text-slate-200 hover:bg-white/[0.06]"
+                        ? "bg-[#0284c7] border-[#0284c7] text-white shadow-sm"
+                        : "bg-white/75 border-[#0b2545]/12 text-[#334155] hover:text-[#0f172a] hover:bg-white"
                     }`}
                   >
                     {cat.id !== "all" && (
                       <span
                         className="w-2 h-2 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: cat.color }}
+                        style={{ backgroundColor: isSelected ? "#ffffff" : cat.color }}
                       />
                     )}
                     <span>{isEn ? cat.labelEn : cat.labelVi}</span>
@@ -979,12 +973,11 @@ export default function OceanMap() {
               })}
             </div>
 
-            {/* Nút cuộn phải nếu tràn */}
             {canScrollRight && (
               <button
                 type="button"
                 onClick={() => scrollCategory("right")}
-                className="absolute right-0 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#091b2e]/95 hover:bg-sky-600 border border-white/20 text-slate-200 hover:text-white shadow-xl flex items-center justify-center transition-all cursor-pointer backdrop-blur-md"
+                className="absolute right-0 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-xl liquid-glass-strong hover:bg-[#0284c7] text-[#0f172a] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                 title={isEn ? "Scroll right" : "Cuộn sang phải"}
               >
                 <ChevronRight size={16} />
@@ -992,8 +985,8 @@ export default function OceanMap() {
             )}
           </div>
 
-          {/* Hai bộ chọn tùy chỉnh: Phân vùng biển & Tìm kiếm sinh vật */}
-          <div className="flex items-center gap-2 self-start lg:self-auto flex-shrink-0">
+          {/* Bộ chọn tùy chỉnh: Khu bảo tồn, Sách Đỏ & Tìm sinh vật */}
+          <div className="flex items-center gap-2 self-start lg:self-auto flex-shrink-0 flex-wrap">
             {/* Custom Dropdown: Chọn phân vùng biển */}
             <div className="relative" ref={zoneDropdownRef}>
               <button
@@ -1004,38 +997,38 @@ export default function OceanMap() {
                 }}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium border transition-colors cursor-pointer ${
                   isZoneDropdownOpen
-                    ? "bg-[#0b1c30] border-sky-400/50 text-white"
-                    : "bg-[#081525] border-white/10 text-slate-300 hover:text-white hover:border-white/20"
+                    ? "bg-white border-[#0284c7] text-[#0f172a]"
+                    : "bg-white/80 border-[#0b2545]/12 text-[#334155] hover:text-[#0f172a] hover:bg-white"
                 }`}
               >
-                <MapPin size={14} className="text-sky-400" />
+                <MapPin size={14} className="text-[#0277bd]" />
                 <span>
                   {isEn ? "Marine Protected Areas" : "Khu bảo tồn"}
                 </span>
                 <ChevronDown
                   size={14}
                   className={`transition-transform ${
-                    isZoneDropdownOpen ? "rotate-180 text-sky-400" : "text-slate-400"
+                    isZoneDropdownOpen ? "rotate-180 text-[#0277bd]" : "text-[#475569]"
                   }`}
                 />
               </button>
 
               {isZoneDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-72 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[1100] p-1.5 max-h-80 overflow-y-auto">
-                  <div className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 border-b border-white/10 mb-1">
+                <div className="absolute right-0 top-full mt-1.5 w-72 rounded-xl liquid-glass-strong z-[1100] p-1.5 max-h-80 overflow-y-auto">
+                  <div className="px-2.5 py-1.5 text-[11px] font-semibold text-[#475569] border-b border-[#0b2545]/10 mb-1">
                     {isEn ? "Select Marine Protected Area" : "Chọn phân vùng trọng điểm"}
                   </div>
                   {zonesList.map((z) => (
                     <button
                       key={z.id}
                       onClick={() => handleSelectZone(z)}
-                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-sky-500/15 text-slate-200 hover:text-white transition-colors cursor-pointer flex flex-col gap-0.5 border border-transparent hover:border-sky-500/20 mb-0.5"
+                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-sky-600/10 text-[#0f172a] transition-colors cursor-pointer flex flex-col gap-0.5 mb-0.5"
                     >
                       <div className="flex items-center justify-between text-xs font-semibold">
                         <span>{isEn ? z.nameEn : z.nameVi}</span>
-                        <span className="text-[10px] text-sky-400 font-mono">{z.depth}</span>
+                        <span className="text-[11px] text-[#0277bd] font-mono tabular-nums">{z.depth}</span>
                       </div>
-                      <div className="text-[10px] text-slate-400 font-mono">
+                      <div className="text-[11px] text-[#475569] font-mono tabular-nums">
                         <span>{z.coordText}</span>
                       </div>
                     </button>
@@ -1055,15 +1048,15 @@ export default function OceanMap() {
                 }}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium border transition-colors cursor-pointer ${
                   isRedListDropdownOpen
-                    ? "bg-[#0b1c30] border-sky-400/50 text-white"
+                    ? "bg-white border-[#0284c7] text-[#0f172a]"
                     : selectedRedList !== "all"
-                    ? "bg-amber-500/15 border-amber-400/40 text-amber-200"
-                    : "bg-[#081525] border-white/10 text-slate-300 hover:text-white hover:border-white/20"
+                    ? "bg-amber-500/15 border-amber-600/35 text-amber-900"
+                    : "bg-white/80 border-[#0b2545]/12 text-[#334155] hover:text-[#0f172a] hover:bg-white"
                 }`}
               >
                 <ShieldAlert
                   size={14}
-                  className={selectedRedList !== "all" ? "text-amber-400" : "text-sky-400"}
+                  className={selectedRedList !== "all" ? "text-amber-700" : "text-[#0277bd]"}
                 />
                 <span>
                   {selectedRedList === "all"
@@ -1073,14 +1066,14 @@ export default function OceanMap() {
                 <ChevronDown
                   size={14}
                   className={`transition-transform ${
-                    isRedListDropdownOpen ? "rotate-180 text-sky-400" : "text-slate-400"
+                    isRedListDropdownOpen ? "rotate-180 text-[#0277bd]" : "text-[#475569]"
                   }`}
                 />
               </button>
 
               {isRedListDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-64 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[1100] p-1.5">
-                  <div className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 border-b border-white/10 mb-1">
+                <div className="absolute right-0 top-full mt-1.5 w-64 rounded-xl liquid-glass-strong z-[1100] p-1.5">
+                  <div className="px-2.5 py-1.5 text-[11px] font-semibold text-[#475569] border-b border-[#0b2545]/10 mb-1">
                     {isEn ? "IUCN / Vietnam Red List" : "Phân hạng bảo tồn Sách Đỏ"}
                   </div>
                   {RED_LIST_CATEGORIES.map((cat) => {
@@ -1097,17 +1090,17 @@ export default function OceanMap() {
                         }}
                         className={`w-full text-left px-2.5 py-2 rounded-lg transition-colors cursor-pointer flex items-center justify-between text-xs mb-0.5 border ${
                           isSelected
-                            ? "bg-sky-500/20 text-white border-sky-400/40 font-semibold"
-                            : "text-slate-200 hover:text-white hover:bg-white/5 border-transparent"
+                            ? "bg-sky-600/12 text-[#0277bd] border-[#0277bd]/30 font-semibold"
+                            : "text-[#334155] hover:text-[#0f172a] hover:bg-[#0b2545]/5 border-transparent"
                         }`}
                       >
                         <div className="flex items-center gap-2">
                           <span
                             className="w-7 text-center text-[10px] font-bold py-0.5 rounded font-mono"
                             style={{
-                              backgroundColor: `${cat.color}22`,
+                              backgroundColor: `${cat.color}18`,
                               color: cat.color,
-                              border: `1px solid ${cat.color}44`,
+                              border: `1px solid ${cat.color}40`,
                             }}
                           >
                             {cat.badge}
@@ -1131,39 +1124,39 @@ export default function OceanMap() {
                 }}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium border transition-colors cursor-pointer ${
                   isSpeciesSearchOpen
-                    ? "bg-[#0b1c30] border-sky-400/50 text-white"
-                    : "bg-[#081525] border-white/10 text-slate-300 hover:text-white hover:border-white/20"
+                    ? "bg-white border-[#0284c7] text-[#0f172a]"
+                    : "bg-white/80 border-[#0b2545]/12 text-[#334155] hover:text-[#0f172a] hover:bg-white"
                 }`}
               >
-                <Search size={14} className="text-sky-400" />
+                <Search size={14} className="text-[#0277bd]" />
                 <span>
                   {isEn ? "Search Species" : "Tìm sinh vật"}
                 </span>
                 <ChevronDown
                   size={14}
                   className={`transition-transform ${
-                    isSpeciesSearchOpen ? "rotate-180 text-sky-400" : "text-slate-400"
+                    isSpeciesSearchOpen ? "rotate-180 text-[#0277bd]" : "text-[#475569]"
                   }`}
                 />
               </button>
 
               {isSpeciesSearchOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-[#091b2e] border border-white/15 shadow-2xl z-[1100] p-2 max-h-96 flex flex-col">
+                <div className="absolute right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl liquid-glass-strong z-[1100] p-2 max-h-96 flex flex-col">
                   {/* Ô nhập tìm kiếm */}
                   <div className="relative mb-2">
-                    <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 text-[#475569] pointer-events-none" />
                     <input
                       type="text"
                       autoFocus
                       placeholder={isEn ? "Search by name, coordinates..." : "Nhập tên loài, phân vùng..."}
                       value={speciesSearchQuery}
                       onChange={(e) => setSpeciesSearchQuery(e.target.value)}
-                      className="w-full bg-[#061424] border border-white/15 rounded-lg pl-8 pr-7 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
+                      className="w-full liquid-input rounded-lg pl-8 pr-7 py-1.5 text-xs placeholder:text-[#475569]/75"
                     />
                     {speciesSearchQuery && (
                       <button
                         onClick={() => setSpeciesSearchQuery("")}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 text-[#475569] hover:text-[#0f172a]"
                       >
                         <X size={12} />
                       </button>
@@ -1173,7 +1166,7 @@ export default function OceanMap() {
                   {/* Danh sách kết quả cuộn */}
                   <div className="overflow-y-auto flex-1 pr-1 space-y-1">
                     {filteredSpeciesForSearch.length === 0 ? (
-                      <div className="py-4 text-center text-xs text-slate-400">
+                      <div className="py-4 text-center text-xs text-[#475569]">
                         {isEn ? "No matching species found" : "Không tìm thấy sinh vật phù hợp"}
                       </div>
                     ) : (
@@ -1181,7 +1174,7 @@ export default function OceanMap() {
                         <button
                           key={c.id}
                           onClick={() => handleSelectSpecies(c)}
-                          className="w-full text-left p-1.5 rounded-lg hover:bg-sky-500/15 text-slate-200 hover:text-white transition-colors cursor-pointer flex items-center gap-2.5 border border-transparent hover:border-sky-500/20"
+                          className="w-full text-left p-1.5 rounded-lg hover:bg-sky-600/10 text-[#0f172a] transition-colors cursor-pointer flex items-center gap-2.5"
                         >
                           <div
                             className="w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 flex-shrink-0"
@@ -1198,13 +1191,13 @@ export default function OceanMap() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between text-xs font-semibold leading-tight">
                               <span className="truncate">{isEn ? c.nameEn : c.nameVi}</span>
-                              <span className="text-[10px] text-sky-400 font-mono ml-2 flex-shrink-0">
+                              <span className="text-[10px] text-[#0277bd] font-mono tabular-nums ml-2 flex-shrink-0">
                                 {c.coordDecimal}
                               </span>
                             </div>
-                            <div className="flex items-center justify-between text-[10.5px] text-slate-400">
+                            <div className="flex items-center justify-between text-[11px] text-[#475569]">
                               <span className="italic truncate">{c.sciName}</span>
-                              <span className="text-[10px] text-slate-500 truncate ml-1">{c.zoneNameVi}</span>
+                              <span className="text-[10px] text-[#475569] truncate ml-1">{c.zoneNameVi}</span>
                             </div>
                           </div>
                         </button>
@@ -1217,21 +1210,21 @@ export default function OceanMap() {
           </div>
         </div>
 
-        {/* Khung bản đồ toàn màn hình (Full-width, Quiet Chrome) */}
+        {/* Khung bản đồ toàn màn hình */}
         <div
-          className="rounded-2xl overflow-hidden border border-white/10 relative z-0 bg-[#061220] shadow-xl w-full"
+          className="rounded-2xl overflow-hidden border border-[#0b2545]/12 relative z-0 bg-[#cbe6f7] shadow-lg w-full"
           style={{ width: "100%", height: "640px", minHeight: "640px" }}
         >
           <div
             ref={mapContainerRef}
             className="w-full h-full"
-            style={{ width: "100%", height: "640px", minHeight: "640px", background: "#061220" }}
+            style={{ width: "100%", height: "640px", minHeight: "640px", background: "#cbe6f7" }}
           />
 
           {/* Thước đo tọa độ di chuột góc dưới bên trái */}
           {cursorCoords && (
-            <div className="absolute bottom-3 left-3 z-[400] px-2.5 py-1 rounded-md bg-slate-900/85 backdrop-blur-md border border-white/10 text-[11px] font-mono text-cyan-300 pointer-events-none flex items-center gap-1.5 shadow-sm">
-              <Crosshair size={12} className="text-slate-400" />
+            <div className="absolute bottom-3 left-3 z-[400] px-2.5 py-1 rounded-lg liquid-glass-strong text-[11px] font-mono tabular-nums text-[#0f172a] pointer-events-none flex items-center gap-1.5">
+              <Crosshair size={12} className="text-[#0277bd]" />
               <span>{cursorCoords}</span>
             </div>
           )}
@@ -1240,7 +1233,7 @@ export default function OceanMap() {
           <button
             onClick={handleResetView}
             title={isEn ? "Reset view to East Sea" : "Đặt lại góc nhìn Biển Đông"}
-            className="absolute top-3 left-3 z-[400] w-9 h-9 rounded-xl bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md border border-white/15 text-slate-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center justify-center hover:border-sky-400/40"
+            className="absolute top-3 left-3 z-[400] w-9 h-9 rounded-xl liquid-glass-strong text-[#0f172a] hover:text-[#0277bd] hover:bg-white transition-colors cursor-pointer flex items-center justify-center"
           >
             <RotateCcw size={16} />
           </button>
@@ -1249,12 +1242,12 @@ export default function OceanMap() {
           <button
             onClick={handleShareMap}
             title={isEn ? "Copy map coordinate link" : "Sao chép liên kết tọa độ"}
-            className="absolute top-3 left-14 z-[400] px-3 h-9 rounded-xl bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md border border-white/15 text-slate-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center gap-1.5 text-xs font-medium hover:border-sky-400/40"
+            className="absolute top-3 left-14 z-[400] px-3 h-9 rounded-xl liquid-glass-strong text-[#0f172a] hover:text-[#0277bd] hover:bg-white transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-medium"
           >
             {copiedLink ? (
               <>
-                <Check size={14} className="text-emerald-400" />
-                <span className="text-emerald-300">{isEn ? "Link copied" : "Đã sao chép"}</span>
+                <Check size={14} className="text-emerald-700" />
+                <span className="text-emerald-800">{isEn ? "Link copied" : "Đã sao chép"}</span>
               </>
             ) : (
               <>
@@ -1264,13 +1257,13 @@ export default function OceanMap() {
             )}
           </button>
 
-          {/* Bảng khám phá cụm sinh vật (Hiển thị khi click vào cụm hoặc sinh vật ở góc dưới bản đồ) */}
+          {/* Bảng khám phá cụm sinh vật */}
           {activeCluster && (
-            <div className="absolute bottom-3 left-3 right-3 sm:left-6 sm:right-6 z-[500] bg-[#071526]/95 backdrop-blur-xl border border-sky-500/30 rounded-2xl p-3 shadow-2xl transition-all">
-              <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-white/10">
+            <div className="absolute bottom-3 left-3 right-3 sm:left-6 sm:right-6 z-[500] liquid-glass-strong rounded-2xl p-3">
+              <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-[#0b2545]/10">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-sky-400" />
-                  <h3 className="text-xs sm:text-sm font-semibold text-white">
+                  <span className="w-2 h-2 rounded-full bg-[#0284c7]" />
+                  <h3 className="text-xs sm:text-sm font-semibold text-[#0f172a]">
                     {activeCluster.name}
                   </h3>
                 </div>
@@ -1285,13 +1278,13 @@ export default function OceanMap() {
                         );
                       }
                     }}
-                    className="text-[11px] text-sky-300 hover:text-white px-2 py-0.5 rounded-md bg-sky-600/20 hover:bg-sky-600/40 border border-sky-400/30 transition-colors cursor-pointer"
+                    className="text-[11px] text-[#0277bd] hover:text-white px-2.5 py-1 rounded-lg bg-sky-600/12 hover:bg-[#0284c7] border border-[#0277bd]/25 font-medium transition-colors cursor-pointer"
                   >
                     {isEn ? "Zoom into area" : "Phóng to vùng biển"}
                   </button>
                   <button
                     onClick={() => setActiveCluster(null)}
-                    className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    className="p-1 rounded-md text-[#475569] hover:text-[#0f172a] hover:bg-[#0b2545]/6 transition-colors cursor-pointer"
                   >
                     <X size={15} />
                   </button>
@@ -1304,7 +1297,7 @@ export default function OceanMap() {
                   <div
                     key={sp.id}
                     onClick={() => handleSelectSpecies(sp)}
-                    className="w-56 flex-shrink-0 p-2 rounded-xl bg-[#091b2e] hover:bg-[#0d253f] border border-white/10 hover:border-sky-400/50 cursor-pointer transition-all flex items-center gap-2.5 group shadow-sm"
+                    className="w-56 flex-shrink-0 p-2 rounded-xl bg-white/85 hover:bg-white border border-[#0b2545]/10 hover:border-[#0284c7]/40 cursor-pointer transition-colors flex items-center gap-2.5 group shadow-xs"
                   >
                     <div
                       className="w-10 h-10 rounded-full overflow-hidden bg-white p-0.5 flex-shrink-0"
@@ -1318,24 +1311,24 @@ export default function OceanMap() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-1">
-                        <span className="text-xs font-semibold text-white group-hover:text-sky-300 truncate">
+                        <span className="text-xs font-semibold text-[#0f172a] group-hover:text-[#0277bd] truncate">
                           {isEn ? sp.nameEn : sp.nameVi}
                         </span>
                         <span
                           className="text-[9px] font-bold px-1.5 py-0.2 rounded font-mono border flex-shrink-0"
                           style={{
-                            color: RED_LIST_COLORS[sp.redList] || "#10b981",
-                            borderColor: `${RED_LIST_COLORS[sp.redList] || "#10b981"}40`,
-                            backgroundColor: `${RED_LIST_COLORS[sp.redList] || "#10b981"}15`,
+                            color: RED_LIST_COLORS[sp.redList] || "#047857",
+                            borderColor: `${RED_LIST_COLORS[sp.redList] || "#047857"}40`,
+                            backgroundColor: `${RED_LIST_COLORS[sp.redList] || "#047857"}14`,
                           }}
                         >
                           {sp.redList || "LC"}
                         </span>
                       </div>
-                      <div className="text-[10.5px] text-slate-400 italic truncate">
+                      <div className="text-[10.5px] text-[#475569] italic truncate">
                         {sp.sciName}
                       </div>
-                      <div className="text-[10px] text-sky-400 font-mono mt-0.5 truncate">
+                      <div className="text-[10px] text-[#0277bd] font-mono tabular-nums mt-0.5 truncate">
                         {sp.coordDecimal}
                       </div>
                     </div>

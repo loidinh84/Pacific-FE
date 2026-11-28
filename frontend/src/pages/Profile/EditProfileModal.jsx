@@ -126,20 +126,20 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="relative w-full max-w-lg bg-[#142247] border border-white/15 rounded-2xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-lg liquid-glass-strong border border-[#0f172a]/10 rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/[0.04]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#0f172a]/10 bg-white/[0.04]">
           <div>
-            <h2 className="text-lg font-bold text-white font-heading tracking-tight">
+            <h2 className="text-lg font-bold text-[#0f172a] font-heading tracking-tight">
               {t("profile.editModalTitle", isEn ? "Edit Profile Information" : "Chỉnh sửa hồ sơ cá nhân")}
             </h2>
-            <p className="text-xs text-cyan-200/70 mt-0.5 font-medium">
+            <p className="text-xs text-[#0284c7] mt-0.5 font-medium">
               {isEn ? "Update your personal account details" : "Cập nhật thông tin tài khoản của bạn"}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
+            className="p-1.5 rounded-full border border-[#0f172a]/10 liquid-glass-subtle hover:bg-white/90 text-[#0f172a] transition-all cursor-pointer"
           >
             <X size={18} />
           </button>
@@ -148,15 +148,15 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
           {errorMessage && (
-            <div className="p-3 rounded-xl text-xs bg-rose-500/20 border border-rose-500/30 text-rose-200 flex items-center gap-2">
-              <AlertCircle size={16} className="shrink-0 text-rose-400" />
+            <div className="p-3 rounded-xl text-xs bg-rose-600/10 border border-rose-500/30 text-rose-700 flex items-center gap-2">
+              <AlertCircle size={16} className="shrink-0 text-rose-700" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {successMessage && (
-            <div className="p-3 rounded-xl text-xs bg-emerald-500/20 border border-emerald-500/30 text-emerald-200 flex items-center gap-2">
-              <CheckCircle2 size={16} className="shrink-0 text-emerald-400" />
+            <div className="p-3 rounded-xl text-xs bg-emerald-600/10 border border-emerald-500/30 text-emerald-700 flex items-center gap-2">
+              <CheckCircle2 size={16} className="shrink-0 text-emerald-700" />
               <span>{successMessage}</span>
             </div>
           )}
@@ -164,7 +164,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
           {/* Avatar Edit Section */}
           <div className="flex items-center gap-4 py-2">
             <div className="relative group">
-              <div className="w-20 h-20 rounded-2xl bg-[#0e1732] border border-cyan-400/30 flex items-center justify-center text-white text-2xl font-bold overflow-hidden shadow-sm">
+              <div className="w-20 h-20 rounded-2xl liquid-glass-strong border border-sky-600/25 flex items-center justify-center text-[#0f172a] text-2xl font-bold overflow-hidden shadow-sm">
                 {avatarPreview ? (
                   <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
@@ -173,7 +173,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               </div>
               <label
                 htmlFor="avatar-file-input"
-                className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center rounded-2xl cursor-pointer transition-opacity text-white text-[10px] font-semibold gap-1"
+                className="absolute inset-0 liquid-glass-strong opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center rounded-2xl cursor-pointer transition-opacity text-[#0f172a] text-[10px] font-semibold gap-1"
               >
                 <Camera size={18} />
                 <span>{isEn ? "Change" : "Đổi ảnh"}</span>
@@ -187,13 +187,13 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">{isEn ? "Profile Avatar" : "Ảnh đại diện"}</p>
-              <p className="text-xs text-white/50 mb-2">
+              <p className="text-sm font-semibold text-[#0f172a]">{isEn ? "Profile Avatar" : "Ảnh đại diện"}</p>
+              <p className="text-xs text-[#475569] mb-2">
                 {isEn ? "Supports JPG, PNG, WEBP (max 5MB)" : "Hỗ trợ JPG, PNG, WEBP (tối đa 5MB)"}
               </p>
               <label
                 htmlFor="avatar-file-input"
-                className="inline-block px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-xs font-semibold text-white transition-all cursor-pointer"
+                className="inline-block px-3 py-1.5 liquid-glass-subtle hover:bg-white/90 border border-[#0f172a]/10 rounded-xl text-xs font-semibold text-[#0f172a] transition-all cursor-pointer"
               >
                 {isEn ? "Upload Photo" : "Tải ảnh mới"}
               </label>
@@ -202,7 +202,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
 
           {/* Họ tên */}
           <div>
-            <label className="block text-xs font-semibold text-slate-200 mb-1.5">
+            <label className="block text-xs font-semibold text-[#334155] mb-1.5">
               {isEn ? "Full Name" : "Họ và tên"}
             </label>
             <input
@@ -210,17 +210,17 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder={isEn ? "Enter your full name" : "Nhập họ và tên đầy đủ"}
-              className="w-full px-4 py-2.5 bg-[#0e1732] border border-white/20 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-white placeholder:text-white/40 focus:outline-none transition-all"
+              className="w-full px-4 py-2.5 liquid-glass-strong border border-[#0f172a]/10 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
           {/* Tiểu sử */}
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <label className="block text-xs font-semibold text-slate-200">
+              <label className="block text-xs font-semibold text-[#334155]">
                 {isEn ? "Biography (Bio)" : "Tiểu sử (Bio)"}
               </label>
-              <span className="text-[11px] text-white/40">{bio.length}/500</span>
+              <span className="text-[11px] text-[#475569]">{bio.length}/500</span>
             </div>
             <textarea
               rows={3}
@@ -232,13 +232,13 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
                   ? "Tell us about your passion for ocean biodiversity..."
                   : "Giới thiệu đôi nét về niềm đam mê đại dương của bạn..."
               }
-              className="w-full px-4 py-2.5 bg-[#0e1732] border border-white/20 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-white placeholder:text-white/40 focus:outline-none transition-all resize-none"
+              className="w-full px-4 py-2.5 liquid-glass-strong border border-[#0f172a]/10 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all resize-none"
             />
           </div>
 
           {/* Số điện thoại */}
           <div>
-            <label className="block text-xs font-semibold text-slate-200 mb-1.5">
+            <label className="block text-xs font-semibold text-[#334155] mb-1.5">
               {isEn ? "Phone Number" : "Số điện thoại"}
             </label>
             <input
@@ -246,29 +246,29 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               placeholder={isEn ? "E.g: +84912345678" : "Ví dụ: 0912345678"}
-              className="w-full px-4 py-2.5 bg-[#0e1732] border border-white/20 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-white placeholder:text-white/40 focus:outline-none transition-all"
+              className="w-full px-4 py-2.5 liquid-glass-strong border border-[#0f172a]/10 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
           {/* Ngày sinh */}
           <div>
-            <label className="block text-xs font-semibold text-slate-200 mb-1.5">
+            <label className="block text-xs font-semibold text-[#334155] mb-1.5">
               {isEn ? "Date of Birth" : "Ngày sinh"}
             </label>
             <input
               type="date"
               value={dateOfBirth}
               onChange={(e) => setDateOfBirth(e.target.value)}
-              className="w-full px-4 py-2.5 bg-[#0e1732] border border-white/20 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-white placeholder:text-white/40 focus:outline-none transition-all"
+              className="w-full px-4 py-2.5 liquid-glass-strong border border-[#0f172a]/10 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#0f172a]/10">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-white/70 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-[#334155] hover:text-[#0f172a] hover:liquid-glass-subtle transition-all cursor-pointer"
             >
               {t("profile.btnCancel", isEn ? "Cancel" : "Hủy")}
             </button>

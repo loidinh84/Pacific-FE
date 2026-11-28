@@ -59,14 +59,14 @@ function CustomDropdown({ value, onChange, options, isEn }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full bg-[#0d2238] border border-white/10 hover:border-white/20 rounded-xl px-3 py-2 text-xs text-left text-slate-200 flex items-center justify-between transition-colors cursor-pointer"
+        className="w-full liquid-input rounded-xl px-3 py-2 text-xs text-left text-[#0f172a] flex items-center justify-between transition-colors cursor-pointer font-medium"
       >
         <span className="truncate">{isEn ? selectedOption.labelEn : selectedOption.labelVi}</span>
-        <ChevronDown size={14} className={`text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown size={14} className={`text-[#475569] transition-transform ${open ? "rotate-180 text-[#0277bd]" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-30 bg-[#0a1a2c] border border-white/15 rounded-xl py-1 shadow-xl max-h-56 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 z-30 liquid-glass-strong rounded-xl py-1 max-h-56 overflow-y-auto">
           {options.map((opt) => {
             const isSelected = opt.id === value;
             return (
@@ -78,11 +78,11 @@ function CustomDropdown({ value, onChange, options, isEn }) {
                   setOpen(false);
                 }}
                 className={`w-full px-3 py-2 text-xs text-left flex items-center justify-between transition-colors cursor-pointer ${
-                  isSelected ? "bg-sky-500/15 text-sky-300 font-medium" : "text-slate-300 hover:bg-white/5 hover:text-white"
+                  isSelected ? "bg-sky-600/12 text-[#0277bd] font-semibold" : "text-[#334155] hover:bg-[#0f172a]/5 hover:text-[#0f172a]"
                 }`}
               >
                 <span className="truncate">{isEn ? opt.labelEn : opt.labelVi}</span>
-                {isSelected && <Check size={12} className="text-sky-400" />}
+                {isSelected && <Check size={12} className="text-[#0277bd]" />}
               </button>
             );
           })}
@@ -297,28 +297,28 @@ export default function KnowledgeGraph() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#07192f] text-white flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen text-[#0f172a] flex flex-col justify-between selection:bg-sky-500/20">
       <Navbar />
 
       <main className="flex-1 px-4 md:px-8 pt-28 pb-16 max-w-7xl mx-auto w-full">
-        {/* ─── 1. HEADER SECTION CHUẨN UNSLOP (KHÔNG CHỮ DƯ THỪA, KHÔNG HUY HIỆU RỐI) ─── */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+        {/* ─── 1. HEADER SECTION ─── */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#0f172a]/12 pb-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] font-heading tracking-tight">
             {isEn ? "Food Chain & Trophic Flow" : "Chuỗi thức ăn & Dòng năng lượng"}
           </h1>
 
           {/* Số liệu thống kê tối giản dạng inline */}
-          <div className="flex items-center gap-3 text-xs text-slate-300">
+          <div className="flex items-center gap-3 text-xs text-[#334155] tabular-nums">
             <span>
-              <strong className="text-white font-mono">{graphData.nodes?.length || 0}</strong> {isEn ? "species" : "loài"}
+              <strong className="text-[#0f172a] font-mono">{graphData.nodes?.length || 0}</strong> {isEn ? "species" : "loài"}
             </span>
-            <span className="text-white/20">•</span>
+            <span className="text-[#0f172a]/25">•</span>
             <span>
-              <strong className="text-white font-mono">{graphData.links?.length || 0}</strong> {isEn ? "links" : "liên kết"}
+              <strong className="text-[#0f172a] font-mono">{graphData.links?.length || 0}</strong> {isEn ? "links" : "liên kết"}
             </span>
-            <span className="text-white/20">•</span>
+            <span className="text-[#0f172a]/25">•</span>
             <span>
-              <strong className="text-rose-400 font-mono">
+              <strong className="text-rose-700 font-mono">
                 {graphData.nodes?.filter((n) => ["CR", "EN", "VU"].includes(n.redList)).length || 0}
               </strong>{" "}
               {isEn ? "threatened" : "nguy cấp"}
@@ -326,30 +326,30 @@ export default function KnowledgeGraph() {
           </div>
         </div>
 
-        {/* ─── 2. BỐ CỤC DASHBOARD 3 CỘT (3-COLUMN SCALE-FREE ARCHITECTURE) ──── */}
+        {/* ─── 2. BỐ CỤC DASHBOARD 3 CỘT ──── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           {/* ═════ CỘT 1: BỘ LỌC & DANH SÁCH LOÀI (3/12 COLS) ═════ */}
-          <div className="lg:col-span-3 rounded-2xl bg-[#0b2038] border border-white/10 p-4 flex flex-col h-[720px]">
+          <div className="lg:col-span-3 rounded-2xl liquid-glass p-4 flex flex-col h-[720px]">
             <div className="mb-3 space-y-2">
-              <div className="text-xs font-medium text-slate-400 flex items-center justify-between">
+              <div className="text-xs font-semibold text-[#334155] flex items-center justify-between">
                 <span>{isEn ? "Species catalog" : "Danh mục loài"}</span>
-                <span className="text-slate-300 font-mono text-xs">{filteredSpeciesList.length}</span>
+                <span className="text-[#0277bd] font-mono tabular-nums text-xs">{filteredSpeciesList.length}</span>
               </div>
 
               {/* Ô tìm kiếm */}
               <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-[#475569] pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={isEn ? "Search species..." : "Tìm kiếm loài..."}
-                  className="w-full bg-[#0d2238] border border-white/10 rounded-xl pl-8 pr-7 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                  className="w-full liquid-input rounded-xl pl-8 pr-7 py-2 text-xs placeholder:text-[#475569]/75"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 text-[#475569] hover:text-[#0f172a]"
                   >
                     <X size={13} />
                   </button>
@@ -373,17 +373,17 @@ export default function KnowledgeGraph() {
               />
             </div>
 
-            {/* Danh sách loài cuộn êm ái */}
-            <div className="flex-1 overflow-y-auto pr-1 space-y-1.5 custom-scrollbar">
+            {/* Danh sách loài */}
+            <div className="flex-1 overflow-y-auto pr-1 space-y-1.5 custom-scrollbar-thin">
               {loading && (
-                <div className="text-center py-10 text-xs text-slate-400">
-                  <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                <div className="text-center py-10 text-xs text-[#475569]">
+                  <div className="w-5 h-5 border-2 border-[#0284c7] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                   <span>{isEn ? "Loading species..." : "Đang tải danh sách..."}</span>
                 </div>
               )}
 
               {!loading && filteredSpeciesList.length === 0 && (
-                <div className="text-center py-10 text-xs text-slate-400">
+                <div className="text-center py-10 text-xs text-[#475569]">
                   <p className="mb-2">{isEn ? "No species found" : "Không tìm thấy loài phù hợp"}</p>
                   <button
                     onClick={() => {
@@ -391,7 +391,7 @@ export default function KnowledgeGraph() {
                       setSelectedTier(0);
                       setSearchQuery("");
                     }}
-                    className="text-cyan-400 hover:underline"
+                    className="text-[#0277bd] font-medium hover:underline cursor-pointer"
                   >
                     {isEn ? "Reset filters" : "Đặt lại bộ lọc"}
                   </button>
@@ -403,14 +403,14 @@ export default function KnowledgeGraph() {
                   const isSelected = focalSpeciesId === sp.id.toString();
                   const tierColor =
                     sp.trophicTier === 5
-                      ? "#ef4444"
+                      ? "#b91c1c"
                       : sp.trophicTier === 4
-                      ? "#f97316"
+                      ? "#c2410c"
                       : sp.trophicTier === 3
-                      ? "#eab308"
+                      ? "#a16207"
                       : sp.trophicTier === 2
-                      ? "#84cc16"
-                      : "#10b981";
+                      ? "#4d7c0f"
+                      : "#047857";
 
                   return (
                     <div
@@ -418,12 +418,12 @@ export default function KnowledgeGraph() {
                       onClick={() => handleSelectFocal(sp.id)}
                       className={`p-2 rounded-xl transition-colors flex items-center justify-between gap-2.5 cursor-pointer border ${
                         isSelected
-                          ? "bg-sky-950/60 border-sky-400/50 text-white"
-                          : "bg-[#0d2238]/60 hover:bg-[#0d2238] border-white/5 text-slate-300 hover:text-white"
+                          ? "bg-sky-600/14 border-[#0284c7]/45 text-[#0f172a] shadow-xs"
+                          : "bg-white/65 hover:bg-white border-[#0f172a]/8 text-[#0f172a]"
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-8 h-8 rounded-lg overflow-hidden bg-slate-800 border border-white/10 shrink-0">
+                        <div className="w-8 h-8 rounded-lg overflow-hidden bg-sky-100 border border-[#0f172a]/10 shrink-0">
                           {sp.image ? (
                             <img
                               src={sp.image}
@@ -434,14 +434,14 @@ export default function KnowledgeGraph() {
                               }}
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-[9px] text-slate-500">
+                            <div className="w-full h-full flex items-center justify-center text-[9px] text-[#475569]">
                               IMG
                             </div>
                           )}
                         </div>
                         <div className="min-w-0">
-                          <div className="text-xs font-medium truncate leading-tight">{sp.name}</div>
-                          <div className="text-[11px] text-slate-400 italic truncate font-serif">
+                          <div className="text-xs font-semibold truncate leading-tight text-[#0f172a]">{sp.name}</div>
+                          <div className="text-[11px] text-[#475569] italic truncate font-serif">
                             {sp.scientificName}
                           </div>
                         </div>
@@ -449,17 +449,17 @@ export default function KnowledgeGraph() {
 
                       <div className="flex flex-col items-end shrink-0 gap-0.5">
                         <span
-                          className="px-1.5 py-0.5 rounded text-[10px] font-medium"
+                          className="px-1.5 py-0.5 rounded text-[10px] font-semibold"
                           style={{
-                            backgroundColor: `${tierColor}15`,
+                            backgroundColor: `${tierColor}14`,
                             color: tierColor,
-                            border: `1px solid ${tierColor}30`,
+                            border: `1px solid ${tierColor}35`,
                           }}
                         >
                           Bậc {sp.trophicTier}
                         </span>
                         {["CR", "EN", "VU"].includes(sp.redList) && (
-                          <span className="text-[10px] text-rose-400 font-mono">{sp.redList}</span>
+                          <span className="text-[10px] text-rose-700 font-semibold font-mono">{sp.redList}</span>
                         )}
                       </div>
                     </div>
@@ -469,28 +469,28 @@ export default function KnowledgeGraph() {
           </div>
 
           {/* ═════ CỘT 2: SƠ ĐỒ DÒNG CHẢY SINH THÁI 3 TẦNG (6/12 COLS) ═════ */}
-          <div className="lg:col-span-6 rounded-2xl bg-[#0b2038] border border-white/10 p-5 flex flex-col h-[720px] overflow-y-auto custom-scrollbar">
+          <div className="lg:col-span-6 rounded-2xl liquid-glass p-5 flex flex-col h-[720px] overflow-y-auto custom-scrollbar-thin">
             {!focalSpecies ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-2">
-                <Compass size={28} className="text-slate-500" />
+              <div className="flex-1 flex flex-col items-center justify-center text-[#475569] gap-2">
+                <Compass size={28} className="text-[#0277bd]/60" />
                 <p className="text-xs">{isEn ? "Select a species to inspect its food chain" : "Chọn một loài từ danh mục bên trái để bắt đầu phân tích"}</p>
               </div>
             ) : (
               <div className="space-y-3.5">
-                {/* ─── TẦNG ĐỈNH: THIÊN ĐỊCH & KẺ SĂN MỒI (BẬC CAO HƠN) ─── */}
-                <div className="p-3 rounded-xl bg-[#0d2238] border border-white/10">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-rose-300 flex items-center gap-1.5">
-                      <ShieldAlert size={13} className="text-rose-400" />
+                {/* ─── TẦNG ĐỈNH: THIÊN ĐỊCH & KẺ SĂN MỒI ─── */}
+                <div className="p-3.5 rounded-xl bg-white/75 border border-[#0f172a]/10">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-xs font-semibold text-rose-700 flex items-center gap-1.5">
+                      <ShieldAlert size={13} className="text-rose-600" />
                       <span>{isEn ? "Predators & higher consumers" : "Thiên địch & kẻ săn mồi"} ({focalRelationships.predators.length})</span>
                     </span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-[11px] text-[#475569] font-medium">
                       {isEn ? "Higher trophic tier" : "Bậc tiêu thụ cao hơn"}
                     </span>
                   </div>
 
                   {focalRelationships.predators.length === 0 ? (
-                    <div className="py-2.5 px-3 rounded-lg bg-black/20 text-xs text-slate-400 italic text-center">
+                    <div className="py-2.5 px-3 rounded-lg bg-[#e6f4fa]/70 text-xs text-[#475569] italic text-center">
                       {focalSpecies.trophicTier === 5
                         ? isEn
                           ? "Apex predator (top-down regulator, no natural predators in ecosystem)"
@@ -505,26 +505,26 @@ export default function KnowledgeGraph() {
                         <div
                           key={species.id}
                           onClick={() => handleSelectFocal(species.id)}
-                          className="p-2 rounded-lg bg-[#112a44] hover:bg-[#163657] border border-rose-500/20 hover:border-rose-400/40 transition-colors cursor-pointer flex items-center justify-between gap-2 group"
+                          className="p-2 rounded-lg bg-white hover:bg-rose-50/70 border border-rose-500/20 hover:border-rose-500/40 transition-colors cursor-pointer flex items-center justify-between gap-2 group shadow-2xs"
                         >
                           <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-7 h-7 rounded-md overflow-hidden bg-slate-800 shrink-0">
+                            <div className="w-7 h-7 rounded-md overflow-hidden bg-sky-100 shrink-0">
                               {species.image ? (
                                 <img src={species.image} alt={species.name} className="w-full h-full object-cover" />
                               ) : (
-                                <div className="w-full h-full flex items-center justify-center text-[9px]">IMG</div>
+                                <div className="w-full h-full flex items-center justify-center text-[9px] text-[#475569]">IMG</div>
                               )}
                             </div>
                             <div className="min-w-0">
-                              <div className="text-xs font-medium text-white group-hover:text-rose-300 truncate">
+                              <div className="text-xs font-semibold text-[#0f172a] group-hover:text-rose-700 truncate">
                                 {species.name}
                               </div>
-                              <div className="text-[10px] text-slate-400 truncate">
+                              <div className="text-[11px] text-[#475569] truncate">
                                 {link.description || "Thiên địch"}
                               </div>
                             </div>
                           </div>
-                          <span className="text-rose-400 text-xs font-medium shrink-0">Bậc {species.trophicTier}</span>
+                          <span className="text-rose-700 text-xs font-semibold shrink-0">Bậc {species.trophicTier}</span>
                         </div>
                       ))}
                     </div>
@@ -532,38 +532,38 @@ export default function KnowledgeGraph() {
                 </div>
 
                 {/* ─── DÒNG CHUYỂN TIẾP LÊN ĐỈNH THÁP ─── */}
-                <div className="flex items-center justify-center gap-1.5 py-0.5 text-xs text-slate-400">
-                  <ArrowUp size={13} className="text-slate-400" />
+                <div className="flex items-center justify-center gap-1.5 py-0.5 text-xs text-[#475569] font-medium">
+                  <ArrowUp size={13} className="text-[#0277bd]" />
                   <span>{isEn ? "Energy transferred to higher consumers" : "Năng lượng chuyển tiếp lên bậc cao hơn"}</span>
                 </div>
 
                 {/* ─── TẦNG TÂM ĐIỂM: LOÀI ĐANG CHỌN ─── */}
-                <div className="p-4 rounded-xl bg-[#0e2744] border border-sky-400/30">
+                <div className="p-4 rounded-xl bg-white/95 border border-[#0284c7]/35 shadow-sm">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3.5">
-                    <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-800 border border-sky-400/30 shrink-0">
+                    <div className="w-20 h-20 rounded-xl overflow-hidden bg-sky-100 border border-[#0284c7]/25 shrink-0">
                       {focalSpecies.image ? (
                         <img src={focalSpecies.image} alt={focalSpecies.name} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-xs text-slate-500">NO IMG</div>
+                        <div className="w-full h-full flex items-center justify-center text-xs text-[#475569]">NO IMG</div>
                       )}
                     </div>
 
                     <div className="flex-1 text-center sm:text-left min-w-0">
-                      <h3 className="text-base font-bold text-white leading-snug">
+                      <h3 className="text-base font-bold text-[#0f172a] leading-snug">
                         {focalSpecies.name}
                       </h3>
-                      <p className="text-xs text-slate-400 italic font-serif mb-2">
+                      <p className="text-xs text-[#475569] italic font-serif mb-2">
                         {focalSpecies.scientificName}
                       </p>
 
                       <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 text-xs">
-                        <span className="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 border border-sky-500/25">
+                        <span className="px-2 py-0.5 rounded bg-sky-600/12 text-[#0277bd] font-medium border border-[#0277bd]/25">
                           Bậc dinh dưỡng {focalSpecies.trophicTier} (TL {focalSpecies.trophicLevel})
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-white/5 text-slate-300 border border-white/10">
+                        <span className="px-2 py-0.5 rounded bg-[#0f172a]/6 text-[#334155] font-medium border border-[#0f172a]/10">
                           {focalSpecies.eastSeaZone || "Biển Đông"}
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/25">
+                        <span className="px-2 py-0.5 rounded bg-rose-500/12 text-rose-700 font-medium border border-rose-500/25">
                           Sách Đỏ: {focalSpecies.redList || "LC"}
                         </span>
                       </div>
@@ -572,25 +572,25 @@ export default function KnowledgeGraph() {
                 </div>
 
                 {/* ─── DÒNG CHUYỂN TIẾP TỪ CHÂN ĐẾ LÊN ─── */}
-                <div className="flex items-center justify-center gap-1.5 py-0.5 text-xs text-slate-400">
-                  <ArrowUp size={13} className="text-slate-400" />
+                <div className="flex items-center justify-center gap-1.5 py-0.5 text-xs text-[#475569] font-medium">
+                  <ArrowUp size={13} className="text-[#0277bd]" />
                   <span>{isEn ? "Energy absorbed from food base" : "Năng lượng hấp thu từ nguồn thức ăn bên dưới"}</span>
                 </div>
 
                 {/* ─── TẦNG CHÂN ĐẾ: NGUỒN DINH DƯỠNG & CON MỒI ─── */}
-                <div className="p-3 rounded-xl bg-[#0d2238] border border-white/10">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-emerald-300 flex items-center gap-1.5">
-                      <Target size={13} className="text-emerald-400" />
+                <div className="p-3.5 rounded-xl bg-white/75 border border-[#0f172a]/10">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1.5">
+                      <Target size={13} className="text-emerald-600" />
                       <span>{isEn ? "Prey & energy sources" : "Nguồn thức ăn & con mồi"} ({focalRelationships.preys.length})</span>
                     </span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-[11px] text-[#475569] font-medium">
                       {isEn ? "Direct inputs" : "Nguồn cấp trực tiếp"}
                     </span>
                   </div>
 
                   {focalRelationships.preys.length === 0 ? (
-                    <div className="py-2.5 px-3 rounded-lg bg-black/20 text-xs text-slate-400 italic text-center">
+                    <div className="py-2.5 px-3 rounded-lg bg-[#e6f4fa]/70 text-xs text-[#475569] italic text-center">
                       {focalSpecies.groupId === 5
                         ? isEn
                           ? "Primary producer (fixes sunlight and nutrients, does not prey on fauna)"
@@ -605,26 +605,26 @@ export default function KnowledgeGraph() {
                         <div
                           key={species.id}
                           onClick={() => handleSelectFocal(species.id)}
-                          className="p-2 rounded-lg bg-[#112a44] hover:bg-[#163657] border border-emerald-500/20 hover:border-emerald-400/40 transition-colors cursor-pointer flex items-center justify-between gap-2 group"
+                          className="p-2 rounded-lg bg-white hover:bg-emerald-50/70 border border-emerald-600/20 hover:border-emerald-600/40 transition-colors cursor-pointer flex items-center justify-between gap-2 group shadow-2xs"
                         >
                           <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-7 h-7 rounded-md overflow-hidden bg-slate-800 shrink-0">
+                            <div className="w-7 h-7 rounded-md overflow-hidden bg-sky-100 shrink-0">
                               {species.image ? (
                                 <img src={species.image} alt={species.name} className="w-full h-full object-cover" />
                               ) : (
-                                <div className="w-full h-full flex items-center justify-center text-[9px]">IMG</div>
+                                <div className="w-full h-full flex items-center justify-center text-[9px] text-[#475569]">IMG</div>
                               )}
                             </div>
                             <div className="min-w-0">
-                              <div className="text-xs font-medium text-white group-hover:text-emerald-300 truncate">
+                              <div className="text-xs font-semibold text-[#0f172a] group-hover:text-emerald-700 truncate">
                                 {species.name}
                               </div>
-                              <div className="text-[10px] text-slate-400 truncate">
+                              <div className="text-[11px] text-[#475569] truncate">
                                 {link.description || "Con mồi"}
                               </div>
                             </div>
                           </div>
-                          <span className="text-emerald-400 text-xs font-medium shrink-0">Bậc {species.trophicTier}</span>
+                          <span className="text-emerald-700 text-xs font-semibold shrink-0">Bậc {species.trophicTier}</span>
                         </div>
                       ))}
                     </div>
@@ -633,9 +633,9 @@ export default function KnowledgeGraph() {
 
                 {/* ─── PHẦN MỞ RỘNG: QUAN HỆ TƯƠNG HỖ & SINH CẢNH ─── */}
                 {(focalRelationships.symbionts.length > 0 || focalRelationships.habitats.length > 0) && (
-                  <div className="p-3 rounded-xl bg-[#091a2e] border border-white/10">
-                    <span className="text-xs font-semibold text-slate-300 block mb-2 flex items-center gap-1.5">
-                      <Handshake size={13} className="text-sky-400" />
+                  <div className="p-3.5 rounded-xl bg-white/75 border border-[#0f172a]/10">
+                    <span className="text-xs font-semibold text-[#0f172a] block mb-2.5 flex items-center gap-1.5">
+                      <Handshake size={13} className="text-[#0277bd]" />
                       <span>{isEn ? "Mutualism & biogenic habitats" : "Quan hệ tương hỗ & sinh cảnh"}</span>
                     </span>
 
@@ -644,13 +644,13 @@ export default function KnowledgeGraph() {
                         <div
                           key={species.id}
                           onClick={() => handleSelectFocal(species.id)}
-                          className="p-2 rounded-lg bg-[#0e243d] hover:bg-[#143254] border border-sky-500/20 transition-colors cursor-pointer flex items-center justify-between gap-2"
+                          className="p-2 rounded-lg bg-white hover:bg-sky-50 border border-[#0284c7]/20 transition-colors cursor-pointer flex items-center justify-between gap-2"
                         >
                           <div className="flex items-center gap-2 min-w-0">
-                            <Handshake size={13} className="text-sky-400 shrink-0" />
+                            <Handshake size={13} className="text-[#0277bd] shrink-0" />
                             <div className="min-w-0">
-                              <div className="text-xs font-medium text-white truncate">{species.name}</div>
-                              <div className="text-[10px] text-slate-400 truncate">{link.label || "Cộng sinh"}</div>
+                              <div className="text-xs font-semibold text-[#0f172a] truncate">{species.name}</div>
+                              <div className="text-[11px] text-[#475569] truncate">{link.label || "Cộng sinh"}</div>
                             </div>
                           </div>
                         </div>
@@ -660,13 +660,13 @@ export default function KnowledgeGraph() {
                         <div
                           key={species.id}
                           onClick={() => handleSelectFocal(species.id)}
-                          className="p-2 rounded-lg bg-[#0e243d] hover:bg-[#143254] border border-emerald-500/20 transition-colors cursor-pointer flex items-center justify-between gap-2"
+                          className="p-2 rounded-lg bg-white hover:bg-emerald-50 border border-emerald-600/20 transition-colors cursor-pointer flex items-center justify-between gap-2"
                         >
                           <div className="flex items-center gap-2 min-w-0">
-                            <Home size={13} className="text-emerald-400 shrink-0" />
+                            <Home size={13} className="text-emerald-700 shrink-0" />
                             <div className="min-w-0">
-                              <div className="text-xs font-medium text-white truncate">{species.name}</div>
-                              <div className="text-[10px] text-slate-400 truncate">{link.label || "Nơi ở"}</div>
+                              <div className="text-xs font-semibold text-[#0f172a] truncate">{species.name}</div>
+                              <div className="text-[11px] text-[#475569] truncate">{link.label || "Nơi ở"}</div>
                             </div>
                           </div>
                         </div>
@@ -679,58 +679,58 @@ export default function KnowledgeGraph() {
           </div>
 
           {/* ═════ CỘT 3: HỒ SƠ SINH THÁI HỌC & ĐÁNH GIÁ RỦI RO (3/12 COLS) ═════ */}
-          <div className="lg:col-span-3 rounded-2xl bg-[#0b2038] border border-white/10 p-4 flex flex-col justify-between h-[720px] overflow-y-auto custom-scrollbar">
+          <div className="lg:col-span-3 rounded-2xl liquid-glass p-4 flex flex-col justify-between h-[720px] overflow-y-auto custom-scrollbar-thin">
             {!focalSpecies ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-2">
-                <Compass size={28} className="text-slate-500" />
+              <div className="flex-1 flex flex-col items-center justify-center text-[#475569] gap-2">
+                <Compass size={28} className="text-[#0277bd]/60" />
                 <p className="text-xs">{isEn ? "Select a species to view profile" : "Chọn loài để xem hồ sơ chi tiết"}</p>
               </div>
             ) : (
               <div className="space-y-3.5">
                 <div>
-                  <div className="text-xs font-medium text-slate-400 mb-2.5">
+                  <div className="text-xs font-semibold text-[#334155] mb-2.5">
                     {isEn ? "Ecological profile" : "Hồ sơ sinh học"}
                   </div>
 
                   {/* Ảnh và thông số nhận dạng */}
-                  <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-800 border border-white/10 mb-3">
+                  <div className="w-full h-32 rounded-xl overflow-hidden bg-sky-100 border border-[#0f172a]/10 mb-3">
                     {focalSpecies.image ? (
                       <img src={focalSpecies.image} alt={focalSpecies.name} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xs text-slate-500">NO IMAGE</div>
+                      <div className="w-full h-full flex items-center justify-center text-xs text-[#475569]">NO IMAGE</div>
                     )}
                   </div>
 
-                  <h4 className="text-sm font-bold text-white leading-tight mb-0.5">{focalSpecies.name}</h4>
-                  <p className="text-xs text-slate-400 italic font-serif mb-3">{focalSpecies.scientificName}</p>
+                  <h4 className="text-sm font-bold text-[#0f172a] leading-tight mb-0.5">{focalSpecies.name}</h4>
+                  <p className="text-xs text-[#475569] italic font-serif mb-3">{focalSpecies.scientificName}</p>
 
                   {/* Bảng thông số */}
-                  <div className="space-y-1.5 text-xs bg-[#0d2238] p-3 rounded-xl border border-white/5">
+                  <div className="space-y-2 text-xs bg-white/80 p-3 rounded-xl border border-[#0f172a]/10">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-400">{isEn ? "Trophic level:" : "Bậc dinh dưỡng:"}</span>
-                      <span className="font-medium text-sky-300">Bậc {focalSpecies.trophicTier} ({focalSpecies.trophicLevel})</span>
+                      <span className="text-[#475569]">{isEn ? "Trophic level:" : "Bậc dinh dưỡng:"}</span>
+                      <span className="font-semibold text-[#0277bd]">Bậc {focalSpecies.trophicTier} ({focalSpecies.trophicLevel})</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-400">{isEn ? "Depth range:" : "Độ sâu sinh sống:"}</span>
-                      <span className="font-mono text-white">{focalSpecies.depthMin || 0}m - {focalSpecies.depthMax || 50}m</span>
+                      <span className="text-[#475569]">{isEn ? "Depth range:" : "Độ sâu sinh sống:"}</span>
+                      <span className="font-mono tabular-nums font-semibold text-[#0f172a]">{focalSpecies.depthMin || 0}m - {focalSpecies.depthMax || 50}m</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-400">{isEn ? "Red list:" : "Sách Đỏ:"}</span>
-                      <span className="font-medium text-rose-400">{focalSpecies.redList || "LC"}</span>
+                      <span className="text-[#475569]">{isEn ? "Red list:" : "Sách Đỏ:"}</span>
+                      <span className="font-semibold text-rose-700">{focalSpecies.redList || "LC"}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-400">{isEn ? "Distribution:" : "Phân bố:"}</span>
-                      <span className="text-slate-200 text-right truncate max-w-[130px]">{focalSpecies.eastSeaZone || "Biển Đông"}</span>
+                      <span className="text-[#475569]">{isEn ? "Distribution:" : "Phân bố:"}</span>
+                      <span className="text-[#0f172a] font-medium text-right truncate max-w-[130px]">{focalSpecies.eastSeaZone || "Biển Đông"}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Đánh giá rủi ro sinh thái thực tế */}
-                <div className="p-3 rounded-xl bg-[#0d2238] border border-white/10 text-xs">
-                  <div className="text-slate-300 font-medium mb-1">
+                {/* Đánh giá rủi ro sinh thái */}
+                <div className="p-3 rounded-xl bg-white/80 border border-[#0f172a]/10 text-xs">
+                  <div className="text-[#0f172a] font-semibold mb-1">
                     {isEn ? "Trophic impact assessment" : "Đánh giá rủi ro sinh thái"}
                   </div>
-                  <p className="text-slate-400 leading-relaxed text-[11px]">
+                  <p className="text-[#334155] leading-relaxed text-[11.5px]">
                     {focalSpecies.trophicTier === 5
                       ? "Là loài săn mồi đỉnh bảng kiểm soát cấu trúc quần xã từ trên xuống. Sự suy giảm của loài có thể khiến các loài ăn thịt cỡ trung bùng nổ mất kiểm soát (Mesopredator Release), gián tiếp làm cạn kiệt cá nhỏ và động vật ăn cỏ."
                       : focalSpecies.groupId === 5
@@ -745,7 +745,7 @@ export default function KnowledgeGraph() {
                 <div className="pt-1">
                   <Link
                     to={`/species/${focalSpecies.slug || focalSpecies.id}`}
-                    className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    className="w-full py-2.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-sm"
                   >
                     <span>{isEn ? "View biological profile" : "Xem hồ sơ sinh học"}</span>
                     <ExternalLink size={13} />

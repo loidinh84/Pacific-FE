@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
 
 @import "tailwindcss";
 
@@ -7,21 +7,28 @@
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-heading: 'Nunito', system-ui, -apple-system, sans-serif;
 
-  /* Ocean Theme Colors - Vibrant Ocean Sapphire (Crisp & Clean) */
-  --color-pacific-darkest: #0a1b30;
-  --color-pacific-dark: #0f2744;
-  
-  /* Màu nền xanh đại dương tươi sáng, rõ nét, không bị đen sẫm */
-  --color-pacific-figma-dark: #0f2744;
-  --color-pacific-figma-card: #183c66;
-  
-  --color-pacific-blue-bright: #0ea5e9;
-  --color-pacific-blue-light: #38bdf8;
-  --color-pacific-blue-pale: #bfdbfe;
-  --color-pacific-teal: #06b6d4;
-  --color-pacific-cyan: #22d3ee;
-  --color-pacific-text-secondary: #bfdbfe;
-  --color-pacific-text-muted: #93b5d8;
+  /* Sunlit Azure & Liquid Glass Theme Tokens */
+  --color-pacific-darkest: #08203e;
+  --color-pacific-dark: #0b2545;
+
+  /* Sunlit Coastal Azure Surface Tokens */
+  --color-pacific-figma-dark: #eaf4fb;
+  --color-pacific-figma-card: #ffffff;
+  --color-pacific-azure-base: #eaf4fb;
+  --color-pacific-azure-soft: #dcecf8;
+  --color-pacific-azure-tint: #f5fafe;
+
+  /* Neutral High-Contrast Ink Ramp (Prevents blue-on-blue washout) */
+  --color-pacific-ink: #0f172a;
+  --color-pacific-text-secondary: #334155;
+  --color-pacific-text-muted: #475569;
+
+  /* Single Ocean Accent (Used strictly for primary CTA, active tabs & links) */
+  --color-pacific-blue-bright: #0284c7;
+  --color-pacific-blue-light: #0284c7;
+  --color-pacific-blue-pale: #334155;
+  --color-pacific-teal: #0369a1;
+  --color-pacific-cyan: #0284c7;
 }
 
 /* Base custom styles & Keyframes */
@@ -30,117 +37,172 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: #0f2744;
-    background-image: linear-gradient(180deg, #133358 0%, #0f2744 45%, #0b1e36 100%);
+    background-color: #eaf4fb;
+    background-image:
+      radial-gradient(ellipse 90% 45% at 50% -6%, rgba(255, 255, 255, 0.85) 0%, transparent 65%),
+      linear-gradient(180deg, #eff7fd 0%, #e1f0fa 50%, #edf6fc 100%);
     background-attachment: fixed;
     font-family: var(--font-sans);
-    color: #ffffff;
+    color: #0f172a;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-/* Crisp & Clean Card Utilities (No blurry stains / No diffuse glow) */
+/* ============================================================
+   LIQUID GLASS SURFACE SYSTEM (Refractive Frosted Glass + Neutral Ink)
+   True translucent Apple-style Liquid Glass: vibrant saturation behind
+   frosted glass, crisp specular top/outer rim, and delicate dark hairline
+   so cards float effortlessly over sunlit ocean scenes.
+   ============================================================ */
+.liquid-glass {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(255, 255, 255, 0.62) 55%,
+    rgba(240, 249, 255, 0.68) 100%
+  );
+  backdrop-filter: blur(22px) saturate(185%);
+  -webkit-backdrop-filter: blur(22px) saturate(185%);
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.055),
+    0 12px 32px -6px rgba(15, 23, 42, 0.08),
+    0 2px 6px rgba(15, 23, 42, 0.04),
+    inset 0 1px 1px rgba(255, 255, 255, 0.98),
+    inset 0 -1px 0 rgba(15, 23, 42, 0.03);
+}
+
+.liquid-glass-strong {
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(255, 255, 255, 0.78) 100%
+  );
+  backdrop-filter: blur(26px) saturate(190%);
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.065),
+    0 16px 36px -6px rgba(15, 23, 42, 0.10),
+    0 2px 6px rgba(15, 23, 42, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 1);
+}
+
+.liquid-glass-subtle {
+  background: rgba(255, 255, 255, 0.64);
+  backdrop-filter: blur(14px) saturate(165%);
+  -webkit-backdrop-filter: blur(14px) saturate(165%);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.05),
+    0 2px 8px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.liquid-glass-interactive {
+  transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+
+.liquid-glass-interactive:hover {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(255, 255, 255, 0.76) 55%,
+    rgba(244, 250, 255, 0.82) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 0 0 1px rgba(2, 132, 199, 0.18),
+    0 16px 36px -6px rgba(15, 23, 42, 0.11),
+    0 4px 10px rgba(15, 23, 42, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.liquid-input {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  color: #0f172a;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.liquid-input:focus {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+  outline: none;
+}
+
+/* Legacy alias mapped to Liquid Glass */
 .ocean-card {
-  background-color: #183c66;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.76) 0%, rgba(240, 249, 255, 0.56) 100%);
+  backdrop-filter: blur(20px) saturate(165%);
+  -webkit-backdrop-filter: blur(20px) saturate(165%);
+  border: 1px solid rgba(255, 255, 255, 0.84);
+  box-shadow:
+    0 6px 24px rgba(11, 37, 69, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
 }
 
 .ocean-card:hover {
-  background-color: #1f4a7d;
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.88) 0%, rgba(240, 249, 255, 0.74) 100%);
+  border-color: rgba(2, 132, 199, 0.28);
+  box-shadow:
+    0 10px 28px rgba(11, 37, 69, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98);
 }
 
-/* Animations */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-18px); }
-}
-
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(2deg); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.25; transform: scale(1); }
-  50% { opacity: 0.55; transform: scale(1.08); }
-}
-
+/* Subtle Entrance & Utility Keyframes */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(28px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInLeft {
-  from { opacity: 0; transform: translateY(28px); opacity: 0; }
-  to { opacity: 1; transform: translateY(0); opacity: 1; }
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInRight {
-  from { opacity: 0; transform: translateY(28px); opacity: 0; }
-  to { opacity: 1; transform: translateY(0); opacity: 1; }
-}
-
-@keyframes bubble {
-  0% { transform: translateY(0) scale(0.4); opacity: 0; }
-  20% { opacity: 0.6; }
-  80% { opacity: 0.2; }
-  100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
-}
-
-.animate-float {
-  animation: float 8s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: floatSlow 7s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 4s ease-in-out infinite;
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in-left {
-  animation: fadeInLeft 0.9s ease-out forwards;
+  animation: fadeInLeft 0.5s ease-out forwards;
 }
 
 .animate-fade-in-right {
-  animation: fadeInRight 0.9s ease-out 0.2s both;
+  animation: fadeInRight 0.5s ease-out 0.1s both;
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 1s ease-out 1s both;
+  animation: fadeInUp 0.5s ease-out 0.15s both;
 }
 
-.animate-bubble {
-  animation: bubble linear infinite;
-}
-
-.animate-spin-slow {
-  animation: spin 20s linear infinite;
-}
-
-/* Thanh cuộn tùy chỉnh */
+/* Thanh cuộn tùy chỉnh (Sunlit Azure) */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(34, 211, 238, 0.25);
+  background: rgba(11, 37, 69, 0.2);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(34, 211, 238, 0.5);
+  background: rgba(2, 132, 199, 0.45);
 }
 
 .custom-scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: rgba(34, 211, 238, 0.3) transparent;
+  scrollbar-color: rgba(11, 37, 69, 0.22) transparent;
 }
 .custom-scrollbar-thin::-webkit-scrollbar {
   width: 4px;
@@ -150,67 +212,66 @@
   background: transparent;
 }
 .custom-scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(34, 211, 238, 0.3);
+  background: rgba(11, 37, 69, 0.22);
   border-radius: 9999px;
 }
 .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: rgba(34, 211, 238, 0.6);
+  background: rgba(2, 132, 199, 0.48);
 }
 
-/* News Content Body Typography */
+/* News Content Body Typography (Sunlit Azure Editorial) */
 .news-content-body h2 {
   font-family: var(--font-heading);
-  font-size: 1.65rem;
-  font-weight: 800;
-  color: #ffffff;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #0b2545;
   margin-top: 2rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.75rem;
   line-height: 1.3;
 }
 
 .news-content-body h3 {
   font-family: var(--font-heading);
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #e0f2fe;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #163b63;
   margin-top: 1.5rem;
   margin-bottom: 0.65rem;
 }
 
 .news-content-body p {
-  color: #cbd5e1;
+  color: #2d4e6f;
   line-height: 1.85;
   margin-bottom: 1.25rem;
 }
 
 .news-content-body strong {
-  color: #ffffff;
-  font-weight: 700;
+  color: #0b2545;
+  font-weight: 600;
 }
 
 .news-content-body em {
-  color: #38bdf8;
+  color: #0284c7;
   font-style: italic;
 }
 
 .news-content-body a {
-  color: #22d3ee;
+  color: #0284c7;
   text-decoration: underline;
   text-underline-offset: 4px;
-  transition: color 0.2s ease;
+  transition: color 0.16s ease;
 }
 
 .news-content-body a:hover {
-  color: #7dd3fc;
+  color: #0369a1;
 }
 
 .news-content-body blockquote {
-  border-left: 4px solid #0ea5e9;
-  background: rgba(14, 165, 233, 0.08);
+  border-left: 3px solid #0284c7;
+  background: rgba(2, 132, 199, 0.07);
   padding: 1rem 1.25rem;
-  border-radius: 0 1rem 1rem 0;
-  font-style: italic;
-  color: #e0f2fe;
+  border-radius: 0 0.75rem 0.75rem 0;
+  color: #163b63;
   margin: 1.75rem 0;
 }
 
@@ -218,7 +279,7 @@
 .news-content-body ol {
   padding-left: 1.5rem;
   margin-bottom: 1.5rem;
-  color: #cbd5e1;
+  color: #2d4e6f;
   line-height: 1.8;
 }
 
@@ -236,10 +297,10 @@
 
 .news-content-body figure {
   margin: 2rem 0;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(11, 37, 69, 0.08);
 }
 
 .news-content-body figure img {
@@ -251,17 +312,16 @@
 .news-content-body figcaption {
   padding: 0.75rem 1rem;
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #587694;
   text-align: center;
-  font-style: italic;
-  background: rgba(0, 0, 0, 0.25);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(230, 244, 250, 0.55);
+  border-top: 1px solid rgba(11, 37, 69, 0.06);
 }
 
 @keyframes newsFadeUp {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -270,5 +330,5 @@
 }
 
 .news-fade-up {
-  animation: newsFadeUp 0.6s ease-out forwards;
+  animation: newsFadeUp 0.45s ease-out forwards;
 }

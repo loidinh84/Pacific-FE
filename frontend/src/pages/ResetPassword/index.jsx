@@ -96,7 +96,7 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-pacific-figma-dark flex flex-col justify-between relative overflow-hidden">
+    <div className="min-h-screen flex flex-col justify-between relative overflow-hidden">
       {/* Background Sunbeams & Glows */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.25)_0%,rgba(6,182,212,0.1)_35%,transparent_70%)] pointer-events-none" />
       <div className="absolute top-1/3 left-10 w-96 h-96 rounded-full bg-pacific-blue-bright/10 blur-[120px] pointer-events-none" />
@@ -119,13 +119,13 @@ export default function ResetPassword() {
       <Navbar />
 
       <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-28 relative z-10">
-        <div className="w-full max-w-md bg-[#1e2a56]/95 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-2xl p-6 sm:p-8 relative text-white animate-in fade-in zoom-in-95 duration-300">
+        <div className="w-full max-w-md liquid-glass-strong backdrop-blur-2xl border border-[#0f172a]/10 rounded-2xl shadow-2xl p-6 sm:p-8 relative text-[#0f172a] animate-in fade-in zoom-in-95 duration-300">
           
           {/* Header Text */}
-          <h1 className="text-2xl sm:text-3xl font-black text-white text-center mb-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#0f172a] text-center mb-1">
             {t("resetPassword.title", "Cập nhật mật khẩu mới")}
           </h1>
-          <p className="text-xs sm:text-sm text-white/70 text-center mb-8">
+          <p className="text-xs sm:text-sm text-[#334155] text-center mb-8">
             {t("resetPassword.subtitle", "Hãy tạo 1 mật khẩu mạnh mẽ!")}
           </p>
 
@@ -134,14 +134,14 @@ export default function ResetPassword() {
             <div
               className={`p-3.5 mb-6 rounded-xl text-xs sm:text-sm flex items-center gap-2.5 ${
                 status.type === "success"
-                  ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-200"
-                  : "bg-rose-500/20 border border-rose-500/40 text-rose-200"
+                  ? "bg-emerald-600/10 border border-emerald-500/40 text-emerald-700"
+                  : "bg-rose-600/10 border border-rose-500/40 text-rose-700"
               }`}
             >
               {status.type === "success" ? (
-                <CheckCircle2 size={18} className="shrink-0 text-emerald-400" />
+                <CheckCircle2 size={18} className="shrink-0 text-emerald-700" />
               ) : (
-                <AlertCircle size={18} className="shrink-0 text-rose-400" />
+                <AlertCircle size={18} className="shrink-0 text-rose-700" />
               )}
               <span>{status.message}</span>
             </div>
@@ -152,13 +152,13 @@ export default function ResetPassword() {
             
             {/* Input 1: Mật khẩu mới */}
             <div className="relative">
-              <label className="block text-xs font-semibold text-white/90 mb-2">
+              <label className="block text-xs font-semibold text-[#0f172a] mb-2">
                 {t("resetPassword.newPassword", "Mật khẩu mới")}
               </label>
               <div className="relative flex items-center">
                 <Lock
                   size={18}
-                  className="absolute left-4 text-white/60 pointer-events-none"
+                  className="absolute left-4 z-10 text-[#475569] pointer-events-none"
                 />
                 <input
                   type={showNewPassword ? "text" : "password"}
@@ -166,12 +166,12 @@ export default function ResetPassword() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-11 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-pacific-blue-bright focus:ring-1 focus:ring-pacific-blue-bright transition-all text-sm font-medium"
+                  className="w-full pl-11 pr-11 py-3 liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-[#0f172a] placeholder:text-[#475569] focus:outline-none focus:border-pacific-blue-bright focus:ring-1 focus:ring-pacific-blue-bright transition-all text-sm font-medium"
                 />
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-4 text-white/50 hover:text-white transition-colors cursor-pointer"
+                  className="absolute right-4 text-[#475569] hover:text-[#0f172a] transition-colors cursor-pointer"
                 >
                   {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -180,13 +180,13 @@ export default function ResetPassword() {
 
             {/* Input 2: Xác nhận mật khẩu mới */}
             <div className="relative">
-              <label className="block text-xs font-semibold text-white/90 mb-2">
+              <label className="block text-xs font-semibold text-[#0f172a] mb-2">
                 {t("resetPassword.confirmPassword", "Xác nhận mật khẩu mới")}
               </label>
               <div className="relative flex items-center">
                 <Lock
                   size={18}
-                  className="absolute left-4 text-white/60 pointer-events-none"
+                  className="absolute left-4 z-10 text-[#475569] pointer-events-none"
                 />
                 <input
                   type={showConfirmPassword ? "text" : "password"}
@@ -194,12 +194,12 @@ export default function ResetPassword() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-11 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-pacific-blue-bright focus:ring-1 focus:ring-pacific-blue-bright transition-all text-sm font-medium"
+                  className="w-full pl-11 pr-11 py-3 liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-[#0f172a] placeholder:text-[#475569] focus:outline-none focus:border-pacific-blue-bright focus:ring-1 focus:ring-pacific-blue-bright transition-all text-sm font-medium"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 text-white/50 hover:text-white transition-colors cursor-pointer"
+                  className="absolute right-4 text-[#475569] hover:text-[#0f172a] transition-colors cursor-pointer"
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -224,7 +224,7 @@ export default function ResetPassword() {
           </form>
 
           {/* Back to Login link */}
-          <div className="text-center mt-6 pt-4 border-t border-white/10 text-xs text-white/70">
+          <div className="text-center mt-6 pt-4 border-t border-[#0f172a]/10 text-xs text-[#334155]">
             <Link
               to="/login"
               className="inline-flex items-center gap-1.5 text-pacific-blue-light font-bold hover:underline transition-colors"

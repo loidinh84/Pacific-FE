@@ -56,28 +56,28 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
   return (
     <div
       onClick={handleBackdropClick}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/35 backdrop-blur-md p-4 animate-in fade-in duration-200"
     >
-      <div className="w-full max-w-md bg-[#1e2a56]/95 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-2xl p-6 sm:p-8 relative text-white animate-in zoom-in-95 duration-200">
+      <div className="w-full max-w-md liquid-glass-strong rounded-2xl p-6 sm:p-8 relative text-[#0f172a] animate-in zoom-in-95 duration-200">
         {/* Close Button */}
         <button
           onClick={onClose}
           type="button"
-          className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors cursor-pointer p-1 rounded-lg hover:bg-white/10"
+          className="absolute top-4 right-4 text-[#475569] hover:text-[#0f172a] transition-colors cursor-pointer p-1.5 rounded-lg hover:bg-[#0f172a]/6"
         >
           <X size={20} />
         </button>
 
         {/* Header Icon */}
-        <div className="w-20 h-20 rounded-full border border-white/25 bg-white/5 flex items-center justify-center mx-auto mb-5 shadow-inner">
-          <Lock size={36} className="text-white" />
+        <div className="w-16 h-16 rounded-2xl border border-sky-600/20 bg-sky-600/10 flex items-center justify-center mx-auto mb-5">
+          <Lock size={28} className="text-[#0284c7]" />
         </div>
 
         {/* Header Text */}
-        <h2 className="text-2xl font-black text-white text-center mb-1">
+        <h2 className="text-2xl font-bold text-[#0f172a] text-center mb-1 font-heading">
           {t("auth.forgotPasswordTitle", "Khôi phục mật khẩu")}
         </h2>
-        <p className="text-xs sm:text-sm text-white/70 text-center mb-6">
+        <p className="text-xs sm:text-sm text-[#475569] text-center mb-6">
           {t("auth.forgotPasswordSubtitle", "Nhập địa chỉ email đã đăng ký của bạn.")}
         </p>
 
@@ -86,14 +86,14 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
           <div
             className={`p-3.5 mb-5 rounded-xl text-xs sm:text-sm flex items-center gap-2.5 ${
               statusMessage.type === "success"
-                ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-200"
-                : "bg-rose-500/20 border border-rose-500/40 text-rose-200"
+                ? "bg-emerald-500/12 border border-emerald-500/25 text-emerald-800"
+                : "bg-rose-500/12 border border-rose-500/25 text-rose-700"
             }`}
           >
             {statusMessage.type === "success" ? (
-              <CheckCircle2 size={18} className="shrink-0 text-emerald-400" />
+              <CheckCircle2 size={18} className="shrink-0 text-emerald-600" />
             ) : (
-              <AlertCircle size={18} className="shrink-0 text-rose-400" />
+              <AlertCircle size={18} className="shrink-0 text-rose-600" />
             )}
             <span>{statusMessage.text}</span>
           </div>
@@ -102,13 +102,13 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
         {/* Form */}
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label className="block text-xs font-semibold text-white/90 mb-2">
+            <label className="block text-xs font-medium text-[#334155] mb-2">
               {t("auth.email", "Địa chỉ email")}
             </label>
             <div className="relative flex items-center">
               <Mail
                 size={18}
-                className="absolute left-4 text-white/60 pointer-events-none"
+                className="absolute left-4 z-10 text-[#475569] pointer-events-none"
               />
               <input
                 type="email"
@@ -116,7 +116,7 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="example@gmail.com"
-                className="w-full pl-11 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-pacific-blue-bright focus:ring-1 focus:ring-pacific-blue-bright transition-all text-sm font-medium"
+                className="w-full pl-11 pr-4 py-3 liquid-input rounded-xl placeholder:text-[#475569]/70 text-sm font-medium"
               />
             </div>
           </div>
@@ -126,7 +126,7 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2.5 rounded-xl font-bold text-[#1e2a56] bg-white hover:bg-slate-100 active:scale-95 transition-all text-sm cursor-pointer shadow-md"
+              className="px-5 py-2.5 rounded-xl font-medium text-[#334155] hover:text-[#0f172a] hover:bg-[#0f172a]/6 transition-colors text-sm cursor-pointer"
             >
               {t("auth.back", "Quay lại")}
             </button>
@@ -134,7 +134,7 @@ export function ForgotPasswordModal({ isOpen, onClose }) {
             <button
               type="submit"
               disabled={isLoading}
-              className="px-6 py-2.5 rounded-xl font-bold text-white bg-pacific-blue-bright hover:bg-sky-500 active:scale-95 transition-all text-sm cursor-pointer shadow-md flex items-center justify-center gap-2 min-w-[110px] disabled:opacity-60 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 rounded-xl font-medium text-white bg-[#0284c7] hover:bg-[#0369a1] transition-colors text-sm cursor-pointer shadow-sm flex items-center justify-center gap-2 min-w-[110px] disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>

@@ -145,7 +145,7 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
     <div className="max-w-6xl mx-auto px-4 mb-8">
       {/* Header với Tiêu đề & Nút cuộn Trái / Phải */}
       <div className="flex items-center justify-between gap-4 mb-4">
-        <h2 className="text-xl md:text-2xl font-bold text-white font-heading">
+        <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading">
           {t("searchPage.featuredTitle")}
         </h2>
 
@@ -155,10 +155,10 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
             type="button"
             onClick={() => scrollByAmount("left")}
             disabled={!canScrollLeft}
-            className={`p-2 rounded-xl border transition-all ${
+            className={`p-2 rounded-xl transition-colors ${
               canScrollLeft
-                ? "bg-white/10 hover:bg-white/20 text-white border-white/15 hover:border-sky-400/60 shadow-sm cursor-pointer active:scale-95"
-                : "bg-white/5 text-white/25 border-white/5 cursor-not-allowed opacity-40"
+                ? "liquid-glass-subtle text-[#0f172a] hover:bg-white hover:text-[#0284c7] cursor-pointer"
+                : "bg-white/30 text-[#475569]/40 border border-white/40 cursor-not-allowed"
             }`}
             aria-label="Previous species"
           >
@@ -168,10 +168,10 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
             type="button"
             onClick={() => scrollByAmount("right")}
             disabled={!canScrollRight}
-            className={`p-2 rounded-xl border transition-all ${
+            className={`p-2 rounded-xl transition-colors ${
               canScrollRight
-                ? "bg-white/10 hover:bg-white/20 text-white border-white/15 hover:border-sky-400/60 shadow-sm cursor-pointer active:scale-95"
-                : "bg-white/5 text-white/25 border-white/5 cursor-not-allowed opacity-40"
+                ? "liquid-glass-subtle text-[#0f172a] hover:bg-white hover:text-[#0284c7] cursor-pointer"
+                : "bg-white/30 text-[#475569]/40 border border-white/40 cursor-not-allowed"
             }`}
             aria-label="Next species"
           >
@@ -180,7 +180,7 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
         </div>
       </div>
 
-      {/* Horizontal scroll với tính năng kéo chuột (Mouse Drag to Scroll) */}
+      {/* Horizontal scroll */}
       <div
         ref={sliderRef}
         onMouseDown={handleMouseDown}
@@ -201,7 +201,7 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
           return (
             <div
               key={s.id}
-              className="flex-shrink-0 w-64 bg-[#183c66] hover:bg-[#1a426f] border border-white/15 hover:border-sky-400/40 rounded-2xl p-4 flex flex-col justify-between transition-colors duration-200 group shadow-sm select-none"
+              className="flex-shrink-0 w-64 liquid-glass liquid-glass-interactive rounded-2xl p-4 flex flex-col justify-between group select-none cursor-pointer"
               onClick={(e) => {
                 if (hasMovedRef.current) {
                   e.preventDefault();
@@ -213,16 +213,16 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
             >
               {/* Header Tags */}
               <div className="flex items-center justify-between gap-1.5 mb-3">
-                <span className="px-2 py-0.5 rounded-md bg-sky-500/20 border border-sky-400/30 text-sky-200 text-[10px] font-semibold leading-tight truncate">
+                <span className="px-2 py-0.5 rounded-md bg-slate-900/6 border border-slate-900/12 text-[#1e293b] text-[10px] font-medium leading-tight truncate">
                   {categoryName}
                 </span>
                 <span
-                  className={`flex-shrink-0 px-2 py-0.5 rounded-md text-[10px] font-semibold leading-tight ${
+                  className={`flex-shrink-0 px-2 py-0.5 rounded-md text-[10px] font-medium leading-tight ${
                     s.statusType === "danger"
-                      ? "bg-rose-500/20 border border-rose-400/40 text-rose-300"
+                      ? "bg-rose-500/12 border border-rose-500/25 text-rose-700"
                       : s.statusType === "warning"
-                        ? "bg-amber-500/20 border border-amber-400/40 text-amber-300"
-                        : "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300"
+                        ? "bg-amber-500/12 border border-amber-500/25 text-amber-800"
+                        : "bg-emerald-500/12 border border-emerald-500/25 text-emerald-700"
                   }`}
                 >
                   {statusName}
@@ -230,8 +230,7 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
               </div>
 
               {/* Image */}
-              <div className="w-full h-32 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-[#112d4e] border border-white/10 pointer-events-none">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(56,189,248,0.08)_0%,transparent_70%)]" />
+              <div className="w-full h-36 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-gradient-to-br from-sky-100/55 via-white/55 to-cyan-100/45 border border-white/85 pointer-events-none">
                 <img
                   src={s.image || FishHidden}
                   alt={name}
@@ -242,29 +241,34 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = FishHidden;
                   }}
-                  className="w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)] relative z-10 select-none pointer-events-none"
+                  className={
+                    typeof s.image === "string" &&
+                    (s.image.startsWith("http") || s.image.endsWith(".jpg") || s.image.endsWith(".webp"))
+                      ? "w-full h-full object-cover relative z-10 select-none pointer-events-none"
+                      : "w-full h-full object-contain p-3 drop-shadow-[0_6px_12px_rgba(15,23,42,0.16)] relative z-10 select-none pointer-events-none"
+                  }
                 />
               </div>
 
               {/* Info */}
               <div>
-                <h3 className="text-sm font-bold text-white font-heading group-hover:text-sky-300 transition-colors mb-0.5 line-clamp-1">
+                <h3 className="text-sm font-bold text-[#0f172a] font-heading group-hover:text-[#0284c7] transition-colors mb-0.5 line-clamp-1">
                   {name}
                 </h3>
-                <p className="text-[10px] text-slate-400 italic mb-2 line-clamp-1">
+                <p className="text-[11px] text-[#475569] italic mb-2 line-clamp-1 font-mono">
                   {s.sciName}
                 </p>
-                <p className="text-[11px] text-white/60 leading-relaxed line-clamp-2 mb-3">
+                <p className="text-xs text-[#334155] leading-relaxed line-clamp-2 mb-3">
                   {desc}
                 </p>
               </div>
 
               {/* Footer */}
-              <div className="pt-2.5 border-t border-white/8 flex items-center justify-between text-[10px] text-slate-500">
-                <span className="flex items-center gap-1.5">
-                  <Icons.Anchor className="w-3.5 h-3.5 text-blue-400" /> {s.depth}
+              <div className="pt-2.5 border-t border-[#0f172a]/8 flex items-center justify-between text-[11px] text-[#475569]">
+                <span className="flex items-center gap-1.5 font-mono tabular-nums">
+                  <Icons.Anchor className="w-3.5 h-3.5 text-[#0284c7]" /> {s.depth}
                 </span>
-                <span className="text-sky-400 font-semibold group-hover:text-sky-300 transition-colors">
+                <span className="text-[#0284c7] font-medium group-hover:text-[#0369a1] transition-colors">
                   {t("searchPage.btnDetail")}
                 </span>
               </div>

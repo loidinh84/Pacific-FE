@@ -2,18 +2,18 @@
  * newsUtils.js — Các hàm tiện ích dùng chung cho trang Tin tức & Chi tiết tin
  */
 
-/** Màu sắc theo chuyên mục */
+/** Màu sắc theo chuyên mục (Sunlit Azure Liquid Glass) */
 export const CATEGORY_STYLES = {
-  conservation: "bg-emerald-950/85 border-emerald-400/50 text-emerald-300 shadow-sm",
-  discovery: "bg-sky-950/85 border-sky-400/50 text-sky-300 shadow-sm",
-  "east-sea": "bg-cyan-950/85 border-cyan-400/50 text-cyan-300 shadow-sm",
-  "fun-facts": "bg-amber-950/85 border-amber-400/50 text-amber-300 shadow-sm",
-  events: "bg-orange-950/85 border-orange-400/50 text-orange-300 shadow-sm",
-  research: "bg-fuchsia-950/85 border-fuchsia-400/50 text-fuchsia-300 shadow-sm",
+  conservation: "bg-white/88 border-emerald-600/30 text-emerald-800 shadow-xs",
+  discovery: "bg-white/88 border-sky-600/30 text-sky-800 shadow-xs",
+  "east-sea": "bg-white/88 border-cyan-600/30 text-cyan-800 shadow-xs",
+  "fun-facts": "bg-white/88 border-amber-600/30 text-amber-800 shadow-xs",
+  events: "bg-white/88 border-orange-600/30 text-orange-800 shadow-xs",
+  research: "bg-white/88 border-indigo-600/30 text-indigo-800 shadow-xs",
 };
 
 export const getCategoryStyle = (slug) =>
-  CATEGORY_STYLES[slug] || "bg-slate-900/85 border-white/25 text-white/90 shadow-sm";
+  CATEGORY_STYLES[slug] || "bg-white/88 border-[#0b2545]/15 text-[#0b2545] shadow-xs";
 
 /** Lấy tên chuyên mục đã dịch theo ngôn ngữ hiện tại */
 export const getCategoryLabel = (t, slug) =>

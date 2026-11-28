@@ -40,7 +40,7 @@ const ECOLOGICAL_RELATION_META = {
   symbiosis: {
     color: "#38bdf8", // Xanh cyan dạ quang
     glowColor: "rgba(56, 189, 248, 0.4)",
-    badgeColor: "text-cyan-300 bg-cyan-500/10 border-cyan-500/30",
+    badgeColor: "text-[#0284c7] bg-sky-600/10 border-sky-600/25",
     labelVi: "Cộng sinh tương hỗ",
     labelEn: "Mutualism",
     trophicType: "Mutualism",
@@ -125,7 +125,7 @@ const RED_LIST_STANDARDS = {
     code: "DD",
     titleVi: "Thiếu dữ liệu",
     titleEn: "Data Deficient",
-    style: "bg-slate-500/15 text-slate-300 border-slate-500/40",
+    style: "bg-slate-500/15 text-[#334155] border-slate-500/40",
     dot: "bg-slate-400",
   },
   NE: {
@@ -637,7 +637,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
       <Link
         key={item.relationshipId || item.speciesId}
         to={`/species/${item.slug || item.speciesId}`}
-        className="group relative p-4 rounded-2xl bg-[#081729]/80 hover:bg-[#0c2038]/90 border border-white/10 hover:border-cyan-400/50 transition-all duration-300 flex flex-col justify-between cursor-pointer block"
+        className="group relative p-4 rounded-2xl liquid-glass-strong hover:liquid-glass-strong border border-[#0f172a]/10 hover:border-sky-600/25 transition-all duration-300 flex flex-col justify-between cursor-pointer block"
       >
         <div>
           {/* Header Card: Vai trò sinh thái học & Bậc đe dọa Sách Đỏ */}
@@ -660,7 +660,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           {/* Ảnh avatar tròn & Tên loài */}
           <div className="flex items-center gap-3.5 mb-3 relative z-10">
             <div
-              className="w-13 h-13 rounded-full overflow-hidden shrink-0 border transition-all duration-300 group-hover:scale-105 bg-slate-900"
+              className="w-13 h-13 rounded-full overflow-hidden shrink-0 border transition-all duration-300 group-hover:scale-105 liquid-glass-strong"
               style={{
                 borderColor: `${meta.color}99`,
               }}
@@ -675,24 +675,24 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                   }}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-slate-500 text-[10px]">
+                <div className="w-full h-full flex items-center justify-center text-[#475569] text-[10px]">
                   N/A
                 </div>
               )}
             </div>
 
             <div className="flex-1 min-w-0">
-              <h4 className="font-bold text-sm text-white group-hover:text-cyan-300 transition-colors line-clamp-1 flex items-center gap-1.5">
+              <h4 className="font-bold text-sm text-[#0f172a] group-hover:text-[#0284c7] transition-colors line-clamp-1 flex items-center gap-1.5">
                 <span>{cleanName}</span>
                 <ArrowUpRight
                   size={13}
-                  className="text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                  className="text-[#0284c7] opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
                 />
               </h4>
-              <p className="text-[11px] text-slate-400 italic font-serif line-clamp-1 mt-0.5">
+              <p className="text-[11px] text-[#475569] italic font-serif line-clamp-1 mt-0.5">
                 {item.scientificName}
               </p>
-              <p className="text-[10px] text-slate-500 mt-0.5">
+              <p className="text-[10px] text-[#475569] mt-0.5">
                 {cleanGroupName}
               </p>
             </div>
@@ -700,7 +700,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
           {/* Mô tả cơ chế tương tác sinh thái */}
           {item.description && (
-            <p className="text-xs text-slate-300 leading-relaxed bg-white/[0.02] p-3 rounded-xl border border-white/5 line-clamp-3 relative z-10">
+            <p className="text-xs text-[#334155] leading-relaxed bg-white/[0.02] p-3 rounded-xl border border-[#0f172a]/10 line-clamp-3 relative z-10">
               {item.description}
             </p>
           )}
@@ -712,23 +712,23 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
   const centerRedListMeta = RED_LIST_STANDARDS[centerNode.redList] || RED_LIST_STANDARDS.NE;
 
   return (
-    <section className="py-14 px-4 md:px-8 max-w-6xl mx-auto border-t border-white/10">
+    <section className="py-14 px-4 md:px-8 max-w-6xl mx-auto border-t border-[#0f172a]/10">
       {/* ─── 1. HEADER SECTION ──────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white font-heading tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#0f172a] font-heading tracking-tight">
             {isEn ? "Ecosystem dynamics & trophic web" : "Mạng lưới sinh thái & chuỗi thức ăn"}
           </h2>
         </div>
 
         {/* View Switcher: Mạng lưới đại dương vs Tháp Dinh Dưỡng */}
-        <div className="flex items-center gap-1 p-1 bg-[#091a30] border border-white/10 rounded-xl">
+        <div className="flex items-center gap-1 p-1 liquid-glass-strong border border-[#0f172a]/10 rounded-xl">
           <button
             onClick={() => setViewMode("orbit")}
             className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
               viewMode === "orbit"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
-                : "text-slate-400 hover:text-white"
+                ? "bg-sky-600/10 text-[#0284c7] border border-sky-600/25"
+                : "text-[#475569] hover:text-[#0f172a]"
             }`}
           >
             <Compass size={13} />
@@ -738,8 +738,8 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             onClick={() => setViewMode("pyramid")}
             className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
               viewMode === "pyramid"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
-                : "text-slate-400 hover:text-white"
+                ? "bg-sky-600/10 text-[#0284c7] border border-sky-600/25"
+                : "text-[#475569] hover:text-[#0f172a]"
             }`}
           >
             <Layers size={13} />
@@ -749,12 +749,12 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
       </div>
 
       {/* ─── 2. BIỂU ĐỒ MẠNG LƯỚI SINH THÁI ĐẠI DƯƠNG ───────── */}
-      <div className="relative rounded-3xl bg-gradient-to-b from-[#183c66] via-[#133358] to-[#0f2744] border border-white/15 overflow-hidden mb-12 shadow-sm">
+      <div className="relative rounded-3xl bg-gradient-to-b from-[#183c66] via-[#133358] to-[#0f2744] border border-[#0f172a]/10 overflow-hidden mb-12 shadow-sm">
         {/* Thanh công cụ khoa học phía trên đồ thị */}
-        <div className="px-5 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02] backdrop-blur-md">
+        <div className="px-5 py-3 border-b border-[#0f172a]/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02] backdrop-blur-md">
           <div className="flex items-center gap-2.5">
             <span className="w-2 h-2 rounded-full bg-cyan-400" />
-            <span className="text-xs font-bold text-white tracking-wider">
+            <span className="text-xs font-bold text-[#0f172a] tracking-wider">
               {viewMode === "orbit"
                 ? isEn
                   ? "Ecosystem Orbital Matrix"
@@ -763,7 +763,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 ? "Marine Trophic Hierarchy"
                 : "Phân tầng tháp dinh dưỡng"}
             </span>
-            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-mono">
+            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-sky-600/10 border border-sky-600/25 text-[#0284c7] font-mono">
               {totalRelations} {isEn ? "linkages" : "mối liên kết"}
             </span>
           </div>
@@ -774,12 +774,12 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
               onClick={() => setSelectedRelationFilter("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                 selectedRelationFilter === "all"
-                  ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 shadow-sm"
-                  : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+                  ? "bg-sky-600/10 text-[#0284c7] border border-sky-600/25 shadow-sm"
+                  : "text-[#475569] hover:text-[#0f172a] bg-white/[0.03] border border-transparent"
               }`}
             >
               <span>{isEn ? "All" : "Tất cả"}</span>
-              <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-white/10 font-mono font-bold">
+              <span className="text-[11px] px-1.5 py-0.5 rounded-full liquid-glass-subtle font-mono font-bold">
                 {satelliteNodes.length}
               </span>
             </button>
@@ -793,13 +793,13 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 }
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                   selectedRelationFilter === "prey"
-                    ? "bg-rose-500/25 text-rose-200 border border-rose-400/50 shadow-sm"
-                    : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+                    ? "bg-rose-500/25 text-rose-700 border border-rose-400/50 shadow-sm"
+                    : "text-[#475569] hover:text-[#0f172a] bg-white/[0.03] border border-transparent"
                 }`}
               >
                 <span className="w-2.5 h-2.5 rounded-full bg-[#f43f5e]" />
                 <span>{isEn ? "Prey" : "Con mồi"}</span>
-                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-mono font-bold">
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-rose-600/10 text-rose-700 font-mono font-bold">
                   {filterCounts.prey}
                 </span>
               </button>
@@ -814,13 +814,13 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 }
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                   selectedRelationFilter === "competitor"
-                    ? "bg-amber-500/25 text-amber-200 border border-amber-400/50 shadow-sm"
-                    : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+                    ? "bg-amber-500/25 text-amber-700 border border-amber-400/50 shadow-sm"
+                    : "text-[#475569] hover:text-[#0f172a] bg-white/[0.03] border border-transparent"
                 }`}
               >
                 <span className="w-2.5 h-2.5 rounded-full bg-[#f59e0b]" />
                 <span>{isEn ? "Competitors" : "Cạnh tranh"}</span>
-                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold">
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-amber-500/12 text-amber-700 font-mono font-bold">
                   {filterCounts.competitor}
                 </span>
               </button>
@@ -835,13 +835,13 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 }
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                   selectedRelationFilter === "symbiosis"
-                    ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 shadow-sm"
-                    : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+                    ? "bg-sky-600/10 text-[#0284c7] border border-sky-600/25 shadow-sm"
+                    : "text-[#475569] hover:text-[#0f172a] bg-white/[0.03] border border-transparent"
                 }`}
               >
                 <span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8]" />
                 <span>{isEn ? "Symbiosis" : "Cộng sinh"}</span>
-                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono font-bold">
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-sky-600/10 text-[#0284c7] font-mono font-bold">
                   {filterCounts.symbiosis}
                 </span>
               </button>
@@ -856,13 +856,13 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 }
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                   selectedRelationFilter === "habitat"
-                    ? "bg-emerald-500/25 text-emerald-200 border border-emerald-400/50 shadow-sm"
-                    : "text-slate-400 hover:text-white bg-white/[0.03] border border-transparent"
+                    ? "bg-emerald-500/25 text-emerald-700 border border-emerald-400/50 shadow-sm"
+                    : "text-[#475569] hover:text-[#0f172a] bg-white/[0.03] border border-transparent"
                 }`}
               >
                 <span className="w-2.5 h-2.5 rounded-full bg-[#10b981]" />
                 <span>{isEn ? "Habitat" : "Sinh cảnh"}</span>
-                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-bold">
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-emerald-600/10 text-emerald-700 font-mono font-bold">
                   {filterCounts.habitat}
                 </span>
               </button>
@@ -872,30 +872,30 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
         {/* Khung tương tác chính */}
         {loading ? (
-          <div className="h-[480px] flex flex-col items-center justify-center gap-3 text-cyan-400">
+          <div className="h-[480px] flex flex-col items-center justify-center gap-3 text-[#0284c7]">
             <div className="w-9 h-9 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-[#475569]">
               {isEn
                 ? "Simulating East Sea marine ecological matrix..."
                 : "Đang mô phỏng ma trận sinh thái Biển Đông..."}
             </span>
           </div>
         ) : error ? (
-          <div className="h-[360px] flex flex-col items-center justify-center p-6 text-center text-rose-400 gap-3">
+          <div className="h-[360px] flex flex-col items-center justify-center p-6 text-center text-rose-700 gap-3">
             <AlertTriangle size={36} className="text-rose-500/80" />
-            <p className="text-sm font-medium text-slate-200">{error}</p>
+            <p className="text-sm font-medium text-[#334155]">{error}</p>
             <button
               onClick={handleRetry}
-              className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-bold border border-cyan-500/40 flex items-center gap-2 cursor-pointer transition-colors"
+              className="px-4 py-2 rounded-xl bg-sky-600/10 hover:bg-cyan-500/30 text-[#0284c7] text-xs font-bold border border-sky-600/25 flex items-center gap-2 cursor-pointer transition-colors"
             >
               <RotateCcw size={13} />
               <span>{isEn ? "Retry" : "Thử lại"}</span>
             </button>
           </div>
         ) : totalRelations === 0 ? (
-          <div className="h-[360px] flex flex-col items-center justify-center p-6 text-center text-slate-400 gap-2">
+          <div className="h-[360px] flex flex-col items-center justify-center p-6 text-center text-[#475569] gap-2">
             <Compass size={36} className="text-cyan-500/50" />
-            <p className="text-sm font-medium text-slate-300">
+            <p className="text-sm font-medium text-[#334155]">
               {isEn
                 ? "No specific trophic network data recorded for this species"
                 : "Chưa có dữ liệu mạng lưới cụ thể cho loài này"}
@@ -1028,7 +1028,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                   }}
                 >
                   {/* Vành xoay radar khoa học quanh quả cầu trung tâm */}
-                  <div className="absolute -inset-2.5 rounded-full border border-cyan-400/30 border-dashed animate-[spin_24s_linear_infinite] pointer-events-none" />
+                  <div className="absolute -inset-2.5 rounded-full border border-sky-600/25 border-dashed animate-[spin_24s_linear_infinite] pointer-events-none" />
                   <div className="absolute -inset-1 rounded-full bg-cyan-400/10 blur-md pointer-events-none" />
 
                   {/* Quả cầu avatar tròn tinh tế */}
@@ -1040,16 +1040,16 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-cyan-950 text-cyan-300 font-bold">
+                      <div className="w-full h-full flex items-center justify-center bg-cyan-950 text-[#0284c7] font-bold">
                         Center
                       </div>
                     )}
                   </div>
 
                   {/* Nhãn loài trung tâm kèm huy hiệu Sách Đỏ - Đặt ngay sát đáy quả cầu */}
-                  <div className="mt-2.5 whitespace-nowrap px-3.5 py-1.5 rounded-full bg-[#030d1a]/95 border border-cyan-400/50 shadow-lg flex items-center gap-2 backdrop-blur-md">
+                  <div className="mt-2.5 whitespace-nowrap px-3.5 py-1.5 rounded-full liquid-glass-strong border border-sky-600/25 shadow-lg flex items-center gap-2 backdrop-blur-md">
                     <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                    <span className="text-xs sm:text-sm font-bold text-white tracking-wide">
+                    <span className="text-xs sm:text-sm font-bold text-[#0f172a] tracking-wide">
                       {centerNode.name}
                     </span>
                     <span
@@ -1113,7 +1113,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                             }}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-slate-800 text-slate-400 text-xs">
+                          <div className="w-full h-full flex items-center justify-center liquid-glass-subtle text-[#475569] text-xs">
                             {node.cleanName.charAt(0)}
                           </div>
                         )}
@@ -1142,18 +1142,18 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                       <div
                         className={`mt-2 whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300 border flex items-center gap-1.5 shadow-md ${
                           isHovered
-                            ? "bg-cyan-500/20 text-cyan-200 border-cyan-400/80 scale-105"
-                            : "bg-[#061426]/95 text-slate-200 border-white/10"
+                            ? "bg-sky-600/10 text-[#0284c7] border-cyan-400/80 scale-105"
+                            : "liquid-glass-strong text-[#334155] border-[#0f172a]/10"
                         }`}
                       >
                         <span
                           className="w-1.5 h-1.5 rounded-full shrink-0"
                           style={{ backgroundColor: meta.color }}
                         />
-                        <span className="text-[11px] font-medium text-slate-300">
+                        <span className="text-[11px] font-medium text-[#334155]">
                           {node.relationCategoryLabel}:
                         </span>
-                        <span className="font-bold text-white">
+                        <span className="font-bold text-[#0f172a]">
                           {node.cleanName}
                         </span>
                       </div>
@@ -1170,7 +1170,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                           className={`absolute ${getTooltipPositionClass(
                             node.x,
                             node.y
-                          )} w-64 p-3.5 rounded-2xl bg-[#07172b]/95 backdrop-blur-xl border border-cyan-400/40 shadow-xl shadow-black/40 text-left z-50 cursor-default pointer-events-auto select-text`}
+                          )} w-64 p-3.5 rounded-2xl liquid-glass-strong backdrop-blur-xl border border-sky-600/25 shadow-xl shadow-black/40 text-left z-50 cursor-default pointer-events-auto select-text`}
                           onClick={(e) => e.stopPropagation()}
                         >
                           <div className="flex items-center justify-between mb-2">
@@ -1180,26 +1180,26 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                               <RoleIcon size={11} />
                               <span>{node.relationCategoryLabel}</span>
                             </span>
-                            <span className="text-[10px] text-cyan-300 font-mono">
+                            <span className="text-[10px] text-[#0284c7] font-mono">
                               Sách Đỏ {node.redList || "NE"}
                             </span>
                           </div>
 
-                          <h5 className="font-bold text-xs text-white">
+                          <h5 className="font-bold text-xs text-[#0f172a]">
                             {node.cleanName}
                           </h5>
                           {node.cleanScientificName && (
-                            <p className="text-[10px] text-slate-400 italic font-serif mb-1.5">
+                            <p className="text-[10px] text-[#475569] italic font-serif mb-1.5">
                               {node.cleanScientificName}
                             </p>
                           )}
-                          <p className="text-[11px] text-slate-300 leading-relaxed mb-2.5">
+                          <p className="text-[11px] text-[#334155] leading-relaxed mb-2.5">
                             {node.relationDescription}
                           </p>
 
                           <Link
                             to={`/species/${node.slug || node.id}`}
-                            className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-cyan-400 hover:text-cyan-200 transition-colors cursor-pointer group/link"
+                            className="pt-2 border-t border-[#0f172a]/10 flex items-center justify-between text-[11px] text-[#0284c7] hover:text-[#0284c7] transition-colors cursor-pointer group/link"
                           >
                             <span className="group-hover/link:underline">
                               {isEn ? "View species profile" : "Xem hồ sơ loài chi tiết"}
@@ -1218,7 +1218,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
             </div>
 
             {/* Hướng dẫn thao tác góc dưới */}
-            <div className="absolute bottom-3 left-4 text-[11px] text-slate-400 flex items-center gap-2 bg-[#04101e]/85 px-3 py-1 rounded-full border border-white/10 backdrop-blur-sm">
+            <div className="absolute bottom-3 left-4 text-[11px] text-[#475569] flex items-center gap-2 liquid-glass-strong px-3 py-1 rounded-full border border-[#0f172a]/10 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
               <span>
                 {isEn
@@ -1231,15 +1231,15 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           /* Tháp dinh dưỡng */
           <div className="p-6 md:p-8 space-y-6">
             <div className="text-center max-w-xl mx-auto mb-4">
-              <span className="text-xs px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 font-mono">
+              <span className="text-xs px-3 py-1 rounded-full bg-sky-600/10 border border-sky-600/25 text-[#0284c7] font-mono">
                 Trophic Level Pyramid • Biển Đông
               </span>
-              <h3 className="text-lg font-bold text-white mt-2">
+              <h3 className="text-lg font-bold text-[#0f172a] mt-2">
                 {isEn
                   ? "Oceanic Biomass Flow & Trophic Energy Hierarchy"
                   : "Dòng truyền năng lượng & Bậc dinh dưỡng đại dương"}
               </h3>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-[#475569] mt-1 leading-relaxed">
                 {isEn
                   ? "According to Lindeman's 10% ecological efficiency law, biomass energy attenuates as it moves up from primary producers to apex marine carnivores."
                   : "Theo quy luật sinh thái học đại dương của Lindeman, năng lượng sinh khối được chuyển đổi khoảng 10% qua mỗi bậc dinh dưỡng từ con mồi cơ sở lên động vật ăn thịt bậc cao."}
@@ -1253,23 +1253,23 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 <div
                   className={`max-w-xl w-full mx-auto p-4 md:p-5 rounded-2xl bg-gradient-to-b ${pyramidTiers.apex.bgGradient} border ${pyramidTiers.apex.borderColor} shadow-[0_8px_30px_rgba(244,63,94,0.12)] transition-all relative overflow-hidden`}
                 >
-                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#0f172a]/10">
                     <div className="flex items-center gap-2">
                       <span
                         className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${pyramidTiers.apex.badgeStyle}`}
                       >
                         {pyramidTiers.apex.level}
                       </span>
-                      <h4 className="text-xs md:text-sm font-bold text-white">
+                      <h4 className="text-xs md:text-sm font-bold text-[#0f172a]">
                         {isEn ? pyramidTiers.apex.titleEn : pyramidTiers.apex.titleVi}
                       </h4>
                     </div>
-                    <span className="text-[10px] text-rose-300 font-mono">
+                    <span className="text-[10px] text-rose-700 font-mono">
                       {isEn ? "Apex Predator" : "Đỉnh chuỗi thức ăn"}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-slate-400 mb-3 italic">
+                  <p className="text-[11px] text-[#475569] mb-3 italic">
                     {isEn ? pyramidTiers.apex.subEn : pyramidTiers.apex.subVi}
                   </p>
 
@@ -1278,7 +1278,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                       <Link
                         key={item.id}
                         to={`/species/${item.slug || item.id}`}
-                        className="p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-rose-400/50 flex items-center gap-3 transition-all cursor-pointer group hover:scale-[1.02] shadow-sm backdrop-blur-sm"
+                        className="p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-[#0f172a]/10 hover:border-rose-400/50 flex items-center gap-3 transition-all cursor-pointer group hover:scale-[1.02] shadow-sm backdrop-blur-sm"
                       >
                         <div
                           className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 border-2"
@@ -1295,30 +1295,30 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-xs sm:text-sm text-white group-hover:text-rose-300 line-clamp-1 transition-colors">
+                            <span className="font-bold text-xs sm:text-sm text-[#0f172a] group-hover:text-rose-700 line-clamp-1 transition-colors">
                               {item.name}
                             </span>
                             {item.isCenter && (
-                              <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-400/40">
+                              <span className="px-2 py-0.5 rounded-full bg-sky-600/10 text-[#0284c7] text-[10px] font-bold border border-sky-600/25">
                                 {isEn ? "Focal" : "Loài này"}
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-slate-400 italic line-clamp-1 font-serif">
+                          <div className="text-xs text-[#475569] italic line-clamp-1 font-serif">
                             {item.scientificName}
                           </div>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] font-medium text-slate-300">
+                            <span className="text-[10px] font-medium text-[#334155]">
                               {item.roleBadge}
                             </span>
-                            <span className="text-[10px] font-mono text-cyan-300 font-semibold">
+                            <span className="text-[10px] font-mono text-[#0284c7] font-semibold">
                               Sách Đỏ {item.redList || "NE"}
                             </span>
                           </div>
                         </div>
                         <ArrowUpRight
                           size={13}
-                          className="text-slate-500 group-hover:text-rose-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0"
+                          className="text-[#475569] group-hover:text-rose-700 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0"
                         />
                       </Link>
                     ))}
@@ -1328,14 +1328,14 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
               {/* ĐẦU NỐI DÒNG NĂNG LƯỢNG TRUYỀN LÊN: LINDEMAN 10% RULE */}
               <div className="flex flex-col items-center justify-center py-1">
-                <div className="flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-900/90 border border-rose-500/30 text-rose-300 shadow-md">
+                <div className="flex items-center gap-2.5 px-3 py-1 rounded-full liquid-glass-strong border border-rose-500/30 text-rose-700 shadow-md">
                   <span className="inline-block text-xs">▲</span>
                   <span className="font-mono text-[11px] font-bold">
                     {isEn
                       ? "~10% Biomass Transfer (Lindeman's 10% Rule)"
                       : "~10% Hiệu suất truyền sinh khối (Quy luật 10% Lindeman)"}
                   </span>
-                  <span className="text-[10px] text-slate-400 border-l border-white/10 pl-2 hidden sm:inline">
+                  <span className="text-[10px] text-[#475569] border-l border-[#0f172a]/10 pl-2 hidden sm:inline">
                     {isEn
                       ? "90% energy lost to respiration & motion"
                       : "90% tiêu hao trao đổi chất & vận động"}
@@ -1349,23 +1349,23 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 <div
                   className={`max-w-3xl w-full mx-auto p-4 md:p-5 rounded-2xl bg-gradient-to-b ${pyramidTiers.middle.bgGradient} border ${pyramidTiers.middle.borderColor} shadow-[0_8px_30px_rgba(245,158,11,0.12)] transition-all relative overflow-hidden`}
                 >
-                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#0f172a]/10">
                     <div className="flex items-center gap-2">
                       <span
                         className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${pyramidTiers.middle.badgeStyle}`}
                       >
                         {pyramidTiers.middle.level}
                       </span>
-                      <h4 className="text-xs md:text-sm font-bold text-white">
+                      <h4 className="text-xs md:text-sm font-bold text-[#0f172a]">
                         {isEn ? pyramidTiers.middle.titleEn : pyramidTiers.middle.titleVi}
                       </h4>
                     </div>
-                    <span className="text-[10px] text-amber-300 font-mono">
+                    <span className="text-[10px] text-amber-700 font-mono">
                       {isEn ? "Mesopredators & Competitors" : "Săn mồi bậc trung & Cạnh tranh"}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-slate-400 mb-3 italic">
+                  <p className="text-[11px] text-[#475569] mb-3 italic">
                     {isEn ? pyramidTiers.middle.subEn : pyramidTiers.middle.subVi}
                   </p>
 
@@ -1374,7 +1374,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                       <Link
                         key={item.id}
                         to={`/species/${item.slug || item.id}`}
-                        className="p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-amber-400/50 flex items-center gap-3 transition-all cursor-pointer group hover:scale-[1.02] shadow-sm backdrop-blur-sm"
+                        className="p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-[#0f172a]/10 hover:border-amber-400/50 flex items-center gap-3 transition-all cursor-pointer group hover:scale-[1.02] shadow-sm backdrop-blur-sm"
                       >
                         <div
                           className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 border-2"
@@ -1391,30 +1391,30 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-xs sm:text-sm text-white group-hover:text-amber-300 line-clamp-1 transition-colors">
+                            <span className="font-bold text-xs sm:text-sm text-[#0f172a] group-hover:text-amber-700 line-clamp-1 transition-colors">
                               {item.name}
                             </span>
                             {item.isCenter && (
-                              <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-400/40">
+                              <span className="px-2 py-0.5 rounded-full bg-sky-600/10 text-[#0284c7] text-[10px] font-bold border border-sky-600/25">
                                 {isEn ? "Focal" : "Loài này"}
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-slate-400 italic line-clamp-1 font-serif">
+                          <div className="text-xs text-[#475569] italic line-clamp-1 font-serif">
                             {item.scientificName}
                           </div>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] font-medium text-slate-300">
+                            <span className="text-[10px] font-medium text-[#334155]">
                               {item.roleBadge}
                             </span>
-                            <span className="text-[10px] font-mono text-cyan-300 font-semibold">
+                            <span className="text-[10px] font-mono text-[#0284c7] font-semibold">
                               Sách Đỏ {item.redList || "NE"}
                             </span>
                           </div>
                         </div>
                         <ArrowUpRight
                           size={13}
-                          className="text-slate-500 group-hover:text-amber-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0"
+                          className="text-[#475569] group-hover:text-amber-700 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0"
                         />
                       </Link>
                     ))}
@@ -1424,14 +1424,14 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
 
               {/* ĐẦU NỐI DÒNG NĂNG LƯỢNG TRUYỀN LÊN: CON MỒI -> BẬC TRUNG */}
               <div className="flex flex-col items-center justify-center py-1">
-                <div className="flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-900/90 border border-amber-500/30 text-amber-300 shadow-md">
+                <div className="flex items-center gap-2.5 px-3 py-1 rounded-full liquid-glass-strong border border-amber-500/30 text-amber-700 shadow-md">
                   <span className="inline-block text-xs">▲</span>
                   <span className="font-mono text-[11px] font-bold">
                     {isEn
                       ? "Primary Trophic Fuel & Forage Abundance"
                       : "Nguồn cung cấp sơ cấp & Sinh khối nuôi dưỡng cơ sở"}
                   </span>
-                  <span className="text-[10px] text-slate-400 border-l border-white/10 pl-2 hidden sm:inline">
+                  <span className="text-[10px] text-[#475569] border-l border-[#0f172a]/10 pl-2 hidden sm:inline">
                     {isEn
                       ? "Benthic & pelagic energy foundation"
                       : "Dòng dinh dưỡng gốc đại dương"}
@@ -1445,23 +1445,23 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                 <div
                   className={`max-w-5xl w-full mx-auto p-4 md:p-5 rounded-2xl bg-gradient-to-b ${pyramidTiers.bottom.bgGradient} border ${pyramidTiers.bottom.borderColor} shadow-[0_8px_30px_rgba(16,185,129,0.12)] transition-all relative overflow-hidden`}
                 >
-                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#0f172a]/10">
                     <div className="flex items-center gap-2">
                       <span
                         className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${pyramidTiers.bottom.badgeStyle}`}
                       >
                         {pyramidTiers.bottom.level}
                       </span>
-                      <h4 className="text-xs md:text-sm font-bold text-white">
+                      <h4 className="text-xs md:text-sm font-bold text-[#0f172a]">
                         {isEn ? pyramidTiers.bottom.titleEn : pyramidTiers.bottom.titleVi}
                       </h4>
                     </div>
-                    <span className="text-[10px] text-emerald-300 font-mono">
+                    <span className="text-[10px] text-emerald-700 font-mono">
                       {isEn ? "Primary Consumers & Forage Biomass" : "Tiêu thụ sơ cấp & Con mồi đàn"}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-slate-400 mb-3 italic">
+                  <p className="text-[11px] text-[#475569] mb-3 italic">
                     {isEn ? pyramidTiers.bottom.subEn : pyramidTiers.bottom.subVi}
                   </p>
 
@@ -1470,7 +1470,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                       <Link
                         key={item.id}
                         to={`/species/${item.slug || item.id}`}
-                        className="p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-emerald-400/50 flex items-center gap-3 transition-all cursor-pointer group hover:scale-[1.02] shadow-sm backdrop-blur-sm"
+                        className="p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-[#0f172a]/10 hover:border-emerald-400/50 flex items-center gap-3 transition-all cursor-pointer group hover:scale-[1.02] shadow-sm backdrop-blur-sm"
                       >
                         <div
                           className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 border-2"
@@ -1487,30 +1487,30 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-xs sm:text-sm text-white group-hover:text-emerald-300 line-clamp-1 transition-colors">
+                            <span className="font-bold text-xs sm:text-sm text-[#0f172a] group-hover:text-emerald-700 line-clamp-1 transition-colors">
                               {item.name}
                             </span>
                             {item.isCenter && (
-                              <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-400/40">
+                              <span className="px-2 py-0.5 rounded-full bg-sky-600/10 text-[#0284c7] text-[10px] font-bold border border-sky-600/25">
                                  {isEn ? "Focal" : "Loài này"}
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-slate-400 italic line-clamp-1 font-serif">
+                          <div className="text-xs text-[#475569] italic line-clamp-1 font-serif">
                             {item.scientificName}
                           </div>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] font-medium text-slate-300">
+                            <span className="text-[10px] font-medium text-[#334155]">
                               {item.roleBadge}
                             </span>
-                            <span className="text-[10px] font-mono text-cyan-300 font-semibold">
+                            <span className="text-[10px] font-mono text-[#0284c7] font-semibold">
                               Sách Đỏ {item.redList || "NE"}
                             </span>
                           </div>
                         </div>
                         <ArrowUpRight
                           size={13}
-                          className="text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0"
+                          className="text-[#475569] group-hover:text-emerald-700 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0"
                         />
                       </Link>
                     ))}
@@ -1528,8 +1528,8 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {/* 1. Nhóm Con mồi & Nguồn thức ăn */}
         {roles.prey?.length > 0 && (
           <div>
-            <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+            <div className="flex items-center justify-between pb-2 mb-4 border-b border-[#0f172a]/10">
+              <h3 className="text-base md:text-lg font-bold text-[#0f172a] font-heading">
                 {isEn ? "Prey & dietary base" : "Con mồi & nguồn dinh dưỡng"}
               </h3>
             </div>
@@ -1542,8 +1542,8 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {/* 2. Nhóm Kẻ săn mồi & Thiên địch */}
         {roles.predators?.length > 0 && (
           <div>
-            <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+            <div className="flex items-center justify-between pb-2 mb-4 border-b border-[#0f172a]/10">
+              <h3 className="text-base md:text-lg font-bold text-[#0f172a] font-heading">
                 {isEn ? "Trophic predators & apex threats" : "Động vật ăn thịt & thiên địch"}
               </h3>
             </div>
@@ -1556,8 +1556,8 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {/* 3. Nhóm Cộng sinh & Tương hỗ */}
         {roles.symbionts?.length > 0 && (
           <div>
-            <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+            <div className="flex items-center justify-between pb-2 mb-4 border-b border-[#0f172a]/10">
+              <h3 className="text-base md:text-lg font-bold text-[#0f172a] font-heading">
                 {isEn ? "Symbiotic & mutualistic network" : "Cộng sinh tương hỗ & hội sinh"}
               </h3>
             </div>
@@ -1570,8 +1570,8 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {/* 4. Nhóm Sinh cảnh cư trú & Nơi nương tựa */}
         {roles.habitats?.length > 0 && (
           <div>
-            <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+            <div className="flex items-center justify-between pb-2 mb-4 border-b border-[#0f172a]/10">
+              <h3 className="text-base md:text-lg font-bold text-[#0f172a] font-heading">
                 {isEn ? "Biogenic habitat & nursery foundation" : "Sinh cảnh kiến tạo & nơi nương tựa"}
               </h3>
             </div>
@@ -1584,8 +1584,8 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
         {/* 5. Cạnh tranh sinh thái */}
         {roles.competitors?.length > 0 && (
           <div>
-            <div className="flex items-center justify-between pb-2 mb-4 border-b border-white/10">
-              <h3 className="text-base md:text-lg font-bold text-white font-heading">
+            <div className="flex items-center justify-between pb-2 mb-4 border-b border-[#0f172a]/10">
+              <h3 className="text-base md:text-lg font-bold text-[#0f172a] font-heading">
                 {isEn ? "Niche competition" : "Cạnh tranh ổ sinh thái"}
               </h3>
             </div>

@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Navigation, ExternalLink } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import * as Images from "../../assets/Images";
+import { fetchOceanLocations } from "../../services/speciesApi";
 
 const HIGHLIGHTED_LOCATIONS = [
   {
@@ -69,17 +71,60 @@ const HIGHLIGHTED_LOCATIONS = [
 export default function LocationsShowcaseSection() {
   const { language } = useLanguage();
   const isEn = language === "en";
+  const [locations, setLocations] = useState(HIGHLIGHTED_LOCATIONS);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchOceanLocations()
+      .then((res) => {
+        if (!isMounted || !Array.isArray(res) || res.length === 0) return;
+
+        // Ưu tiên 4 khu vực Biển Đông trọng điểm (id 101..106) nếu có trong DB
+        const preferredIds = ["101", "106", "103", "104"];
+        const featuredVn = preferredIds
+          .map((pid) => res.find((item) => String(item.id) === pid))
+          .filter(Boolean);
+        const picked =
+          featuredVn.length >= 4
+            ? featuredVn
+            : res.filter((item) => item.is_featured).slice(0, 4);
+
+        if (picked.length === 0) return;
+
+        setLocations(
+          picked.map((loc, idx) => {
+            const fallback = HIGHLIGHTED_LOCATIONS[idx] || HIGHLIGHTED_LOCATIONS[0];
+            const lat = loc.latitude != null ? Number(loc.latitude).toFixed(4) : null;
+            const lng = loc.longitude != null ? Number(loc.longitude).toFixed(4) : null;
+            return {
+              ...fallback,
+              id: loc.slug || loc.id,
+              nameVi: loc.name || fallback.nameVi,
+              descVi: loc.description || fallback.descVi,
+              coords: lat && lng ? `${lat}° N, ${lng}° E` : fallback.coords,
+              image: loc.image_url || fallback.image,
+            };
+          }),
+        );
+      })
+      .catch(() => {
+        // Giữ fallback tĩnh nếu API tạm thời không khả dụng
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
-    <section id="marine-locations" className="bg-pacific-figma-dark/95 pt-16 pb-24 relative overflow-hidden border-t border-white/5">
+    <section id="marine-locations" className="bg-transparent pt-16 pb-20 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14" data-aos="fade-up">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12" data-aos="fade-up">
           <div className="max-w-2xl">
-            <h2 className="text-3xl md:text-5xl font-black text-white font-heading tracking-tight leading-tight">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#0f172a] font-heading tracking-tight leading-tight">
               {isEn ? "Marine Protected Areas of the East Sea" : "Các Khu Bảo Tồn Biển Trọng Điểm"}
             </h2>
-            <p className="text-sm md:text-base text-slate-300/80 mt-3 leading-relaxed">
+            <p className="text-sm md:text-base text-[#334155] mt-3 leading-relaxed">
               {isEn
                 ? "Explore critical biodiversity hotspots, turtle nesting sanctuaries, and coral reef ecosystems along Vietnam's coast and archipelagos."
                 : "Khám phá các điểm nóng sinh thái, vùng đẻ trứng của rùa biển và hệ thống rạn san hô trọng điểm dọc bờ biển và hải đảo Việt Nam."}
@@ -88,71 +133,72 @@ export default function LocationsShowcaseSection() {
 
           <Link
             to="/map"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors self-start md:self-auto cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-[#0f172a] liquid-glass liquid-glass-interactive self-start md:self-auto cursor-pointer"
           >
             <span>{isEn ? "Interactive East Sea Map" : "Mở Bản đồ Biển Đông"}</span>
-            <ExternalLink size={15} />
+            <ExternalLink size={15} className="text-[#0284c7]" />
           </Link>
         </div>
 
         {/* 4 Featured Locations Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {HIGHLIGHTED_LOCATIONS.map((loc, idx) => (
-            <div
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {locations.map((loc, idx) => (
+            <Link
               key={loc.id}
+              to="/map"
               data-aos="fade-up"
-              data-aos-delay={idx * 100}
-              className="rounded-3xl p-5 bg-white/[0.04] border border-white/10 hover:border-white/20 hover:bg-white/[0.07] transition-colors group flex flex-col justify-between cursor-pointer"
+              data-aos-delay={idx * 70}
+              className="rounded-[24px] p-3.5 liquid-glass liquid-glass-interactive group flex flex-col justify-between cursor-pointer"
             >
               <div>
-                {/* Image container */}
-                <div className="w-full h-44 rounded-2xl overflow-hidden mb-4 relative bg-black/40">
+                {/* Image container — nested radius 24 - 14 = 10 -> rounded-2xl */}
+                <div className="w-full aspect-[16/11] rounded-2xl overflow-hidden mb-3.5 relative bg-sky-100/70 border border-white/80">
                   <img
                     src={loc.image}
                     alt={isEn ? loc.nameEn : loc.nameVi}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                  
-                  {/* Badge on image */}
-                  <span className="absolute bottom-2.5 left-2.5 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-cyan-300 border border-cyan-400/30">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/50 via-transparent to-transparent pointer-events-none" />
+
+                  {/* Frosted Glass Badge on image */}
+                  <span className="absolute bottom-2.5 left-2.5 text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/88 backdrop-blur-md text-[#0f172a] border border-white/95 shadow-xs">
                     {isEn ? loc.tagEn : loc.tagVi}
                   </span>
                 </div>
 
-                  {/* Location Info */}
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-1.5 text-[11px] text-cyan-300/90 font-mono">
-                      <Navigation size={11} />
-                      <span>{loc.coords}</span>
-                    </div>
-
-                    <h3 className="text-lg font-bold text-white font-heading group-hover:text-cyan-300 transition-colors leading-snug">
-                      {isEn ? loc.nameEn : loc.nameVi}
-                    </h3>
-
-                    <p className="text-xs text-slate-400 flex items-center gap-1">
-                      <MapPin size={12} className="shrink-0 text-slate-500" />
-                      <span className="truncate">{isEn ? loc.regionEn : loc.regionVi}</span>
-                    </p>
-
-                    <p className="text-xs text-slate-300/80 line-clamp-3 leading-relaxed pt-1">
-                      {isEn ? loc.descEn : loc.descVi}
-                    </p>
+                {/* Location Info */}
+                <div className="space-y-1.5 px-1.5">
+                  <div className="flex items-center gap-1.5 text-[11px] text-[#0284c7] font-mono tabular-nums font-medium">
+                    <Navigation size={11} />
+                    <span>{loc.coords}</span>
                   </div>
-                </div>
 
-                {/* Key species footer */}
-                <div className="mt-4 pt-3.5 border-t border-white/10 text-[11px]">
-                  <p className="text-slate-400 text-[10px] uppercase font-semibold tracking-wider mb-1">
-                    {isEn ? "Key Species:" : "Sinh vật đại diện:"}
+                  <h3 className="text-base font-bold text-[#0f172a] font-heading group-hover:text-[#0284c7] transition-colors leading-snug">
+                    {isEn ? loc.nameEn : loc.nameVi}
+                  </h3>
+
+                  <p className="text-xs text-[#475569] flex items-center gap-1">
+                    <MapPin size={12} className="shrink-0 text-[#475569]" />
+                    <span className="truncate">{isEn ? loc.regionEn : loc.regionVi}</span>
                   </p>
-                  <p className="text-cyan-200/90 font-medium line-clamp-1">
-                    {isEn ? loc.keySpeciesEn : loc.keySpeciesVi}
+
+                  <p className="text-xs text-[#334155] line-clamp-3 leading-relaxed pt-1">
+                    {isEn ? loc.descEn : loc.descVi}
                   </p>
                 </div>
               </div>
-            ))}
+
+              {/* Key species footer */}
+              <div className="mt-4 pt-3 px-2 pb-1 border-t border-slate-900/8 text-xs">
+                <p className="text-[#475569] text-[11px] font-medium mb-0.5">
+                  {isEn ? "Key species" : "Sinh vật đại diện"}
+                </p>
+                <p className="text-[#0f172a] font-medium line-clamp-1">
+                  {isEn ? loc.keySpeciesEn : loc.keySpeciesVi}
+                </p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

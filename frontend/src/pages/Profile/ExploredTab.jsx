@@ -36,7 +36,7 @@ export default function ExploredTab() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white font-heading flex items-center gap-2.5">
+        <h2 className="text-xl font-bold text-[#0f172a] font-heading flex items-center gap-2.5">
           <MapPin size={22} className="text-pacific-cyan" />
           <span>
             {t("profile.tabExplored", "Địa điểm đã khám phá")} ({pagination.total})
@@ -45,25 +45,25 @@ export default function ExploredTab() {
       </div>
 
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-[#1b254b]/50 border border-white/10 rounded-3xl">
+        <div className="flex flex-col items-center justify-center py-20 liquid-glass border border-[#0f172a]/10 rounded-3xl">
           <Loader2 size={32} className="text-pacific-cyan animate-spin mb-3" />
-          <p className="text-xs text-white/60">
+          <p className="text-xs text-[#334155]">
             {isEn ? "Loading ocean expedition journal..." : "Đang tải nhật ký thám hiểm đại dương..."}
           </p>
         </div>
       ) : error ? (
-        <div className="p-6 bg-rose-500/10 border border-rose-500/30 rounded-3xl text-center text-rose-200 text-sm">
+        <div className="p-6 bg-rose-500/10 border border-rose-500/30 rounded-3xl text-center text-rose-700 text-sm">
           {error}
         </div>
       ) : explored.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 px-6 bg-[#1b254b]/60 border border-white/10 rounded-2xl text-center">
+        <div className="flex flex-col items-center justify-center py-20 px-6 liquid-glass border border-[#0f172a]/10 rounded-2xl text-center">
           <div className="w-16 h-16 rounded-2xl bg-pacific-blue-bright/10 border border-pacific-blue-bright/20 flex items-center justify-center text-pacific-cyan mb-4">
             <Compass size={28} />
           </div>
-          <h3 className="text-base font-bold text-white mb-1">
+          <h3 className="text-base font-bold text-[#0f172a] mb-1">
             {t("profile.emptyExplored", "Chưa có dấu chân thám hiểm")}
           </h3>
-          <p className="text-xs text-white/50 max-w-sm mb-5">
+          <p className="text-xs text-[#475569] max-w-sm mb-5">
             {t(
               "profile.emptyExploredDesc",
               "Bạn chưa bắt đầu hành trình khám phá các vùng biển kỳ thú. Hãy bước vào bản đồ đại dương để mở khóa những vùng biển mới!"
@@ -83,9 +83,9 @@ export default function ExploredTab() {
             {explored.map((item) => (
               <div
                 key={item.locationId}
-                className="group bg-[#182245]/80 hover:bg-[#1f2b56] border border-white/10 hover:border-pacific-cyan/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                className="group liquid-glass hover:bg-white/90 border border-[#0f172a]/10 hover:border-pacific-cyan/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col"
               >
-                <div className="relative aspect-16/9 w-full bg-[#121933] overflow-hidden">
+                <div className="relative aspect-16/9 w-full liquid-glass-strong overflow-hidden">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -102,17 +102,17 @@ export default function ExploredTab() {
                 </div>
 
                 <div className="p-4 flex-1 flex flex-col justify-between">
-                  <p className="text-xs text-white/70 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#334155] line-clamp-2 leading-relaxed">
                     {item.description || "Vùng biển sâu với hệ sinh thái phong phú và độc đáo."}
                   </p>
-                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-white/40">
+                  <div className="mt-4 pt-3 border-t border-[#0f172a]/10 flex items-center justify-between text-[11px] text-[#475569]">
                     <span>
                       Khám phá:{" "}
                       {item.exploredDate
                         ? new Date(item.exploredDate).toLocaleDateString("vi-VN")
                         : "Gần đây"}
                     </span>
-                    <span className="text-emerald-400 font-semibold">Đã mở khóa ✓</span>
+                    <span className="text-emerald-700 font-semibold">Đã mở khóa ✓</span>
                   </div>
                 </div>
               </div>
@@ -125,17 +125,17 @@ export default function ExploredTab() {
               <button
                 onClick={() => loadExplored(pagination.page - 1)}
                 disabled={pagination.page <= 1}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-white transition-all"
+                className="p-2 rounded-xl liquid-glass-subtle hover:liquid-glass-subtle disabled:opacity-30 disabled:cursor-not-allowed text-[#0f172a] transition-all"
               >
                 <ChevronLeft size={16} />
               </button>
-              <span className="text-xs font-semibold text-white/70 px-3">
+              <span className="text-xs font-semibold text-[#334155] px-3">
                 Trang {pagination.page} / {pagination.totalPages}
               </span>
               <button
                 onClick={() => loadExplored(pagination.page + 1)}
                 disabled={pagination.page >= pagination.totalPages}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed text-white transition-all"
+                className="p-2 rounded-xl liquid-glass-subtle hover:liquid-glass-subtle disabled:opacity-30 disabled:cursor-not-allowed text-[#0f172a] transition-all"
               >
                 <ChevronRight size={16} />
               </button>

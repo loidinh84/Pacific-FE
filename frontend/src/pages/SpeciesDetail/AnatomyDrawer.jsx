@@ -34,18 +34,18 @@ function SystemBadge({ system, language }) {
 function MedRow({ icon: Icon, label, value, highlight }) {
   return (
     <div
-      className={`flex items-start gap-3 py-2.5 border-b border-white/5 last:border-0 ${
+      className={`flex items-start gap-3 py-2.5 border-b border-[#0f172a]/10 last:border-0 ${
         highlight ? "bg-white/3 -mx-4 px-4 rounded-lg" : ""
       }`}
     >
-      <div className="flex-shrink-0 mt-0.5 w-7 h-7 rounded-lg bg-white/8 flex items-center justify-center">
-        <Icon size={13} className="text-slate-400" />
+      <div className="flex-shrink-0 mt-0.5 w-7 h-7 rounded-lg liquid-glass-subtle flex items-center justify-center">
+        <Icon size={13} className="text-[#475569]" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[10px] text-slate-400 tracking-normal font-semibold mb-0.5">
+        <p className="text-[10px] text-[#475569] tracking-normal font-semibold mb-0.5">
           {label}
         </p>
-        <p className="text-sm text-slate-200 leading-relaxed">{value}</p>
+        <p className="text-sm text-[#334155] leading-relaxed">{value}</p>
       </div>
     </div>
   );
@@ -89,7 +89,7 @@ export function AnatomyDrawer({
     >
       {organ && (
         <div
-          className="rounded-2xl border border-white/10 overflow-hidden"
+          className="rounded-2xl border border-[#0f172a]/10 overflow-hidden"
           style={{
             background:
               "linear-gradient(135deg, rgba(13,27,62,0.9) 0%, rgba(7,16,35,0.95) 100%)",
@@ -98,7 +98,7 @@ export function AnatomyDrawer({
         >
           {/* Header */}
           <div
-            className="flex items-start justify-between gap-4 p-5 border-b border-white/8"
+            className="flex items-start justify-between gap-4 p-5 border-b border-[#0f172a]/10"
             style={{
               borderLeftWidth: "3px",
               borderLeftColor: sysCfg.color,
@@ -109,7 +109,7 @@ export function AnatomyDrawer({
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <SystemBadge system={organ.system} language={language} />
               </div>
-              <h3 className="text-lg font-bold text-white leading-tight">
+              <h3 className="text-lg font-bold text-[#0f172a] leading-tight">
                 {getLabel(organ)}
               </h3>
               {organ.latinName && (
@@ -127,12 +127,12 @@ export function AnatomyDrawer({
                   </span>
                   <button
                     onClick={(e) => onCopy(organ, e)}
-                    className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md border border-white/10 text-slate-400 hover:text-white hover:border-white/25 transition-all cursor-pointer"
+                    className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md border border-[#0f172a]/10 text-[#475569] hover:text-[#0f172a] hover:border-[#0f172a]/10 transition-all cursor-pointer"
                   >
                     {isCopied ? (
                       <>
-                        <Check size={10} className="text-emerald-400" />
-                        <span className="text-emerald-400">
+                        <Check size={10} className="text-emerald-700" />
+                        <span className="text-emerald-700">
                           {language === "vi" ? "Đã sao chép" : "Copied!"}
                         </span>
                       </>
@@ -148,7 +148,7 @@ export function AnatomyDrawer({
             </div>
             <button
               onClick={onClose}
-              className="flex-shrink-0 p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              className="flex-shrink-0 p-1.5 rounded-lg text-[#475569] hover:text-[#0f172a] hover:liquid-glass-subtle transition-all cursor-pointer"
               aria-label="Đóng"
             >
               <X size={16} />
@@ -159,10 +159,10 @@ export function AnatomyDrawer({
           <div className="p-5 grid md:grid-cols-2 gap-5">
             {/* Biological description */}
             <div>
-              <p className="text-[11px] text-slate-400 font-semibold mb-2">
+              <p className="text-[11px] text-[#475569] font-semibold mb-2">
                 {language === "vi" ? "Mô tả sinh học" : "Biological Description"}
               </p>
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-[#334155] leading-relaxed">
                 {language === "en" ? organ.descEn || organ.descVi : organ.descVi}
               </p>
             </div>
@@ -170,7 +170,7 @@ export function AnatomyDrawer({
             {/* Medical data */}
             {organ.medicalData && (
               <div>
-                <p className="text-[11px] text-slate-400 font-semibold mb-2">
+                <p className="text-[11px] text-[#475569] font-semibold mb-2">
                   {language === "vi"
                     ? "Dữ liệu y khoa"
                     : "Medical & Research Data"}

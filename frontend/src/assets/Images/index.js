@@ -6,6 +6,9 @@ import FishHidden from "./FishHidden.png";
 import Zalo from "./Icon_of_Zalo.svg.webp";
 import PacificOceanMap from "./PacificOceanMap.jpg";
 import BienDongMap from "./BienDongMap.jpg";
+import SunlitEastSeaHero from "./SunlitEastSeaHero.jpg";
+import SunlitMantaHero from "./SunlitMantaHero.jpg";
+import SunlitIslandHero from "./SunlitIslandHero.jpg";
 import NoFound from "./NoFound.png";
 import Ocean3DBg from "./Ocean3DBg.jpg";
 import SharkAnatomy from "./SharkAnatomy.jpg";
@@ -29,6 +32,9 @@ export {
   Zalo,
   PacificOceanMap,
   BienDongMap,
+  SunlitEastSeaHero,
+  SunlitMantaHero,
+  SunlitIslandHero,
   NoFound,
   Ocean3DBg,
   SharkAnatomy,

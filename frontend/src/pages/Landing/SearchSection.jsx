@@ -95,26 +95,21 @@ export default function SearchSection() {
   return (
     <section
       id="search-section"
-      className="bg-pacific-figma-dark/95 backdrop-blur-md pt-8 pb-28 md:pb-32 relative border-t border-white/5"
+      className="bg-transparent pt-10 pb-24 relative"
     >
       <div className="max-w-6xl mx-auto px-6">
         <div
-          className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl backdrop-blur-2xl relative"
-          data-aos="zoom-in"
-          data-aos-duration="800"
+          className="liquid-glass-strong rounded-3xl p-8 md:p-12 relative"
+          data-aos="fade-up"
+          data-aos-duration="700"
         >
-          {/* Subtle Radial Glow in background */}
-          <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(14,165,233,0.1)_0%,transparent_60%)]" />
-          </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center relative z-10">
             {/* Form Column */}
             <div className="lg:col-span-7">
-              <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-2 font-heading">
+              <h2 className="text-2xl md:text-3xl font-bold text-[#0f172a] leading-tight mb-2 font-heading">
                 {t("search.title")}
               </h2>
-              <p className="text-xs md:text-sm text-slate-300/80 mb-6 font-normal">
+              <p className="text-xs md:text-sm text-[#334155] mb-6 font-normal">
                 {t("search.subtitle")}
               </p>
 
@@ -124,13 +119,13 @@ export default function SearchSection() {
                   <input
                     type="text"
                     placeholder={t("search.placeholder")}
-                    className="w-full py-3.5 pl-11 pr-4 bg-slate-900/70 text-white placeholder-slate-400 border border-white/15 rounded-xl text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-medium"
+                    className="w-full py-3.5 pl-11 pr-4 liquid-input rounded-xl text-sm placeholder:text-[#475569] font-medium"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                   <Search
                     size={18}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-[#475569] pointer-events-none"
                   />
                 </div>
 
@@ -144,23 +139,23 @@ export default function SearchSection() {
                         setIsCategoryOpen(!isCategoryOpen);
                         setIsHabitatOpen(false);
                       }}
-                      className={`w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white border rounded-xl text-xs sm:text-sm font-medium cursor-pointer transition-all flex items-center justify-between gap-2 select-none ${
+                      className={`w-full py-3 px-4 liquid-input rounded-xl text-xs sm:text-sm font-medium cursor-pointer flex items-center justify-between gap-2 select-none ${
                         isCategoryOpen
-                          ? "border-cyan-400 ring-2 ring-cyan-400/30"
-                          : "border-white/15 hover:border-cyan-400/40"
+                          ? "border-[#0284c7] ring-2 ring-sky-500/15"
+                          : ""
                       }`}
                     >
                       <span className="truncate">{selectedCatLabel}</span>
                       <ChevronDown
                         size={15}
-                        className={`shrink-0 text-slate-400 transition-transform duration-200 ${
-                          isCategoryOpen ? "rotate-180 text-cyan-400" : ""
+                        className={`shrink-0 text-[#475569] transition-transform duration-150 ${
+                          isCategoryOpen ? "rotate-180 text-[#0284c7]" : ""
                         }`}
                       />
                     </button>
 
                     {isCategoryOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-white/15 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 liquid-glass-strong rounded-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
                         <div className="max-h-52 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
                           {categories.map((c) => {
                             const isSelected = String(c.value) === String(category);
@@ -173,15 +168,15 @@ export default function SearchSection() {
                                   setCategory(c.value);
                                   setIsCategoryOpen(false);
                                 }}
-                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs sm:text-sm text-left transition-colors cursor-pointer select-none ${
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs sm:text-sm text-left transition-colors cursor-pointer select-none ${
                                   isSelected
-                                    ? "bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-400/25"
-                                    : "text-slate-300 hover:text-white hover:bg-white/10"
+                                    ? "bg-sky-600/12 text-[#0284c7] font-semibold"
+                                    : "text-[#334155] hover:text-[#0f172a] hover:bg-[#0f172a]/5"
                                 }`}
                               >
                                 <span className="truncate">{label}</span>
                                 {isSelected && (
-                                  <Check size={14} className="text-cyan-400 shrink-0" />
+                                  <Check size={14} className="text-[#0284c7] shrink-0" />
                                 )}
                               </button>
                             );
@@ -199,23 +194,23 @@ export default function SearchSection() {
                         setIsHabitatOpen(!isHabitatOpen);
                         setIsCategoryOpen(false);
                       }}
-                      className={`w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white border rounded-xl text-xs sm:text-sm font-medium cursor-pointer transition-all flex items-center justify-between gap-2 select-none ${
+                      className={`w-full py-3 px-4 liquid-input rounded-xl text-xs sm:text-sm font-medium cursor-pointer flex items-center justify-between gap-2 select-none ${
                         isHabitatOpen
-                          ? "border-cyan-400 ring-2 ring-cyan-400/30"
-                          : "border-white/15 hover:border-cyan-400/40"
+                          ? "border-[#0284c7] ring-2 ring-sky-500/15"
+                          : ""
                       }`}
                     >
                       <span className="truncate">{selectedHabLabel}</span>
                       <ChevronDown
                         size={15}
-                        className={`shrink-0 text-slate-400 transition-transform duration-200 ${
-                          isHabitatOpen ? "rotate-180 text-cyan-400" : ""
+                        className={`shrink-0 text-[#475569] transition-transform duration-150 ${
+                          isHabitatOpen ? "rotate-180 text-[#0284c7]" : ""
                         }`}
                       />
                     </button>
 
                     {isHabitatOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 bg-[#081224] border border-white/15 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                      <div className="absolute left-0 top-full mt-1.5 w-full z-50 liquid-glass-strong rounded-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
                         <div className="max-h-52 overflow-y-auto p-1.5 custom-scrollbar-thin space-y-0.5">
                           {HABITATS_DATA.map((h) => {
                             const isSelected = String(h.value) === String(habitat);
@@ -228,15 +223,15 @@ export default function SearchSection() {
                                   setHabitat(h.value);
                                   setIsHabitatOpen(false);
                                 }}
-                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs sm:text-sm text-left transition-colors cursor-pointer select-none ${
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs sm:text-sm text-left transition-colors cursor-pointer select-none ${
                                   isSelected
-                                    ? "bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-400/25"
-                                    : "text-slate-300 hover:text-white hover:bg-white/10"
+                                    ? "bg-sky-600/12 text-[#0284c7] font-semibold"
+                                    : "text-[#334155] hover:text-[#0f172a] hover:bg-[#0f172a]/5"
                                 }`}
                               >
                                 <span className="truncate">{label}</span>
                                 {isSelected && (
-                                  <Check size={14} className="text-cyan-400 shrink-0" />
+                                  <Check size={14} className="text-[#0284c7] shrink-0" />
                                 )}
                               </button>
                             );
@@ -250,7 +245,7 @@ export default function SearchSection() {
                 {/* Submit Search Button */}
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-sm transition-colors cursor-pointer active:translate-y-0.5 mt-1"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-medium bg-[#0284c7] hover:bg-[#0369a1] text-white shadow-sm transition-colors cursor-pointer mt-1"
                 >
                   <Search size={16} />
                   <span>{t("search.btnSearch")}</span>
@@ -258,17 +253,17 @@ export default function SearchSection() {
               </form>
 
               {/* Trending Suggestions */}
-              <div className="mt-5 pt-4 border-t border-white/10 flex items-center flex-wrap gap-2">
-                <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
-                  <TrendingUp size={13} className="text-cyan-400" />
-                  <span>{isEn ? "Trending:" : "Gợi ý tìm nhanh:"}</span>
+              <div className="mt-5 pt-4 border-t border-[#0f172a]/8 flex items-center flex-wrap gap-2">
+                <span className="text-xs text-[#475569] font-medium flex items-center gap-1">
+                  <TrendingUp size={13} className="text-[#0284c7]" />
+                  <span>{isEn ? "Quick search:" : "Gợi ý tìm nhanh:"}</span>
                 </span>
                 {TRENDING_TAGS.map((tag, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleTagClick(tag.q)}
-                    className="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-cyan-500/15 border border-white/10 hover:border-cyan-400/30 text-cyan-200 transition-colors cursor-pointer"
+                    className="text-xs px-2.5 py-1 rounded-lg liquid-glass-subtle hover:bg-white text-[#0f172a] hover:text-[#0284c7] transition-colors cursor-pointer"
                   >
                     {isEn ? tag.labelEn : tag.labelVi}
                   </button>
@@ -282,7 +277,7 @@ export default function SearchSection() {
                 <img
                   src={Images.FishHidden}
                   alt={isEn ? "Mystery Marine Life" : "Bóng sinh vật biển bí ẩn"}
-                  className="w-full h-full object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.35)] select-none pointer-events-none"
+                  className="w-full h-full object-contain filter drop-shadow-[0_8px_16px_rgba(11,37,69,0.16)] select-none pointer-events-none"
                 />
               </div>
             </div>

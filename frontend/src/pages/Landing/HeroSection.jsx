@@ -12,64 +12,64 @@ export default function HeroSection() {
     >
       <div className="max-w-7xl mx-auto px-6 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         {/* Cột trái: Nội dung tiêu đề, mô tả và nút điều hướng */}
-        <div className="lg:col-span-7 flex flex-col items-start pointer-events-auto">
+        <div className="lg:col-span-6 flex flex-col items-start pointer-events-auto">
           <h1
-            className="text-4xl md:text-6xl font-black text-white leading-[1.15] mb-6 font-heading tracking-tight drop-shadow-md"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0f172a] leading-[1.12] mb-5 font-heading tracking-tight"
             data-aos="fade-up"
-            data-aos-delay="100"
+            data-aos-delay="80"
           >
             {t("hero.titleLine1")} <br />
-            <span className="text-sky-300">
+            <span className="text-[#0369a1]">
               {t("hero.titleLine2")}
             </span>
           </h1>
 
           <p
-            className="text-base md:text-lg text-pacific-blue-pale/95 max-w-2xl leading-relaxed mb-8 font-normal"
+            className="text-base md:text-lg text-[#334155] max-w-lg leading-relaxed mb-8 font-normal"
             data-aos="fade-up"
-            data-aos-delay="200"
+            data-aos-delay="160"
           >
             {t("hero.description")}
           </p>
 
           {/* Action Buttons */}
           <div
-            className="flex flex-wrap items-center gap-4 mb-12"
+            className="flex flex-wrap items-center gap-3 mb-10"
             data-aos="fade-up"
-            data-aos-delay="300"
+            data-aos-delay="240"
           >
             <a
               href="#species"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-medium text-white bg-sky-600 hover:bg-sky-500 border border-sky-400/30 shadow-sm active:translate-y-0.5 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm md:text-base font-medium text-white bg-[#0284c7] hover:bg-[#0369a1] shadow-sm transition-colors cursor-pointer"
             >
               <Compass size={18} />
               <span>{t("hero.btnExplore")}</span>
             </a>
             <Link
               to="/search"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-medium text-white bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm md:text-base font-medium text-[#0f172a] liquid-glass liquid-glass-interactive cursor-pointer"
             >
-              <Search size={17} />
+              <Search size={17} className="text-[#475569]" />
               <span>{t("hero.btnSearch")}</span>
             </Link>
           </div>
 
           {/* Stats Bar */}
           <div
-            className="grid grid-cols-3 gap-3 sm:gap-5 w-full max-w-xl sm:max-w-2xl"
+            className="grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-xl"
             data-aos="fade-up"
-            data-aos-delay="500"
+            data-aos-delay="320"
           >
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-white/20 transition-colors">
-              <p className="text-xl sm:text-2xl md:text-3xl font-black text-cyan-300 font-heading whitespace-nowrap">
+            <div className="p-4 rounded-2xl liquid-glass">
+              <p className="text-xl sm:text-2xl font-bold text-[#0f172a] font-heading tabular-nums whitespace-nowrap">
                 {t("hero.stat1Value")}
               </p>
-              <p className="text-[11px] sm:text-xs text-white/60 mt-1 truncate font-medium">
+              <p className="text-xs text-[#475569] mt-1 truncate font-medium">
                 {t("hero.stat1Title")}
               </p>
             </div>
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-white/20 transition-colors">
-              <p className="text-xl sm:text-2xl md:text-3xl font-black text-cyan-300 font-heading whitespace-nowrap flex items-baseline gap-1.5">
+            <div className="p-4 rounded-2xl liquid-glass">
+              <p className="text-xl sm:text-2xl font-bold text-[#0f172a] font-heading tabular-nums whitespace-nowrap flex items-baseline gap-1">
                 {(() => {
                   const val = t("hero.stat2Value");
                   const parts = val.split(" ");
@@ -77,7 +77,7 @@ export default function HeroSection() {
                     return (
                       <>
                         <span>{parts[0]}</span>
-                        <span className="text-lg sm:text-xl font-bold text-cyan-300/90 tracking-tight">
+                        <span className="text-sm sm:text-base font-semibold text-[#334155]">
                           {parts.slice(1).join(" ")}
                         </span>
                       </>
@@ -86,27 +86,27 @@ export default function HeroSection() {
                   return val;
                 })()}
               </p>
-              <p className="text-[11px] sm:text-xs text-white/60 mt-1 truncate font-medium">
+              <p className="text-xs text-[#475569] mt-1 truncate font-medium">
                 {t("hero.stat2Title")}
               </p>
             </div>
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md hover:border-white/20 transition-colors">
-              <p className="text-xl sm:text-2xl md:text-3xl font-black text-cyan-300 font-heading whitespace-nowrap">
+            <div className="p-4 rounded-2xl liquid-glass">
+              <p className="text-xl sm:text-2xl font-bold text-[#0f172a] font-heading tabular-nums whitespace-nowrap">
                 {t("hero.stat3Value")}
               </p>
-              <p className="text-[11px] sm:text-xs text-white/60 mt-1 truncate font-medium">
+              <p className="text-xs text-[#475569] mt-1 truncate font-medium">
                 {t("hero.stat3Title")}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Cột phải: Để trống để bản đồ nền và các nút hotspot nổi bật */}
-        <div className="hidden lg:block lg:col-span-5 pointer-events-none" />
+        {/* Cột phải: Không gian mở để rạn san hô & rùa biển xanh nổi bật trọn vẹn */}
+        <div className="hidden lg:block lg:col-span-6 pointer-events-none" />
       </div>
 
-      {/* Gradient chuyển tiếp giữa hero và nội dung */}
-      <div className="absolute -bottom-1 left-0 right-0 h-64 bg-gradient-to-t from-pacific-figma-dark via-pacific-figma-dark/85 via-pacific-figma-dark/40 to-transparent pointer-events-none z-10" />
+      {/* Không che cứng đáy Hero để 3 cảnh nền chuyển tiếp liền mạch */}
+      <div className="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-[#eaf4fb]/40 to-transparent pointer-events-none z-10" />
     </section>
   );
 }
