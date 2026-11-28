@@ -244,6 +244,7 @@ export default function SpeciesDetail() {
               categoryVi: apiData.group?.name || "",
               categoryEn: localSpecies?.categoryEn || getLocalizedCategory(apiData.group?.name, "en"),
               model3dUrl: apiData.model_3d_url || apiData.model3dUrl || null,
+              soundUrl: apiData.soundUrl || null,
               fullBioHighlightsVi: localSpecies?.fullBioHighlightsVi || null,
               fullBioHighlightsEn: localSpecies?.fullBioHighlightsEn || null,
               bioFactsVi: localSpecies?.bioFactsVi || null,

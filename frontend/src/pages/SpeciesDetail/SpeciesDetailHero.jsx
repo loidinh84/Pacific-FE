@@ -632,16 +632,15 @@ export function SpeciesDetailHero({ species }) {
     <Target size={18} className="text-emerald-400" />,
   ];
 
-  const handleAudioToggle = () => {
+  const handleAudioToggle = async () => {
     if (isPlayingAudio) {
       stopSpeciesSound();
       setIsPlayingAudio(false);
     } else {
       setIsPlayingAudio(true);
-      const duration = playSpeciesSound(species.id) || 3200;
-      setTimeout(() => {
+      await playSpeciesSound(species, () => {
         setIsPlayingAudio(false);
-      }, duration);
+      });
     }
   };
 
@@ -659,7 +658,8 @@ export function SpeciesDetailHero({ species }) {
     };
   }, []);
 
-  const hasSound = species.hasAudio !== false;
+  // Chỉ hiển thị nút âm thanh khi loài có sound_url thực từ cơ sở dữ liệu
+  const hasSound = Boolean(species?.soundUrl || species?.sound_url);
   const slugLower = String(species?.slug || species?.id || "").toLowerCase();
   const has3DModel = Boolean(
     species?.model3dUrl ||
@@ -781,8 +781,8 @@ export function SpeciesDetailHero({ species }) {
             </div>
           )}
 
-          {/* Nút 2: Phát âm thanh thủy âm */}
-          {hasSound ? (
+          {/* Nút 2: Phát âm thanh thủy âm (chỉ hiển thị với các loài phát âm thanh sinh học) */}
+          {hasSound && (
             <button
               onClick={handleAudioToggle}
               className={`inline-flex items-center gap-2 text-xs font-medium px-3.5 py-2.5 rounded-lg border transition-colors cursor-pointer ${
@@ -803,9 +803,9 @@ export function SpeciesDetailHero({ species }) {
                     {t("speciesDetail.audioPlaying") || (isEn ? "Playing" : "Đang phát")}
                   </span>
                   <span className="flex gap-0.5 ml-0.5 items-center">
-                    <span className="w-1 h-3 bg-sky-400 rounded-full" />
-                    <span className="w-1 h-4 bg-sky-300 rounded-full" />
-                    <span className="w-1 h-2 bg-sky-400 rounded-full" />
+                    <span className="w-1 h-3 bg-sky-400 rounded-full animate-pulse" />
+                    <span className="w-1 h-4 bg-sky-300 rounded-full animate-pulse delay-75" />
+                    <span className="w-1 h-2 bg-sky-400 rounded-full animate-pulse delay-150" />
                   </span>
                 </>
               ) : (
@@ -815,11 +815,6 @@ export function SpeciesDetailHero({ species }) {
                 </>
               )}
             </button>
-          ) : (
-            <div className="inline-flex items-center gap-1.5 text-xs text-white/40 px-3 py-2.5 rounded-xl border border-white/5 bg-white/[0.02]">
-              <VolumeX size={14} />
-              <span>{t("speciesDetail.noAudio") || (isEn ? "No Audio" : "Không có âm thanh")}</span>
-            </div>
           )}
 
           {/* Nút 3: Yêu thích sinh vật */}

@@ -28,7 +28,7 @@ export default defineConfig({
     rolldownOptions: {
       output: {
         // Tách vendor libraries thành các chunk riêng
-        advancedChunks: {
+        codeSplitting: {
           groups: [
             { name: "vendor-react", test: /node_modules\/(react|react-dom|react-router)/ },
             { name: "vendor-icons", test: /node_modules\/lucide-react/ },
