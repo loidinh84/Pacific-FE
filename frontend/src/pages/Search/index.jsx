@@ -114,7 +114,7 @@ export default function Search() {
         search: urlQuery,
         category: selectedCategory,
         sortBy: sortBy,
-        limit: 500,
+        limit: 2000,
       })
         .then((res) => {
           if (!isMounted) return;

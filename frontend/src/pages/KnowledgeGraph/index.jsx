@@ -113,7 +113,7 @@ export default function KnowledgeGraph() {
     const loadData = async () => {
       setLoading(true);
       try {
-        const params = { limit: 5000 };
+        const params = { limit: 10000 };
         if (selectedZone) params.zone = selectedZone;
 
         const res = await fetchKnowledgeGraph(params);

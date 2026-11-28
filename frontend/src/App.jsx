@@ -101,7 +101,9 @@ function DocumentTitleManager() {
           const parsed = JSON.parse(saved);
           if (parsed?.general?.websiteName) siteName = parsed.general.websiteName;
         }
-      } catch (_) {}
+      } catch {
+        // Giữ tên website mặc định nếu dữ liệu trong localStorage không hợp lệ
+      }
 
       if (pathname.startsWith("/news/") || pathname.startsWith("/species/")) {
         return;
