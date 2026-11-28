@@ -1,22 +1,114 @@
-import { Search } from "lucide-react";
+import { useRef, useState } from "react";
+import { Search, Camera, X } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 
 const SUGGESTIONS = [
   { vi: "Sinh vật phát sáng ở biển sâu", en: "Bioluminescent deep sea fish" },
+  { vi: "So sánh cá mập voi và cá voi xanh", en: "Compare whale shark and blue whale" },
+  { vi: "Vì sao sao biển gai hại san hô?", en: "Why do crown-of-thorns harm coral?" },
   { vi: "Con cá nào to nhất đại dương", en: "Largest fish in the ocean" },
   { vi: "Thiên địch của sao biển gai", en: "Crown-of-thorns predators" },
-  { vi: "Loài nào giống trong phim đi tìm Nemo", en: "Fish from Finding Nemo" },
   { vi: "Loài ăn cỏ biển ở Côn Đảo", en: "Seagrass grazers in Con Dao" },
-  { vi: "Động vật có vú biết hát", en: "Singing marine mammals" },
 ];
+
+/**
+ * Thu gọn kích thước ảnh trên trình duyệt (tối đa 1024px, JPEG 0.82) để tải nhanh & ổn định
+ */
+function compressImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Không thể đọc tệp hình ảnh."));
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      const img = new Image();
+      img.onerror = () => reject(new Error("Tệp không phải hình ảnh hợp lệ."));
+      img.onload = () => {
+        const MAX_DIM = 1024;
+        let { width, height } = img;
+        if (width > MAX_DIM || height > MAX_DIM) {
+          const ratio = Math.min(MAX_DIM / width, MAX_DIM / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.82);
+        resolve({
+          previewUrl: compressedDataUrl,
+          imageBase64: compressedDataUrl,
+          mimeType: "image/jpeg",
+        });
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 export function SearchHeroHeader({
   searchTerm,
   setSearchTerm,
   onSearchSubmit,
+  onImageSearch,
+  imagePreview,
+  onClearImage,
+  imageLoading = false,
 }) {
   const { t, language } = useLanguage();
   const isEn = language === "en";
+  const fileInputRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [imageError, setImageError] = useState("");
+
+  const processSelectedFile = async (file) => {
+    if (!file || !onImageSearch) return;
+    setImageError("");
+    if (!/^image\/(jpeg|jpg|png|webp)$/i.test(file.type)) {
+      setImageError(
+        isEn
+          ? "Please choose a JPG, PNG, or WebP image."
+          : "Vui lòng chọn ảnh định dạng JPG, PNG hoặc WebP."
+      );
+      return;
+    }
+    try {
+      const compressed = await compressImageFile(file);
+      onImageSearch(compressed);
+    } catch (err) {
+      setImageError(err.message || (isEn ? "Invalid image file." : "Không thể đọc tệp ảnh."));
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (file) processSelectedFile(file);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) processSelectedFile(file);
+  };
+
+  const handlePaste = (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type && item.type.startsWith("image/")) {
+        const file = item.getAsFile();
+        if (file) {
+          e.preventDefault();
+          processSelectedFile(file);
+          break;
+        }
+      }
+    }
+  };
 
   return (
     <div id="search-hero" className="text-center max-w-4xl mx-auto pt-24 pb-4 md:pt-28 md:pb-6 px-4">
@@ -30,9 +122,28 @@ export function SearchHeroHeader({
 
       <form
         onSubmit={onSearchSubmit}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setIsDragging(true);
+        }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={handleDrop}
         className="relative max-w-2xl mx-auto mb-4"
       >
-        <div className="relative flex items-center">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={handleFileChange}
+          className="hidden"
+          aria-label={isEn ? "Upload marine species photo" : "Tải ảnh sinh vật biển"}
+        />
+
+        <div
+          className={`relative flex items-center rounded-xl transition-all ${
+            isDragging ? "ring-2 ring-[#0284c7] bg-sky-50/70" : ""
+          }`}
+        >
           <Search
             size={18}
             className="absolute left-4 text-[#475569] pointer-events-none z-10"
@@ -41,16 +152,71 @@ export function SearchHeroHeader({
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder={t("searchPage.searchPlaceholder")}
-            className="w-full py-3.5 pl-11 pr-32 liquid-glass-strong rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none focus:border-[#0284c7] focus:ring-2 focus:ring-sky-500/15 transition-colors"
+            onPaste={handlePaste}
+            placeholder={
+              isDragging
+                ? isEn
+                  ? "Drop an image here to identify..."
+                  : "Thả ảnh sinh vật biển vào đây để nhận diện..."
+                : t("searchPage.searchPlaceholder")
+            }
+            className="w-full py-3.5 pl-11 pr-36 sm:pr-40 liquid-glass-strong rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none focus:border-[#0284c7] focus:ring-2 focus:ring-sky-500/15 transition-colors"
           />
-          <button
-            type="submit"
-            className="absolute right-1.5 px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer shadow-sm"
-          >
-            {t("searchPage.btnSearch")}
-          </button>
+
+          <div className="absolute right-1.5 flex items-center gap-1.5 z-10">
+            {onImageSearch && (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={imageLoading}
+                title={isEn ? "Search by image (or paste/drop)" : "Tìm kiếm bằng hình ảnh (chọn, kéo thả hoặc dán Ctrl+V)"}
+                className="p-2 rounded-lg text-[#475569] hover:text-[#0284c7] hover:bg-[#0f172a]/5 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                <Camera size={18} />
+              </button>
+            )}
+            <button
+              type="submit"
+              className="px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer shadow-sm"
+            >
+              {t("searchPage.btnSearch")}
+            </button>
+          </div>
         </div>
+
+        {/* Xem trước ảnh đang dùng để tìm kiếm */}
+        {imagePreview && (
+          <div className="mt-3 inline-flex items-center gap-3 px-3 py-2 rounded-xl liquid-glass-subtle text-left">
+            <img
+              src={imagePreview}
+              alt={isEn ? "Uploaded query" : "Ảnh đang tìm kiếm"}
+              className="w-10 h-10 rounded-lg object-cover border border-[#0f172a]/10 shrink-0"
+            />
+            <span className="text-xs font-medium text-[#334155]">
+              {imageLoading
+                ? isEn
+                  ? "Identifying marine species from photo..."
+                  : "Đang nhận diện sinh vật biển từ hình ảnh..."
+                : isEn
+                  ? "Searching by uploaded photo"
+                  : "Đang hiển thị kết quả từ hình ảnh"}
+            </span>
+            {onClearImage && (
+              <button
+                type="button"
+                onClick={onClearImage}
+                className="p-1 rounded-md text-[#475569] hover:text-[#0f172a] hover:bg-[#0f172a]/6 transition-colors cursor-pointer"
+                title={isEn ? "Clear photo" : "Xóa ảnh"}
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+        )}
+
+        {imageError && (
+          <p className="mt-2 text-xs text-rose-700 font-medium">{imageError}</p>
+        )}
 
         {/* Static realistic suggestion chips */}
         <div className="flex items-center justify-center flex-wrap gap-1.5 mt-3">

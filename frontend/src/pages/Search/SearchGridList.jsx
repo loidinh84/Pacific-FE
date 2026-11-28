@@ -5,6 +5,7 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  BookOpen,
 } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { Favorite, Favorited, Anchor } from "../../assets/Icons";
@@ -18,9 +19,11 @@ export function SearchGridList({
   speciesList,
   semanticQuery,
   semanticMeta,
+  imagePreview,
   onSuggestionClick,
   onClearSemantic,
   loading = false,
+  loadingText,
   currentPage: controlledPage,
   onPageChange,
 }) {
@@ -127,23 +130,45 @@ export function SearchGridList({
 
   return (
     <div id="search-results" className="max-w-6xl mx-auto px-4 mb-20 scroll-mt-4">
-      {semanticQuery ? (
+      {semanticQuery || imagePreview ? (
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-6 pb-4 border-b border-[#0f172a]/10">
-          <div className="space-y-2">
-            <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading">
-              {language === "en" ? "Results for:" : "Kết quả cho:"}{" "}
-              <span className="text-[#0284c7] font-semibold">
-                "{semanticQuery}"
-              </span>
-              <span className="text-[#475569] text-sm font-normal ml-2 tabular-nums">
-                ({speciesList.length} {language === "en" ? "species" : "loài"})
-              </span>
-            </h2>
-            {semanticMeta?.summary && !semanticMeta?.outOfDomain && (
-              <p className="text-xs sm:text-sm text-[#475569] font-normal">
-                {semanticMeta.summary}
-              </p>
+          <div className="flex items-start gap-3.5">
+            {imagePreview && (
+              <img
+                src={imagePreview}
+                alt={semanticQuery || "Hình ảnh tìm kiếm"}
+                className="w-14 h-14 rounded-xl object-cover border border-[#0f172a]/12 shadow-xs shrink-0"
+              />
             )}
+            <div className="space-y-1.5">
+              <h2 className="text-xl md:text-2xl font-bold text-[#0f172a] font-heading">
+                {imagePreview ? (
+                  <>
+                    {language === "en" ? "Photo match:" : "Kết quả từ hình ảnh:"}{" "}
+                    {semanticQuery && !semanticMeta?.outOfDomain && (
+                      <span className="text-[#0284c7] font-semibold">
+                        {semanticQuery}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {language === "en" ? "Results for:" : "Kết quả cho:"}{" "}
+                    <span className="text-[#0284c7] font-semibold">
+                      "{semanticQuery}"
+                    </span>
+                  </>
+                )}
+                <span className="text-[#475569] text-sm font-normal ml-2 tabular-nums">
+                  ({speciesList.length} {language === "en" ? "species" : "loài"})
+                </span>
+              </h2>
+              {semanticMeta?.summary && !semanticMeta?.outOfDomain && (
+                <p className="text-xs sm:text-sm text-[#475569] font-normal leading-relaxed max-w-3xl">
+                  {semanticMeta.summary}
+                </p>
+              )}
+            </div>
           </div>
           {onClearSemantic && (
             <button
@@ -160,11 +185,60 @@ export function SearchGridList({
         </h2>
       )}
 
+      {/* Khung tổng hợp giải đáp sinh học bám sát dữ liệu Biển Đông (RAG Answer) */}
+      {!loading && semanticMeta?.ragAnswer && (
+        <div className="liquid-glass-strong rounded-2xl p-5 mb-6 space-y-3">
+          <div className="flex items-center gap-2 text-[#0284c7]">
+            <BookOpen size={16} className="shrink-0" />
+            <h3 className="text-sm sm:text-base font-bold text-[#0f172a] font-heading">
+              {semanticMeta.ragAnswer.title}
+            </h3>
+          </div>
+          <p className="text-xs sm:text-sm text-[#334155] leading-relaxed">
+            {semanticMeta.ragAnswer.answer}
+          </p>
+          {semanticMeta.ragAnswer.keyPoints?.length > 0 && (
+            <ul className="space-y-1.5 pt-1">
+              {semanticMeta.ragAnswer.keyPoints.map((pt, idx) => (
+                <li
+                  key={idx}
+                  className="flex items-start gap-2 text-xs sm:text-sm text-[#1e293b] leading-relaxed"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0284c7] mt-2 shrink-0" />
+                  <span>{pt}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {semanticMeta.ragAnswer.citedSpecies?.length > 0 && (
+            <div className="pt-2.5 border-t border-[#0f172a]/8 flex items-center flex-wrap gap-2">
+              <span className="text-[11px] font-medium text-[#475569]">
+                {language === "en" ? "Referenced species:" : "Sinh vật liên quan:"}
+              </span>
+              {semanticMeta.ragAnswer.citedSpecies.map((sp) => (
+                <button
+                  key={sp.id}
+                  type="button"
+                  onClick={() =>
+                    navigate(`/species/${sp.slug || sp.id}`, {
+                      state: { fromSearch: `${location.pathname}${location.search}` },
+                    })
+                  }
+                  className="px-2.5 py-1 rounded-lg bg-white/80 hover:bg-white border border-[#0f172a]/10 hover:border-[#0284c7]/40 text-xs font-medium text-[#0f172a] hover:text-[#0284c7] transition-colors cursor-pointer"
+                >
+                  {sp.commonName}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {loading ? (
         <div className="py-16 flex flex-col items-center justify-center text-center">
           <div className="w-10 h-10 border-3 border-[#0284c7] border-t-transparent rounded-full animate-spin mb-3" />
           <p className="text-sm text-[#334155]">
-            Đang tìm kiếm dữ liệu sinh thái Biển Đông...
+            {loadingText || "Đang tìm kiếm dữ liệu sinh thái Biển Đông..."}
           </p>
         </div>
       ) : currentItems.length === 0 ? (

@@ -9,7 +9,7 @@ import { SearchGridList } from "./SearchGridList";
 import { OceanFunFacts } from "./OceanFunFacts";
 import { SEARCH_SPECIES_CATALOG } from "../../mocks/speciesMock";
 import { useLanguage } from "../../hooks/useLanguage";
-import { searchSemantic } from "../../services/ecosystemApi";
+import { searchSemantic, searchSpeciesByImage } from "../../services/ecosystemApi";
 import { fetchSpeciesList } from "../../services/speciesApi";
 import { getLocalizedCategory, getLocalizedSpeciesName } from "../../utils/speciesFormatters";
 
@@ -60,6 +60,8 @@ export default function Search() {
   const [searchTerm, setSearchTerm] = useState(urlQuery);
   const lastWrittenQueryRef = useRef(urlQuery);
   const lastExecutedSemanticRef = useRef("");
+  const semanticRequestIdRef = useRef(0);
+  const semanticAbortRef = useRef(null);
   const shouldRestoreScrollRef = useRef(
     navigationType === "POP" && currentPage > 1,
   );
@@ -68,10 +70,12 @@ export default function Search() {
   const [apiSpecies, setApiSpecies] = useState(null);
   const [apiLoading, setApiLoading] = useState(false);
 
-  // State cho Tìm kiếm Ngữ nghĩa Tri thức Sinh thái
+  // State cho Tìm kiếm Ngữ nghĩa & Tìm kiếm bằng hình ảnh
   const [semanticResults, setSemanticResults] = useState(null);
   const [semanticLoading, setSemanticLoading] = useState(false);
   const [semanticQuery, setSemanticQuery] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
 
   // Đồng bộ ô tìm kiếm khi URL thay đổi từ bên ngoài (Back/Forward, Landing hoặc link trực tiếp)
   useEffect(() => {
@@ -94,13 +98,20 @@ export default function Search() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlQuery]);
 
-  // Tải danh sách sinh vật từ API theo thời gian thực (có debounce)
+  // Hủy request semantic còn treo khi rời trang
+  useEffect(() => {
+    return () => {
+      semanticAbortRef.current?.abort();
+    };
+  }, []);
+
+  // Tải danh sách sinh vật nền từ API (chỉ lọc theo urlQuery đã xác nhận, tránh spam khi đang gõ Telex/VNI)
   useEffect(() => {
     let isMounted = true;
     const timer = setTimeout(() => {
       setApiLoading(true);
       fetchSpeciesList({
-        search: searchTerm,
+        search: urlQuery,
         category: selectedCategory,
         sortBy: sortBy,
         limit: 500,
@@ -158,7 +169,7 @@ export default function Search() {
       isMounted = false;
       clearTimeout(timer);
     };
-  }, [searchTerm, selectedCategory, sortBy]);
+  }, [urlQuery, selectedCategory, sortBy]);
 
   /* Fallback Filter & Sort Logic khi không có API */
   const fallbackSpecies = useMemo(() => {
@@ -311,18 +322,34 @@ export default function Search() {
 
   const executeSemanticSearch = async (queryText, options = {}) => {
     const q = (queryText ?? searchTerm ?? "").trim();
+    setImagePreview(null);
+
+    // Hủy mọi truy vấn cũ đang bay để tránh ghi đè kết quả chập chờn
+    if (semanticAbortRef.current) {
+      semanticAbortRef.current.abort();
+      semanticAbortRef.current = null;
+    }
+
     if (!q || q.length < 2) {
       lastExecutedSemanticRef.current = "";
       setSemanticResults(null);
       setSemanticQuery("");
+      setSemanticLoading(false);
       return;
     }
+
+    const requestId = ++semanticRequestIdRef.current;
+    const controller = new AbortController();
+    semanticAbortRef.current = controller;
 
     lastExecutedSemanticRef.current = q;
     setSemanticLoading(true);
     setSemanticQuery(q);
     try {
-      const res = await searchSemantic(q);
+      const res = await searchSemantic(q, controller.signal);
+      if (res?.canceled || requestId !== semanticRequestIdRef.current) {
+        return;
+      }
       if (res && res.success) {
         setSemanticResults(res);
         if (!options.skipScroll && res.data && res.data.length > 0) {
@@ -336,9 +363,59 @@ export default function Search() {
         setSemanticResults(null);
       }
     } catch (e) {
+      if (requestId !== semanticRequestIdRef.current) return;
       console.warn("Lỗi semantic search:", e);
       setSemanticResults(null);
     } finally {
+      if (requestId === semanticRequestIdRef.current) {
+        setSemanticLoading(false);
+      }
+    }
+  };
+
+  const handleImageSearch = async ({ previewUrl, imageBase64, mimeType }) => {
+    setImagePreview(previewUrl);
+    setImageLoading(true);
+    setSemanticLoading(true);
+    setSemanticQuery("");
+    setSearchTerm("");
+    lastWrittenQueryRef.current = "";
+    lastExecutedSemanticRef.current = "";
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("q");
+        next.delete("search");
+        next.delete("page");
+        return next;
+      },
+      { replace: true },
+    );
+
+    try {
+      const res = await searchSpeciesByImage({ imageBase64, mimeType });
+      if (res && res.success) {
+        setSemanticResults(res);
+        setSemanticQuery(res.visualMatch?.speciesNameVi || res.query || "");
+        setTimeout(() => {
+          document
+            .getElementById("search-results")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      } else {
+        setSemanticResults({
+          success: true,
+          outOfDomain: true,
+          message: res?.message || "Không thể nhận diện hình ảnh lúc này.",
+          data: [],
+          suggestions: [],
+        });
+      }
+    } catch (e) {
+      console.warn("Lỗi tìm kiếm bằng hình ảnh:", e);
+      setSemanticResults(null);
+    } finally {
+      setImageLoading(false);
       setSemanticLoading(false);
     }
   };
@@ -396,13 +473,13 @@ export default function Search() {
 
   const handleSearchSubmit = (e, overrideTerm) => {
     if (e && e.preventDefault) e.preventDefault();
-    const term = overrideTerm ?? searchTerm;
+    const term = (overrideTerm ?? searchTerm).trim();
     lastWrittenQueryRef.current = term;
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
         next.delete("search");
-        if (term.trim()) next.set("q", term);
+        if (term) next.set("q", term);
         else next.delete("q");
         next.delete("page");
         return next;
@@ -412,24 +489,25 @@ export default function Search() {
     executeSemanticSearch(term);
   };
 
+  // Chỉ cập nhật state cục bộ khi đang gõ — tuyệt đối không đổi URL mỗi phím để bộ gõ tiếng Việt (Telex/VNI) luôn mượt
   const handleSearchTermChange = (val) => {
     setSearchTerm(val);
-    lastWrittenQueryRef.current = val;
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        next.delete("search");
-        if (val.trim()) next.set("q", val);
-        else next.delete("q");
-        next.delete("page");
-        return next;
-      },
-      { replace: true },
-    );
-
-    if (val.length < searchTerm.length && val.length < 2) {
+    if (val.trim() === "" && (semanticQuery || urlQuery)) {
+      semanticAbortRef.current?.abort();
+      lastExecutedSemanticRef.current = "";
+      lastWrittenQueryRef.current = "";
       setSemanticResults(null);
       setSemanticQuery("");
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.delete("q");
+          next.delete("search");
+          next.delete("page");
+          return next;
+        },
+        { replace: true },
+      );
     }
   };
 
@@ -437,6 +515,7 @@ export default function Search() {
     lastExecutedSemanticRef.current = "";
     setSemanticResults(null);
     setSemanticQuery("");
+    setImagePreview(null);
     setSearchTerm("");
     lastWrittenQueryRef.current = "";
     setSearchParams(
@@ -452,6 +531,7 @@ export default function Search() {
   };
 
   const handleSuggestionSelect = (suggestionText) => {
+    setImagePreview(null);
     setSearchTerm(suggestionText);
     handleSearchSubmit(null, suggestionText);
   };
@@ -465,6 +545,10 @@ export default function Search() {
           searchTerm={searchTerm}
           setSearchTerm={handleSearchTermChange}
           onSearchSubmit={handleSearchSubmit}
+          onImageSearch={handleImageSearch}
+          imagePreview={imagePreview}
+          onClearImage={handleClearSemantic}
+          imageLoading={imageLoading}
         />
 
         <SearchFilterBar
@@ -474,18 +558,26 @@ export default function Search() {
           setSortBy={handleSortChange}
         />
 
-        {/* Chỉ hiển thị slider sinh vật tiêu biểu khi người dùng chưa nhập từ khóa tìm kiếm */}
-        {!searchTerm && !urlQuery && !semanticQuery && <FeaturedSpeciesSlider />}
+        {/* Chỉ hiển thị slider sinh vật tiêu biểu khi người dùng chưa nhập từ khóa hoặc ảnh tìm kiếm */}
+        {!searchTerm && !urlQuery && !semanticQuery && !imagePreview && <FeaturedSpeciesSlider />}
 
         {/* ── DANH SÁCH SINH VẬT ĐÃ HỢP NHẤT TÌM KIẾM NGỮ NGHĨA ── */}
         <SearchGridList
-          key={`${selectedCategory}|${sortBy}|${semanticQuery}`}
+          key={`${selectedCategory}|${sortBy}|${semanticQuery}|${imagePreview ? "img" : "txt"}`}
           speciesList={displayedSpecies}
           semanticQuery={semanticQuery}
           semanticMeta={semanticResults}
+          imagePreview={imagePreview}
           onSuggestionClick={handleSuggestionSelect}
           onClearSemantic={handleClearSemantic}
           loading={semanticLoading || (apiLoading && apiSpecies === null)}
+          loadingText={
+            imageLoading
+              ? language === "en"
+                ? "Identifying marine species from uploaded photo..."
+                : "Đang nhận diện đặc điểm sinh vật từ hình ảnh..."
+              : undefined
+          }
           currentPage={currentPage}
           onPageChange={handlePageChange}
         />

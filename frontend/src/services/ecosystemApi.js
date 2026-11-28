@@ -73,18 +73,50 @@ export const fetchEcosystemStats = async () => {
  * @param {string} query
  * @returns {Promise<Object>}
  */
-export const searchSemantic = async (query) => {
+export const searchSemantic = async (query, signal = undefined) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/species/search/semantic`, {
       params: { q: query },
+      signal,
     });
     if (response.data && response.data.success) {
       return response.data;
     }
     return { success: false, data: [], suggestions: [] };
   } catch (error) {
+    if (axios.isCancel(error) || error?.name === "CanceledError" || error?.code === "ERR_CANCELED") {
+      return { canceled: true };
+    }
     console.error("Lỗi khi tìm kiếm ngữ nghĩa:", error);
     return { success: false, data: [], suggestions: [] };
+  }
+};
+
+/**
+ * Tìm kiếm sinh vật biển bằng hình ảnh (Visual Semantic Search)
+ * @param {{ imageBase64: string, mimeType?: string, hint?: string }} payload
+ * @returns {Promise<Object>}
+ */
+export const searchSpeciesByImage = async ({ imageBase64, mimeType = "image/jpeg", hint = "" }) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/species/search/image`,
+      { imageBase64, mimeType, hint },
+      getAuthHeaders()
+    );
+    if (response.data && response.data.success) {
+      return response.data;
+    }
+    return { success: false, data: [], suggestions: [] };
+  } catch (error) {
+    const serverMsg = error?.response?.data?.message;
+    console.error("Lỗi khi tìm kiếm bằng hình ảnh:", serverMsg || error.message);
+    return {
+      success: false,
+      message: serverMsg || "Không thể xử lý hình ảnh. Vui lòng thử lại.",
+      data: [],
+      suggestions: [],
+    };
   }
 };
 
