@@ -33,7 +33,7 @@ export function SearchGridList({
   const [internalPage, setInternalPage] = useState(1);
   const currentPage = controlledPage ?? internalPage;
   const [favorites, setFavorites] = useState(new Set());
-  const itemsPerPage = 9;
+  const itemsPerPage = 12;
 
   // Tải danh sách ID đã yêu thích nếu người dùng đã đăng nhập
   useEffect(() => {
@@ -269,8 +269,8 @@ export function SearchGridList({
         </div>
       ) : (
         <>
-          {/* 3 Columns Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+          {/* 2 Columns on mobile/tablet, 3 Columns on desktop */}
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-5 mb-10">
             {currentItems.map((s) => {
               const categoryName = getLocalizedCategory(s.categoryVi || s.categoryEn, language);
               const statusName = language === "en" ? s.statusEn : s.statusVi;
@@ -281,21 +281,21 @@ export function SearchGridList({
               return (
                 <div
                   key={s.id}
-                  className="liquid-glass liquid-glass-interactive rounded-2xl p-4 flex flex-col justify-between group cursor-pointer"
+                  className="liquid-glass liquid-glass-interactive rounded-xl sm:rounded-2xl p-2.5 sm:p-4 flex flex-col justify-between group cursor-pointer min-w-0"
                   onClick={() =>
                     navigate(`/species/${s.slug || s.id}`, {
                       state: { fromSearch: `${location.pathname}${location.search}` },
                     })
                   }
                 >
-                  <div>
+                  <div className="min-w-0">
                     {/* Header Tags */}
-                    <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="px-2 py-0.5 rounded-md bg-slate-900/6 border border-slate-900/12 text-[#1e293b] text-[11px] font-medium">
+                    <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-2 sm:mb-3 min-w-0">
+                      <span className="px-1.5 sm:px-2 py-0.5 rounded-md bg-slate-900/6 border border-slate-900/12 text-[#1e293b] text-[10px] sm:text-[11px] font-medium truncate min-w-0">
                         {categoryName}
                       </span>
                       <span
-                        className={`px-2 py-0.5 rounded-md text-[11px] font-medium ${
+                        className={`shrink-0 whitespace-nowrap px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] sm:text-[11px] font-medium ${
                           s.statusType === "danger"
                             ? "bg-rose-500/12 border border-rose-500/25 text-rose-700"
                             : s.statusType === "warning"
@@ -308,7 +308,7 @@ export function SearchGridList({
                     </div>
 
                     {/* Image */}
-                    <div className="w-full h-40 rounded-xl flex items-center justify-center mb-3 relative overflow-hidden bg-gradient-to-br from-sky-100/55 via-white/55 to-cyan-100/45 border border-white/85">
+                    <div className="w-full h-28 sm:h-40 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-3 relative overflow-hidden bg-gradient-to-br from-sky-100/55 via-white/55 to-cyan-100/45 border border-white/85">
                       <img
                         src={s.image || FishHidden}
                         alt={name}
@@ -321,57 +321,59 @@ export function SearchGridList({
                           typeof s.image === "string" &&
                           (s.image.startsWith("http") || s.image.endsWith(".jpg") || s.image.endsWith(".webp"))
                             ? "w-full h-full object-cover relative z-10"
-                            : "w-full h-full object-contain p-3 drop-shadow-[0_6px_12px_rgba(15,23,42,0.16)] relative z-10"
+                            : "w-full h-full object-contain p-2 sm:p-3 drop-shadow-[0_6px_12px_rgba(15,23,42,0.16)] relative z-10"
                         }
                       />
                     </div>
 
                     {/* Info */}
                     <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                      <h3 className="text-base font-bold text-[#0f172a] font-heading group-hover:text-[#0284c7] transition-colors line-clamp-1">
+                      <h3 className="text-[13px] sm:text-base font-bold text-[#0f172a] font-heading group-hover:text-[#0284c7] transition-colors line-clamp-1">
                         {name}
                       </h3>
                       {s.role && (
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-900/6 border border-slate-900/12 text-[#1e293b]">
+                        <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-900/6 border border-slate-900/12 text-[#1e293b]">
                           {s.role}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[#475569] italic mb-2 font-mono">
+                    <p className="text-[10px] sm:text-xs text-[#475569] italic mb-1.5 sm:mb-2 font-mono truncate">
                       {s.sciName}
                     </p>
                     {s.semanticReason ? (
-                      <p className="text-xs text-[#0f172a] bg-sky-500/10 border border-sky-500/20 rounded-md p-2 mb-2 leading-relaxed">
+                      <p className="text-[11px] sm:text-xs text-[#0f172a] bg-sky-500/10 border border-sky-500/20 rounded-md p-1.5 sm:p-2 mb-1.5 sm:mb-2 leading-snug sm:leading-relaxed line-clamp-3 sm:line-clamp-none">
                         {s.semanticReason}
                       </p>
                     ) : null}
-                    <p className="text-xs text-[#334155] leading-relaxed line-clamp-2 mb-3">
+                    <p className="text-[11px] sm:text-xs text-[#334155] leading-snug sm:leading-relaxed line-clamp-2 mb-2 sm:mb-3">
                       {desc}
                     </p>
                   </div>
 
                   {/* Card Footer */}
-                  <div className="pt-3 border-t border-[#0f172a]/8 flex items-center justify-between">
-                    <span className="flex items-center gap-1 text-xs text-[#475569] font-mono tabular-nums">
-                      <Anchor className="w-3.5 h-3.5 text-[#0284c7]" /> {s.depth}
+                  <div className="pt-2 sm:pt-3 border-t border-[#0f172a]/8 flex items-center justify-between gap-1.5">
+                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-[#475569] font-mono tabular-nums truncate">
+                      <Anchor className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#0284c7] shrink-0" /> {s.depth}
                     </span>
 
                     {/* Favorite Button */}
                     <button
+                      type="button"
                       onClick={(e) => toggleFavorite(e, s)}
-                      className={`flex items-center gap-1 text-xs font-medium transition-colors cursor-pointer ${
+                      className={`flex items-center gap-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
                         isFav
                           ? "text-rose-600"
                           : "text-[#475569] hover:text-rose-600"
                       }`}
                       title={isFav ? "Bỏ yêu thích" : "Yêu thích sinh vật"}
+                      aria-label={isFav ? "Bỏ yêu thích" : "Yêu thích sinh vật"}
                     >
                       {isFav ? (
-                        <Favorited className="w-4 h-4" />
+                        <Favorited className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       ) : (
-                        <Favorite className="w-4 h-4" />
+                        <Favorite className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       )}
-                      <span>
+                      <span className="hidden sm:inline">
                         {t("searchPage.btnFavorite") ?? "Yêu thích"}
                       </span>
                     </button>
@@ -382,7 +384,7 @@ export function SearchGridList({
           </div>
 
           {/* Pagination Controls */}
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
             <button
               onClick={() => goToPage(1)}
               disabled={effectivePage <= 1}

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
   Check,
@@ -10,6 +10,7 @@ import {
   Eye,
   Menu,
   X,
+  ArrowLeft,
 } from "lucide-react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useScroll } from "../../hooks/useScroll";
@@ -26,12 +27,46 @@ export default function Navbar() {
   const { language, changeLanguage, t } = useLanguage();
   const isScrolled = useScroll(60);
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
 
   const langDropdownRef = useRef(null);
   const userDropdownRef = useRef(null);
+  const touchStartYRef = useRef(null);
+
+  const showMobileBack = location.pathname !== "/";
+
+  const handleMobileBack = () => {
+    setIsMobileOpen(false);
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  };
+
+  // Tự động đóng menu mobile khi chuyển trang, bấm phím Escape hoặc mở rộng sang desktop
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isMobileOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setIsMobileOpen(false);
+    };
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setIsMobileOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isMobileOpen]);
 
   const [user, setUser] = useState(() => getClientEffectiveUser());
   const [isGuestMode, setIsGuestMode] = useState(() => isPreviewAsGuest());
@@ -121,25 +156,46 @@ export default function Navbar() {
     languages.find((l) => l.code === language) || languages[0];
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,padding] duration-200 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-xl border-b border-[#0f172a]/12 shadow-sm py-2.5"
-          : "bg-white/88 backdrop-blur-xl border-b border-[#0f172a]/10 py-3.5"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 shrink-0">
-          <img
-            src={systemSettings?.general?.logoUrl || Images.Logo}
-            alt={systemSettings?.general?.websiteName || "Logo"}
-            className="w-8 h-8 object-contain"
-          />
-          <span className="font-heading text-xl font-bold text-[#0f172a] tracking-tight">
-            {systemSettings?.general?.websiteName || "Biển Đông"}
-          </span>
-        </Link>
+    <>
+      {isMobileOpen && (
+        <div
+          aria-hidden="true"
+          onClick={() => setIsMobileOpen(false)}
+          className="fixed inset-0 z-[45] bg-[#0f172a]/25 backdrop-blur-[2px] lg:hidden animate-in fade-in duration-150"
+        />
+      )}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,padding] duration-200 ${
+          isScrolled
+            ? "bg-white/95 backdrop-blur-xl border-b border-[#0f172a]/12 shadow-sm py-2.5"
+            : "bg-white/88 backdrop-blur-xl border-b border-[#0f172a]/10 py-3.5"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 sm:gap-4">
+          {/* Mobile Back Button + Logo */}
+          <div className="flex items-center gap-2 min-w-0">
+            {showMobileBack && (
+              <button
+                type="button"
+                onClick={handleMobileBack}
+                aria-label={language === "en" ? "Go back" : "Quay lại"}
+                title={language === "en" ? "Go back" : "Quay lại"}
+                className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg liquid-glass-subtle text-[#0f172a] hover:bg-white/85 transition-colors cursor-pointer shrink-0"
+              >
+                <ArrowLeft size={18} />
+              </button>
+            )}
+            <Link to="/" className="flex items-center gap-2.5 shrink-0 min-w-0">
+              <img
+                src={systemSettings?.general?.logoUrl || Images.Logo}
+                alt={systemSettings?.general?.websiteName || "Logo"}
+                className="w-8 h-8 object-contain shrink-0"
+              />
+              <span className="font-heading text-lg sm:text-xl font-bold text-[#0f172a] tracking-tight truncate">
+                {systemSettings?.general?.websiteName || "Biển Đông"}
+              </span>
+            </Link>
+          </div>
 
         {/* Desktop links */}
         <ul className="hidden lg:flex items-center gap-1">
@@ -337,9 +393,11 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button
+          type="button"
           onClick={() => setIsMobileOpen(!isMobileOpen)}
-          aria-label="Mở menu điều hướng"
-          className="lg:hidden p-2 rounded-lg liquid-glass-subtle text-[#0f172a] hover:bg-white/85 transition-colors cursor-pointer"
+          aria-label={isMobileOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng"}
+          aria-expanded={isMobileOpen}
+          className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg liquid-glass-subtle text-[#0f172a] hover:bg-white/85 transition-colors cursor-pointer shrink-0"
         >
           {isMobileOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
@@ -347,7 +405,20 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileOpen && (
-        <div className="lg:hidden mt-3 px-6 py-4 liquid-glass-strong border-x-0 flex flex-col gap-1.5">
+        <div
+          onTouchStart={(e) => {
+            touchStartYRef.current = e.touches[0]?.clientY ?? null;
+          }}
+          onTouchEnd={(e) => {
+            if (touchStartYRef.current == null) return;
+            const endY = e.changedTouches[0]?.clientY ?? touchStartYRef.current;
+            if (touchStartYRef.current - endY > 45) {
+              setIsMobileOpen(false);
+            }
+            touchStartYRef.current = null;
+          }}
+          className="lg:hidden mt-3 px-4 sm:px-6 py-4 liquid-glass-strong border-x-0 flex flex-col gap-1.5 max-h-[calc(100vh-4.5rem)] overflow-y-auto"
+        >
           {navLinks.map((link, index) => (
             <Link
               key={index}
@@ -385,30 +456,42 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="flex gap-3 mt-3 pt-3 border-t border-[#0f172a]/10">
+          <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-[#0f172a]/10">
             {user ? (
               <>
-                <Link
-                  to="/profile"
-                  onClick={() => setIsMobileOpen(false)}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-medium border border-[#0f172a]/15 text-[#0f172a] hover:bg-[#0f172a]/5 transition-colors text-center flex items-center justify-center gap-1.5"
-                >
-                  <User size={15} />
-                  <span>Hồ sơ cá nhân</span>
-                </Link>
-                <button
-                  onClick={() => {
-                    setIsMobileOpen(false);
-                    handleLogout();
-                  }}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-medium border border-rose-500/30 text-rose-700 hover:bg-rose-500/10 transition-colors text-center flex items-center justify-center gap-1.5"
-                >
-                  <LogOut size={15} />
-                  <span>Đăng xuất</span>
-                </button>
+                {(user.role === "admin" || user.role === "super_admin") && (
+                  <Link
+                    to="/admin/species"
+                    onClick={() => setIsMobileOpen(false)}
+                    className="w-full py-2.5 rounded-xl text-sm font-medium bg-sky-600/12 border border-[#0284c7]/25 text-[#0284c7] hover:bg-sky-600/20 transition-colors text-center flex items-center justify-center gap-1.5"
+                  >
+                    <Shield size={15} />
+                    <span>Quản trị hệ thống</span>
+                  </Link>
+                )}
+                <div className="flex gap-2.5">
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsMobileOpen(false)}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-medium border border-[#0f172a]/15 text-[#0f172a] hover:bg-[#0f172a]/5 transition-colors text-center flex items-center justify-center gap-1.5"
+                  >
+                    <User size={15} />
+                    <span>Hồ sơ cá nhân</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setIsMobileOpen(false);
+                      handleLogout();
+                    }}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-medium border border-rose-500/30 text-rose-700 hover:bg-rose-500/10 transition-colors text-center flex items-center justify-center gap-1.5"
+                  >
+                    <LogOut size={15} />
+                    <span>Đăng xuất</span>
+                  </button>
+                </div>
               </>
             ) : (
-              <>
+              <div className="flex gap-3">
                 <Link
                   to="/register"
                   onClick={() => setIsMobileOpen(false)}
@@ -423,7 +506,7 @@ export default function Navbar() {
                 >
                   {t("nav.login")}
                 </Link>
-              </>
+              </div>
             )}
           </div>
         </div>
@@ -442,9 +525,9 @@ export default function Navbar() {
           return (
             <aside
               aria-label="Chế độ xem trước của quản trị viên"
-              className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto"
+              className="fixed bottom-4 left-4 right-4 sm:left-auto sm:bottom-6 sm:right-6 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto"
             >
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl liquid-glass-strong border-amber-500/35 text-[#0f172a] text-xs">
+              <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-4 py-2.5 rounded-2xl liquid-glass-strong border-amber-500/35 text-[#0f172a] text-xs">
                 <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
                 <div className="text-left">
                   <div className="font-semibold text-amber-800 flex items-center gap-1.5">
@@ -475,5 +558,6 @@ export default function Navbar() {
           );
         })()}
     </nav>
+    </>
   );
 }

@@ -97,9 +97,9 @@ export default function SearchSection() {
       id="search-section"
       className="bg-transparent pt-10 pb-24 relative"
     >
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div
-          className="liquid-glass-strong rounded-3xl p-8 md:p-12 relative"
+          className="liquid-glass-strong rounded-3xl p-5 sm:p-8 md:p-12 relative"
           data-aos="fade-up"
           data-aos-duration="700"
         >

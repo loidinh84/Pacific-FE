@@ -216,16 +216,19 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
       {
         src: Images.SunlitMantaHero,
         alt: "Cá đuối manta và cá heo dưới làn nước Biển Đông ánh nắng",
+        objectPos: "object-[80%_20%] md:object-center",
         eager: true,
       },
       {
         src: Images.SunlitEastSeaHero,
         alt: "Rạn san hô và rùa biển xanh dưới mặt nước Biển Đông",
+        objectPos: "object-[68%_center] md:object-center",
         eager: false,
       },
       {
         src: Images.SunlitIslandHero,
         alt: "Vịnh đảo san hô Biển Đông từ trên cao",
+        objectPos: "object-center",
         eager: false,
       },
     ];
@@ -233,21 +236,25 @@ export default function PacificHotspotMap({ asBackground = false, showHotspots =
     return (
       <>
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none bg-[#eaf4fb]">
-          {bgScenes.map((scene, idx) => (
-            <img
-              key={scene.src}
-              src={scene.src}
-              alt={scene.alt}
-              fetchPriority={scene.eager ? "high" : undefined}
-              loading={scene.eager ? "eager" : "lazy"}
-              className={`absolute inset-0 w-full h-full object-cover object-right md:object-center transition-opacity duration-1000 ease-out ${
-                activeScene === idx ? "opacity-100" : "opacity-0"
-              }`}
-            />
-          ))}
+          <div className="absolute inset-x-0 top-0 h-[80vh] md:h-full overflow-hidden">
+            {bgScenes.map((scene, idx) => (
+              <img
+                key={scene.src}
+                src={scene.src}
+                alt={scene.alt}
+                fetchPriority={scene.eager ? "high" : undefined}
+                loading={scene.eager ? "eager" : "lazy"}
+                className={`absolute inset-0 w-full h-full object-cover ${scene.objectPos} transition-opacity duration-1000 ease-out ${
+                  activeScene === idx ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
+            {/* Hòa tan rìa dưới ảnh vào nền #eaf4fb trên mobile để giảm phóng đại và xóa đường cắt ngang */}
+            <div className="absolute inset-x-0 bottom-0 h-32 md:hidden bg-gradient-to-t from-[#eaf4fb] via-[#eaf4fb]/70 to-transparent pointer-events-none" />
+          </div>
 
           {/* Giữ cảnh biển bên phải rõ nét, phủ nhẹ bên trái & đỉnh để tiêu đề luôn dễ đọc */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#eff7fd]/72 via-[#eff7fd]/18 via-40% to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#eff7fd]/78 via-[#eff7fd]/22 via-45% to-transparent pointer-events-none" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#f5fafe]/35 via-transparent via-75% to-[#eaf4fb]/55 pointer-events-none" />
         </div>
 

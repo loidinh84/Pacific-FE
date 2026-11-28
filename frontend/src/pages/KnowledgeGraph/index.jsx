@@ -327,9 +327,9 @@ export default function KnowledgeGraph() {
         </div>
 
         {/* ─── 2. BỐ CỤC DASHBOARD 3 CỘT ──── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
           {/* ═════ CỘT 1: BỘ LỌC & DANH SÁCH LOÀI (3/12 COLS) ═════ */}
-          <div className="lg:col-span-3 rounded-2xl liquid-glass p-4 flex flex-col h-[720px]">
+          <div className="lg:col-span-3 rounded-2xl liquid-glass p-4 flex flex-col h-[380px] sm:h-[440px] lg:h-[640px]">
             <div className="mb-3 space-y-2">
               <div className="text-xs font-semibold text-[#334155] flex items-center justify-between">
                 <span>{isEn ? "Species catalog" : "Danh mục loài"}</span>
@@ -469,7 +469,7 @@ export default function KnowledgeGraph() {
           </div>
 
           {/* ═════ CỘT 2: SƠ ĐỒ DÒNG CHẢY SINH THÁI 3 TẦNG (6/12 COLS) ═════ */}
-          <div className="lg:col-span-6 rounded-2xl liquid-glass p-5 flex flex-col h-[720px] overflow-y-auto custom-scrollbar-thin">
+          <div className="lg:col-span-6 rounded-2xl liquid-glass p-4 sm:p-5 flex flex-col h-auto lg:h-[640px] lg:overflow-y-auto custom-scrollbar-thin">
             {!focalSpecies ? (
               <div className="flex-1 flex flex-col items-center justify-center text-[#475569] gap-2">
                 <Compass size={28} className="text-[#0277bd]/60" />
@@ -679,7 +679,7 @@ export default function KnowledgeGraph() {
           </div>
 
           {/* ═════ CỘT 3: HỒ SƠ SINH THÁI HỌC & ĐÁNH GIÁ RỦI RO (3/12 COLS) ═════ */}
-          <div className="lg:col-span-3 rounded-2xl liquid-glass p-4 flex flex-col justify-between h-[720px] overflow-y-auto custom-scrollbar-thin">
+          <div className="lg:col-span-3 rounded-2xl liquid-glass p-4 flex flex-col justify-between h-auto lg:h-[640px] lg:overflow-y-auto custom-scrollbar-thin">
             {!focalSpecies ? (
               <div className="flex-1 flex flex-col items-center justify-center text-[#475569] gap-2">
                 <Compass size={28} className="text-[#0277bd]/60" />

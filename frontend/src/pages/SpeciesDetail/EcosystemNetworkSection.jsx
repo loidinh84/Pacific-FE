@@ -49,7 +49,7 @@ const ECOLOGICAL_RELATION_META = {
   commensalism: {
     color: "#06b6d4", // Xanh ngọc
     glowColor: "rgba(6, 182, 212, 0.4)",
-    badgeColor: "text-teal-300 bg-teal-500/10 border-teal-500/30",
+    badgeColor: "text-teal-700 bg-teal-500/12 border-teal-500/30",
     labelVi: "Hội sinh",
     labelEn: "Commensalism",
     trophicType: "Commensalism",
@@ -58,7 +58,7 @@ const ECOLOGICAL_RELATION_META = {
   habitat_provider: {
     color: "#10b981", // Xanh lục ngọc
     glowColor: "rgba(16, 185, 129, 0.4)",
-    badgeColor: "text-emerald-300 bg-emerald-500/10 border-emerald-500/30",
+    badgeColor: "text-emerald-700 bg-emerald-500/12 border-emerald-500/30",
     labelVi: "Kiến tạo sinh cảnh",
     labelEn: "Habitat Provider",
     trophicType: "Habitat Matrix",
@@ -67,7 +67,7 @@ const ECOLOGICAL_RELATION_META = {
   competitor: {
     color: "#f59e0b", // Vàng cam ấm
     glowColor: "rgba(245, 158, 11, 0.4)",
-    badgeColor: "text-amber-400 bg-amber-500/10 border-amber-500/30",
+    badgeColor: "text-amber-800 bg-amber-500/12 border-amber-500/30",
     labelVi: "Cạnh tranh sinh thái",
     labelEn: "Competition",
     trophicType: "Competition",
@@ -76,7 +76,7 @@ const ECOLOGICAL_RELATION_META = {
   parasitism: {
     color: "#a855f7", // Tím dạ quang / Ký sinh
     glowColor: "rgba(168, 85, 247, 0.4)",
-    badgeColor: "text-purple-300 bg-purple-500/10 border-purple-500/30",
+    badgeColor: "text-purple-700 bg-purple-500/12 border-purple-500/30",
     labelVi: "Ký sinh",
     labelEn: "Parasitism",
     trophicType: "Parasitic Link",
@@ -90,49 +90,49 @@ const RED_LIST_STANDARDS = {
     code: "CR",
     titleVi: "Cực kỳ nguy cấp",
     titleEn: "Critically Endangered",
-    style: "bg-rose-500/15 text-rose-300 border-rose-500/40",
+    style: "bg-rose-50/95 text-rose-700 border-rose-500/35",
     dot: "bg-rose-500",
   },
   EN: {
     code: "EN",
     titleVi: "Nguy cấp",
     titleEn: "Endangered",
-    style: "bg-orange-500/15 text-orange-300 border-orange-500/40",
+    style: "bg-orange-50/95 text-orange-700 border-orange-500/35",
     dot: "bg-orange-500",
   },
   VU: {
     code: "VU",
     titleVi: "Sắp nguy cấp",
     titleEn: "Vulnerable",
-    style: "bg-amber-500/15 text-amber-300 border-amber-500/40",
+    style: "bg-amber-50/95 text-amber-800 border-amber-500/35",
     dot: "bg-amber-500",
   },
   NT: {
     code: "NT",
     titleVi: "Gần bị đe dọa",
     titleEn: "Near Threatened",
-    style: "bg-yellow-500/15 text-yellow-300 border-yellow-500/40",
-    dot: "bg-yellow-400",
+    style: "bg-yellow-50/95 text-yellow-800 border-yellow-500/35",
+    dot: "bg-yellow-500",
   },
   LC: {
     code: "LC",
     titleVi: "Ít quan tâm",
     titleEn: "Least Concern",
-    style: "bg-emerald-500/15 text-emerald-300 border-emerald-500/40",
-    dot: "bg-emerald-400",
+    style: "bg-emerald-50/95 text-emerald-700 border-emerald-500/35",
+    dot: "bg-emerald-500",
   },
   DD: {
     code: "DD",
     titleVi: "Thiếu dữ liệu",
     titleEn: "Data Deficient",
-    style: "bg-slate-500/15 text-[#334155] border-slate-500/40",
+    style: "bg-slate-50/95 text-slate-700 border-slate-500/35",
     dot: "bg-slate-400",
   },
   NE: {
     code: "NE",
     titleVi: "Chưa đánh giá",
     titleEn: "Not Evaluated",
-    style: "bg-zinc-500/15 text-zinc-400 border-zinc-500/40",
+    style: "bg-zinc-50/95 text-zinc-700 border-zinc-500/35",
     dot: "bg-zinc-400",
   },
 };
@@ -450,9 +450,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Kiểm soát quần thể sinh vật từ đỉnh chuỗi thức ăn",
           subEn: "Top-down trophic regulators",
           color: "#f43f5e",
-          bgGradient: "from-rose-950/40 via-[#0d213b] to-[#091729]",
-          borderColor: "border-rose-500/40",
-          badgeStyle: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+          bgGradient: "from-rose-50/90 via-white/88 to-rose-50/60",
+          borderColor: "border-rose-400/35",
+          badgeStyle: "bg-rose-500/12 text-rose-700 border-rose-500/30",
           items: roles.predators.map((p) =>
             formatCardItem(p, isEn ? "Apex Threat" : "Thiên địch đỉnh", "#f43f5e")
           ),
@@ -464,9 +464,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Động vật tiêu thụ bậc trung trong mạng lưới sinh thái",
           subEn: "Mesopredators transferring kinetic biomass",
           color: "#f59e0b",
-          bgGradient: "from-amber-950/40 via-[#0d213b] to-[#091729]",
-          borderColor: "border-amber-500/40",
-          badgeStyle: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+          bgGradient: "from-amber-50/90 via-white/88 to-amber-50/60",
+          borderColor: "border-amber-400/35",
+          badgeStyle: "bg-amber-500/12 text-amber-800 border-amber-500/30",
           items: [
             {
               ...centerNode,
@@ -486,9 +486,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Năng lượng nuôi dưỡng quần thể từ tầng dưới",
           subEn: "Energy foundation sustaining the trophic chain",
           color: "#10b981",
-          bgGradient: "from-emerald-950/40 via-[#0d213b] to-[#091729]",
-          borderColor: "border-emerald-500/40",
-          badgeStyle: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+          bgGradient: "from-emerald-50/90 via-white/88 to-emerald-50/60",
+          borderColor: "border-emerald-400/35",
+          badgeStyle: "bg-emerald-500/12 text-emerald-700 border-emerald-500/30",
           items: (hasPrey ? roles.prey : roles.habitats || []).map((p) =>
             formatCardItem(
               p,
@@ -562,9 +562,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Đỉnh chóp chuỗi thức ăn, không có thiên địch tự nhiên trong đại dương",
           subEn: "Top trophic rank with zero natural apex predators",
           color: "#f43f5e",
-          bgGradient: "from-rose-950/40 via-[#0d213b] to-[#091729]",
-          borderColor: "border-rose-500/40",
-          badgeStyle: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+          bgGradient: "from-rose-50/90 via-white/88 to-rose-50/60",
+          borderColor: "border-rose-400/35",
+          badgeStyle: "bg-rose-500/12 text-rose-700 border-rose-500/30",
           items: [
             {
               ...centerNode,
@@ -581,9 +581,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Động vật ăn thịt thứ cấp, điều phối sinh khối và cạnh tranh thức ăn",
           subEn: "Secondary carnivores transferring kinetic biomass",
           color: "#f59e0b",
-          bgGradient: "from-amber-950/40 via-[#0d213b] to-[#091729]",
-          borderColor: "border-amber-500/40",
-          badgeStyle: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+          bgGradient: "from-amber-50/90 via-white/88 to-amber-50/60",
+          borderColor: "border-amber-400/35",
+          badgeStyle: "bg-amber-500/12 text-amber-800 border-amber-500/30",
           items: mesopredators,
         },
         bottom: {
@@ -593,9 +593,9 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           subVi: "Nguồn thức ăn cơ sở dồi dào, hấp thụ năng lượng quang hợp & thực vật",
           subEn: "Foundational forage prey sustaining higher trophic ranks",
           color: "#10b981",
-          bgGradient: "from-emerald-950/40 via-[#0d213b] to-[#091729]",
-          borderColor: "border-emerald-500/40",
-          badgeStyle: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+          bgGradient: "from-emerald-50/90 via-white/88 to-emerald-50/60",
+          borderColor: "border-emerald-400/35",
+          badgeStyle: "bg-emerald-500/12 text-emerald-700 border-emerald-500/30",
           items: primaryPrey,
         },
       };
@@ -637,7 +637,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
       <Link
         key={item.relationshipId || item.speciesId}
         to={`/species/${item.slug || item.speciesId}`}
-        className="group relative p-4 rounded-2xl liquid-glass-strong hover:liquid-glass-strong border border-[#0f172a]/10 hover:border-sky-600/25 transition-all duration-300 flex flex-col justify-between cursor-pointer block"
+        className="group relative p-4 rounded-2xl liquid-glass-strong hover:bg-white border border-[#0f172a]/10 hover:border-sky-600/25 transition-all duration-300 flex flex-col justify-between cursor-pointer block"
       >
         <div>
           {/* Header Card: Vai trò sinh thái học & Bậc đe dọa Sách Đỏ */}
@@ -905,11 +905,11 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
           /* Đồ thị mạng lưới sinh thái */
           <div
             ref={containerRef}
-            className="relative h-[500px] md:h-[550px] w-full flex items-center justify-center overflow-hidden select-none"
+            className="relative h-[380px] sm:h-[460px] md:h-[540px] w-full flex items-center justify-center overflow-hidden select-none"
             onClick={() => setActiveNodeId(null)}
           >
-            {/* Lớp nền chiều sâu đại dương với lưới tọa độ trắc đạc */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,40,78,0.55)_0%,transparent_75%)] pointer-events-none" />
+            {/* Lớp nền đại dương sáng nhẹ làm nổi bật các nút sinh thái */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.12)_0%,transparent_75%)] pointer-events-none" />
 
             {/* STAGE CONTAINER ĐƯỢC CO GIÃN THEO RESIZEOBSERVER */}
             <div
@@ -1040,7 +1040,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-cyan-950 text-[#0284c7] font-bold">
+                      <div className="w-full h-full flex items-center justify-center bg-sky-100 text-[#0284c7] font-bold">
                         Center
                       </div>
                     )}
@@ -1123,7 +1123,7 @@ export function EcosystemNetworkSection({ species, language: propLang }) {
                       <span
                         className="absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full flex items-center justify-center border shadow-md"
                         style={{
-                          backgroundColor: "#051323",
+                          backgroundColor: "#ffffff",
                           borderColor: meta.color,
                         }}
                         title={node.relationCategoryLabel}

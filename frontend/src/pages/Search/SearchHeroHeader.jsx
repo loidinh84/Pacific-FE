@@ -111,12 +111,12 @@ export function SearchHeroHeader({
   };
 
   return (
-    <div id="search-hero" className="text-center max-w-4xl mx-auto pt-24 pb-4 md:pt-28 md:pb-6 px-4">
+    <div id="search-hero" className="text-center max-w-4xl mx-auto pt-20 pb-3 sm:pt-24 sm:pb-4 md:pt-28 md:pb-6 px-4">
       <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#0f172a] font-heading tracking-tight mb-2">
         {t("searchPage.heroTitle")}
       </h1>
 
-      <p className="text-xs sm:text-sm text-[#334155] max-w-xl mx-auto mb-6 font-normal leading-relaxed">
+      <p className="text-xs sm:text-sm text-[#334155] max-w-xl mx-auto mb-4 sm:mb-6 font-normal leading-relaxed">
         {t("searchPage.heroDesc")}
       </p>
 
@@ -145,8 +145,8 @@ export function SearchHeroHeader({
           }`}
         >
           <Search
-            size={18}
-            className="absolute left-4 text-[#475569] pointer-events-none z-10"
+            size={17}
+            className="absolute left-3.5 sm:left-4 text-[#475569] pointer-events-none z-10"
           />
           <input
             type="text"
@@ -160,24 +160,24 @@ export function SearchHeroHeader({
                   : "Thả ảnh sinh vật biển vào đây để nhận diện..."
                 : t("searchPage.searchPlaceholder")
             }
-            className="w-full py-3.5 pl-11 pr-36 sm:pr-40 liquid-glass-strong rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none focus:border-[#0284c7] focus:ring-2 focus:ring-sky-500/15 transition-colors"
+            className="w-full py-3 sm:py-3.5 pl-10 sm:pl-11 pr-28 sm:pr-40 liquid-glass-strong rounded-xl text-xs sm:text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none focus:border-[#0284c7] focus:ring-2 focus:ring-sky-500/15 transition-colors"
           />
 
-          <div className="absolute right-1.5 flex items-center gap-1.5 z-10">
+          <div className="absolute right-1.5 flex items-center gap-1 sm:gap-1.5 z-10">
             {onImageSearch && (
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={imageLoading}
                 title={isEn ? "Search by image (or paste/drop)" : "Tìm kiếm bằng hình ảnh (chọn, kéo thả hoặc dán Ctrl+V)"}
-                className="p-2 rounded-lg text-[#475569] hover:text-[#0284c7] hover:bg-[#0f172a]/5 transition-colors cursor-pointer disabled:opacity-50"
+                className="p-1.5 sm:p-2 rounded-lg text-[#475569] hover:text-[#0284c7] hover:bg-[#0f172a]/5 transition-colors cursor-pointer disabled:opacity-50"
               >
-                <Camera size={18} />
+                <Camera size={17} />
               </button>
             )}
             <button
               type="submit"
-              className="px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer shadow-sm"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white rounded-lg text-xs md:text-sm font-medium transition-colors cursor-pointer shadow-sm whitespace-nowrap"
             >
               {t("searchPage.btnSearch")}
             </button>
@@ -186,7 +186,7 @@ export function SearchHeroHeader({
 
         {/* Xem trước ảnh đang dùng để tìm kiếm */}
         {imagePreview && (
-          <div className="mt-3 inline-flex items-center gap-3 px-3 py-2 rounded-xl liquid-glass-subtle text-left">
+          <div className="mt-3 inline-flex max-w-full items-center gap-2.5 sm:gap-3 px-3 py-2 rounded-xl liquid-glass-subtle text-left">
             <img
               src={imagePreview}
               alt={isEn ? "Uploaded query" : "Ảnh đang tìm kiếm"}
@@ -218,9 +218,9 @@ export function SearchHeroHeader({
           <p className="mt-2 text-xs text-rose-700 font-medium">{imageError}</p>
         )}
 
-        {/* Static realistic suggestion chips */}
-        <div className="flex items-center justify-center flex-wrap gap-1.5 mt-3">
-          <span className="text-xs text-[#475569] font-normal select-none shrink-0 mr-1">
+        {/* Static realistic suggestion chips: single horizontal swipe row on mobile, centered wrap on desktop */}
+        <div className="flex flex-nowrap sm:flex-wrap items-center justify-start sm:justify-center gap-1.5 mt-3 overflow-x-auto sm:overflow-visible scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+          <span className="text-xs text-[#475569] font-normal select-none shrink-0 mr-0.5">
             {isEn ? "Suggestions:" : "Gợi ý:"}
           </span>
           {SUGGESTIONS.map((item, idx) => {
@@ -235,7 +235,7 @@ export function SearchHeroHeader({
                     setTimeout(() => onSearchSubmit({ preventDefault: () => {} }, text), 10);
                   }
                 }}
-                className="px-2.5 py-1 rounded-full liquid-glass-subtle hover:bg-white text-[#334155] hover:text-[#0284c7] text-xs font-medium transition-colors cursor-pointer"
+                className="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-full liquid-glass-subtle hover:bg-white text-[#334155] hover:text-[#0284c7] text-xs font-medium transition-colors cursor-pointer"
               >
                 {text}
               </button>

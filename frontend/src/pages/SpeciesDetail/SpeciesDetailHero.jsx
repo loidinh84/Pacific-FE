@@ -37,31 +37,31 @@ import {
 const RED_LIST_BADGES = {
   CR: {
     label: "Cực kỳ nguy cấp (CR)",
-    style: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+    style: "bg-rose-500/12 text-rose-700 border-rose-500/30",
   },
   EN: {
     label: "Nguy cấp (EN)",
-    style: "bg-orange-500/20 text-orange-300 border-orange-500/40",
+    style: "bg-orange-500/12 text-orange-700 border-orange-500/30",
   },
   VU: {
     label: "Sắp nguy cấp (VU)",
-    style: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+    style: "bg-amber-500/12 text-amber-800 border-amber-500/30",
   },
   NT: {
     label: "Gần bị đe dọa (NT)",
-    style: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+    style: "bg-yellow-500/12 text-yellow-800 border-yellow-500/30",
   },
   LC: {
     label: "Ít quan tâm (LC)",
-    style: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+    style: "bg-emerald-500/12 text-emerald-700 border-emerald-500/30",
   },
   DD: {
     label: "Thiếu dữ liệu (DD)",
-    style: "bg-slate-500/20 text-slate-300 border-slate-500/40",
+    style: "bg-slate-500/12 text-slate-700 border-slate-500/30",
   },
   NE: {
     label: "Chưa đánh giá (NE)",
-    style: "bg-zinc-500/20 text-zinc-300 border-zinc-500/40",
+    style: "bg-zinc-500/12 text-zinc-700 border-zinc-500/30",
   },
 };
 
@@ -701,7 +701,7 @@ export function SpeciesDetailHero({ species }) {
               navigate(searchBackUrl);
             }
           }}
-          className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#334155] hover:text-[#0f172a] px-3 py-1.5 rounded-lg liquid-glass-subtle hover:bg-white transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-xs text-[#334155] hover:text-[#0f172a] px-3 py-1.5 rounded-lg liquid-glass-subtle hover:bg-white transition-colors cursor-pointer shrink-0"
         >
           <ArrowLeft size={13} />
           <span>{t("speciesDetail.btnBack") || "Quay lại"}</span>
@@ -711,8 +711,8 @@ export function SpeciesDetailHero({ species }) {
       {/* ── 2. MAIN HERO HEADER ── */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-[#0f172a]/10">
         <div className="space-y-3 max-w-3xl">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium px-3 py-1 rounded-full liquid-glass-subtle text-[#0284c7] flex items-center gap-2">
+          <div className="flex items-center flex-wrap gap-2">
+            <span className="text-xs font-medium px-3 py-1 rounded-full liquid-glass-subtle text-[#0284c7] flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className="flex items-center gap-1">
                 <Layers size={12} className="text-[#0284c7]" />
                 <span>

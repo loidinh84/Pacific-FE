@@ -148,7 +148,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
           </h2>
           <button
             onClick={onOpenEditModal}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl liquid-glass-subtle hover:liquid-glass-subtle border border-[#0f172a]/10 text-xs font-semibold text-[#0f172a] transition-all active:scale-95 cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl liquid-glass-subtle hover:bg-white border border-[#0f172a]/10 text-xs font-semibold text-[#0f172a] transition-all active:scale-95 cursor-pointer"
           >
             <Edit3 size={14} className="text-pacific-cyan" />
             <span>{isEn ? "Edit Profile" : "Chỉnh sửa"}</span>
@@ -159,7 +159,7 @@ export default function GeneralTab({ user, onOpenEditModal, onProfileUpdated }) 
           {/* Avatar Area */}
           <div className="md:col-span-3 flex flex-col items-center justify-center">
             <div className="relative group">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#161f3e] border border-[#0f172a]/10 flex items-center justify-center overflow-hidden">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-sky-100/80 border border-[#0f172a]/10 flex items-center justify-center overflow-hidden">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (

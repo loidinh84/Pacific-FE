@@ -127,7 +127,7 @@ export default function ExploredTab() {
               <button
                 onClick={() => loadExplored(pagination.page - 1)}
                 disabled={pagination.page <= 1}
-                className="p-2 rounded-xl liquid-glass-subtle hover:liquid-glass-subtle disabled:opacity-30 disabled:cursor-not-allowed text-[#0f172a] transition-all"
+                className="p-2 rounded-xl liquid-glass-subtle hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed text-[#0f172a] transition-all"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -137,7 +137,7 @@ export default function ExploredTab() {
               <button
                 onClick={() => loadExplored(pagination.page + 1)}
                 disabled={pagination.page >= pagination.totalPages}
-                className="p-2 rounded-xl liquid-glass-subtle hover:liquid-glass-subtle disabled:opacity-30 disabled:cursor-not-allowed text-[#0f172a] transition-all"
+                className="p-2 rounded-xl liquid-glass-subtle hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed text-[#0f172a] transition-all"
               >
                 <ChevronRight size={16} />
               </button>

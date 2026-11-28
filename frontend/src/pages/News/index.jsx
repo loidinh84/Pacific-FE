@@ -239,10 +239,10 @@ export default function News() {
                 >
                   <div className="h-52 liquid-glass-subtle" />
                   <div className="p-5 flex flex-col flex-1 gap-3">
-                    <div className="w-24 h-3 liquid-glass-subtle rounded" />
-                    <div className="w-full h-5 bg-white/15 rounded" />
-                    <div className="w-3/4 h-5 bg-white/15 rounded" />
-                    <div className="w-full h-3 liquid-glass-subtle rounded mt-auto" />
+                    <div className="w-24 h-3 bg-slate-200/70 rounded" />
+                    <div className="w-full h-5 bg-slate-200/80 rounded" />
+                    <div className="w-3/4 h-5 bg-slate-200/80 rounded" />
+                    <div className="w-full h-3 bg-slate-200/70 rounded mt-auto" />
                   </div>
                 </div>
               ))}
@@ -286,7 +286,7 @@ export default function News() {
                   <button
                     onClick={handleLoadMore}
                     disabled={isLoadingMore}
-                    className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600/30 to-cyan-600/30 hover:from-blue-600/50 hover:to-cyan-600/50 border border-sky-600/25 text-[#0284c7] hover:text-[#0f172a] font-bold text-sm tracking-wide transition-all cursor-pointer active:scale-95 inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-3 rounded-xl liquid-glass-strong hover:bg-white border border-[#0284c7]/30 text-[#0284c7] hover:text-[#0369a1] font-semibold text-sm transition-colors cursor-pointer inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                   >
                     {isLoadingMore ? (
                       <>

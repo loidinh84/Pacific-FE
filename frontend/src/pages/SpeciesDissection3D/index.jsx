@@ -102,19 +102,19 @@ export default function SpeciesDissection3D() {
       </div>
 
       {/* ── TOP HEADER BAR ── */}
-      <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-4 z-30 pointer-events-auto bg-gradient-to-b from-[#050B14]/90 via-[#050B14]/50 to-transparent">
-        <div className="flex items-center gap-3">
+      <div className="absolute top-0 left-0 right-0 flex flex-wrap items-center justify-between gap-2 px-3 sm:px-6 py-3 sm:py-4 z-30 pointer-events-auto bg-gradient-to-b from-[#050B14]/90 via-[#050B14]/50 to-transparent">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Back button */}
           <button
             onClick={() => navigate(`/species/${species.id}`)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-md text-white text-xs font-semibold transition-all cursor-pointer shadow-lg"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-md text-white text-xs font-semibold transition-all cursor-pointer shadow-lg"
           >
             <ArrowLeft size={14} />
             <span>{t("speciesDetail.btnBack")}</span>
           </button>
 
           {/* 3D Lab Badge */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 backdrop-blur-md text-cyan-300 text-xs font-bold tracking-wide">
+          <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 backdrop-blur-md text-cyan-300 text-xs font-bold tracking-wide">
             <Box size={14} className="text-cyan-400" />
             <span>
               {language === "vi" ? "Phòng Giải Phẫu 3D" : "3D Dissection Room"}
@@ -124,7 +124,7 @@ export default function SpeciesDissection3D() {
           {/* X-Ray / Translucent Mode Toggle */}
           <button
             onClick={() => setXrayMode((v) => !v)}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border backdrop-blur-md text-xs font-semibold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-xl border backdrop-blur-md text-xs font-semibold transition-all cursor-pointer ${
               xrayMode
                 ? "bg-cyan-500/20 border-cyan-400/60 text-cyan-300 shadow-sm"
                 : "bg-white/10 border-white/15 text-slate-300 hover:bg-white/20"
@@ -133,8 +133,8 @@ export default function SpeciesDissection3D() {
             {xrayMode ? <Eye size={14} className="text-cyan-400" /> : <EyeOff size={14} />}
             <span>
               {xrayMode
-                ? language === "vi" ? "Chế độ X-Ray (Trong suốt)" : "X-Ray Mode (On)"
-                : language === "vi" ? "Chế độ Thường (Đặc)" : "Solid Skin Mode"}
+                ? language === "vi" ? "X-Ray" : "X-Ray On"
+                : language === "vi" ? "Chế độ Thường" : "Solid Skin"}
             </span>
           </button>
         </div>
@@ -147,9 +147,9 @@ export default function SpeciesDissection3D() {
         </div>
       </div>
 
-      {/* ── LEFT SYSTEM FILTER BAR ── */}
-      <div className="absolute top-20 left-6 z-20 flex flex-col gap-2 pointer-events-auto">
-        <p className="text-[10px] text-slate-400 font-semibold mb-1 px-1">
+      {/* ── LEFT SYSTEM FILTER BAR (Horizontal scroll strip on mobile, vertical rail on sm+) ── */}
+      <div className="absolute top-16 sm:top-20 left-3 right-3 sm:left-6 sm:right-auto z-20 flex flex-row sm:flex-col gap-1.5 sm:gap-2 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0 pointer-events-auto scrollbar-none">
+        <p className="hidden sm:block text-[10px] text-slate-400 font-semibold mb-1 px-1">
           {language === "vi" ? "Hệ Cơ Quan" : "Organ Systems"}
         </p>
         {systemsPresent.map((key) => {
@@ -166,7 +166,7 @@ export default function SpeciesDissection3D() {
                 setActiveSystem(key);
                 setSelectedOrgan(null);
               }}
-              className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all duration-200 cursor-pointer shadow-lg backdrop-blur-md"
+              className="flex items-center gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold border transition-all duration-200 cursor-pointer shadow-lg backdrop-blur-md shrink-0 whitespace-nowrap"
               style={
                 isActive
                   ? {
@@ -189,9 +189,9 @@ export default function SpeciesDissection3D() {
         })}
       </div>
 
-      {/* Bảng thông tin chi tiết cơ quan */}
+      {/* Bảng thông tin chi tiết cơ quan (Bottom sheet on mobile, right drawer on sm+) */}
       {selectedOrgan && (
-        <div className="absolute top-20 right-6 z-20 w-80 max-h-[calc(100vh-140px)] overflow-y-auto rounded-2xl border border-white/15 bg-slate-950/90 backdrop-blur-2xl p-5 shadow-2xl space-y-4 animate-in fade-in slide-in-from-right-4 pointer-events-auto">
+        <div className="absolute left-3 right-3 bottom-3 sm:left-auto sm:bottom-auto sm:top-20 sm:right-6 z-20 sm:w-80 max-h-[42vh] sm:max-h-[calc(100vh-140px)] overflow-y-auto rounded-2xl border border-white/15 bg-slate-950/90 backdrop-blur-2xl p-4 sm:p-5 shadow-2xl space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-4 sm:slide-in-from-right-4 pointer-events-auto">
           {/* Header */}
           <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-3">
             <div>

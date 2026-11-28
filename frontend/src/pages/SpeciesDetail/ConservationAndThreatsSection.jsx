@@ -18,10 +18,10 @@ const RED_LIST_DETAILED_INFO = {
       "Không còn nghi ngờ gì về việc cá thể cuối cùng của loài đã chết trên toàn cầu.",
     descEn:
       "Beyond reasonable doubt that the last individual of this species has died.",
-    badgeColor: "bg-zinc-700/50 text-zinc-200 border-zinc-500/50",
+    badgeColor: "bg-zinc-500/12 text-zinc-700 border-zinc-500/30",
     cardBorder:
-      "border-zinc-500/40 from-[#1f1f23]/90 via-[#181d33]/90 to-[#0a182e]/90",
-    statusColor: "text-zinc-200",
+      "border-zinc-400/40 from-zinc-50/92 via-white/88 to-slate-50/80",
+    statusColor: "text-zinc-800",
   },
   EW: {
     code: "EW",
@@ -31,10 +31,10 @@ const RED_LIST_DETAILED_INFO = {
       "Chỉ còn tồn tại trong điều kiện nuôi nhốt hoặc ngoài vùng phân bố lịch sử, đã biến mất hoàn toàn ngoài tự nhiên.",
     descEn:
       "Surviving only in captivity, cultivation, or outside historic native range.",
-    badgeColor: "bg-purple-900/40 text-purple-300 border-purple-500/50",
+    badgeColor: "bg-purple-500/12 text-purple-700 border-purple-500/30",
     cardBorder:
-      "border-purple-600/40 from-[#26152a]/90 via-[#181d33]/90 to-[#0a182e]/90",
-    statusColor: "text-purple-300",
+      "border-purple-400/40 from-purple-50/92 via-white/88 to-fuchsia-50/70",
+    statusColor: "text-purple-800",
   },
   CR: {
     code: "CR",
@@ -44,10 +44,10 @@ const RED_LIST_DETAILED_INFO = {
       "Nguy cơ tuyệt chủng rất cao ngoài tự nhiên, cần có biện pháp bảo vệ và phục hồi khẩn cấp.",
     descEn:
       "Facing an extremely high extinction risk in the wild without immediate conservation action.",
-    badgeColor: "bg-red-500/25 text-red-300 border-red-400/40",
+    badgeColor: "bg-rose-500/12 text-rose-700 border-rose-500/30",
     cardBorder:
-      "border-red-500/40 from-[#2a131b]/90 via-[#181d33]/90 to-[#0a182e]/90",
-    statusColor: "text-red-400",
+      "border-rose-400/40 from-rose-50/92 via-white/88 to-red-50/70",
+    statusColor: "text-rose-700",
   },
   EN: {
     code: "EN",
@@ -57,10 +57,10 @@ const RED_LIST_DETAILED_INFO = {
       "Số lượng cá thể suy giảm nghiêm trọng do khai thác quá mức và sinh cảnh sống bị thu hẹp.",
     descEn:
       "High extinction risk due to severe population decline and rapid habitat loss.",
-    badgeColor: "bg-orange-500/25 text-orange-300 border-orange-400/40",
+    badgeColor: "bg-orange-500/12 text-orange-700 border-orange-500/30",
     cardBorder:
-      "border-orange-500/40 from-[#271813]/90 via-[#181d33]/90 to-[#0a182e]/90",
-    statusColor: "text-orange-400",
+      "border-orange-400/40 from-orange-50/92 via-white/88 to-amber-50/70",
+    statusColor: "text-orange-700",
   },
   VU: {
     code: "VU",
@@ -70,10 +70,10 @@ const RED_LIST_DETAILED_INFO = {
       "Có nguy cơ đe dọa cao trong tương lai gần do áp lực đánh bắt và biến đổi môi trường biển.",
     descEn:
       "Facing endangerment in the medium term due to heavy fishing pressure and habitat stress.",
-    badgeColor: "bg-amber-500/25 text-amber-300 border-amber-400/40",
+    badgeColor: "bg-amber-500/12 text-amber-800 border-amber-500/35",
     cardBorder:
-      "border-amber-500/40 from-[#261e12]/90 via-[#181d33]/90 to-[#0a182e]/90",
-    statusColor: "text-amber-400",
+      "border-amber-400/40 from-amber-50/92 via-white/88 to-yellow-50/70",
+    statusColor: "text-amber-800",
   },
   NT: {
     code: "NT",
@@ -83,10 +83,10 @@ const RED_LIST_DETAILED_INFO = {
       "Hiện chưa nguy cấp nhưng đang cận kề ngưỡng bị đe dọa nếu không quản lý nguồn lợi tốt.",
     descEn:
       "Close to qualifying for threatened status without continued resource protection.",
-    badgeColor: "bg-emerald-500/25 text-emerald-300 border-emerald-400/40",
+    badgeColor: "bg-emerald-500/12 text-emerald-700 border-emerald-500/30",
     cardBorder:
-      "border-emerald-500/40 from-[#122622]/90 via-[#181d33]/90 to-[#0a182e]/90",
-    statusColor: "text-emerald-400",
+      "border-emerald-400/40 from-emerald-50/92 via-white/88 to-teal-50/70",
+    statusColor: "text-emerald-700",
   },
   LC: {
     code: "LC",
@@ -96,10 +96,10 @@ const RED_LIST_DETAILED_INFO = {
       "Quần thể sinh học tương đối ổn định, song vẫn cần giám sát đánh bắt bền vững.",
     descEn:
       "Widespread and stable populations, monitored to ensure sustainable fisheries.",
-    badgeColor: "bg-teal-500/25 text-teal-300 border-teal-400/40",
+    badgeColor: "bg-teal-500/12 text-teal-700 border-teal-500/30",
     cardBorder:
-      "border-teal-500/40 from-[#12242a]/90 via-[#181d33]/90 to-[#0a182e]/90",
-    statusColor: "text-teal-400",
+      "border-teal-400/40 from-teal-50/92 via-white/88 to-sky-50/70",
+    statusColor: "text-teal-700",
   },
   DD: {
     code: "DD",
@@ -109,10 +109,10 @@ const RED_LIST_DETAILED_INFO = {
       "Chưa có đủ thông tin sinh học và phân bố để đánh giá trực tiếp hoặc gián tiếp nguy cơ tuyệt chủng.",
     descEn:
       "Inadequate information to make a direct or indirect assessment of extinction risk.",
-    badgeColor: "bg-slate-500/25 text-[#334155] border-slate-400/40",
+    badgeColor: "bg-slate-500/12 text-slate-700 border-slate-400/35",
     cardBorder:
-      "border-slate-500/40 from-[#151c28]/90 via-[#181d33]/90 to-[#0a182e]/90",
-    statusColor: "text-[#334155]",
+      "border-slate-300/70 from-slate-50/92 via-white/88 to-sky-50/70",
+    statusColor: "text-slate-700",
   },
   NE: {
     code: "NE",
@@ -121,10 +121,10 @@ const RED_LIST_DETAILED_INFO = {
     descVi:
       "Chưa được đối chiếu và thẩm định theo các tiêu chí của Danh lục Đỏ IUCN.",
     descEn: "Has not yet been evaluated against the IUCN Red List criteria.",
-    badgeColor: "bg-zinc-600/25 text-zinc-300 border-zinc-500/40",
+    badgeColor: "bg-zinc-500/12 text-zinc-700 border-zinc-400/35",
     cardBorder:
-      "border-zinc-500/40 from-[#151821]/90 via-[#181d33]/90 to-[#0a182e]/90",
-    statusColor: "text-zinc-400",
+      "border-zinc-300/70 from-zinc-50/92 via-white/88 to-slate-50/70",
+    statusColor: "text-zinc-700",
   },
 };
 
@@ -199,7 +199,7 @@ export function ConservationAndThreatsSection({ species, language = "vi" }) {
         descEn:
           "Vulnerable to commercial driftnets and bottom trawlers during foraging.",
         icon: FishOff,
-        accent: "text-rose-300 bg-rose-500/20 border-rose-400/35",
+        accent: "text-rose-700 bg-rose-500/12 border-rose-500/25",
       },
       {
         titleVi: "Rác nhựa & lưới ma trôi nổi",
@@ -209,7 +209,7 @@ export function ConservationAndThreatsSection({ species, language = "vi" }) {
         descEn:
           "Ingestion of plastic debris and entanglement in discarded nylon nets.",
         icon: Trash2,
-        accent: "text-amber-300 bg-amber-500/20 border-amber-400/35",
+        accent: "text-amber-700 bg-amber-500/12 border-amber-500/25",
       },
       {
         titleVi: "Biến đổi khí hậu & ấm nước biển",
@@ -219,7 +219,7 @@ export function ConservationAndThreatsSection({ species, language = "vi" }) {
         descEn:
           "Marine heatwaves trigger coral bleaching and disrupt historic biomes.",
         icon: Flame,
-        accent: "text-orange-300 bg-orange-500/20 border-orange-400/35",
+        accent: "text-orange-700 bg-orange-500/12 border-orange-500/25",
       },
       {
         titleVi: "Suy thoái bãi đẻ ven biển",
@@ -341,15 +341,15 @@ export function ConservationAndThreatsSection({ species, language = "vi" }) {
               ].map((tier) => {
                 const isActive = statusCode === tier.code;
                 const colors = {
-                  NE: "text-zinc-300",
-                  DD: "text-[#334155]",
-                  LC: "text-teal-300",
-                  NT: "text-emerald-300",
-                  VU: "text-amber-300",
-                  EN: "text-orange-300",
-                  CR: "text-rose-400",
-                  EW: "text-purple-400",
-                  EX: "text-red-500",
+                  NE: "text-zinc-700",
+                  DD: "text-slate-700",
+                  LC: "text-teal-700",
+                  NT: "text-emerald-700",
+                  VU: "text-amber-800",
+                  EN: "text-orange-700",
+                  CR: "text-rose-700",
+                  EW: "text-purple-700",
+                  EX: "text-red-700",
                 };
                 return (
                   <span

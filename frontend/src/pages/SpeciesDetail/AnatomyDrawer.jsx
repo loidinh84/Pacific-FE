@@ -148,7 +148,7 @@ export function AnatomyDrawer({
             </div>
             <button
               onClick={onClose}
-              className="flex-shrink-0 p-1.5 rounded-lg text-[#475569] hover:text-[#0f172a] hover:liquid-glass-subtle transition-all cursor-pointer"
+              className="flex-shrink-0 p-1.5 rounded-lg text-[#475569] hover:text-[#0f172a] hover:bg-white/80 transition-all cursor-pointer"
               aria-label="Đóng"
             >
               <X size={16} />

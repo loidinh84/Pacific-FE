@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   Crosshair,
-  Layers,
   Fish,
   MapPin,
   RotateCcw,
@@ -918,7 +917,7 @@ export default function OceanMap() {
         </div>
 
         {/* Thanh bộ lọc danh mục và các dropdown chọn nhanh */}
-        <div className="relative z-[1000] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 liquid-glass p-2 sm:p-2.5 rounded-2xl">
+        <div className="relative z-30 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 liquid-glass p-2 sm:p-2.5 rounded-2xl">
           {/* Danh mục sinh vật cuộn ngang có nút trượt và kéo chuột */}
           <div className="relative flex-1 min-w-0 flex items-center">
             {canScrollLeft && (
@@ -1014,7 +1013,7 @@ export default function OceanMap() {
               </button>
 
               {isZoneDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-72 rounded-xl liquid-glass-strong z-[1100] p-1.5 max-h-80 overflow-y-auto">
+                <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-[calc(100vw-2rem)] max-w-[18rem] sm:w-72 rounded-xl liquid-glass-strong z-40 p-1.5 max-h-80 overflow-y-auto">
                   <div className="px-2.5 py-1.5 text-[11px] font-semibold text-[#475569] border-b border-[#0b2545]/10 mb-1">
                     {isEn ? "Select Marine Protected Area" : "Chọn phân vùng trọng điểm"}
                   </div>
@@ -1072,7 +1071,7 @@ export default function OceanMap() {
               </button>
 
               {isRedListDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-64 rounded-xl liquid-glass-strong z-[1100] p-1.5">
+                <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-[calc(100vw-2rem)] max-w-[16rem] sm:w-64 rounded-xl liquid-glass-strong z-40 p-1.5">
                   <div className="px-2.5 py-1.5 text-[11px] font-semibold text-[#475569] border-b border-[#0b2545]/10 mb-1">
                     {isEn ? "IUCN / Vietnam Red List" : "Phân hạng bảo tồn Sách Đỏ"}
                   </div>
@@ -1141,7 +1140,7 @@ export default function OceanMap() {
               </button>
 
               {isSpeciesSearchOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl liquid-glass-strong z-[1100] p-2 max-h-96 flex flex-col">
+                <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-[calc(100vw-2rem)] max-w-[20rem] sm:w-80 md:w-96 rounded-xl liquid-glass-strong z-40 p-2 max-h-80 sm:max-h-96 flex flex-col">
                   {/* Ô nhập tìm kiếm */}
                   <div className="relative mb-2">
                     <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 text-[#475569] pointer-events-none" />
@@ -1210,15 +1209,12 @@ export default function OceanMap() {
           </div>
         </div>
 
-        {/* Khung bản đồ toàn màn hình */}
-        <div
-          className="rounded-2xl overflow-hidden border border-[#0b2545]/12 relative z-0 bg-[#cbe6f7] shadow-lg w-full"
-          style={{ width: "100%", height: "640px", minHeight: "640px" }}
-        >
+        {/* Khung bản đồ thích ứng mọi màn hình (mobile / laptop 720p / desktop) */}
+        <div className="rounded-2xl overflow-hidden border border-[#0b2545]/12 relative z-0 bg-[#cbe6f7] shadow-lg w-full h-[460px] sm:h-[540px] lg:h-[620px]">
           <div
             ref={mapContainerRef}
             className="w-full h-full"
-            style={{ width: "100%", height: "640px", minHeight: "640px", background: "#cbe6f7" }}
+            style={{ background: "#cbe6f7" }}
           />
 
           {/* Thước đo tọa độ di chuột góc dưới bên trái */}

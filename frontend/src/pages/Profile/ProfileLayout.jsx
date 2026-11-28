@@ -91,12 +91,12 @@ export default function ProfileLayout() {
               </Link>
 
               {/* Sidebar Menu Container */}
-              <div className="liquid-glass backdrop-blur-md border border-[#0f172a]/10 rounded-2xl p-5 space-y-5">
+              <div className="liquid-glass backdrop-blur-md border border-[#0f172a]/10 rounded-2xl p-4 sm:p-5 space-y-4 sm:space-y-5">
                 <div>
-                  <h3 className="text-[11px] font-bold text-[#475569] mb-3 px-3">
+                  <h3 className="hidden lg:block text-[11px] font-bold text-[#475569] mb-3 px-3">
                     {isEn ? "Settings" : "Cài đặt"}
                   </h3>
-                  <nav className="space-y-1.5">
+                  <nav className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 scrollbar-none">
                     {navItems.map((item) => {
                       const Icon = item.icon;
                       const isActive = activeTab === item.id;
@@ -104,13 +104,13 @@ export default function ProfileLayout() {
                         <button
                           key={item.id}
                           onClick={() => setActiveTab(item.id)}
-                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          className={`lg:w-full flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 whitespace-nowrap ${
                             isActive
-                              ? "bg-gradient-to-r from-pacific-blue-bright to-pacific-cyan text-[#0f172a]"
-                              : "text-[#334155] hover:text-[#0f172a] hover:liquid-glass-subtle"
+                              ? "bg-[#0284c7] text-white shadow-sm"
+                              : "text-[#334155] hover:text-[#0f172a] hover:bg-white/75"
                           }`}
                         >
-                          <Icon size={16} className={isActive ? "text-[#0f172a]" : "text-pacific-cyan"} />
+                          <Icon size={15} className={isActive ? "text-white" : "text-[#0284c7]"} />
                           <span>{item.label}</span>
                         </button>
                       );

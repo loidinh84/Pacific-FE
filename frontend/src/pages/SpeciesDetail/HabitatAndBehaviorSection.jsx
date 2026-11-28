@@ -52,7 +52,7 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
           "Tầng nước mặt tiếp nhận hơn 90% ánh sáng, là nơi tập trung các rạn san hô kỳ thú và nguồn phù du dồi dào.",
         descEn:
           "Surface layer absorbing 90% of sunlight, nurturing vibrant coral reefs and abundant plankton.",
-        badgeColor: "text-amber-300 border-amber-400/40 bg-amber-400/15",
+        badgeColor: "text-amber-800 border-amber-500/35 bg-amber-500/12",
         badge: "0 - 200m",
       };
     } else if (max <= 1000) {
@@ -65,7 +65,7 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
           "Tầng nước lạnh mờ ảo nơi ánh sáng mờ dần, diễn ra hiện tượng di cư thẳng đứng kiếm ăn hàng đêm.",
         descEn:
           "Chilled dim layer where light fades quickly, hosting massive nightly vertical feeding migrations.",
-        badgeColor: "text-[#0284c7] border-sky-600/25 bg-cyan-400/15",
+        badgeColor: "text-[#0284c7] border-sky-600/25 bg-sky-500/12",
         badge: "200 - 1.000m",
       };
     } else {
@@ -78,7 +78,7 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
           "Biển sâu tối hoàn toàn với áp suất nước cực lớn, sinh vật có khả năng phát quang sinh học độc đáo.",
         descEn:
           "Pitch-black deep sea under immense hydrostatic pressure, where organisms rely on bioluminescence.",
-        badgeColor: "text-indigo-300 border-indigo-400/40 bg-indigo-400/15",
+        badgeColor: "text-indigo-700 border-indigo-500/35 bg-indigo-500/12",
         badge: "> 1.000m",
       };
     }
@@ -123,9 +123,9 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
           "Fringing reefs and atolls across Spratly, Paracel, and Con Dao.",
         icon: Sparkles,
         accent:
-          "from-emerald-500/25 to-teal-500/10 text-emerald-300 border-emerald-400/30",
+          "from-emerald-500/15 to-teal-500/8 text-emerald-700 border-emerald-500/25",
         iconBg:
-          "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30",
+          "bg-emerald-500/12 text-emerald-700 border border-emerald-500/25",
       });
     }
 
@@ -148,8 +148,8 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
           "Coastal seagrass beds in Phu Quoc, Con Dao, and protected lagoons.",
         icon: Waves,
         accent:
-          "from-green-500/25 to-emerald-500/10 text-green-300 border-green-400/30",
-        iconBg: "bg-green-500/20 text-green-300 border border-green-400/30",
+          "from-green-500/15 to-emerald-500/8 text-green-700 border-green-500/25",
+        iconBg: "bg-green-500/12 text-green-700 border border-green-500/25",
       });
     }
 
@@ -171,8 +171,8 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
         descEn:
           "Deep pelagic waters enriched by coastal upwelling currents in central Vietnam.",
         icon: Compass,
-        accent: "from-sky-500/25 to-blue-500/10 text-sky-300 border-sky-400/30",
-        iconBg: "bg-sky-500/20 text-sky-300 border border-sky-400/30",
+        accent: "from-sky-500/15 to-blue-500/8 text-[#0284c7] border-sky-500/25",
+        iconBg: "bg-sky-500/12 text-[#0284c7] border border-sky-500/25",
       });
     }
 
@@ -185,9 +185,9 @@ export function HabitatAndBehaviorSection({ species, language = "vi" }) {
         descEn: "Rocky ledges and coral formations providing shelter and prey.",
         icon: Sparkles,
         accent:
-          "from-emerald-500/25 to-teal-500/10 text-emerald-300 border-emerald-400/30",
+          "from-emerald-500/15 to-teal-500/8 text-emerald-700 border-emerald-500/25",
         iconBg:
-          "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30",
+          "bg-emerald-500/12 text-emerald-700 border border-emerald-500/25",
       });
       list.push({
         titleVi: "Thềm lục địa Biển Đông",

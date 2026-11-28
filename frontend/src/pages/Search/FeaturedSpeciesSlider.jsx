@@ -212,8 +212,8 @@ export function FeaturedSpeciesSlider({ initialSpecies = null }) {
               }}
             >
               {/* Header Tags */}
-              <div className="flex items-center justify-between gap-1.5 mb-3">
-                <span className="px-2 py-0.5 rounded-md bg-slate-900/6 border border-slate-900/12 text-[#1e293b] text-[10px] font-medium leading-tight truncate">
+              <div className="flex items-center justify-between gap-1.5 mb-3 min-w-0">
+                <span className="px-2 py-0.5 rounded-md bg-slate-900/6 border border-slate-900/12 text-[#1e293b] text-[10px] font-medium leading-tight truncate min-w-0">
                   {categoryName}
                 </span>
                 <span

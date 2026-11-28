@@ -36,7 +36,7 @@ export function NewsFilterBar({
             className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
               !selectedCategory
                 ? "bg-sky-600 text-white shadow-sm"
-                : "liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:liquid-glass-subtle border border-[#0f172a]/10"
+                : "liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:bg-white border border-[#0f172a]/10"
             }`}
           >
             {t("news.allCategories")}
@@ -61,7 +61,7 @@ export function NewsFilterBar({
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer flex items-center gap-1.5 ${
                     isSelected
                       ? "bg-sky-600 text-white shadow-sm"
-                      : "liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:liquid-glass-subtle border border-[#0f172a]/10"
+                      : "liquid-glass-subtle text-[#334155] hover:text-[#0f172a] hover:bg-white border border-[#0f172a]/10"
                   }`}
                 >
                   <span>{getCategoryLabel(t, cat.slug) || cat.name}</span>
@@ -77,7 +77,7 @@ export function NewsFilterBar({
             <button
               type="button"
               onClick={() => setIsSortOpen(!isSortOpen)}
-              className="flex items-center gap-2 px-3.5 py-2 text-[#0f172a] hover:text-[#0f172a] liquid-glass-subtle hover:liquid-glass-subtle border border-[#0f172a]/10 rounded-xl text-xs font-semibold cursor-pointer transition-all active:scale-95"
+              className="flex items-center gap-2 px-3.5 py-2 text-[#0f172a] liquid-glass-subtle hover:bg-white border border-[#0f172a]/10 rounded-xl text-xs font-semibold cursor-pointer transition-colors"
             >
               <ArrowUpDown size={13} className="text-[#0284c7]" />
               <span>{currentSortObj.label}</span>
@@ -91,7 +91,7 @@ export function NewsFilterBar({
 
             {/* Dropdown Menu */}
             {isSortOpen && (
-              <div className="absolute right-0 mt-2 w-48 liquid-glass-strong border border-[#0f172a]/10 rounded-2xl shadow-2xl p-1.5 z-[60] animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute left-0 lg:left-auto lg:right-0 mt-2 w-48 liquid-glass-strong border border-[#0f172a]/10 rounded-2xl shadow-lg p-1.5 z-40 animate-in fade-in zoom-in-95 duration-150">
                 <div className="px-3 py-1.5 text-[10px] font-semibold text-[#475569] border-b border-[#0f172a]/10 mb-1">
                   Sắp xếp bài viết
                 </div>
@@ -105,10 +105,10 @@ export function NewsFilterBar({
                         setSortBy(opt.value);
                         setIsSortOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                         isSelected
                           ? "bg-sky-600/10 text-[#0284c7] border border-sky-600/25"
-                          : "text-[#0f172a] hover:text-[#0f172a] hover:liquid-glass-subtle border border-transparent"
+                          : "text-[#0f172a] hover:bg-[#0f172a]/5 border border-transparent"
                       }`}
                     >
                       <span>{opt.label}</span>

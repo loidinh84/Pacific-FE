@@ -14,7 +14,7 @@ export function LoginBrandPanel() {
   })();
 
   return (
-    <div className="md:col-span-5 bg-sky-50/75 p-8 md:p-10 flex flex-col justify-between relative overflow-hidden border-b md:border-b-0 md:border-r border-[#0f172a]/10">
+    <div className="order-2 md:order-1 md:col-span-5 bg-sky-50/75 p-5 sm:p-8 md:p-10 flex flex-col justify-between relative overflow-hidden border-t md:border-t-0 md:border-r border-[#0f172a]/10">
       <div className="absolute top-0 right-0 w-64 h-64 bg-pacific-blue-bright/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-pacific-teal/20 rounded-full blur-3xl pointer-events-none" />
 

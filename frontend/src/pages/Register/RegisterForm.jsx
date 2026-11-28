@@ -73,9 +73,9 @@ export function RegisterForm() {
   };
 
   return (
-    <div className="md:col-span-7 p-8 md:p-10 flex flex-col justify-center relative">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-[#0f172a] font-heading tracking-tight mb-2">
+    <div className="order-1 md:order-2 md:col-span-7 p-5 sm:p-8 md:p-10 flex flex-col justify-center relative">
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#0f172a] font-heading tracking-tight mb-2">
           {t("auth.registerTitle")}
         </h1>
         <p className="text-xs md:text-sm text-pacific-blue-pale font-medium">
@@ -173,7 +173,7 @@ export function RegisterForm() {
 
         <div className="relative flex items-center justify-center my-0.5">
           <div className="w-full border-t border-[#0f172a]/10" />
-          <span className="absolute px-3 bg-[#232f5d] text-[10px] font-medium text-[#475569]">
+          <span className="absolute px-3 bg-white/95 rounded-full text-[11px] font-medium text-[#475569]">
             {t("auth.orWith")}
           </span>
         </div>

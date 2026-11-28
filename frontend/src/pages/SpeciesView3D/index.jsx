@@ -145,10 +145,10 @@ export default function SpeciesView3D() {
           : (language === "en" ? "Show info" : "Hiện thông tin")}
       </button>
 
-      {/* ── LEFT INFO PANEL ── */}
+      {/* ── LEFT INFO PANEL (Bottom card on mobile, left floating on md+) ── */}
       <div
-        className={`absolute left-6 top-1/2 -translate-y-1/2 z-20 max-w-[220px] transition-all duration-500 ${
-          showInfo ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8 pointer-events-none"
+        className={`absolute left-3 right-3 bottom-18 md:left-6 md:right-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 z-20 md:max-w-[220px] transition-all duration-500 ${
+          showInfo ? "opacity-100 translate-y-0 md:translate-x-0" : "opacity-0 translate-y-4 md:-translate-x-8 pointer-events-none"
         }`}
       >
         <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-5 space-y-3">
@@ -191,9 +191,9 @@ export default function SpeciesView3D() {
         />
       </div>
 
-      {/* ── RIGHT FACTS PANEL ── */}
+      {/* ── RIGHT FACTS PANEL (Desktop/Tablet) ── */}
       <div
-        className={`absolute right-6 top-1/2 -translate-y-1/2 z-20 max-w-[240px] transition-all duration-500 ${
+        className={`hidden md:block absolute right-6 top-1/2 -translate-y-1/2 z-20 max-w-[240px] transition-all duration-500 ${
           showInfo ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8 pointer-events-none"
         }`}
       >

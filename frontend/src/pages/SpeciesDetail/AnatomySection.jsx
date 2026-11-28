@@ -1156,7 +1156,7 @@ export function AnatomySection({ species }) {
 
         {/* Ghi chú đặc trưng sinh học */}
         {species?.fullBioHighlightsVi && species.fullBioHighlightsVi.length > 0 && (
-          <div className="p-3.5 rounded-xl bg-blue-950/20 border border-blue-500/20 flex items-start gap-2.5 text-xs text-[#334155]">
+          <div className="p-3.5 rounded-xl bg-sky-500/10 border border-sky-600/20 flex items-start gap-2.5 text-xs text-[#334155]">
             <Info size={15} className="text-[#0284c7] shrink-0 mt-0.5" />
             <p className="leading-relaxed text-[#334155]">
               <span className="font-semibold text-[#0284c7] mr-1.5">

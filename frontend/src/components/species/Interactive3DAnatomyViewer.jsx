@@ -1014,7 +1014,7 @@ export function Interactive3DAnatomyViewer({
       {/* ── 3D STUDIO CANVAS CONTAINER ── */}
       <div
         onPointerLeave={handlePointerLeave}
-        className="relative w-full rounded-2xl overflow-hidden border border-cyan-500/25 shadow-[0_12px_40px_rgba(0,0,0,0.4)] min-h-[520px] md:min-h-[560px] bg-gradient-to-b from-[#020b17] via-[#02182e] to-[#010915]"
+        className="relative w-full rounded-2xl overflow-hidden border border-cyan-500/25 shadow-lg min-h-[380px] sm:min-h-[460px] md:min-h-[560px] bg-gradient-to-b from-[#020b17] via-[#02182e] to-[#010915]"
       >
         {/* Three.js Canvas Mount Point */}
         <div
@@ -1025,7 +1025,7 @@ export function Interactive3DAnatomyViewer({
           onPointerLeave={handlePointerLeave}
           onClick={handleClick}
           onDoubleClick={handleResetCamera}
-          className="w-full h-[520px] md:h-[560px] cursor-grab active:cursor-grabbing"
+          className="w-full h-[380px] sm:h-[460px] md:h-[560px] cursor-grab active:cursor-grabbing"
         />
 
         {/* Nhãn vị trí cơ quan */}
@@ -1120,7 +1120,7 @@ export function Interactive3DAnatomyViewer({
         {activePart && (
           <button
             onClick={handleResetCamera}
-            className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full bg-slate-950/90 hover:bg-cyan-950/95 border border-cyan-400/60 text-cyan-200 hover:text-white text-xs font-semibold shadow-2xl backdrop-blur-md transition-all cursor-pointer z-10 hover:scale-105"
+            className="absolute top-14 sm:top-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-slate-950/90 hover:bg-cyan-950/95 border border-cyan-400/60 text-cyan-200 hover:text-white text-xs font-semibold shadow-lg backdrop-blur-md transition-all cursor-pointer z-10 whitespace-nowrap"
             title="Quay lại góc nhìn toàn cảnh sinh vật"
           >
             <RotateCcw size={13} className="text-cyan-400" />
@@ -1133,19 +1133,19 @@ export function Interactive3DAnatomyViewer({
         {/* Thanh điều khiển 3D */}
         <div
           onPointerEnter={handlePointerLeave}
-          className="absolute top-4 right-4 flex items-center gap-1.5 bg-slate-950/80 p-1.5 rounded-xl border border-white/15 backdrop-blur-md shadow-xl z-10"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 max-w-[calc(100%-1.5rem)] overflow-x-auto scrollbar-none flex items-center gap-1 sm:gap-1.5 bg-slate-950/80 p-1 sm:p-1.5 rounded-xl border border-white/15 backdrop-blur-md shadow-lg z-10"
         >
           {/* Zoom In & Out */}
           <button
             onClick={handleZoomIn}
-            className="p-2 rounded-lg text-xs bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all"
+            className="p-2 rounded-lg text-xs bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all shrink-0"
             title="Phóng to"
           >
             <ZoomIn size={14} />
           </button>
           <button
             onClick={handleZoomOut}
-            className="p-2 rounded-lg text-xs bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all"
+            className="p-2 rounded-lg text-xs bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all shrink-0"
             title="Thu nhỏ"
           >
             <ZoomOut size={14} />
@@ -1163,7 +1163,7 @@ export function Interactive3DAnatomyViewer({
                 return next;
               });
             }}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+            className={`px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all shrink-0 ${
               showPins
                 ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 font-semibold"
                 : "bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent"
@@ -1171,13 +1171,13 @@ export function Interactive3DAnatomyViewer({
             title="Bật/Tắt ghim nhãn 3D trong không gian"
           >
             <Tag size={14} className={showPins ? "text-cyan-300" : ""} />
-            <span>{showPins ? "Nhãn: Bật" : "Nhãn"}</span>
+            <span className="hidden sm:inline">{showPins ? "Nhãn: Bật" : "Nhãn"}</span>
           </button>
 
           {/* X-Ray Mode */}
           <button
             onClick={() => setIsXRay((prev) => !prev)}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+            className={`px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all shrink-0 ${
               isXRay
                 ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 font-semibold"
                 : "bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent"
@@ -1185,13 +1185,13 @@ export function Interactive3DAnatomyViewer({
             title="Chế độ X-Ray nhìn xuyên thấu quang học"
           >
             <Eye size={14} className={isXRay ? "text-cyan-300" : ""} />
-            <span>{isXRay ? "X-Ray: Bật" : "X-Ray"}</span>
+            <span className="hidden sm:inline">{isXRay ? "X-Ray: Bật" : "X-Ray"}</span>
           </button>
 
           {/* Wireframe Mode */}
           <button
             onClick={() => setIsWireframe((prev) => !prev)}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+            className={`px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all shrink-0 ${
               isWireframe
                 ? "bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 font-semibold"
                 : "bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent"
@@ -1199,13 +1199,13 @@ export function Interactive3DAnatomyViewer({
             title="Chế độ khung lưới đa giác"
           >
             <Layers size={14} className={isWireframe ? "text-cyan-300" : ""} />
-            <span>{isWireframe ? "Lưới: Bật" : "Lưới"}</span>
+            <span className="hidden sm:inline">{isWireframe ? "Lưới: Bật" : "Lưới"}</span>
           </button>
 
           {/* Mặt cắt vi phẫu 3D */}
           <button
             onClick={() => setIsClipping((prev) => !prev)}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+            className={`px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all shrink-0 ${
               isClipping
                 ? "bg-amber-500/25 text-amber-200 border border-amber-400/50 font-semibold"
                 : "bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent"
@@ -1216,13 +1216,13 @@ export function Interactive3DAnatomyViewer({
               size={14}
               className={isClipping ? "text-amber-300" : ""}
             />
-            <span>{isClipping ? "Cắt: Bật" : "Cắt"}</span>
+            <span className="hidden sm:inline">{isClipping ? "Cắt: Bật" : "Cắt"}</span>
           </button>
 
           {/* Reset Camera */}
           <button
             onClick={handleResetCamera}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+            className={`px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all shrink-0 ${
               activePart
                 ? "bg-cyan-500 text-slate-950 font-bold border border-cyan-300 shadow-md shadow-cyan-500/30"
                 : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-transparent"
@@ -1230,7 +1230,7 @@ export function Interactive3DAnatomyViewer({
             title="Đặt lại góc nhìn camera toàn cảnh"
           >
             <RotateCcw size={14} />
-            <span>{language === "vi" ? "Đặt lại" : "Reset"}</span>
+            <span className="hidden sm:inline">{language === "vi" ? "Đặt lại" : "Reset"}</span>
           </button>
         </div>
 
@@ -1310,7 +1310,7 @@ export function Interactive3DAnatomyViewer({
               onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => e.stopPropagation()}
               style={{ userSelect: "text", WebkitUserSelect: "text" }}
-              className="absolute top-4 left-4 max-w-sm bg-slate-950/95 border border-cyan-400/50 p-4 rounded-2xl backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] pointer-events-auto select-text z-20 transition-all duration-200 ease-out"
+              className="absolute left-3 right-3 bottom-14 sm:bottom-auto sm:right-auto sm:top-4 sm:left-4 sm:max-w-sm bg-slate-950/95 border border-cyan-400/50 p-3.5 sm:p-4 rounded-2xl backdrop-blur-xl shadow-lg pointer-events-auto select-text z-20 transition-all duration-200 ease-out"
             >
               {/* Header: Tiêu đề & Nút thao tác copy / đóng */}
               <div className="flex items-start justify-between gap-3 mb-2 border-b border-white/10 pb-2.5">

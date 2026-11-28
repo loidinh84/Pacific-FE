@@ -46,8 +46,8 @@ const GenericErrorPage = lazy(() => import("./pages/Error").then((m) => ({ defau
 // Minimal quiet loading fallback
 function RouteLoadingFallback() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#071322]">
-      <div className="w-8 h-8 rounded-full border-2 border-slate-700/60 border-t-sky-400 animate-spin" />
+    <div className="min-h-screen flex items-center justify-center bg-[#eaf4fb]">
+      <div className="w-8 h-8 rounded-full border-2 border-sky-200 border-t-[#0284c7] animate-spin" />
     </div>
   );
 }

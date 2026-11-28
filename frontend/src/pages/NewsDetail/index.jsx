@@ -187,10 +187,9 @@ export default function NewsDetail() {
   const relatedArticles = article.related_articles || [];
 
   return (
-    <div className="min-h-screen text-white flex flex-col justify-between relative selection:bg-cyan-500 selection:text-black">
-      {/* Background Glows */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.2)_0%,rgba(6,182,212,0.08)_35%,transparent_70%)] pointer-events-none" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-cyan-400/10 blur-[160px] pointer-events-none" />
+    <div className="min-h-screen text-[#0f172a] flex flex-col justify-between relative overflow-x-clip selection:bg-sky-500/20">
+      {/* Subtle Ambient Light */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,rgba(14,165,233,0.14)_0%,rgba(6,182,212,0.05)_35%,transparent_70%)] pointer-events-none" />
 
       <Navbar />
 
@@ -222,7 +221,7 @@ export default function NewsDetail() {
           </div>
 
           {/* Article Main Title */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0f172a] font-heading leading-tight tracking-tight mb-5">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#0f172a] font-heading leading-tight tracking-tight mb-5">
             {article.title}
           </h1>
 
@@ -280,17 +279,17 @@ export default function NewsDetail() {
 
           {/* Excerpt / Lead Paragraph */}
           {article.excerpt && (
-            <p className="text-lg md:text-xl text-cyan-100 font-medium leading-relaxed mb-6 italic border-l-4 border-cyan-400 pl-4 py-1">
+            <p className="text-base sm:text-lg text-[#1e293b] font-medium leading-relaxed mb-6 italic border-l-4 border-[#0284c7] pl-4 py-1">
               {article.excerpt}
             </p>
           )}
 
           {/* Fun Fact Metric Callout */}
           {article.stat_val && (
-            <div className="mb-8 p-5 rounded-3xl bg-gradient-to-r from-sky-950/60 to-cyan-950/60 border border-sky-600/25 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xl">
+            <div className="mb-8 p-5 rounded-2xl liquid-glass-strong flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-5">
               <div className="space-y-1.5 text-center sm:text-left">
                 {article.badge && (
-                  <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-cyan-400/20 text-[#0284c7] border border-sky-600/25">
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-sky-600/12 text-[#0284c7] border border-sky-600/25">
                     {article.badge}
                   </span>
                 )}
@@ -298,7 +297,7 @@ export default function NewsDetail() {
                   Thông số ấn tượng từ chuyên mục &ldquo;Có thể bạn chưa biết&rdquo;
                 </h3>
               </div>
-              <div className="px-6 py-3.5 rounded-2xl bg-black/40 border border-sky-600/25 text-center min-w-[200px] shrink-0">
+              <div className="px-6 py-3.5 rounded-2xl bg-white/85 border border-[#0f172a]/10 text-center w-full sm:w-auto sm:min-w-[200px] shrink-0">
                 <p className="text-2xl sm:text-3xl font-bold text-[#0284c7] font-heading">
                   {article.stat_val}
                 </p>
@@ -313,12 +312,12 @@ export default function NewsDetail() {
 
           {/* Cover Image with Caption */}
           <figure className="mb-8">
-            <div className="relative rounded-3xl overflow-hidden border border-[#0f172a]/10 shadow-2xl bg-black/30">
+            <div className="relative rounded-2xl overflow-hidden border border-[#0f172a]/10 shadow-md bg-white/60">
               <img
                 src={article.cover_url}
                 alt={article.cover_caption || article.title}
                 referrerPolicy="no-referrer"
-                className="w-full h-full max-h-[520px] object-cover"
+                className="w-full h-full max-h-[480px] object-cover"
               />
             </div>
             {article.cover_caption && (
@@ -332,12 +331,12 @@ export default function NewsDetail() {
           {article.content ? (
             /* Rich HTML Content */
             <div
-              className="news-content-body prose prose-invert max-w-none text-[#334155] text-base md:text-lg leading-relaxed space-y-6 mb-12"
+              className="news-content-body prose prose-slate max-w-none text-[#1e293b] text-sm sm:text-base md:text-lg leading-relaxed space-y-5 mb-12"
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
           ) : (
             /* Clean Excerpt Body for External Articles */
-            <div className="text-[#334155] text-base md:text-lg leading-relaxed mb-12 space-y-4">
+            <div className="text-[#1e293b] text-sm sm:text-base md:text-lg leading-relaxed mb-12 space-y-4">
               <p>{article.excerpt}</p>
             </div>
           )}
@@ -377,8 +376,8 @@ export default function NewsDetail() {
 
           {/* External Article Callout */}
           {isExternal && article.external_url && (
-            <div className="p-6 rounded-2xl bg-cyan-950/40 border border-sky-600/25 flex flex-col sm:flex-row items-center justify-between gap-4 mb-16">
-              <div>
+            <div className="p-5 sm:p-6 rounded-2xl liquid-glass-strong flex flex-col sm:flex-row items-center justify-between gap-4 mb-12">
+              <div className="text-center sm:text-left">
                 <h3 className="text-base font-bold text-[#0f172a] mb-1">
                   Đọc toàn bộ bài viết trên trang gốc
                 </h3>
@@ -390,7 +389,7 @@ export default function NewsDetail() {
                 href={article.external_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-[#0f172a] font-bold text-xs inline-flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all shrink-0 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-semibold text-xs inline-flex items-center gap-2 shadow-sm transition-colors shrink-0 cursor-pointer"
               >
                 <span>{t("news.readOriginal") || "Đọc bài gốc"}</span>
                 <ExternalLink size={14} />
@@ -399,7 +398,7 @@ export default function NewsDetail() {
           )}
 
           {/* Social Share Footer Callout */}
-          <div className="p-6 rounded-2xl bg-white/[0.03] border border-[#0f172a]/10 flex flex-col sm:flex-row items-center justify-between gap-4 mb-16">
+          <div className="p-5 sm:p-6 rounded-2xl liquid-glass flex flex-col sm:flex-row items-center justify-between gap-4 mb-12">
             <div className="text-center sm:text-left">
               <h3 className="text-sm font-bold text-[#0f172a] mb-0.5">
                 Chia sẻ câu chuyện đại dương này
@@ -410,7 +409,7 @@ export default function NewsDetail() {
             </div>
             <button
               onClick={handleShare}
-              className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs inline-flex items-center gap-2 transition-all cursor-pointer active:scale-95 shrink-0"
+              className="px-5 py-2.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-semibold text-xs inline-flex items-center gap-2 transition-colors cursor-pointer shrink-0 shadow-sm"
             >
               {copiedId === "share-btn" ? (
                 <>

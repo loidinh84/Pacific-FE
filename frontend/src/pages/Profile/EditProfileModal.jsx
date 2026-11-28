@@ -210,7 +210,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder={isEn ? "Enter your full name" : "Nhập họ và tên đầy đủ"}
-              className="w-full px-4 py-2.5 liquid-glass-strong border border-[#0f172a]/10 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
+              className="w-full px-4 py-2.5 liquid-input rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
@@ -232,7 +232,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
                   ? "Tell us about your passion for ocean biodiversity..."
                   : "Giới thiệu đôi nét về niềm đam mê đại dương của bạn..."
               }
-              className="w-full px-4 py-2.5 liquid-glass-strong border border-[#0f172a]/10 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all resize-none"
+              className="w-full px-4 py-2.5 liquid-input rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all resize-none"
             />
           </div>
 
@@ -246,7 +246,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               placeholder={isEn ? "E.g: +84912345678" : "Ví dụ: 0912345678"}
-              className="w-full px-4 py-2.5 liquid-glass-strong border border-[#0f172a]/10 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
+              className="w-full px-4 py-2.5 liquid-input rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
@@ -259,7 +259,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
               type="date"
               value={dateOfBirth}
               onChange={(e) => setDateOfBirth(e.target.value)}
-              className="w-full px-4 py-2.5 liquid-glass-strong border border-[#0f172a]/10 focus:border-cyan-400 focus:bg-[#121c3d] rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
+              className="w-full px-4 py-2.5 liquid-input rounded-xl text-sm text-[#0f172a] placeholder:text-[#475569] focus:outline-none transition-all"
             />
           </div>
 
@@ -268,7 +268,7 @@ export default function EditProfileModal({ isOpen, onClose, user, onProfileUpdat
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-[#334155] hover:text-[#0f172a] hover:liquid-glass-subtle transition-all cursor-pointer"
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-[#334155] hover:text-[#0f172a] hover:bg-white/80 transition-all cursor-pointer"
             >
               {t("profile.btnCancel", isEn ? "Cancel" : "Hủy")}
             </button>
